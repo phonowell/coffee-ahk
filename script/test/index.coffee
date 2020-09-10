@@ -1,7 +1,4 @@
-list = [1, 2, 3]
+a = ->
+  b = -> 2
 
-list[0] = 3
-
-fn = (a, b) -> return a + b
-
-fn list[0], list[1]
+c = -> 3

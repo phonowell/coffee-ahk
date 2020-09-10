@@ -1,5 +1,3 @@
-import { insertIndent } from '../toolkit'
-
 // interface
 
 import { Context } from '../type'
@@ -26,13 +24,13 @@ function main(
         .push('{', ' {')
     }
 
-    content.push('new-line', '\n' + insertIndent(ctx))
+    content.push('new-line', ctx.indent)
     return true
   }
 
   if (type === 'outdent') {
     ctx.indent--
-    content.push('new-line', '\n' + insertIndent(ctx))
+    content.push('new-line', ctx.indent)
 
     if (!cache.last) return true
 

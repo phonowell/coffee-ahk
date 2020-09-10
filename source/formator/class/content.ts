@@ -1,10 +1,14 @@
+import _ from 'lodash'
+
 // interface
 
 type Type = typeof listType[number]
 
+type Value = string | number
+
 type Item = {
   type: Type
-  value: string
+  value: Value
 }
 
 // variable
@@ -35,6 +39,7 @@ const listType = [
   'continue',
   'else',
   'error',
+  'function',
   'identifier',
   'if',
   'index-end',
@@ -61,7 +66,7 @@ class Content {
 
   private list: {
     type: Type,
-    value: string
+    value: Value
   }[] = []
 
   get last(): Item {
@@ -89,13 +94,13 @@ class Content {
   }
 
   push(type: Type): this
-  push(type: Type, value: string): this
+  push(type: Type, value: Value): this
   push(
     type: Type,
-    value?: string
+    value?: Value
   ): this {
 
-    if (value)
+    if (typeof value !== 'undefined')
       this.list.push({ type, value })
     else
       this.list.push({
@@ -107,8 +112,33 @@ class Content {
 
   render(): string {
     return this.list
-      .map(it => it.value)
+      .map(it =>
+        it.type === 'new-line'
+          ? '\n' + _.repeat(' ', (it.value as number) * 2)
+          : it.value
+      )
       .join('')
+  }
+
+  shift(): Item {
+    return this.list.shift() || itemEmpty
+  }
+
+  unshift(type: Type): this
+  unshift(type: Type, value: Value): this
+  unshift(
+    type: Type,
+    value?: Value
+  ): this {
+
+    if (typeof value !== 'undefined')
+      this.list.unshift({ type, value })
+    else
+      this.list.unshift({
+        type,
+        value: type
+      })
+    return this
   }
 }
 

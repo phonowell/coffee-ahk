@@ -1,5 +1,3 @@
-import { insertIndent } from '../toolkit'
-
 // interface
 
 import { Context } from '../type'
@@ -19,12 +17,12 @@ function main(
         if (content.last.type === 'new-line') content.pop()
         content
           .push(',')
-          .push('new-line', '\n' + insertIndent(ctx))
+          .push('new-line', ctx.indent)
       }
       return true
     }
 
-    content.push('new-line', '\n' + insertIndent(ctx))
+    content.push('new-line', ctx.indent)
     return true
   }
 

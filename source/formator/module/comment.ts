@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import { insertIndent } from '../toolkit'
 
 // interface
 
@@ -19,7 +18,7 @@ function main(
     ).split('\n')
     for (const comment of listComment)
       content
-        .push('new-line', '\n' + insertIndent(ctx))
+        .push('new-line', ctx.indent)
         .push('comment', `; ${comment}`)
     return true
   }

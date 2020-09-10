@@ -1,5 +1,3 @@
-import { insertIndent } from '../toolkit'
-
 // interface
 
 import { Context } from '../type'
@@ -20,7 +18,7 @@ function main(
         content.pop()
         content
           .push('{')
-          .push('new-line', '\n' + insertIndent(ctx))
+          .push('new-line', ctx.indent)
         return true
       }
     }
@@ -35,7 +33,7 @@ function main(
     if (raw.generated)
       if (raw.origin && raw.origin[0].toLowerCase() === 'outdent') {
         content
-          .push('new-line', '\n' + insertIndent(ctx, -1))
+          .push('new-line', ctx.indent - 1)
           .push('}')
         return true
       }

@@ -13,15 +13,27 @@ function main(
   if (type === '->') {
     if (content.last.type === '=') {
       content.pop()
-      content.push('(', ')')
+
+      const { last } = content
+      if (last.type === 'identifier')
+        last.type = 'function'
+
+      content
+        .push('param-start', '(')
+        .push('param-end', ')')
     }
     cache.push('function')
     return true
   }
 
   if (type === 'param_start') {
+
     if (content.last.type === '=')
       content.pop()
+
+    if (content.last.type === 'identifier')
+      content.last.type = 'function'
+
     content.push('param-start', '(')
     return true
   }
