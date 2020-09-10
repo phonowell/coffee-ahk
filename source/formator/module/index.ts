@@ -1,14 +1,19 @@
-import array from './array'
-import _break from './break'
-import comment from './comment'
-import _function from './function'
-import _if from './if'
-import indent from './indent'
-import indentifier from './identifier'
-import number from './number'
-import object from './object'
-import punctuation from './punctuation'
-import string from './string'
+import $alias from './alias'
+import $array from './array'
+import $newLine from './new-line'
+import $comment from './comment'
+import $forbidden from './forbidden'
+import $function from './function'
+import $if from './if'
+import $indent from './indent'
+import $indentifier from './identifier'
+import $key from './key'
+import $number from './number'
+import $object from './object'
+import $operator from './operator'
+import $punctuation from './punctuation'
+import $string from './string'
+import $while from './while'
 
 // interface
 
@@ -17,17 +22,22 @@ import { Context } from '../type'
 // variable
 
 const map = {
-  array,
-  break: _break,
-  comment,
-  function: _function,
-  if: _if,
-  indent,
-  indentifier,
-  number,
-  object,
-  punctuation,
-  string
+  'new-line': $newLine,
+  alias: $alias,
+  array: $array,
+  comment: $comment,
+  forbidden: $forbidden,
+  function: $function,
+  if: $if,
+  indent: $indent,
+  indentifier: $indentifier,
+  key: $key,
+  number: $number,
+  object: $object,
+  operator: $operator,
+  punctuation: $punctuation,
+  string: $string,
+  while: $while
 } as const
 
 // function

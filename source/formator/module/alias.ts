@@ -10,18 +10,19 @@ function main(
 
   const { content, type } = ctx
 
-  if (type === '=') {
-    content.push('=', ' := ')
+  if (type === '@') {
+    content
+      .push('this')
+      .push('.')
     return true
   }
 
-  if (type === ',') {
-    content.push(',', ', ')
-    return true
-  }
-
-  if (type === ':') {
-    content.push(':', ': ')
+  if (type === '::') {
+    if (content.last.type === '.') content.pop()
+    content
+      .push('.')
+      .push('prototype')
+      .push('.')
     return true
   }
 

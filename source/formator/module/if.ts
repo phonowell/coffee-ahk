@@ -8,21 +8,24 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cacheBlock, listResult, raw,type } = ctx
+  const { cache, content, type, value } = ctx
 
   if (type === 'if') {
-    cacheBlock.push('if')
-    listResult.push(
-      raw[1] === 'if' // if | unless
-        ? 'if ('
-        : 'if !('
-    )
+    cache.push('if')
+    content
+      .push('if', 'if ')
+      .push(
+        '(',
+        value === 'if' // if | unless
+          ? '('
+          : '!('
+      )
     return true
   }
 
   if (type === 'else') {
-    cacheBlock.push('else')
-    listResult.push(' else ')
+    cache.push('else')
+    content.push('else', ' else ')
     return true
   }
 

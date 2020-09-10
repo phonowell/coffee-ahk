@@ -2,8 +2,9 @@ import $ from 'fire-keeper'
 import _ from 'lodash'
 import coffee from 'coffeescript'
 
+import cache from './class/cache'
+import content from './class/content'
 import format from './module'
-import cacheBlock from './cache/block'
 
 // interface
 
@@ -20,28 +21,22 @@ declare global {
   }
 }
 
-// variable
-
-const listOther = [
-  'index_end',
-  'index_start'
-] as const
-
 // function
 
 function main(
-  content: string
+  cont: string
 ): string {
 
-  const ast = coffee.compile(content, {
+  const ast = coffee.compile(cont, {
     ast: true
   })
 
-  cacheBlock.clear()
+  cache.clear()
+  content.clear()
   const ctx: Context = {
-    cacheBlock,
+    cache,
+    content,
     indent: 0,
-    listResult: [],
     raw: {},
     type: '',
     value: ''
@@ -58,32 +53,36 @@ function main(
     // wrap
     ~function () {
 
-      if (format('indent', ctx)) return
-      if (format('break', ctx)) return
+      const listMethod: readonly (
+        Parameters<typeof format>[0]
+      )[] = [
+        'alias',
+        'array',
+        'forbidden',
+        'function',
+        'if',
+        'indent',
+        'indentifier',
+        'key',
+        'new-line',
+        'number',
+        'object',
+        'operator',
+        'punctuation',
+        'string',
+        'while'
+      ] as const
 
-      if (format('function', ctx)) return
-      if (format('if', ctx)) return
-
-      if (format('punctuation', ctx)) return
-      if (format('indentifier', ctx)) return
-      if (format('number', ctx)) return
-      if (format('string', ctx)) return
-      if (format('array', ctx)) return
-      if (format('object', ctx)) return
-
-      // simple
-      if (listOther.includes(ctx.type as typeof listOther[number])) {
-        ctx.listResult.push(token[1])
-        return
-      }
+      for (const key of listMethod)
+        if (format(key, ctx)) return
     }()
 
     // have to be the last of all
     format('comment', ctx)
   }
 
-  console.log(ctx.listResult)
-  return ctx.listResult.join('')
+  console.log(ctx.content)
+  return ctx.content.render()
 }
 
 // export

@@ -8,22 +8,22 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { listResult, raw, type } = ctx
+  const { content, type, value } = ctx
 
   if (type === 'string') {
-    listResult.push(raw[1])
+    content.push('string', value)
     return true
   }
 
   // "xxx#{xxx}xxx"
 
   if (type === 'interpolation_start') {
-    listResult.push(' . (')
+    content.push('interpolation-start', ' . (')
     return true
   }
 
   if (type === 'interpolation_end') {
-    listResult.push(') . ')
+    content.push('interpolation-end', ') . ')
     return true
   }
 

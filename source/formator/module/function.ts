@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 // interface
 
 import { Context } from '../type'
@@ -10,36 +8,41 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cacheBlock, listResult, type, value } = ctx
+  const { cache, content, type } = ctx
 
   if (type === '->') {
-    if (_.last(listResult) === ' := ') {
-      listResult.pop()
-      listResult.push('(', ')')
+    if (content.last.type === '=') {
+      content.pop()
+      content.push('(', ')')
     }
-    cacheBlock.push('function')
+    cache.push('function')
     return true
   }
 
   if (type === 'param_start') {
-    if (_.last(listResult) === ' := ')
-      listResult.pop()
-    listResult.push(value)
+    if (content.last.type === '=')
+      content.pop()
+    content.push('param-start', '(')
     return true
   }
 
   if (type === 'param_end') {
-    listResult.push(value)
+    content.push('param-end', ')')
     return true
   }
 
-  if (type === 'call_start' || type === 'call_end') {
-    listResult.push(value)
+  if (type === 'call_start') {
+    content.push('(')
+    return true
+  }
+
+  if (type === 'call_end') {
+    content.push(')')
     return true
   }
 
   if (type === 'return') {
-    listResult.push('return ')
+    content.push('return', 'return ')
     return true
   }
 

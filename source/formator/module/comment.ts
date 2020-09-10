@@ -11,17 +11,16 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { listResult, raw } = ctx
+  const { content, raw } = ctx
 
   if (raw.comments) {
     const listComment = _.trim(
       raw.comments[0].content, '\n '
     ).split('\n')
     for (const comment of listComment)
-      listResult.push(
-        '\n' + insertIndent(ctx),
-        `; ${comment}`
-      )
+      content
+        .push('new-line', '\n' + insertIndent(ctx))
+        .push('comment', `; ${comment}`)
     return true
   }
 

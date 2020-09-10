@@ -8,17 +8,18 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cacheBlock, listResult, type, value } = ctx
+  const { cache, content, type } = ctx
 
   if (type === '[') {
-    cacheBlock.push('array')
-    listResult.push(value)
+    cache.push('array')
+    content.push('[')
     return true
   }
 
   if (type === ']') {
-    cacheBlock.pop()
-    listResult.push(value)
+    cache.pop()
+    if (content.last.type === 'new-line' && content.eq(-2).type === '}') content.pop()
+    content.push(']')
     return true
   }
 

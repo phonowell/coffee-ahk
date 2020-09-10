@@ -8,15 +8,20 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { listResult, type, value } = ctx
+  const { content, type, value } = ctx
 
   if (type === 'identifier') {
-    listResult.push(value)
+    content.push('identifier', value)
     return true
   }
 
   if (type === 'property') {
-    listResult.push(value)
+    content.push('property', value)
+    return true
+  }
+
+  if (type === '.') {
+    content.push('.')
     return true
   }
 

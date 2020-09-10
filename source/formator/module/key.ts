@@ -10,18 +10,14 @@ function main(
 
   const { content, type } = ctx
 
-  if (type === '=') {
-    content.push('=', ' := ')
+  if (type === 'index_start') {
+    if (content.last.type === '.') content.pop()
+    content.push('index-start', '[')
     return true
   }
 
-  if (type === ',') {
-    content.push(',', ', ')
-    return true
-  }
-
-  if (type === ':') {
-    content.push(':', ': ')
+  if (type === 'index_end') {
+    content.push('index-end', ']')
     return true
   }
 

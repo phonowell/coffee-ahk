@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { insertIndent } from '../toolkit'
 
 // interface
@@ -11,40 +10,37 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cacheBlock, listResult, raw, type, value } = ctx
+  const { cache, content, raw, type } = ctx
 
   if (type === '{') {
-    cacheBlock.push('object')
+    cache.push('object')
 
     if (raw.generated) {
-      if ((_.last(listResult) as string).startsWith('\n')) {
-        listResult.pop()
-        listResult.push(
-          value,
-          '\n' + insertIndent(ctx)
-        )
+      if (content.last.type === 'new-line') {
+        content.pop()
+        content
+          .push('{')
+          .push('new-line', '\n' + insertIndent(ctx))
         return true
       }
     }
 
-    listResult.push(value)
+    content.push('{')
     return true
   }
 
   if (type === '}') {
-    cacheBlock.pop()
+    cache.pop()
 
     if (raw.generated)
       if (raw.origin && raw.origin[0].toLowerCase() === 'outdent') {
-        // ctx.indent--
-        listResult.push(
-          '\n' + insertIndent(ctx, -1),
-          value
-        )
+        content
+          .push('new-line', '\n' + insertIndent(ctx, -1))
+          .push('}')
         return true
       }
 
-    listResult.push(value)
+    content.push('}')
     return true
   }
 

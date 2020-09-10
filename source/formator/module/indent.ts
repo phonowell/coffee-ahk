@@ -10,35 +10,37 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cacheBlock, listResult, type } = ctx
+  const { cache, content, type } = ctx
 
   if (type === 'indent') {
     ctx.indent++
 
-    const last = cacheBlock.last
+    const last = cache.last
     if (last === 'else')
-      listResult.push('{')
+      content.push('{')
     if (last === 'function')
-      listResult.push(' {')
-    if (last === 'if') {
-      listResult.push(')', ' {')
+      content.push('{', ' {')
+    if (['if', 'while'].includes(last)) {
+      content
+        .push(')')
+        .push('{', ' {')
     }
 
-    listResult.push('\n' + insertIndent(ctx))
+    content.push('new-line', '\n' + insertIndent(ctx))
     return true
   }
 
   if (type === 'outdent') {
     ctx.indent--
-    listResult.push('\n' + insertIndent(ctx))
+    content.push('new-line', '\n' + insertIndent(ctx))
 
-    if (!cacheBlock.last) return true
+    if (!cache.last) return true
 
-    if (['array', 'object'].includes(cacheBlock.last))
+    if (['array', 'object'].includes(cache.last))
       return true
 
-    cacheBlock.pop()
-    listResult.push('}')
+    cache.pop()
+    content.push('}')
     return true
   }
 

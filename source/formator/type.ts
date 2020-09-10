@@ -1,12 +1,13 @@
-import cacheBlock from './cache/block'
+import cache from './class/cache'
+import content from './class/content'
 
 export type Context = {
-  cacheBlock: typeof cacheBlock
+  cache: typeof cache
+  content: typeof content
   indent: number
-  listResult: (string | number)[]
   raw: Token
   type: string
-  value: string | number
+  value: string
 }
 
 export type Token = {

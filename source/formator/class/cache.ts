@@ -12,34 +12,36 @@ const listRule = [
   'else',
   'function',
   'if',
-  'object'
+  'object',
+  'while'
 ] as const
 
 // function
 
-class CacheBlock {
+class Cache {
 
-  private cache: Item[] = []
+  private list: Item[] = []
 
   get last(): Item {
-    return _.last(this.cache) || ''
+    return _.last(this.list) || ''
   }
 
   clear(): void {
-    this.cache = []
+    this.list = []
   }
 
   pop(): Item {
-    return this.cache.pop() || ''
+    return this.list.pop() || ''
   }
 
   push(
     name: Item
   ): void {
-    if (!name) throw new Error('cacheBlock.push: name is empty')
-    this.cache.push(name)
+
+    if (!name) throw new Error('cache.push: name is empty')
+    this.list.push(name)
   }
 }
 
 // export
-export default new CacheBlock()
+export default new Cache()
