@@ -10,13 +10,8 @@ function main(
 
   const { content, type, value } = ctx
 
-  if (type === 'number') {
-    content.push('number', value)
-    return true
-  }
-
-  if (type === 'compare') {
-    content.push('compare', ` ${value} `)
+  if (type === 'js') {
+    content.push('origin', value)
     return true
   }
 

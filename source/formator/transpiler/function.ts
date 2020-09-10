@@ -14,10 +14,6 @@ function main(
     if (content.last.type === '=') {
       content.pop()
 
-      const { last } = content
-      if (last.type === 'identifier')
-        last.type = 'function'
-
       content
         .push('param-start', '(')
         .push('param-end', ')')
@@ -30,9 +26,6 @@ function main(
 
     if (content.last.type === '=')
       content.pop()
-
-    if (content.last.type === 'identifier')
-      content.last.type = 'function'
 
     content.push('param-start', '(')
     return true

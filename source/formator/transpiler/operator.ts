@@ -8,7 +8,7 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { content, type } = ctx
+  const { content, type, value } = ctx
 
   if (type === '+') {
     content.push('+', ' + ')
@@ -27,6 +27,11 @@ function main(
 
   if (type === '--') {
     content.push('--')
+    return true
+  }
+
+  if (type === 'compare') {
+    content.push('compare', ` ${value} `)
     return true
   }
 

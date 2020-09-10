@@ -23,7 +23,7 @@
     "noUnusedParameters": true,
     "paths": {
       "@/*": [
-        "src/*"
+        "source/*"
       ]
     },
     "removeComments": true,
@@ -35,8 +35,7 @@
     "strictPropertyInitialization": true,
     "target": "esnext",
     "types": [
-      "node",
-      "webpack-env"
+      "node"
     ]
   },
   "exclude": [

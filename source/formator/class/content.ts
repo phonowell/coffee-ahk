@@ -4,7 +4,7 @@ import _ from 'lodash'
 
 type Type = typeof listType[number]
 
-type Value = string | number
+type Value = string
 
 type Item = {
   type: Type
@@ -48,6 +48,7 @@ const listType = [
   'interpolation-start',
   'new-line',
   'number',
+  'origin',
   'param-end',
   'param-start',
   'property',
@@ -81,6 +82,10 @@ class Content {
     this.list = []
   }
 
+  clone(): Content['list'] {
+    return [...this.list]
+  }
+
   eq(
     n: number
   ): Item {
@@ -94,14 +99,17 @@ class Content {
   }
 
   push(type: Type): this
-  push(type: Type, value: Value): this
+  push(type: Type, value: Value | number): this
   push(
     type: Type,
-    value?: Value
+    value?: Value | number
   ): this {
 
     if (typeof value !== 'undefined')
-      this.list.push({ type, value })
+      this.list.push({
+        type,
+        value: value.toString()
+      })
     else
       this.list.push({
         type,
@@ -112,11 +120,13 @@ class Content {
 
   render(): string {
     return this.list
-      .map(it =>
-        it.type === 'new-line'
-          ? '\n' + _.repeat(' ', (it.value as number) * 2)
-          : it.value
-      )
+      .map(it => {
+        if (it.type === 'comment')
+          return `; ${it.value}`
+        if (it.type === 'new-line')
+          return '\n' + _.repeat(' ', parseInt(it.value) * 2)
+        return it.value
+      })
       .join('')
   }
 
@@ -125,14 +135,17 @@ class Content {
   }
 
   unshift(type: Type): this
-  unshift(type: Type, value: Value): this
+  unshift(type: Type, value: Value | number): this
   unshift(
     type: Type,
-    value?: Value
+    value?: Value | number
   ): this {
 
     if (typeof value !== 'undefined')
-      this.list.unshift({ type, value })
+      this.list.unshift({
+        type,
+        value: value.toString()
+      })
     else
       this.list.unshift({
         type,

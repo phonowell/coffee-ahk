@@ -10,6 +10,7 @@ import $indentifier from './identifier'
 import $key from './key'
 import $number from './number'
 import $object from './object'
+import $origin from './origin'
 import $operator from './operator'
 import $punctuation from './punctuation'
 import $string from './string'
@@ -34,6 +35,7 @@ const map = {
   key: $key,
   number: $number,
   object: $object,
+  origin: $origin,
   operator: $operator,
   punctuation: $punctuation,
   string: $string,
@@ -43,11 +45,17 @@ const map = {
 // function
 
 function main(
-  name: keyof typeof map,
   ctx: Context
-): boolean {
+): void {
 
-  return map[name](ctx)
+  const listMethod = Object.keys(map)
+
+  for (const key of listMethod) {
+    if (key === 'comment') continue
+    if (map[key](ctx)) break
+  }
+
+  map.comment(ctx)
 }
 
 // export

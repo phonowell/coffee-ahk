@@ -33,6 +33,8 @@ class Storage {
     name: string
   ): this {
 
+    if (this.has(type, name)) return this
+
     if (type === 'function')
       this.listFunction.push(name)
     else if (type === 'variable')

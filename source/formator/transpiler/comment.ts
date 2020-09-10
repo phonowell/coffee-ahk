@@ -19,7 +19,7 @@ function main(
     for (const comment of listComment)
       content
         .push('new-line', ctx.indent)
-        .push('comment', `; ${comment}`)
+        .push('comment', comment)
     return true
   }
 
