@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { insertIndent } from '../fn'
+import { insertIndent } from '../toolkit'
 
 // interface
 
@@ -18,7 +18,10 @@ function main(
       raw.comments[0].content, '\n '
     ).split('\n')
     for (const comment of listComment)
-      listResult.push(`\n${insertIndent(ctx)}; ${comment}`)
+      listResult.push(
+        '\n' + insertIndent(ctx),
+        `; ${comment}`
+      )
     return true
   }
 

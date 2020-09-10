@@ -8,15 +8,17 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { listResult, type } = ctx
+  const { cacheBlock, listResult, type, value } = ctx
 
   if (type === '[') {
-    listResult.push('[')
+    cacheBlock.push('array')
+    listResult.push(value)
     return true
   }
 
   if (type === ']') {
-    listResult.push(']')
+    cacheBlock.pop()
+    listResult.push(value)
     return true
   }
 

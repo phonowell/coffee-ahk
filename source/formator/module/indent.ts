@@ -1,4 +1,4 @@
-import { insertIndent } from '../fn'
+import { insertIndent } from '../toolkit'
 
 // interface
 
@@ -21,18 +21,24 @@ function main(
     if (last === 'function')
       listResult.push(' {')
     if (last === 'if') {
-      listResult.push(')')
-      listResult.push(' {')
+      listResult.push(')', ' {')
     }
 
-    listResult.push(`\n${insertIndent(ctx)}`)
+    listResult.push('\n' + insertIndent(ctx))
     return true
   }
 
   if (type === 'outdent') {
     ctx.indent--
-    if (cacheBlock.validate(cacheBlock.pop()))
-      listResult.push(`\n${insertIndent(ctx)}}`)
+    listResult.push('\n' + insertIndent(ctx))
+
+    if (!cacheBlock.last) return true
+
+    if (['array', 'object'].includes(cacheBlock.last))
+      return true
+
+    cacheBlock.pop()
+    listResult.push('}')
     return true
   }
 

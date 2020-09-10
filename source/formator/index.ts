@@ -2,9 +2,7 @@ import $ from 'fire-keeper'
 import _ from 'lodash'
 import coffee from 'coffeescript'
 
-import translate from './translator'
-
-import cacheArray from './cache/array'
+import format from './module'
 import cacheBlock from './cache/block'
 
 // interface
@@ -26,8 +24,7 @@ declare global {
 
 const listOther = [
   'index_end',
-  'index_start',
-  'terminator'
+  'index_start'
 ] as const
 
 // function
@@ -42,32 +39,37 @@ function main(
 
   cacheBlock.clear()
   const ctx: Context = {
-    cacheArray,
     cacheBlock,
     indent: 0,
     listResult: [],
     raw: {},
-    type: ''
+    type: '',
+    value: ''
   }
 
   for (const token of ast.tokens) {
 
     ctx.raw = token
+    ctx.raw[2] = undefined
     ctx.type = token[0].toLowerCase()
+    ctx.value = token[1].toString()
     $.i(ctx.raw)
 
     // wrap
     ~function () {
 
-      if (translate('indent', ctx)) return
+      if (format('indent', ctx)) return
+      if (format('break', ctx)) return
 
-      if (translate('function', ctx)) return
-      if (translate('if', ctx)) return
+      if (format('function', ctx)) return
+      if (format('if', ctx)) return
 
-      if (translate('indentifier', ctx)) return
-      if (translate('array', ctx)) return
-      if (translate('number', ctx)) return
-      if (translate('string', ctx)) return
+      if (format('punctuation', ctx)) return
+      if (format('indentifier', ctx)) return
+      if (format('number', ctx)) return
+      if (format('string', ctx)) return
+      if (format('array', ctx)) return
+      if (format('object', ctx)) return
 
       // simple
       if (listOther.includes(ctx.type as typeof listOther[number])) {
@@ -76,9 +78,11 @@ function main(
       }
     }()
 
-    translate('comment', ctx)
+    // have to be the last of all
+    format('comment', ctx)
   }
 
+  console.log(ctx.listResult)
   return ctx.listResult.join('')
 }
 

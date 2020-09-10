@@ -8,15 +8,15 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { listResult, raw, type } = ctx
+  const { listResult, type, value } = ctx
 
   if (type === 'number') {
-    listResult.push(raw[1])
+    listResult.push(value)
     return true
   }
 
   if (type === 'compare') {
-    listResult.push(` ${raw[1]} `)
+    listResult.push(` ${value} `)
     return true
   }
 

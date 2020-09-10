@@ -1,2 +1,2 @@
-if a == 1
-  a = [1, 2, 3]
+for a in b
+  b a

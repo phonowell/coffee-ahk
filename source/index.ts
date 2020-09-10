@@ -2,8 +2,7 @@ import $ from 'fire-keeper'
 // import iconv from 'iconv-lite'
 
 import { read_ } from './file'
-import format from './prettier'
-// import transpile_ from './transpiler'
+import format from './formator'
 
 // interface
 
