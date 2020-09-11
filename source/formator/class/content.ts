@@ -7,6 +7,7 @@ type Type = typeof listType[number]
 type Value = string
 
 type Item = {
+  comment?: string[]
   type: Type
   value: Value
 }
@@ -21,20 +22,18 @@ const itemEmpty: Item = {
 const listType = [
   '(',
   ')',
-  '+',
   '++',
   ',',
-  '-',
   '--',
   '.',
   ':',
   '=',
   '[',
   ']',
+  'boolean',
   'break',
   'call-end',
   'call-start',
-  'comment',
   'compare',
   'continue',
   'else',
@@ -46,6 +45,8 @@ const listType = [
   'index-start',
   'interpolation-end',
   'interpolation-start',
+  'math',
+  'negative',
   'new-line',
   'number',
   'origin',
@@ -65,10 +66,7 @@ const listType = [
 
 class Content {
 
-  private list: {
-    type: Type,
-    value: Value
-  }[] = []
+  private list: Item[] = []
 
   get last(): Item {
     return this.eq(-1)
@@ -91,7 +89,7 @@ class Content {
   ): Item {
     return n >= 0
       ? this.list[n]
-      : this.list[this.list.length + n]
+      : this.list[this.length + n]
   }
 
   pop(): Item {
@@ -116,18 +114,6 @@ class Content {
         value: type
       })
     return this
-  }
-
-  render(): string {
-    return this.list
-      .map(it => {
-        if (it.type === 'comment')
-          return `; ${it.value}`
-        if (it.type === 'new-line')
-          return '\n' + _.repeat(' ', parseInt(it.value) * 2)
-        return it.value
-      })
-      .join('')
   }
 
   shift(): Item {

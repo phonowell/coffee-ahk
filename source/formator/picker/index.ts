@@ -15,11 +15,11 @@ const map = {
 // function
 
 function main(
-  name: keyof typeof map,
   ctx: Context
 ): void {
 
-  map[name](ctx)
+  for (const key of Object.keys(map))
+    map[key](ctx)
 }
 
 // export

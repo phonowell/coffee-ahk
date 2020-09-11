@@ -8,15 +8,41 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { content, type, value } = ctx
+  const { content, raw, type, value } = ctx
 
   if (type === '+') {
-    content.push('+', ' + ')
+
+    if (!raw.spaced) {
+
+      const { last } = content
+
+      if (last.type === 'math' || last.type === 'negative') {
+        if (last.type === 'negative')
+          last.type = 'math'
+        content.push('negative', '+')
+        return true
+      }
+    }
+
+    content.push('math', '+')
     return true
   }
 
   if (type === '-') {
-    content.push('-', ' - ')
+
+    if (!raw.spaced) {
+
+      const { last } = content
+
+      if (last.type === 'math' || last.type === 'negative') {
+        if (last.type === 'negative')
+          last.type = 'math'
+        content.push('negative', '-')
+        return true
+      }
+    }
+
+    content.push('math', '-')
     return true
   }
 
@@ -31,7 +57,12 @@ function main(
   }
 
   if (type === 'compare') {
-    content.push('compare', ` ${value} `)
+    content.push('compare', value)
+    return true
+  }
+
+  if (type === 'math') {
+    content.push('math', value)
     return true
   }
 

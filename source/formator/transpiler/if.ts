@@ -13,7 +13,7 @@ function main(
   if (type === 'if') {
     cache.push('if')
     content
-      .push('if', 'if ')
+      .push('if')
       .push(
         '(',
         value === 'if' // if | unless
@@ -25,7 +25,7 @@ function main(
 
   if (type === 'else') {
     cache.push('else')
-    content.push('else', ' else ')
+    content.push('else')
     return true
   }
 

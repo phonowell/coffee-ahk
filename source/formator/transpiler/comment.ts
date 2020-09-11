@@ -13,13 +13,17 @@ function main(
   const { content, raw } = ctx
 
   if (raw.comments) {
-    const listComment = _.trim(
-      raw.comments[0].content, '\n '
-    ).split('\n')
-    for (const comment of listComment)
-      content
-        .push('new-line', ctx.indent)
-        .push('comment', comment)
+
+    const listComment: string[] = []
+    for (const comment of raw.comments) {
+      _.trim(
+        comment.content, '\n '
+      )
+        .split('\n')
+        .forEach(comm => listComment.push(comm))
+    }
+
+    content.last.comment = listComment
     return true
   }
 

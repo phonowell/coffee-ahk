@@ -8,7 +8,7 @@ function main(
   ctx: Context
 ): void {
 
-  const { content, storage } = ctx
+  const { content } = ctx
 
   content.clone().forEach((it, i) => {
 
@@ -20,8 +20,6 @@ function main(
     const _prev = content.eq(i - 2)
     if (!_prev || (_prev.type === 'new-line' && _prev.value === '0'))
       _it.value = `global ${_it.value}`
-
-    storage.push('variable', _it.value)
   })
 }
 

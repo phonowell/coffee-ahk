@@ -1,5 +1,7 @@
 import $alias from './alias'
 import $array from './array'
+import $boolean from './boolean'
+import $bracket from './bracket'
 import $newLine from './new-line'
 import $comment from './comment'
 import $forbidden from './forbidden'
@@ -26,6 +28,8 @@ const map = {
   'new-line': $newLine,
   alias: $alias,
   array: $array,
+  boolean: $boolean,
+  bracket: $bracket,
   comment: $comment,
   forbidden: $forbidden,
   function: $function,
@@ -48,9 +52,7 @@ function main(
   ctx: Context
 ): void {
 
-  const listMethod = Object.keys(map)
-
-  for (const key of listMethod) {
+  for (const key of Object.keys(map)) {
     if (key === 'comment') continue
     if (map[key](ctx)) break
   }

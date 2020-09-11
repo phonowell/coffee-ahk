@@ -13,7 +13,7 @@ function main(
   if (type === 'while') {
     cache.push('while')
     content
-      .push('while', 'while ')
+      .push('while')
       .push('(')
     return true
   }

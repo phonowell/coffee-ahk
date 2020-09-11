@@ -10,18 +10,8 @@ function main(
 
   const { content, type } = ctx
 
-  if (type === '=') {
-    content.push('=', ':=')
-    return true
-  }
-
-  if (type === ',') {
-    content.push(',')
-    return true
-  }
-
-  if (type === ':') {
-    content.push(':')
+  if (type === '(' || type === ')') {
+    content.push(type)
     return true
   }
 

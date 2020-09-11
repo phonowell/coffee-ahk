@@ -17,11 +17,11 @@ function main(
     if (last === 'else')
       content.push('{')
     if (last === 'function')
-      content.push('{', ' {')
+      content.push('{')
     if (['if', 'while'].includes(last)) {
       content
         .push(')')
-        .push('{', ' {')
+        .push('{')
     }
 
     content.push('new-line', ctx.indent)
