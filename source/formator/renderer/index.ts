@@ -17,10 +17,12 @@ const map = {
   'math': $spaceAround,
   'new-line': $newLine,
   '{': $blockStart,
+  and: $spaceAround,
   compare: $spaceAround,
   else: $spaceAround,
   if: $spaceBehind,
   negative: $negative,
+  or: $spaceAround,
   return: $commaLike,
   while: $spaceBehind
 } as const

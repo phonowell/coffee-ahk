@@ -56,13 +56,33 @@ function main(
     return true
   }
 
+  if (type === '**') {
+    content.push('math', '**')
+    return true
+  }
+
+  if (type === '&&') {
+    content.push('and', value)
+    return true
+  }
+
   if (type === 'compare') {
     content.push('compare', value)
     return true
   }
 
+  if (type === 'compound_assign') {
+    content.push('math', value)
+    return true
+  }
+
   if (type === 'math') {
     content.push('math', value)
+    return true
+  }
+
+  if (type === '||') {
+    content.push('or', value)
     return true
   }
 
