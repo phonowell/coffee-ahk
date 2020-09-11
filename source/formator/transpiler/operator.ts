@@ -66,6 +66,16 @@ function main(
     return true
   }
 
+  if (type === '||') {
+    content.push('or', value)
+    return true
+  }
+
+  if (type === 'unary' || type === 'unary_math') {
+    content.push('not', '!')
+    return true
+  }
+
   if (type === 'compare') {
     content.push('compare', value)
     return true
@@ -78,11 +88,6 @@ function main(
 
   if (type === 'math') {
     content.push('math', value)
-    return true
-  }
-
-  if (type === '||') {
-    content.push('or', value)
     return true
   }
 

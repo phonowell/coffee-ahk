@@ -12,14 +12,9 @@ function main(
 
   if (type === 'if') {
     cache.push('if')
-    content
-      .push('if')
-      .push(
-        '(',
-        value === 'if' // if | unless
-          ? '('
-          : '!('
-      )
+    content.push('if')
+    if (value === 'unless') content.push('not', '!')
+    content.push('(')
     return true
   }
 

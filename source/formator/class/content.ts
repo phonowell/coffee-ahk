@@ -49,6 +49,7 @@ const listType = [
   'math',
   'negative',
   'new-line',
+  'not',
   'number',
   'or',
   'origin',
