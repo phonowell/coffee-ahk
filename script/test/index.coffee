@@ -1,3 +1,4 @@
-fn =-> a=1
-a = 2
-a=3
+# include include/head
+# include toolkit/*
+
+$.alert $.trim "timestamp is #{$.now()}"

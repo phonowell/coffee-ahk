@@ -1,10 +1,6 @@
 import $ from 'fire-keeper'
-// import iconv from 'iconv-lite'
-
-import { read_ } from './file'
+import { read_, write_ } from './file'
 import format from './formator'
-
-// interface
 
 // function
 
@@ -13,14 +9,7 @@ async function compile_(
 ): Promise<void> {
 
   const content = await read_(source)
-  $.i(format(content))
-
-  // let result = await transpile_(content, option)
-  // result = iconv.encode(result, 'utf8', {
-  //   addBOM: true
-  // }).toString()
-
-  // await write_(source, result)
+  await write_(source, format(content))
 }
 
 async function main_(
