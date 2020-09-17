@@ -13,15 +13,8 @@ function main(
   if (type === '{') {
     cache.push('object')
 
-    if (raw.generated) {
-      if (content.last.type === 'new-line') {
-        content.pop()
-        content
-          .push('{')
-          .push('new-line', ctx.indent)
-        return true
-      }
-    }
+    if (content.last.type === 'new-line' && raw.generated)
+      content.pop()
 
     content.push('{')
     return true
@@ -29,15 +22,6 @@ function main(
 
   if (type === '}') {
     cache.pop()
-
-    if (raw.generated)
-      if (raw.origin && raw.origin[0].toLowerCase() === 'outdent') {
-        content
-          .push('new-line', ctx.indent - 1)
-          .push('}')
-        return true
-      }
-
     content.push('}')
     return true
   }

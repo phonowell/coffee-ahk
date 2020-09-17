@@ -1,3 +1,4 @@
+import $array from './array'
 import $function from './function'
 import $variable from './variable'
 
@@ -8,6 +9,7 @@ import { Context } from '../type'
 // variable
 
 const map = {
+  array: $array,
   function: $function,
   variable: $variable
 } as const

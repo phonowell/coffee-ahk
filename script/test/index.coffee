@@ -1,4 +1,8 @@
-# include include/head
-# include toolkit/*
+a = not 1
 
-$.alert $.trim "timestamp is #{$.now()}"
+class T
+
+  alert: (input) -> `msgbox % input`
+
+t = new T()
+t.alert 1

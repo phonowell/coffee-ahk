@@ -11,6 +11,8 @@ function main(
   const { cache, content, type } = ctx
 
   if (type === 'indent') {
+
+    if(['array','object'].includes(cache.last)) return true
     ctx.indent++
 
     const last = cache.last
@@ -29,13 +31,13 @@ function main(
   }
 
   if (type === 'outdent') {
+
+    if(['array','object'].includes(cache.last)) return true
+
     ctx.indent--
     content.push('new-line', ctx.indent)
 
     if (!cache.last) return true
-
-    if (['array', 'object'].includes(cache.last))
-      return true
 
     cache.pop()
     content.push('}')

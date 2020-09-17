@@ -9,7 +9,9 @@ type Item = typeof listRule[number]
 const listRule = [
   '',
   'array',
+  'class',
   'else',
+  'for',
   'function',
   'if',
   'object',

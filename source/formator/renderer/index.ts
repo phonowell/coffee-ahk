@@ -18,10 +18,12 @@ const map = {
   'new-line': $newLine,
   '{': $blockStart,
   and: $spaceAround,
+  class: $spaceBehind,
   compare: $spaceAround,
   else: $spaceAround,
   if: $spaceBehind,
   negative: $negative,
+  new: $spaceBehind,
   or: $spaceAround,
   return: $commaLike,
   while: $spaceBehind
@@ -83,7 +85,10 @@ function $newLine(
   i: number
 ): string {
   ctx && i
-  return '\n' + _.repeat(' ', parseInt(it.value) * 2)
+  const n = parseInt(it.value)
+  return n >= 0
+    ? '\n' + _.repeat(' ', n * 2)
+    : ''
 }
 
 function $spaceAround(

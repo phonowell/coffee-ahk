@@ -71,7 +71,7 @@ function main(
     return true
   }
 
-  if (type === 'unary' || type === 'unary_math') {
+  if ((type === 'unary' && value === '!') || type === 'unary_math') {
     content.push('not', '!')
     return true
   }
