@@ -18,12 +18,12 @@ function main(
   // "xxx#{xxx}xxx"
 
   if (type === 'interpolation_start') {
-    content.push('interpolation-start', '.')
+    content.push('edge', 'interpolation-start')
     return true
   }
 
   if (type === 'interpolation_end') {
-    content.push('interpolation-end', '.')
+    content.push('edge', 'interpolation-end')
     return true
   }
 

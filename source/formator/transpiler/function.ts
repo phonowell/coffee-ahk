@@ -11,17 +11,17 @@ function main(
   const { cache, content, type } = ctx
 
   if (type === '->') {
-    
-    if (content.last.type === 'param-end') null
+
+    if (content.last.type === 'edge') null
     else if (content.last.type === '=') {
       content.pop()
       content
-        .push('param-start', '(')
-        .push('param-end', ')')
+        .push('edge', 'parameter-start')
+        .push('edge', 'parameter-end')
     } else
       throw new Error("ahk/forbidden: 'anonymous function' is not allowed")
-    
-      cache.push('function')
+
+    cache.push('function')
     return true
   }
 
@@ -30,22 +30,22 @@ function main(
     if (content.last.type === '=')
       content.pop()
 
-    content.push('param-start', '(')
+    content.push('edge', 'parameter-start')
     return true
   }
 
   if (type === 'param_end') {
-    content.push('param-end', ')')
+    content.push('edge', 'parameter-end')
     return true
   }
 
   if (type === 'call_start') {
-    content.push('(')
+    content.push('edge', 'call-start')
     return true
   }
 
   if (type === 'call_end') {
-    content.push(')')
+    content.push('edge', 'call-end')
     return true
   }
 

@@ -13,8 +13,8 @@ function main(
   if (type === 'if') {
     cache.push('if')
     content.push('if')
-    if (value === 'unless') content.push('not', '!')
-    content.push('(')
+    if (value === 'unless') content.push('logical-operator', '!')
+    content.push('edge', 'expression-start')
     return true
   }
 

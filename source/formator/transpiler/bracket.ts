@@ -8,10 +8,10 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { content, type } = ctx
+  const { content, type, value } = ctx
 
   if (type === '(' || type === ')') {
-    content.push(type)
+    content.push('bracket', value)
     return true
   }
 

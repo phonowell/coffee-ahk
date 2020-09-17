@@ -14,7 +14,7 @@ function main(
     cache.push('while')
     content
       .push('while')
-      .push('(')
+      .push('edge', 'expression-start')
     return true
   }
 

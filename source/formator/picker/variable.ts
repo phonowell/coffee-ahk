@@ -12,6 +12,7 @@ function main(
   ctx: Context
 ): void {
 
+  cacheVariable.clear()
   const { content } = ctx
 
   content.clone().forEach((it, i) => {

@@ -12,18 +12,16 @@ function main(
 
   if (type === 'indent') {
 
-    if(['array','object'].includes(cache.last)) return true
+    if (['array', 'object'].includes(cache.last)) return true
     ctx.indent++
 
     const last = cache.last
-    if (last === 'else')
-      content.push('{')
-    if (last === 'function')
-      content.push('{')
+    if (['else', 'function'].includes(last))
+      content.push('edge', 'block-start')
     if (['if', 'while'].includes(last)) {
       content
-        .push(')')
-        .push('{')
+        .push('edge', 'expression-end')
+        .push('edge', 'block-start')
     }
 
     content.push('new-line', ctx.indent)
@@ -32,15 +30,14 @@ function main(
 
   if (type === 'outdent') {
 
-    if(['array','object'].includes(cache.last)) return true
+    if (['array', 'object'].includes(cache.last)) return true
 
     ctx.indent--
-    content.push('new-line', ctx.indent)
 
     if (!cache.last) return true
 
     cache.pop()
-    content.push('}')
+    content.push('edge', 'block-end')
     return true
   }
 

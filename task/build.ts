@@ -21,9 +21,7 @@ async function main_(): Promise<void> {
     await $.remove_(source)
   }
 
-  await parseAsync('./script/test/*.coffee', {
-    bare: true
-  })
+  await parseAsync('./script/test/*.coffee',)
 }
 
 // export

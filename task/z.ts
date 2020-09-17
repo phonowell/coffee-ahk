@@ -4,7 +4,9 @@ import compile_ from '../source'
 // function
 
 async function main_(): Promise<void> {
-  await compile_('./script/test/index.coffee')
+  await compile_('./script/z/index.coffee', {
+    save: true
+  })
 }
 
 // export

@@ -12,12 +12,12 @@ function main(
 
   if (type === 'index_start') {
     if (content.last.type === '.') content.pop()
-    content.push('index-start', '[')
+    content.push('edge', 'index-start')
     return true
   }
 
   if (type === 'index_end') {
-    content.push('index-end', ']')
+    content.push('edge', 'index-end')
     return true
   }
 

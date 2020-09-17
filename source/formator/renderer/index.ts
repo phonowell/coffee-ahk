@@ -8,23 +8,39 @@ type Item = Context['content']['list'][number]
 
 // variable
 
-const map = {
+const mapEdge = {
+  'array-end': ']',
+  'array-start': '[',
+  'block-end': '}',
+  'block-start': '{',
+  'call-end': ')',
+  'call-start': '(',
+  'expression-end': ')',
+  'expression-start': '(',
+  'index-end': ']',
+  'index-start': '[',
+  'interpolation-end': ') . ',
+  'interpolation-start': ' . (',
+  'parameter-end': ')',
+  'parameter-start': '(',
+} as const
+
+
+const mapMethod = {
   ',': $commaLike,
   ':': $commaLike,
   '=': $spaceAround,
-  'interpolation-end': $interpolation,
-  'interpolation-start': $interpolation,
+  'edge': $edge,
+  'logical-operator': $logicalOperator,
   'math': $spaceAround,
   'new-line': $newLine,
   '{': $blockStart,
-  and: $spaceAround,
   class: $spaceBehind,
   compare: $spaceAround,
   else: $spaceAround,
   if: $spaceBehind,
   negative: $negative,
   new: $spaceBehind,
-  or: $spaceAround,
   return: $commaLike,
   while: $spaceBehind
 } as const
@@ -57,15 +73,24 @@ function $commaLike(
   return it.value
 }
 
-function $interpolation(
+function $edge(
   ctx: Context,
   it: Item,
   i: number
 ): string {
   ctx && i
-  return it.type === 'interpolation-start'
-    ? ` ${it.value} (`
-    : `) ${it.value} `
+  return mapEdge[it.value] || it.value
+}
+
+function $logicalOperator(
+  ctx: Context,
+  it: Item,
+  i: number
+): string {
+  ctx && i
+  return ['&&', '||'].includes(it.value)
+    ? ` ${it.value} `
+    : it.value
 }
 
 function $negative(
@@ -144,10 +169,10 @@ function main(
           ...it.comment
         ]
 
-      for (const key of Object.keys(map)) {
+      for (const key of Object.keys(mapMethod)) {
         if (it.type === key)
           return injectComment(
-            map[key](ctx, it, i),
+            mapMethod[key](ctx, it, i),
             ctx, it, i
           )
       }

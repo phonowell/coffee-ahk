@@ -62,17 +62,17 @@ function main(
   }
 
   if (type === '&&') {
-    content.push('and', value)
+    content.push('logical-operator', value)
     return true
   }
 
   if (type === '||') {
-    content.push('or', value)
+    content.push('logical-operator', value)
     return true
   }
 
   if ((type === 'unary' && value === '!') || type === 'unary_math') {
-    content.push('not', '!')
+    content.push('logical-operator', '!')
     return true
   }
 

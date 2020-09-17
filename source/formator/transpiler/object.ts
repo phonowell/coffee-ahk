@@ -16,13 +16,13 @@ function main(
     if (content.last.type === 'new-line' && raw.generated)
       content.pop()
 
-    content.push('{')
+    content.push('bracket', '{')
     return true
   }
 
   if (type === '}') {
     cache.pop()
-    content.push('}')
+    content.push('bracket', '}')
     return true
   }
 

@@ -12,14 +12,13 @@ function main(
 
   if (type === '[') {
     cache.push('array')
-    content.push('[')
+    content.push('edge', 'array-start')
     return true
   }
 
   if (type === ']') {
     cache.pop()
-    if (content.last.type === 'new-line' && content.eq(-2).type === '}') content.pop()
-    content.push(']')
+    content.push('edge', 'array-end')
     return true
   }
 
