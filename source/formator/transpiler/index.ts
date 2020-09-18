@@ -4,6 +4,7 @@ import $boolean from './boolean'
 import $bracket from './bracket'
 import $class from './class'
 import $comment from './comment'
+import $for from './for'
 import $forbidden from './forbidden'
 import $function from './function'
 import $if from './if'
@@ -33,6 +34,7 @@ const map = {
   bracket: $bracket,
   class: $class,
   comment: $comment,
+  for: $for,
   forbidden: $forbidden,
   function: $function,
   if: $if,

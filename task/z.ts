@@ -5,7 +5,8 @@ import compile_ from '../source'
 
 async function main_(): Promise<void> {
   await compile_('./script/z/index.coffee', {
-    save: true
+    save: true,
+    verbose: true
   })
 }
 

@@ -1,4 +1,4 @@
-﻿for __i__, value in list {
+for __i__, value in list {
   value
 }
 for key, value in list {

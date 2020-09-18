@@ -4,7 +4,12 @@ import compile_ from '../source/index'
 // function
 
 async function main_(): Promise<void> {
-  const listSource = await $.source_('./script/test/**/*.coffee')
+
+  const { target } = $.argv() as {
+    target: string
+  }
+
+  const listSource = await $.source_(`./script/test/**/${target || '*'}.coffee`)
   for (const source of listSource) {
 
     const target = source.replace('.coffee', '.ahk')
@@ -12,7 +17,7 @@ async function main_(): Promise<void> {
       .toString()
       .trim()
 
-    const content = (await compile_(source, { verbose: true }))
+    const content = (await compile_(source))
       .trim()
 
     if (content !== contentTarget) {

@@ -16,9 +16,6 @@ function main(
   if (['..', '...'].includes(type))
     throw new Error(`ahk/forbidden: '${type}' is not allowed`)
 
-  if (type === 'for')
-    throw new Error("ahk/forbidden: 'for' is not allowed, use 'while' instead of it")
-
   if (type === 'post_if')
     throw new Error("ahk/forbidden: 'post-if' is not allowed")
 

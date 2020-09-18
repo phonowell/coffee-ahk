@@ -2,7 +2,12 @@ import _ from 'lodash'
 
 // interface
 
-import { Context } from '../type'
+import { Context as _Context } from '../type'
+
+type Context = _Context & {
+  i: number
+  it: Item
+}
 
 type Item = Context['content']['list'][number]
 
@@ -29,44 +34,31 @@ const mapEdge = {
 const mapMethod = {
   ',': $commaLike,
   ':': $commaLike,
-  '=': $spaceAround,
+  '=': ' := ',
   'edge': $edge,
+  'for-in': ' in ',
   'logical-operator': $logicalOperator,
-  'math': $spaceAround,
+  'math': ' ~ ',
   'new-line': $newLine,
-  '{': $blockStart,
-  class: $spaceBehind,
-  compare: $spaceAround,
-  else: $spaceAround,
-  if: $spaceBehind,
+  class: 'class ',
+  compare: ' ~ ',
+  for: 'for ',
+  if: $if,
   negative: $negative,
-  new: $spaceBehind,
+  new: 'new ',
   return: $commaLike,
-  while: $spaceBehind
+  while: 'while '
 } as const
 
 let cacheComment: string[] = []
 
 // function
 
-function $blockStart(
-  ctx: Context,
-  it: Item,
-  i: number
-): string {
-
-  const _prev = ctx.content.eq(i - 1)
-  if (_prev && _prev.value === ')')
-    return ` ${it.value}`
-  return it.value
-}
-
 function $commaLike(
-  ctx: Context,
-  it: Item,
-  i: number
+  ctx: Context
 ): string {
 
+  const { i, it } = ctx
   const _next = ctx.content.eq(i + 1)
   if (_next && _next.type !== 'new-line')
     return `${it.value} `
@@ -74,73 +66,77 @@ function $commaLike(
 }
 
 function $edge(
-  ctx: Context,
-  it: Item,
-  i: number
+  ctx: Context
 ): string {
-  ctx && i
-  return mapEdge[it.value] || it.value
+
+  const { i, it } = ctx
+  const { value } = it
+
+  if (value === 'block-start') {
+
+    const _value = mapEdge[value]
+    const _prev = ctx.content.eq(i - 1)
+
+    if (!_prev) return _value
+
+    if (_prev.type === 'identifier')
+      return ` ${_value}`
+
+    if (['expression-end', 'parameter-end'].includes(_prev.value))
+      return ` ${_value}`
+
+    return _value
+  }
+
+  return mapEdge[value] || value
+}
+
+function $if(
+  ctx: Context
+): string {
+
+  const { value } = ctx.it
+  if (value === 'if') return 'if '
+  if (value === 'else') return ' else '
+  return ''
 }
 
 function $logicalOperator(
-  ctx: Context,
-  it: Item,
-  i: number
+  ctx: Context
 ): string {
-  ctx && i
-  return ['&&', '||'].includes(it.value)
-    ? ` ${it.value} `
-    : it.value
+
+  const { value } = ctx.it
+  return ['&&', '||'].includes(value)
+    ? ` ${value} `
+    : value
 }
 
 function $negative(
-  ctx: Context,
-  it: Item,
-  i: number
+  ctx: Context
 ): string {
-  ctx && i
-  return it.value === '-'
-    ? it.value
+
+  const { value } = ctx.it
+  return value === '-'
+    ? value
     : ''
 }
 
 function $newLine(
-  ctx: Context,
-  it: Item,
-  i: number
+  ctx: Context
 ): string {
-  ctx && i
-  const n = parseInt(it.value)
+
+  const n = parseInt(ctx.it.value)
   return n >= 0
     ? '\n' + _.repeat(' ', n * 2)
     : ''
 }
 
-function $spaceAround(
-  ctx: Context,
-  it: Item,
-  i: number
-): string {
-  ctx && i
-  return ` ${it.value} `
-}
-
-function $spaceBehind(
-  ctx: Context,
-  it: Item,
-  i: number
-): string {
-  ctx && i
-  return `${it.value} `
-}
-
 function injectComment(
   input: string,
-  ctx: Context,
-  it: Item,
-  i: number
+  ctx: Context
 ): string {
-  i
+
+  const { i, it } = ctx
   if (!cacheComment.length) return input
   if (it.type !== 'new-line') return input
 
@@ -149,7 +145,7 @@ function injectComment(
     ? ' ; '
     : '; '
 
-  const newLine = $newLine(ctx, it, i)
+  const newLine = $newLine(ctx)
 
   const output = `${seprator}${cacheComment.join(' ; ')}${newLine}`
   cacheComment = []
@@ -157,11 +153,13 @@ function injectComment(
 }
 
 function main(
-  ctx: Context
+  ctx: _Context
 ): string {
 
   return ctx.content.clone()
     .map((it, i) => {
+
+      const context: Context = { ...ctx, i, it }
 
       if (it.comment)
         cacheComment = [
@@ -170,17 +168,21 @@ function main(
         ]
 
       for (const key of Object.keys(mapMethod)) {
-        if (it.type === key)
-          return injectComment(
-            mapMethod[key](ctx, it, i),
-            ctx, it, i
-          )
-      }
 
-      return injectComment(
-        it.value,
-        ctx, it, i
-      )
+        if (it.type === key) {
+
+          const method = mapMethod[key]
+          let value: string = ''
+
+          if (typeof method === 'string')
+            value = method.replace(/~/g, it.value)
+          else
+            value = method(context)
+
+          return injectComment(value, context)
+        }
+      }
+      return injectComment(it.value, context)
     })
     .join('')
 }

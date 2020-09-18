@@ -13,14 +13,15 @@ function main(
   if (type === 'if') {
     cache.push('if')
     content.push('if')
-    if (value === 'unless') content.push('logical-operator', '!')
+    if (value === 'unless')
+      content.push('logical-operator', '!')
     content.push('edge', 'expression-start')
     return true
   }
 
   if (type === 'else') {
     cache.push('else')
-    content.push('else')
+    content.push('if', 'else')
     return true
   }
 
