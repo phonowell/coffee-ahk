@@ -12,16 +12,16 @@ function main(
 
   if (type === 'if') {
     cache.next = 'if'
-    content.push(ctx, 'if')
+    content.push('if')
     if (value === 'unless')
-      content.push(ctx, 'logical-operator', '!')
-    content.push(ctx, 'edge', 'expression-start')
+      content.push('logical-operator', '!')
+    content.push('edge', 'expression-start')
     return true
   }
 
   if (type === 'else') {
     cache.next = 'else'
-    content.push(ctx, 'if', 'else')
+    content.push('if', 'else')
     return true
   }
 

@@ -165,7 +165,7 @@ function main(
   ctx: _Context
 ): string {
 
-  return ctx.content.clone()
+  return ctx.content.list
     .map((it, i) => {
 
       const context: Context = { ...ctx, i, it }

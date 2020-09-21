@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 // interface
 
 export type Item = typeof listRule[number]
@@ -22,35 +20,36 @@ const listRule = [
 
 class Cache {
 
-  private list: Item[] = []
+  private _list: Item[] = []
   next: Item = ''
 
   get last(): Item {
-    return _.last(this.list) || ''
+    return this.eq(-1)
   }
 
   get length(): number {
-    return this.list.length
+    return this._list.length
   }
 
-  clear(): void {
-    this.list = []
+  get list(): Item[] {
+    return [...this._list]
   }
 
-  clone(): Item[] {
-    return [...this.list]
+  clear(): this {
+    this._list = []
+    return this
   }
 
   eq(
     n: number
   ): Item {
     return n >= 0
-      ? this.list[n]
-      : this.list[this.length + n]
+      ? this._list[n]
+      : this._list[this.length + n]
   }
 
   pop(): Item {
-    return this.list.pop() || ''
+    return this._list.pop() || ''
   }
 
   push(
@@ -60,7 +59,7 @@ class Cache {
     if (!name) throw new Error('cache.push: name is empty')
     if (this.next)
       throw new Error(`cache.push: clear cache.next '${this.next}' at first`)
-    this.list.push(name)
+    this._list.push(name)
   }
 }
 

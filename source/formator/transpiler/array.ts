@@ -12,13 +12,13 @@ function main(
 
   if (type === '[') {
     cache.push('array')
-    content.push(ctx, 'edge', 'array-start')
+    content.push('edge', 'array-start')
     return true
   }
 
   if (type === ']') {
     cache.pop()
-    content.push(ctx, 'edge', 'array-end')
+    content.push('edge', 'array-end')
     return true
   }
 

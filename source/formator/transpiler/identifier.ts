@@ -11,7 +11,7 @@ function main(
   const { content, type, value } = ctx
 
   if (type === 'identifier') {
-    content.push(ctx, 'identifier', value)
+    content.push('identifier', value)
     return true
   }
 

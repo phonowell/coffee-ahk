@@ -19,12 +19,12 @@ function main(
       if (last.type === 'math' || last.type === 'negative') {
         if (last.type === 'negative')
           last.type = 'math'
-        content.push(ctx, 'negative', '+')
+        content.push('negative', '+')
         return true
       }
     }
 
-    content.push(ctx, 'math', '+')
+    content.push('math', '+')
     return true
   }
 
@@ -37,57 +37,57 @@ function main(
       if (last.type === 'math' || last.type === 'negative') {
         if (last.type === 'negative')
           last.type = 'math'
-        content.push(ctx, 'negative', '-')
+        content.push('negative', '-')
         return true
       }
     }
 
-    content.push(ctx, 'math', '-')
+    content.push('math', '-')
     return true
   }
 
   if (type === '++') {
-    content.push(ctx, '++')
+    content.push('++')
     return true
   }
 
   if (type === '--') {
-    content.push(ctx, '--')
+    content.push('--')
     return true
   }
 
   if (type === '**') {
-    content.push(ctx, 'math', '**')
+    content.push('math', '**')
     return true
   }
 
   if (type === '&&') {
-    content.push(ctx, 'logical-operator', value)
+    content.push('logical-operator', value)
     return true
   }
 
   if (type === '||') {
-    content.push(ctx, 'logical-operator', value)
+    content.push('logical-operator', value)
     return true
   }
 
   if ((type === 'unary' && value === '!') || type === 'unary_math') {
-    content.push(ctx, 'logical-operator', '!')
+    content.push('logical-operator', '!')
     return true
   }
 
   if (type === 'compare') {
-    content.push(ctx, 'compare', value)
+    content.push('compare', value)
     return true
   }
 
   if (type === 'compound_assign') {
-    content.push(ctx, 'math', value)
+    content.push('math', value)
     return true
   }
 
   if (type === 'math') {
-    content.push(ctx, 'math', value)
+    content.push('math', value)
     return true
   }
 

@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import coffee from 'coffeescript'
 
-import cache from './class/cache'
-import content from './class/content'
+import cache from './module/cache'
+import content from './module/content'
 
 import transpile from './transpiler'
 import pick from './picker'
@@ -61,7 +61,7 @@ function main(
   pick(ctx)
 
   return {
-    ast: content.clone(),
+    ast: content.list,
     content: render(ctx),
     raw: ast.tokens
   }

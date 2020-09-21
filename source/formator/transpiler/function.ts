@@ -14,14 +14,14 @@ function $arrow(
   else if (content.last.type === '=') {
     content.pop()
     content
-      .push(ctx, 'edge', 'parameter-start')
-      .push(ctx, 'edge', 'parameter-end')
+      .push('edge', 'parameter-start')
+      .push('edge', 'parameter-end')
   } else {
     if (cache.last === 'class') {
       content.pop()
       content
-        .push(ctx, 'edge', 'parameter-start')
-        .push(ctx, 'edge', 'parameter-end')
+        .push('edge', 'parameter-start')
+        .push('edge', 'parameter-end')
     } else
       throw new Error("ahk/forbidden: 'anonymous function' is not allowed")
   }
@@ -44,7 +44,7 @@ function $start(
     } else
       throw new Error("ahk/forbidden: 'anonymous function' is not allowed")
 
-  content.push(ctx, 'edge', 'parameter-start')
+  content.push('edge', 'parameter-start')
   return true
 }
 
@@ -57,19 +57,19 @@ function main(
   if (type === '->') return $arrow(ctx)
 
   if (type === 'call_start') {
-    content.push(ctx, 'edge', 'call-start')
+    content.push('edge', 'call-start')
     return true
   }
 
   if (type === 'call_end') {
-    content.push(ctx, 'edge', 'call-end')
+    content.push('edge', 'call-end')
     return true
   }
 
   if (type === 'param_start') return $start(ctx)
 
   if (type === 'param_end') {
-    content.push(ctx, 'edge', 'parameter-end')
+    content.push('edge', 'parameter-end')
     return true
   }
 

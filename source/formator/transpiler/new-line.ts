@@ -15,15 +15,15 @@ function main(
     if (['array', 'object'].includes(cache.last)) {
       if (content.last.type !== ',') {
         if (content.last.type === 'new-line') content.pop()
-        content.push(ctx, ',')
+        content.push(',')
       }
       return true
     }
 
     if (cache.last === 'class')
-      content.push(ctx, ',')
+      content.push(',')
 
-    content.push(ctx, 'new-line', ctx.indent)
+    content.push('new-line', ctx.indent)
     return true
   }
 

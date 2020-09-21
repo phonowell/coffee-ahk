@@ -11,21 +11,21 @@ function main(
   const { cache, content, type } = ctx
 
   if (type === '=') {
-    content.push(ctx, '=', ':=')
+    content.push('=', ':=')
     return true
   }
 
   if (type === ',') {
-    content.push(ctx, ',')
+    content.push(',')
     return true
   }
 
   if (type === ':') {
     if (cache.last === 'class') {
-      content.push(ctx, '=')
+      content.push('=')
       return true
     }
-    content.push(ctx, ':')
+    content.push(':')
     return true
   }
 

@@ -15,7 +15,7 @@ function main(
   cacheVariable.clear()
   const { content } = ctx
 
-  content.clone().forEach((it, i) => {
+  content.list.forEach((it, i) => {
 
     if (it.type !== '=') return
 

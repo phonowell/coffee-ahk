@@ -1,5 +1,5 @@
-import cache from './class/cache'
-import content from './class/content'
+import cache from './module/cache'
+import content from './module/content'
 
 export type Context = {
   cache: typeof cache

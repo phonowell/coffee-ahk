@@ -10,7 +10,7 @@ function main(
 
   const { content } = ctx
 
-  content.clone().forEach((it, i) => {
+  content.list.forEach((it, i) => {
     if (it.type === 'edge' && it.value === 'index-start') {
       const _next = content.eq(i + 1)
       if (_next.type === 'number' && _next.value === '0') {

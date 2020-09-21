@@ -12,7 +12,7 @@ function main(
 
   if (type === 'class') {
     cache.next = 'class'
-    content.push(ctx, 'class')
+    content.push('class')
     return true
   }
 

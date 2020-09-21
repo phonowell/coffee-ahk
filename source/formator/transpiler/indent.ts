@@ -17,24 +17,24 @@ function main(
 
     const last = cache.last
     if (['for', 'function'].includes(last))
-      content.push(ctx, 'edge', 'block-start')
+      content.push('edge', 'block-start')
 
     if (['class', 'else'].includes(cache.next)) {
       const _next = cache.next
       cache.next = ''
       cache.push(_next)
-      content.push(ctx, 'edge', 'block-start')
+      content.push('edge', 'block-start')
     }
 
     if (['if', 'while'].includes(cache.next)) {
-      content.push(ctx, 'edge', 'expression-end')
+      content.push('edge', 'expression-end')
       const _next = cache.next
       cache.next = ''
       cache.push(_next)
-      content.push(ctx, 'edge', 'block-start')
+      content.push('edge', 'block-start')
     }
 
-    content.push(ctx, 'new-line', ctx.indent)
+    content.push('new-line', ctx.indent)
     return true
   }
 
@@ -46,8 +46,8 @@ function main(
     if (!cache.length) return true
 
     content
-      .push(ctx, 'new-line', ctx.indent)
-      .push(ctx, 'edge', 'block-end')
+      .push('new-line', ctx.indent)
+      .push('edge', 'block-end')
 
     cache.pop()
     return true

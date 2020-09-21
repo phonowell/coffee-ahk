@@ -13,8 +13,8 @@ function main(
   if (type === 'while') {
     cache.next = 'while'
     content
-      .push(ctx, 'while')
-      .push(ctx, 'edge', 'expression-start')
+      .push('while')
+      .push('edge', 'expression-start')
     return true
   }
 

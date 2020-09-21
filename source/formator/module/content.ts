@@ -1,9 +1,8 @@
-import _ from 'lodash'
+import cache from './cache'
 
 // interface
 
 import { Item as Scope } from './cache'
-import { Context } from '../type'
 
 type Type = typeof listType[number]
 type Value = string
@@ -59,82 +58,86 @@ const listType = [
 
 class Content {
 
-  private list: Item[] = []
+  private _list: Item[] = []
 
   get last(): Item {
     return this.eq(-1)
   }
 
   get length(): number {
-    return this.list.length
+    return this._list.length
   }
 
-  clear(): void {
-    this.list = []
+  get list(): Item[] {
+    return [...this._list]
   }
 
-  clone(): Item[] {
-    return [...this.list]
+  clear(): this {
+    this._list = []
+    return this
   }
 
   eq(
     n: number
   ): Item {
     return n >= 0
-      ? this.list[n]
-      : this.list[this.length + n]
+      ? this._list[n]
+      : this._list[this.length + n]
+  }
+
+  load(list: Item[]): this {
+    this._list = list
+    return this
   }
 
   pop(): Item {
-    return this.list.pop() || itemEmpty
+    return this._list.pop() || itemEmpty
   }
 
-  push(ctx: Context, type: Type): this
-  push(ctx: Context, type: Type, value: Value | number): this
+  push(type: Type): this
+  push(type: Type, value: Value | number): this
   push(
-    ctx: Context,
     type: Type,
     value?: Value | number
   ): this {
 
     if (typeof value !== 'undefined')
-      this.list.push({
+      this._list.push({
         type,
         value: value.toString(),
-        scope: ctx.cache.clone()
+        scope: cache.list
       })
     else
-      this.list.push({
+      this._list.push({
         type,
         value: type,
-        scope: ctx.cache.clone()
+        scope: cache.list
       })
     return this
   }
 
   shift(): Item {
-    return this.list.shift() || itemEmpty
+    return this._list.shift() || itemEmpty
   }
 
-  unshift(ctx: Context, type: Type): this
-  unshift(ctx: Context, type: Type, value: Value | number): this
+  unshift(type: Type): this
+  unshift(type: Type, value: Value | number): this
   unshift(
-    ctx: Context,
     type: Type,
     value?: Value | number
   ): this {
 
     if (typeof value !== 'undefined')
-      this.list.unshift({
+      this._list.unshift({
         type,
         value: value.toString(),
-        scope: ctx.cache.clone()
+        scope: cache.list
       })
     else
-      this.list.unshift({
+      this._list.unshift({
         type,
         value: type,
-        scope: ctx.cache.clone()
+        scope: cache.list
       })
     return this
   }

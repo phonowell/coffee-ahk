@@ -18,7 +18,7 @@ function main(
       content.pop()
 
     cache.push('object')
-    content.push(ctx, 'bracket', '{')
+    content.push('bracket', '{')
     return true
   }
 
@@ -26,7 +26,7 @@ function main(
 
     if (cache.last === 'class') return true
 
-    content.push(ctx, 'bracket', '}')
+    content.push('bracket', '}')
     cache.pop()
     return true
   }

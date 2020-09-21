@@ -27,7 +27,7 @@ function main(
       _value = `${pre}${_.repeat('0', parseInt(sub))}`
     }
 
-    content.push(ctx, 'number', _value)
+    content.push('number', _value)
     return true
   }
 

@@ -11,18 +11,18 @@ function main(
   const { content, type, value } = ctx
 
   if (type === 'unary' && value === 'new') {
-    content.push(ctx, 'statement', 'new')
+    content.push('statement', 'new')
     return true
   }
 
   if (type === 'return') {
-    content.push(ctx, 'statement', 'return')
+    content.push('statement', 'return')
     return true
   }
 
   if (type === 'statement')
     if (value === 'break' || value === 'continue') {
-      content.push(ctx, 'statement', value)
+      content.push('statement', value)
       return true
     }
 

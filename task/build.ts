@@ -1,27 +1,24 @@
 import $ from 'fire-keeper'
+import compile_ from '../source'
 
 // function
 
 async function main_(): Promise<void> {
 
-  await $.remove_('./script/**/*.ahk')
-
-  const parseAsync = (await import('../source/index')).default
-
-  await parseAsync([
-    './script/*.coffee',
-    './script/ffxiv/**/index.coffee',
-    './script/other/*.coffee'
-  ])
-
-  for (const source of await $.source_('./script/ffxiv/**/index.ahk')) {
-    const dirname = $.getDirname(source)
-    const basename = $.getBasename(dirname)
-    await $.write_(`${dirname}/${basename}.ahk`, await $.read_(source))
-    await $.remove_(source)
+  type Argv = {
+    target: string
   }
 
-  await parseAsync('./script/test/*.coffee',)
+  const { target }: Argv = $.argv() as Argv
+  if(!target)
+    throw new Error('found no target')
+
+  await $.remove_(`./script/${target}/*.ahk`)
+
+  await compile_(`./script/${target}/index.coffee`, {
+    save: true,
+    verbose: true
+  })
 }
 
 // export
