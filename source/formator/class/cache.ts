@@ -58,7 +58,8 @@ class Cache {
   ): void {
 
     if (!name) throw new Error('cache.push: name is empty')
-    if (this.next) throw new Error('cache.push: clear cache.next at first')
+    if (this.next)
+      throw new Error(`cache.push: clear cache.next '${this.next}' at first`)
     this.list.push(name)
   }
 }

@@ -11,7 +11,7 @@ function main(
   const { cache, content, type } = ctx
 
   if (type === 'class') {
-    cache.push('class')
+    cache.next = 'class'
     content.push(ctx, 'class')
     return true
   }

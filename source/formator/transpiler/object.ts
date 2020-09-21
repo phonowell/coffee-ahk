@@ -12,26 +12,22 @@ function main(
 
   if (type === '{') {
 
-    if (cache.last === 'class') {
-      if (content.last.type === 'new-line') content.pop()
-      content
-        .push(ctx, 'edge', 'block-start')
-        .push(ctx, 'new-line', ctx.indent)
-      return true
-    }
-
-    cache.push('object')
+    if (cache.last === 'class') return true
 
     if (content.last.type === 'new-line' && raw.generated)
       content.pop()
 
+    cache.push('object')
     content.push(ctx, 'bracket', '{')
     return true
   }
 
   if (type === '}') {
-    cache.pop()
+
+    if (cache.last === 'class') return true
+
     content.push(ctx, 'bracket', '}')
+    cache.pop()
     return true
   }
 

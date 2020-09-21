@@ -19,9 +19,10 @@ function main(
     if (['for', 'function'].includes(last))
       content.push(ctx, 'edge', 'block-start')
 
-    if (cache.next === 'else') {
+    if (['class', 'else'].includes(cache.next)) {
+      const _next = cache.next
       cache.next = ''
-      cache.push('else')
+      cache.push(_next)
       content.push(ctx, 'edge', 'block-start')
     }
 
@@ -42,7 +43,7 @@ function main(
     if (['array', 'object'].includes(cache.last)) return true
     ctx.indent--
 
-    if (!cache.last) return true
+    if (!cache.length) return true
 
     content
       .push(ctx, 'new-line', ctx.indent)

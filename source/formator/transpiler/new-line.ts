@@ -20,6 +20,9 @@ function main(
       return true
     }
 
+    if (cache.last === 'class')
+      content.push(ctx, ',')
+
     content.push(ctx, 'new-line', ctx.indent)
     return true
   }

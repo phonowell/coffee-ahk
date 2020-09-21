@@ -1,4 +1,4 @@
-a @
-@a = 1
-a a::
-a::a = 1
+# include ../include/head
+# include ../toolkit/index
+
+$.alert 'test message'

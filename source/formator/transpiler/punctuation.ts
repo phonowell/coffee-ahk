@@ -8,7 +8,7 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { content, type } = ctx
+  const { cache, content, type } = ctx
 
   if (type === '=') {
     content.push(ctx, '=', ':=')
@@ -21,6 +21,10 @@ function main(
   }
 
   if (type === ':') {
+    if (cache.last === 'class') {
+      content.push(ctx, '=')
+      return true
+    }
     content.push(ctx, ':')
     return true
   }
