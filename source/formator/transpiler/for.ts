@@ -12,7 +12,7 @@ function main(
 
   if (type === 'for') {
     cache.push('for')
-    content.push('for')
+    content.push(ctx, 'for')
     return true
   }
 
@@ -33,10 +33,10 @@ function main(
       list.unshift('__i__')
 
     content
-      .push('identifier', list[0])
-      .push(',')
-      .push('identifier', list[1])
-      .push('for-in', value)
+      .push(ctx, 'identifier', list[0])
+      .push(ctx, ',')
+      .push(ctx, 'identifier', list[1])
+      .push(ctx, 'for-in', value)
     return true
   }
 

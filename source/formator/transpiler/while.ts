@@ -8,23 +8,13 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, type, value } = ctx
+  const { cache, content, type } = ctx
 
   if (type === 'while') {
-    cache.push('while')
+    cache.next = 'while'
     content
-      .push('while')
-      .push('edge', 'expression-start')
-    return true
-  }
-
-  if (type === 'statement' && value === 'break') {
-    content.push(value)
-    return true
-  }
-
-  if (type === 'statement' && value === 'continue') {
-    content.push(value)
+      .push(ctx, 'while')
+      .push(ctx, 'edge', 'expression-start')
     return true
   }
 

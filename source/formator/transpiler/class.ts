@@ -8,16 +8,11 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, type, value } = ctx
+  const { cache, content, type } = ctx
 
   if (type === 'class') {
     cache.push('class')
-    content.push('class')
-    return true
-  }
-
-  if (type === 'unary' && value === 'new') {
-    content.push('new')
+    content.push(ctx, 'class')
     return true
   }
 

@@ -11,17 +11,17 @@ function main(
   const { cache, content, type, value } = ctx
 
   if (type === 'if') {
-    cache.push('if')
-    content.push('if')
+    cache.next = 'if'
+    content.push(ctx, 'if')
     if (value === 'unless')
-      content.push('logical-operator', '!')
-    content.push('edge', 'expression-start')
+      content.push(ctx, 'logical-operator', '!')
+    content.push(ctx, 'edge', 'expression-start')
     return true
   }
 
   if (type === 'else') {
-    cache.push('else')
-    content.push('if', 'else')
+    cache.next = 'else'
+    content.push(ctx, 'if', 'else')
     return true
   }
 

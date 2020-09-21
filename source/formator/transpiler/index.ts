@@ -10,13 +10,14 @@ import $function from './function'
 import $if from './if'
 import $indent from './indent'
 import $indentifier from './identifier'
-import $key from './key'
 import $newLine from './new-line'
 import $number from './number'
 import $object from './object'
 import $operator from './operator'
 import $origin from './origin'
+import $property from './property'
 import $punctuation from './punctuation'
+import $statement from './statement'
 import $string from './string'
 import $while from './while'
 
@@ -40,12 +41,13 @@ const map = {
   if: $if,
   indent: $indent,
   indentifier: $indentifier,
-  key: $key,
   number: $number,
   object: $object,
   operator: $operator,
   origin: $origin,
+  property: $property,
   punctuation: $punctuation,
+  statement: $statement,
   string: $string,
   while: $while
 } as const

@@ -11,17 +11,17 @@ function main(
   const { content, type } = ctx
 
   if (type === '=') {
-    content.push('=', ':=')
+    content.push(ctx, '=', ':=')
     return true
   }
 
   if (type === ',') {
-    content.push(',')
+    content.push(ctx, ',')
     return true
   }
 
   if (type === ':') {
-    content.push(':')
+    content.push(ctx, ':')
     return true
   }
 

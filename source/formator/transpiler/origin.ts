@@ -11,7 +11,7 @@ function main(
   const { content, type, value } = ctx
 
   if (type === 'js') {
-    content.push('origin', value)
+    content.push(ctx, 'origin', value)
     return true
   }
 

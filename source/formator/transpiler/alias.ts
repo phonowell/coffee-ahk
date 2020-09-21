@@ -11,18 +11,15 @@ function main(
   const { content, type } = ctx
 
   if (type === '@') {
-    content
-      .push('this')
-      .push('.')
+    content.push(ctx, 'this')
     return true
   }
 
   if (type === '::') {
     if (content.last.type === '.') content.pop()
     content
-      .push('.')
-      .push('prototype')
-      .push('.')
+      .push(ctx, '.')
+      .push(ctx, 'prototype')
     return true
   }
 

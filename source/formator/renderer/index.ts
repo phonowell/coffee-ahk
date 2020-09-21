@@ -45,8 +45,7 @@ const mapMethod = {
   for: 'for ',
   if: $if,
   negative: $negative,
-  new: 'new ',
-  return: $commaLike,
+  statement: $statement,
   while: 'while '
 } as const
 
@@ -129,6 +128,16 @@ function $newLine(
   return n >= 0
     ? '\n' + _.repeat(' ', n * 2)
     : ''
+}
+
+function $statement(
+  ctx: Context
+): string {
+
+  const { value } = ctx.it
+  if (value === 'new') return 'new '
+  if (value === 'return') return $commaLike(ctx)
+  return ctx.it.value
 }
 
 function injectComment(

@@ -2,12 +2,15 @@ import _ from 'lodash'
 
 // interface
 
-type Type = typeof listType[number]
+import { Item as Scope } from './cache'
+import { Context } from '../type'
 
+type Type = typeof listType[number]
 type Value = string
 
 type Item = {
   comment?: string[]
+  scope: Scope[]
   type: Type
   value: Value
 }
@@ -15,6 +18,7 @@ type Item = {
 // variable
 
 const itemEmpty: Item = {
+  scope: [],
   type: 'error',
   value: ''
 }
@@ -28,10 +32,8 @@ const listType = [
   '=',
   'boolean',
   'bracket',
-  'break',
   'class',
   'compare',
-  'continue',
   'edge',
   'error',
   'for',
@@ -42,13 +44,12 @@ const listType = [
   'logical-operator',
   'math',
   'negative',
-  'new',
   'new-line',
   'number',
   'origin',
   'property',
   'prototype',
-  'return',
+  'statement',
   'string',
   'this',
   'while'
@@ -72,7 +73,7 @@ class Content {
     this.list = []
   }
 
-  clone(): Content['list'] {
+  clone(): Item[] {
     return [...this.list]
   }
 
@@ -88,9 +89,10 @@ class Content {
     return this.list.pop() || itemEmpty
   }
 
-  push(type: Type): this
-  push(type: Type, value: Value | number): this
+  push(ctx: Context, type: Type): this
+  push(ctx: Context, type: Type, value: Value | number): this
   push(
+    ctx: Context,
     type: Type,
     value?: Value | number
   ): this {
@@ -98,12 +100,14 @@ class Content {
     if (typeof value !== 'undefined')
       this.list.push({
         type,
-        value: value.toString()
+        value: value.toString(),
+        scope: ctx.cache.clone()
       })
     else
       this.list.push({
         type,
-        value: type
+        value: type,
+        scope: ctx.cache.clone()
       })
     return this
   }
@@ -112,9 +116,10 @@ class Content {
     return this.list.shift() || itemEmpty
   }
 
-  unshift(type: Type): this
-  unshift(type: Type, value: Value | number): this
+  unshift(ctx: Context, type: Type): this
+  unshift(ctx: Context, type: Type, value: Value | number): this
   unshift(
+    ctx: Context,
     type: Type,
     value?: Value | number
   ): this {
@@ -122,12 +127,14 @@ class Content {
     if (typeof value !== 'undefined')
       this.list.unshift({
         type,
-        value: value.toString()
+        value: value.toString(),
+        scope: ctx.cache.clone()
       })
     else
       this.list.unshift({
         type,
-        value: type
+        value: type,
+        scope: ctx.cache.clone()
       })
     return this
   }

@@ -11,7 +11,7 @@ function main(
   const { content, type, value } = ctx
 
   if (type === '(' || type === ')') {
-    content.push('bracket', value)
+    content.push(ctx, 'bracket', value)
     return true
   }
 

@@ -16,15 +16,24 @@ function main(
     ctx.indent++
 
     const last = cache.last
-    if (['else', 'for', 'function'].includes(last))
-      content.push('edge', 'block-start')
-    if (['if', 'while'].includes(last)) {
-      content
-        .push('edge', 'expression-end')
-        .push('edge', 'block-start')
+    if (['for', 'function'].includes(last))
+      content.push(ctx, 'edge', 'block-start')
+
+    if (cache.next === 'else') {
+      cache.next = ''
+      cache.push('else')
+      content.push(ctx, 'edge', 'block-start')
     }
 
-    content.push('new-line', ctx.indent)
+    if (['if', 'while'].includes(cache.next)) {
+      content.push(ctx, 'edge', 'expression-end')
+      const _next = cache.next
+      cache.next = ''
+      cache.push(_next)
+      content.push(ctx, 'edge', 'block-start')
+    }
+
+    content.push(ctx, 'new-line', ctx.indent)
     return true
   }
 
@@ -36,8 +45,8 @@ function main(
     if (!cache.last) return true
 
     content
-      .push('new-line', ctx.indent)
-      .push('edge', 'block-end')
+      .push(ctx, 'new-line', ctx.indent)
+      .push(ctx, 'edge', 'block-end')
 
     cache.pop()
     return true

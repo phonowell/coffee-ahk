@@ -11,7 +11,7 @@ function main(
   const { content, type, value } = ctx
 
   if (type === 'bool') {
-    content.push('boolean', value)
+    content.push(ctx, 'boolean', value)
     return true
   }
 

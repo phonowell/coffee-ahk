@@ -21,13 +21,12 @@ function main(
 
     const _it = content.eq(i - 1)
     if (_it.type !== 'identifier') return
+    if (_it.scope.length) return
+    if (content.eq(i - 2).type !== 'new-line') return
 
-    const _prev = content.eq(i - 2)
-    if (!_prev || (_prev.type === 'new-line' && _prev.value === '0')) {
-      if (cacheVariable.has(_it.value)) return
-      cacheVariable.add(_it.value)
-      _it.value = `global ${_it.value}`
-    }
+    if (cacheVariable.has(_it.value)) return
+    cacheVariable.add(_it.value)
+    _it.value = `global ${_it.value}`
   })
 }
 

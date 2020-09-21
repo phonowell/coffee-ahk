@@ -11,19 +11,19 @@ function main(
   const { content, type, value } = ctx
 
   if (type === 'string') {
-    content.push('string', value)
+    content.push(ctx, 'string', value)
     return true
   }
 
   // "xxx#{xxx}xxx"
 
   if (type === 'interpolation_start') {
-    content.push('edge', 'interpolation-start')
+    content.push(ctx, 'edge', 'interpolation-start')
     return true
   }
 
   if (type === 'interpolation_end') {
-    content.push('edge', 'interpolation-end')
+    content.push(ctx, 'edge', 'interpolation-end')
     return true
   }
 

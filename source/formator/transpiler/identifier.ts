@@ -11,17 +11,7 @@ function main(
   const { content, type, value } = ctx
 
   if (type === 'identifier') {
-    content.push('identifier', value)
-    return true
-  }
-
-  if (type === 'property') {
-    content.push('property', value)
-    return true
-  }
-
-  if (type === '.') {
-    content.push('.')
+    content.push(ctx, 'identifier', value)
     return true
   }
 

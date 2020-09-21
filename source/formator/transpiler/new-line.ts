@@ -15,12 +15,12 @@ function main(
     if (['array', 'object'].includes(cache.last)) {
       if (content.last.type !== ',') {
         if (content.last.type === 'new-line') content.pop()
-        content.push(',')
+        content.push(ctx, ',')
       }
       return true
     }
 
-    content.push('new-line', ctx.indent)
+    content.push(ctx, 'new-line', ctx.indent)
     return true
   }
 

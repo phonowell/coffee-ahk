@@ -1,9 +1,4 @@
-﻿for __i__, value in list {
-  value
-}
-for key, value in list {
-  value
-}
-for __i__, value in map {
-  value
-}
+﻿a(this)
+this.a := 1
+a(a.prototype)
+a.prototype.a := 1
