@@ -12,7 +12,10 @@ interface Choice {
 
 class M {
 
-  async ask_(source: string, target: string): Promise<string> {
+  async ask_(
+    source: string,
+    target: string
+  ): Promise<string> {
 
     const isExisted: [boolean, boolean] = [
       await $.isExisted_(source),
@@ -70,7 +73,27 @@ class M {
     })
   }
 
-  async execute_(): Promise<void> {
+  async load_(): Promise<string[]> {
+
+    $.info().pause()
+    const listSource: string[] = await $.source_('./data/sync/**/*.yaml')
+    const listData: string[][] = []
+    for (const source of listSource)
+      listData.push(await $.read_(source) as string[])
+    $.info().resume()
+
+    let result: string[] = []
+
+    for (const data of listData)
+      result = [
+        ...result,
+        ...data
+      ]
+
+    return _.uniq(result)
+  }
+
+  async main_(): Promise<void> {
 
     const data: string[] = await this.load_()
 
@@ -106,26 +129,6 @@ class M {
     }
   }
 
-  async load_(): Promise<string[]> {
-
-    $.info().pause()
-    const listSource: string[] = await $.source_('./data/sync/**/*.yaml')
-    const listData: string[][] = []
-    for (const source of listSource)
-      listData.push(await $.read_(source) as string[])
-    $.info().resume()
-
-    let result: string[] = []
-
-    for (const data of listData)
-      result = [
-        ...result,
-        ...data
-      ]
-
-    return _.uniq(result)
-  }
-
   async overwrite_(value: string, source: string, target: string): Promise<void> {
 
     if (value === 'export') {
@@ -147,4 +150,4 @@ class M {
 }
 
 // export
-export default async (): Promise<void> => await (new M()).execute_()
+export default async (): Promise<void> => await (new M()).main_()

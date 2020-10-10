@@ -1,0 +1,17 @@
+# folder
+.history
+.idea
+.temp
+.vscode
+data/sync
+secret
+source
+storage
+temp
+# file
+*.coffee
+*.map
+*.md
+.stylintrc
+coffeelint.json
+package-lock.json
