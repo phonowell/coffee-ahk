@@ -27,7 +27,9 @@
     "type": "git",
     "url": "https://github.com/phonowell/coffee-ahk.git"
   },
-  "scripts": {},
+  "scripts": {
+    "alice": "ts-node task/alice"
+  },
   "url": "https://github.com/phonowell/coffee-ahk",
   "version": "0.0.1"
 }
