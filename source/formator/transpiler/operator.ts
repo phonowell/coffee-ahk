@@ -34,7 +34,7 @@ function main(
 
       const { last } = content
 
-      if (last.type === 'math' || last.type === 'negative') {
+      if (!['identifier', 'math'].includes(last.type)) {
         if (last.type === 'negative')
           last.type = 'math'
         content.push('negative', '-')

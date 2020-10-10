@@ -1,4 +1,5 @@
 # include ../include/head
 # include ../toolkit/index
 
-$.alert 'test message'
+fn = -> $.info $.getColor()
+$.setInterval 'fn', 1e3

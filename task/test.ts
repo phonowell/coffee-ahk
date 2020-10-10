@@ -5,9 +5,7 @@ import compile_ from '../source/index'
 
 async function main_(): Promise<void> {
 
-  const { target } = $.argv() as {
-    target: string
-  }
+  const target = pickTarget()
 
   const listSource = await $.source_(`./script/test/**/${target || '*'}.coffee`)
   for (const source of listSource) {
@@ -15,9 +13,11 @@ async function main_(): Promise<void> {
     const target = source.replace('.coffee', '.ahk')
     const contentTarget = ((await $.read_(target) as Buffer) || '')
       .toString()
+      .replace(/\r/g, '')
       .trim()
 
     const content = (await compile_(source))
+      .replace(/\r/g, '')
       .trim()
 
     if (content !== contentTarget) {
@@ -28,6 +28,11 @@ async function main_(): Promise<void> {
     }
   }
   $.info('all test(s) passed!')
+}
+
+function pickTarget(): string {
+  const argv = $.argv()
+  return argv._[1] || argv.target || ''
 }
 
 // export

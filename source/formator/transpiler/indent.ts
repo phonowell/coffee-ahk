@@ -16,8 +16,10 @@ function main(
     ctx.indent++
 
     const last = cache.last
-    if (['for', 'function'].includes(last))
-      content.push('edge', 'block-start')
+    if (['for', 'function'].includes(last)) {
+      if (cache.next !== 'if')
+        content.push('edge', 'block-start')
+    }
 
     if (['class', 'else'].includes(cache.next)) {
       const _next = cache.next

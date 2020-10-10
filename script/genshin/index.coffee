@@ -1,3 +1,6 @@
+# include ../include/head
+# include ../toolkit/index
+
 # function
 
 actionE = -> $.press 'e'

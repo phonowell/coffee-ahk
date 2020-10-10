@@ -11,7 +11,7 @@ function main(
   const { content, type, value } = ctx
 
   if (type === 'string') {
-    content.push('string', value)
+    content.push('string', transAlias(value))
     return true
   }
 
@@ -28,6 +28,18 @@ function main(
   }
 
   return false
+}
+
+function transAlias(
+  input: string
+): string {
+
+  return input
+    .replace(/\%/g, '`%')
+    .replace(/\\b/g, '`b')
+    .replace(/\\n/g, '`n')
+    .replace(/\\r/g, '`r')
+    .replace(/\\t/g, '`t')
 }
 
 // export

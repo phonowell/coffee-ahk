@@ -1,19 +1,13 @@
-import $ from 'fire-keeper'
+// import $ from 'fire-keeper'
+import compile_ from '../source'
 
 // function
 
 async function main_(): Promise<void> {
-  const listSource = await $.source_([
-    './script/test/**/*.coffee',
-    './script/test/**/*.ahk'
-  ])
-  for (const source of listSource) {
-    const content = (await $.read_(source) as Buffer)
-      .toString()
-    const cont = content.trim()
-    if (cont === content) continue
-    await $.write_(source, cont)
-  }
+  await compile_('./script/y/index.coffee', {
+    save: true,
+    verbose: true
+  })
 }
 
 // export

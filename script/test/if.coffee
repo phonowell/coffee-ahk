@@ -17,3 +17,4 @@ if a > 1
     2
 else
   3
+fn = -> unless 1 then 1

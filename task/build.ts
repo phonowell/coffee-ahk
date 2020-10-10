@@ -5,12 +5,8 @@ import compile_ from '../source'
 
 async function main_(): Promise<void> {
 
-  type Argv = {
-    target: string
-  }
-
-  const { target }: Argv = $.argv() as Argv
-  if(!target)
+  const target = pickTarget()
+  if (!target)
     throw new Error('found no target')
 
   await $.remove_(`./script/${target}/*.ahk`)
@@ -19,6 +15,11 @@ async function main_(): Promise<void> {
     save: true,
     verbose: true
   })
+}
+
+function pickTarget(): string {
+  const argv = $.argv()
+  return argv._[1] || argv.target || ''
 }
 
 // export
