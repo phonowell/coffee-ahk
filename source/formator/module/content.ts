@@ -24,11 +24,8 @@ const itemEmpty: Item = {
 
 const listType = [
   '++',
-  ',',
   '--',
   '.',
-  ':',
-  '=',
   'boolean',
   'bracket',
   'class',
@@ -48,9 +45,11 @@ const listType = [
   'origin',
   'property',
   'prototype',
+  'sign',
   'statement',
   'string',
   'this',
+  'void',
   'while'
 ] as const
 
@@ -83,6 +82,16 @@ class Content {
     return n >= 0
       ? this._list[n]
       : this._list[this.length + n]
+  }
+
+  equal(
+    item: Item,
+    type: string,
+    value?: string
+  ): boolean {
+    if (typeof value === 'undefined')
+      return item.type === type
+    return item.type === type && item.value === value
   }
 
   load(list: Item[]): this {

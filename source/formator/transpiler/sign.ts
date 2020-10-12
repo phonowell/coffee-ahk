@@ -10,22 +10,28 @@ function main(
 
   const { cache, content, type } = ctx
 
+  if (type === '...') {
+    if (cache.last !== 'parameter')
+      throw new Error(`ahk/forbidden: '...' is not allowed`)
+    content.push('sign', '...')
+  }
+
   if (type === '=') {
-    content.push('=', ':=')
+    content.push('sign', '=')
     return true
   }
 
   if (type === ',') {
-    content.push(',')
+    content.push('sign', ',')
     return true
   }
 
   if (type === ':') {
     if (cache.last === 'class') {
-      content.push('=')
+      content.push('sign', '=')
       return true
     }
-    content.push(':')
+    content.push('sign', ':')
     return true
   }
 

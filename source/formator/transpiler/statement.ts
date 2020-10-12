@@ -10,13 +10,19 @@ function main(
 
   const { content, type, value } = ctx
 
-  if (type === 'unary' && value === 'new') {
-    content.push('statement', 'new')
+  if (type === 'extends') {
+    content.push('statement', 'extends')
     return true
   }
 
+
   if (type === 'return') {
     content.push('statement', 'return')
+    return true
+  }
+
+  if (type === 'throw') {
+    content.push('statement', 'throw')
     return true
   }
 
@@ -25,6 +31,11 @@ function main(
       content.push('statement', value)
       return true
     }
+
+  if (type === 'unary' && value === 'new') {
+    content.push('statement', 'new')
+    return true
+  }
 
   return false
 }

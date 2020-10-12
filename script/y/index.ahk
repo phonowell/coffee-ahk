@@ -1,3 +1,8 @@
-﻿global a := -1
-global b := 2 - 1
-global c := fn(-1)
+﻿class A {
+  a := 1
+}
+global b := new A()
+b.b() {
+  1
+}
+b.a()

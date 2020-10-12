@@ -11,11 +11,11 @@ function main(
   const { content } = ctx
 
   content.list.forEach((it, i) => {
-    if (it.type === 'edge' && it.value === 'index-start') {
+    if (content.equal(it, 'edge', 'index-start')) {
       const _next = content.eq(i + 1)
-      if (_next.type === 'number' && _next.value === '0') {
+      if (content.equal(_next, 'number', '0')) {
         const _next = content.eq(i + 2)
-        if (_next.type === 'edge' && _next.value === 'index-end')
+        if (content.equal(_next, 'edge', 'index-end'))
           throw new Error("ahk/forbidden: 'Array[0]' is not allowed, Array of ahk is beginning from '1'")
       }
     }

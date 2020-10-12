@@ -16,7 +16,7 @@ import $object from './object'
 import $operator from './operator'
 import $origin from './origin'
 import $property from './property'
-import $punctuation from './punctuation'
+import $sign from './sign'
 import $statement from './statement'
 import $string from './string'
 import $while from './while'
@@ -46,7 +46,7 @@ const map = {
   operator: $operator,
   origin: $origin,
   property: $property,
-  punctuation: $punctuation,
+  sign: $sign,
   statement: $statement,
   string: $string,
   while: $while

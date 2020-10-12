@@ -24,7 +24,7 @@ function main(
     list.push(last.value)
 
     const _last = content.last
-    if (_last.type === ',') {
+    if (content.equal(_last, 'sign', ',')) {
       content.pop()
       list.unshift(content.pop().value)
     }
@@ -34,7 +34,7 @@ function main(
 
     content
       .push('identifier', list[0])
-      .push(',')
+      .push('sign', ',')
       .push('identifier', list[1])
       .push('for-in', value)
     return true

@@ -12,10 +12,10 @@ function main(
 
   if (type === 'terminator' && value === '\n') {
 
-    if (['array', 'object'].includes(cache.last)) {
-      if (content.last.type !== ',') {
+    if (['array', 'call', 'object', 'parameter'].includes(cache.last)) {
+      if (!content.equal(content.last, 'sign', ',')) {
         if (content.last.type === 'new-line') content.pop()
-        content.push(',')
+        content.push('sign', ',')
       }
       return true
     }

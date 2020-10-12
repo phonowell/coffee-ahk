@@ -1,3 +1,7 @@
-a = -1
-b = 2 - 1
-c = fn -1
+class A
+  a: 1
+
+b = new A()
+b.b = -> 1
+
+b.a()

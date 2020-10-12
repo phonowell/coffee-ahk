@@ -2,6 +2,16 @@
 
 import { Context } from '../type'
 
+// variable
+
+const listForbidden = [
+  '..',
+  'catch',
+  'finally',
+  'try',
+  'when'
+] as const
+
 // function
 
 function main(
@@ -13,7 +23,7 @@ function main(
   if (type === '=>')
     throw new Error("ahk/forbidden: '=>' is not allowed, use '->' instead of it")
 
-  if (['..', '...'].includes(type))
+  if (listForbidden.includes(type as typeof listForbidden[number]))
     throw new Error(`ahk/forbidden: '${type}' is not allowed`)
 
   if (type === 'post_if')

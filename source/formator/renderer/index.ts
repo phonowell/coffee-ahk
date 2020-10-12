@@ -32,9 +32,6 @@ const mapEdge = {
 
 
 const mapMethod = {
-  ',': $commaLike,
-  ':': $commaLike,
-  '=': ' := ',
   'edge': $edge,
   'for-in': ' in ',
   'logical-operator': $logicalOperator,
@@ -45,7 +42,9 @@ const mapMethod = {
   for: 'for ',
   if: $if,
   negative: $negative,
+  sign: $sign,
   statement: $statement,
+  void: '',
   while: 'while '
 } as const
 
@@ -130,13 +129,24 @@ function $newLine(
     : ''
 }
 
+function $sign(
+  ctx: Context
+): string {
+
+  const { value } = ctx.it
+  if ([',', ':'].includes(value)) return $commaLike(ctx)
+  if (value === '=') return ' := '
+  if (value === '...') return '*'
+  return value
+}
+
 function $statement(
   ctx: Context
 ): string {
 
   const { value } = ctx.it
-  if (value === 'new') return 'new '
-  if (value === 'return') return $commaLike(ctx)
+  if (value === 'extends') return ' extends '
+  if (['new', 'return', 'throw'].includes(value)) return $commaLike(ctx)
   return ctx.it.value
 }
 

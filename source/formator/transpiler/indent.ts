@@ -12,12 +12,12 @@ function main(
 
   if (type === 'indent') {
 
-    if (['array', 'object'].includes(cache.last)) return true
+    if (['array', 'call', 'object', 'parameter'].includes(cache.last)) return true
     ctx.indent++
 
     const last = cache.last
     if (['for', 'function'].includes(last)) {
-      if (cache.next !== 'if')
+      if (!['else', 'if'].includes(cache.next))
         content.push('edge', 'block-start')
     }
 
@@ -42,7 +42,7 @@ function main(
 
   if (type === 'outdent') {
 
-    if (['array', 'object'].includes(cache.last)) return true
+    if (['array', 'call', 'object', 'parameter'].includes(cache.last)) return true
     ctx.indent--
 
     if (!cache.length) return true

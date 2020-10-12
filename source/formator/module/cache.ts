@@ -7,12 +7,14 @@ export type Item = typeof listRule[number]
 const listRule = [
   '',
   'array',
+  'call',
   'class',
   'else',
   'for',
   'function',
   'if',
   'object',
+  'parameter',
   'while'
 ] as const
 
