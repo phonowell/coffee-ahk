@@ -10,7 +10,7 @@ Just a little toy to code `ahk` in `coffeescript`.
 
   Install. Download and install `git`, `nodejs` & `ahk`
 
-- 克隆项目。在控制台中输入下方内容。
+- 克隆项目，在控制台中输入下方内容。
 
   Clone. Open your shell, and then
 
@@ -36,7 +36,7 @@ npm i
 npm run alice build xxx // 'xxx' is your script's dirname
 ```
 
-- 现在你应该获得了一个`.ahk`文件，跑跑看吧。
+- 现在你应该获得了一个`.ahk`文件，跑跑看。
   
   Run. Now you got a `.ahk` file, run it.
 
@@ -45,6 +45,31 @@ npm run alice build xxx // 'xxx' is your script's dirname
 ```shell
 npm run test
 ```
+
+## Notice
+
+- `ahk`中没有如下类型：
+  - `boolean`: `true`和`false`实际上就是`1`和`0`
+  - `array`: `array`实际上就是`object`
+  - `buffer`, `error`, `date`...
+
+- `ahk`的函数比较弱：
+  - 没有匿名函数
+  - 函数不能直接作为参数（但编译器模拟了一下
+
+- 没有`import`和`export`，暂且使用`# include xxx`凑合一下吧
+
+- 几乎所有的`js`内置函数都是没有的
+
+- 慎用类。相关功能基本都不好使……
+
+- 准备实现但还没有搞完的关键字：
+  - `catch`
+  - `finally`
+  - `switch`
+  - `try`
+
+- `./script/toolkit`是一个内置的工具类，包含了写一个游戏脚本的最基础功能
 
 ## Toolkit
 
