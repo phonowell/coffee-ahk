@@ -1,10 +1,18 @@
 # coffee-ahk
 
+使用`coffeescript`来写`ahk`。
+
+Just a little toy to code `ahk` in `coffeescript`.
+
 ## Usage
 
-- Install. Download and install `git`, `nodejs` & `ahk`
+- 安装`git`、`nodej`和`ahk`。
 
-- Clone. Open your shell, and then
+  Install. Download and install `git`, `nodejs` & `ahk`
+
+- 克隆项目。在控制台中输入下方内容。
+
+  Clone. Open your shell, and then
 
 ```shell
 git clone https://github.com/phonowell/coffee-ahk.git
@@ -12,17 +20,25 @@ cd coffee-ahk
 npm i
 ```
 
-- Create. For example, create a file like `index.ahk` at `./script/xxx`
+- 创建脚本，在`./script`中创建一个文件夹，在其中创建`index.ahk`。
 
-- Code.
+  Create. For example, create a file like `index.ahk` at `./script/xxx`
 
-- Build.
+- 码。
+
+  Code.
+
+- 编译，控制台走起。
+  
+  Build.
 
 ```shell
 npm run alice build xxx // 'xxx' is your script's dirname
 ```
 
-- Run. Now you got a `.ahk` file, run it.
+- 现在你应该获得了一个`.ahk`文件，跑跑看吧。
+  
+  Run. Now you got a `.ahk` file, run it.
 
 ## Test
 
