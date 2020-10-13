@@ -13,6 +13,7 @@ class OtherToolkit extends GetterToolkit
     listKey = []
     _key = $.toLowerCase key
     _key = $.replace _key, ' ', ''
+    _key = $.replace _key, '-', ''
     _list = $.split _key, '+'
     for _it in _list
       listKey.push _it

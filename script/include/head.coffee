@@ -1,5 +1,4 @@
-`
-#KeyHistory, 0
+`#KeyHistory, 0
 #MaxThreads, 20
 #NoEnv
 #Persistent
@@ -13,5 +12,4 @@ SendMode, Event
 SetBatchLines, 100ms
 SetKeyDelay, 0, 50
 SetMouseDelay, 0, 50
-StringCaseSense, On
-`
+StringCaseSense, On`

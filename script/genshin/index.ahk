@@ -1,4 +1,7 @@
-﻿
+﻿if (A_IsAdmin != true) {
+  Run *RunAs "%A_ScriptFullPath%"
+  ExitApp
+}
 #KeyHistory, 0
 #MaxThreads, 20
 #NoEnv
@@ -14,7 +17,6 @@ SetBatchLines, 100ms
 SetKeyDelay, 0, 50
 SetMouseDelay, 0, 50
 StringCaseSense, On
-
 class MathToolkit {
   abs(n) { ; abs(n: number): number
     return Abs(n)
@@ -137,6 +139,7 @@ class OtherToolkit extends GetterToolkit {
     listKey := [] ; format
     _key := $.toLowerCase(key)
     _key := $.replace(_key, " ", "")
+    _key := $.replace(_key, "-", "")
     _list := $.split(_key, "+")
     for __i__, _it in _list {
       listKey.push(_it)
@@ -193,12 +196,14 @@ class OtherToolkit extends GetterToolkit {
   }
 }
 class SetterToolkit extends OtherToolkit {
-  click(input := "") { ; click(input?: string): void
-    if !(input) {
+  click(key := "") { ; click(key?: string): void
+    if !(key) {
       Click
       return
     }
-    Click, % StrReplace input, ":", " "
+    key := $.replace(key, "-", "")
+    key := $.replace(key, ":", " ")
+    Click, % key
   }
   move(point := "", speed := 0) { ; move(point: Point, speed: number = 0): void
     if !(point) {
@@ -214,6 +219,7 @@ class SetterToolkit extends OtherToolkit {
     for __i__, input in listInput {
       _input := $.toLowerCase(input)
       _input := $.replace(_input, " ", "")
+      _input := $.replace(_input, "-", "")
       _list := $.split(_input, "+")
       for __i__, _it in _list {
         listKey.push(_it)
@@ -369,7 +375,7 @@ global $ := new Toolkit()
 actionE() { ; function
   $.press("e")
 }
-autoJump() {
+autoFly() {
   $.clearTimeout("jump")
   jump()
   $.setTimeout("jump", 200)
@@ -377,34 +383,65 @@ autoJump() {
 changeCharacter1() {
   $.clearTimeout("actionE")
   $.press("1")
-  $.setTimeout("actionE", 200)
+  $.setTimeout("actionE", 100)
 }
 changeCharacter2() {
   $.clearTimeout("actionE")
   $.press("2")
-  $.setTimeout("actionE", 200)
+  $.setTimeout("actionE", 100)
 }
 changeCharacter3() {
   $.clearTimeout("actionE")
   $.press("3")
-  $.setTimeout("actionE", 200)
+  $.setTimeout("actionE", 100)
 }
 changeCharacter4() {
   $.clearTimeout("actionE")
   $.press("4")
-  $.setTimeout("actionE", 200)
+  $.setTimeout("actionE", 100)
 }
 changeCharacter5() {
   $.clearTimeout("actionE")
   $.press("5")
-  $.setTimeout("actionE", 200)
+  $.setTimeout("actionE", 100)
+}
+exit() {
+  $.beep()
+  $.exit()
+}
+global stepPick := 0
+fastPick() {
+  switch stepPick {
+    case 0, 1, 2, 3, 4, 5, 6, 7: {
+      $.press("f")
+      $.click("wheel-down:down")
+    }
+    default: {
+      $.click("wheel-down:up")
+      isPicking := false
+      stepPick := 0
+      return
+    }
+  }
+  stepPick++
+  $.setTimeout("fastPick", 100)
+}
+global isPicking := false
+pick() {
+  if (isPicking) {
+    return
+  }
+  isPicking := true
+  fastPick()
 }
 jump() {
   $.press("space")
 }
-$.on("1", "changeCharacter1") ; binding
+$.on("alt + f4", "exit") ; binding
+$.on("1", "changeCharacter1")
 $.on("2", "changeCharacter2")
 $.on("3", "changeCharacter3")
 $.on("4", "changeCharacter4")
 $.on("5", "changeCharacter5")
-$.on("space", "autoJump")
+$.on("space", "autoFly")
+$.on("wheel-down", "pick")

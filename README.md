@@ -114,7 +114,7 @@ type Point = [number, number]
 
 ### setter
 
-#### click(input?: string): void
+#### click(key?: string): void
 
 #### move(point: Point, speed: number = 0): void
 

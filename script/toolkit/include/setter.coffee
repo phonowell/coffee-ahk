@@ -2,12 +2,14 @@
 
 class SetterToolkit extends OtherToolkit
 
-  # click(input?: string): void
-  click: (input = '') ->
-    unless input
-      `Click`
-      `return`
-    `Click, % StrReplace input, ":", " "`
+  # click(key?: string): void
+  click: (key = '') ->
+    unless key
+      Click
+      return
+    key = $.replace key, '-', ''
+    key = $.replace key, ':', ' '
+    `Click, % key`
 
   # move(point: Point, speed: number = 0): void
   move: (point = '', speed = 0) ->
@@ -27,6 +29,7 @@ class SetterToolkit extends OtherToolkit
     for input in listInput
       _input = $.toLowerCase input
       _input = $.replace _input, ' ', ''
+      _input = $.replace _input, '-', ''
       _list = $.split _input, '+'
       for _it in _list
         listKey.push _it
