@@ -8,6 +8,7 @@ const listRule = [
   '',
   'array',
   'call',
+  'case',
   'class',
   'else',
   'for',
@@ -15,6 +16,7 @@ const listRule = [
   'if',
   'object',
   'parameter',
+  'switch',
   'while'
 ] as const
 

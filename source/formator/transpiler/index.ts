@@ -19,6 +19,7 @@ import $property from './property'
 import $sign from './sign'
 import $statement from './statement'
 import $string from './string'
+import $switch from './switch'
 import $while from './while'
 
 // interface
@@ -49,6 +50,7 @@ const map = {
   sign: $sign,
   statement: $statement,
   string: $string,
+  switch: $switch,
   while: $while
 } as const
 

@@ -37,6 +37,7 @@ const mapMethod = {
   'logical-operator': $logicalOperator,
   'math': ' ~ ',
   'new-line': $newLine,
+  case: $case,
   class: 'class ',
   compare: ' ~ ',
   for: 'for ',
@@ -44,6 +45,7 @@ const mapMethod = {
   negative: $negative,
   sign: $sign,
   statement: $statement,
+  switch: 'switch ',
   void: '',
   while: 'while '
 } as const
@@ -51,6 +53,15 @@ const mapMethod = {
 let cacheComment: string[] = []
 
 // function
+
+function $case(
+  ctx: Context
+): string {
+
+  const { value } = ctx.it
+  if (value === 'case') return 'case '
+  return value
+}
 
 function $commaLike(
   ctx: Context
@@ -67,23 +78,18 @@ function $edge(
   ctx: Context
 ): string {
 
-  const { i, it } = ctx
+  const { content, i, it } = ctx
   const { value } = it
 
   if (value === 'block-start') {
 
     const _value = mapEdge[value]
-    const _prev = ctx.content.eq(i - 1)
+    const _prev = content.eq(i - 1)
 
     if (!_prev) return _value
+    if (content.equal(_prev, 'sign', ':')) return _value
 
-    if (_prev.type === 'identifier')
-      return ` ${_value}`
-
-    if (['expression-end', 'parameter-end'].includes(_prev.value))
-      return ` ${_value}`
-
-    return _value
+    return ` ${_value}`
   }
 
   return mapEdge[value] || value
@@ -93,9 +99,15 @@ function $if(
   ctx: Context
 ): string {
 
-  const { value } = ctx.it
-  if (value === 'if') return 'if '
-  if (value === 'else') return ' else '
+  const { content, i, it } = ctx
+
+  if (it.value === 'if') {
+    const _prev = content.eq(i - 1)
+    if (content.equal(_prev, 'if', 'else'))
+      return ' if '
+    else return 'if '
+  }
+  if (it.value === 'else') return ' else'
   return ''
 }
 

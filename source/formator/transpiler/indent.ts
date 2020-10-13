@@ -16,9 +16,12 @@ function main(
     ctx.indent++
 
     const last = cache.last
-    if (['for', 'function'].includes(last)) {
-      if (!['else', 'if'].includes(cache.next))
+    if (['case', 'for', 'function', 'switch'].includes(last)) {
+      if (!['else', 'if'].includes(cache.next)) {
+        if (last === 'case')
+          content.push('sign', ':')
         content.push('edge', 'block-start')
+      }
     }
 
     if (['class', 'else'].includes(cache.next)) {

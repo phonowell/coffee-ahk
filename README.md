@@ -66,7 +66,6 @@ npm run test
 - 准备实现但还没有搞完的关键字：
   - `catch`
   - `finally`
-  - `switch`
   - `try`
 
 - `./script/toolkit`是一个内置的工具类，包含了写一个游戏脚本的最基础功能

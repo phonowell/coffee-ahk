@@ -20,6 +20,13 @@ function main(
   }
 
   if (type === 'else') {
+    if (cache.last === 'switch') {
+      cache.push('case')
+      content
+        .push('new-line', ctx.indent)
+        .push('case', 'default')
+      return true
+    }
     cache.next = 'else'
     content.push('if', 'else')
     return true

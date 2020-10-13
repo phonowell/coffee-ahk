@@ -366,7 +366,7 @@ class Toolkit extends TimerToolkit {
   version := "0.0.1"
 }
 global $ := new Toolkit()
-$.on("win + r:up", "fn")
-fn() {
-  $.press("win + d")
+openNotepad() {
+  $.open("notepad.exe")
 }
+$.on("win + n", "openNotepad")

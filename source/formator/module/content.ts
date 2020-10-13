@@ -28,6 +28,7 @@ const listType = [
   '.',
   'boolean',
   'bracket',
+  'case',
   'class',
   'compare',
   'edge',
@@ -48,6 +49,7 @@ const listType = [
   'sign',
   'statement',
   'string',
+  'switch',
   'this',
   'void',
   'while'
