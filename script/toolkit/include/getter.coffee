@@ -1,6 +1,6 @@
 # include finder
 
-class GetterToolkit extends finderToolkit
+class GetterToolkit extends FinderToolkit
 
   # getColor(point?: Point): number
   getColor: (point = '') ->

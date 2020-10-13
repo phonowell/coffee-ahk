@@ -1,6 +1,8 @@
 for value in list
   value
-for key, value in list
+for value, index in list
   value
 for value of map
+  value
+for key, value of map
   value

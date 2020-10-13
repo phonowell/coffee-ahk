@@ -1,8 +1,4 @@
-﻿class A {
-  a := 1
+﻿hotkey, {lwin}{r}, "fn"
+fn() {
+  msgbox, % 123
 }
-global b := new A()
-b.b() {
-  1
-}
-b.a()

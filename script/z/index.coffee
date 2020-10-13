@@ -1,4 +1,5 @@
 # include ../include/head
 # include ../toolkit/index
 
-$.move()
+$.on 'win + r:up', fn
+fn = -> $.press 'win + d'

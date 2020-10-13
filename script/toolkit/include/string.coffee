@@ -11,6 +11,9 @@ class StringToolkit extends SpeakerToolkit
   replace: (input, searchment, replacement, limit = -1) ->
     return StrReplace input, searchment, replacement, limit
 
+  # split(input: string, delimiter: string): string
+  split: (input, delimiter) -> return StrSplit input, delimiter
+
   # toLowerCase(input: string): string
   toLowerCase: (input) ->
     `StringLower, __Result__, input`
@@ -19,10 +22,15 @@ class StringToolkit extends SpeakerToolkit
   # toString(input: unknown): string
   toString: (input) ->
     type = $.type input
-    if type == 'object'
+    if type == 'array'
+      result = ''
+      for key in input
+        result = "#{result}, #{$.toString key}"
+      return "[#{$.trim result, ' ,'}]"
+    else if type == 'object'
       result = ''
       for key, value of input
-        result = "#{result}, #{key}: #{value}"
+        result = "#{result}, #{key}: #{$.toString value}"
       return "{#{$.trim result, ' ,'}}"
     return input
 

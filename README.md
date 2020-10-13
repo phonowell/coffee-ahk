@@ -1,5 +1,35 @@
 # coffee-ahk
 
+## Usage
+
+- Install. Download and install `git`, `nodejs` & `ahk`
+
+- Clone. Open your shell, and then
+
+```shell
+git clone https://github.com/phonowell/coffee-ahk.git
+cd coffee-ahk
+npm i
+```
+
+- Create. For example, create a file like `index.ahk` at `./script/xxx`
+
+- Code.
+
+- Build.
+
+```shell
+npm run alice build xxx // 'xxx' is your script's dirname
+```
+
+- Run. Now you got a `.ahk` file, run it.
+
+## Test
+
+```shell
+npm run test
+```
+
 ## Toolkit
 
 ### type
@@ -8,15 +38,23 @@
 type Point = [number, number]
 ```
 
+### array
+
+#### reverse(input: unknown[]): unknown[]
+
 ### basic
+
+#### includes(input: string | array, needle: string): boolean
 
 #### length(input: string | array | object): number
 
-#### type(input: unknown): 'number' | 'object' | 'string'
+#### type(input: unknown): 'array' | 'number' | 'object' | 'string'
 
 ### finder
 
 #### findColor(color: number, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], variation: number): Point
+
+#### findImage(source: string, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight]): Point
 
 ### getter
 
@@ -28,6 +66,8 @@ type Point = [number, number]
 
 ### other
 
+#### formatHotkey(key: string): string
+
 #### now(): number
 
 #### random(min: number = 0, max: number = 1): number
@@ -37,6 +77,8 @@ type Point = [number, number]
 #### click(input?: string): void
 
 #### move(point: Point, speed: number = 0): void
+
+#### setFixed(fixed?: boolean): void
 
 ### speaker
 
@@ -49,6 +91,8 @@ type Point = [number, number]
 ### string
 
 #### replace(input: string, searchment: string, replacement: string, limit: number = -1): string
+
+#### split(input: string, delimiter: string): string
 
 #### toLowerCase(input: string): string
 
@@ -66,9 +110,11 @@ type Point = [number, number]
 
 #### exit(): void
 
-#### off(key: string, fn: string): void
+#### off(key: string, fn: Function | string): void
 
-#### on(key, string, fn: string): void
+#### on(key, string, fn: Function | string): void
+
+#### open(source: string): void
 
 #### reload(): void
 
@@ -76,13 +122,13 @@ type Point = [number, number]
 
 ### timer
 
-#### clearInterval(fn: string): void
+#### clearInterval(fn: Function | string): void
 
-#### clearTimeout(fn: string): void
+#### clearTimeout(fn: Function | string): void
 
-#### setInterval(fn: string, time: number): void
+#### setInterval(fn: Function | string, time: number): void
 
-#### setTimeout(fn, string, time: number): void
+#### setTimeout(fn: Function | string, time: number): void
 
 ### math
 

@@ -29,6 +29,9 @@ function main(
       list.unshift(content.pop().value)
     }
 
+    if (type === 'forin')
+      list.reverse()
+
     if (list.length === 1)
       list.unshift('__i__')
 
