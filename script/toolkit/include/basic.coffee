@@ -17,13 +17,11 @@ class BasicToolkit extends ArrayToolkit
   # length(input: string | array | object): number
   length: (input) ->
     type = $.type input
-    if type == 'string'
-      return StrLen input
-    if type == 'array'
-      return input.Length()
-    if type == 'object'
-      return input.Count()
-    throw new Error "$.length: invalid type '#{type}'"
+    switch type
+      when 'array' then return input.Length()
+      when 'object' then return input.Count()
+      when 'string' then return StrLen input
+      else throw new Error "$.length: invalid type '#{type}'"
 
   # type(input: unknown): 'array' | 'number' | 'object' | 'string'
   type: (input) ->

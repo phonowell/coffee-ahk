@@ -21,6 +21,13 @@ class SystemToolkit extends StringToolkit
       throw new Error '$.open: invalid source'
     `Run, % source`
 
+  # pause(paused?: boolean): void
+  pause: (isPaused = 'Toggle') ->
+    if isPaused != 'Toggle'
+      if isPaused then isPaused = 'On'
+      else isPaused = 'Off'
+    `Pause, % isPaused`
+
   # reload(): void
   reload: -> Reload
 

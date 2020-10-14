@@ -12,7 +12,9 @@ function main(
 
   if (type === 'indent') {
 
-    if (['array', 'call', 'object', 'parameter'].includes(cache.last)) return true
+    if ([
+      'array', 'call', 'object', 'parameter'
+    ].includes(cache.last)) return true
     ctx.indent++
 
     const last = cache.last

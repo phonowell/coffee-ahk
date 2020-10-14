@@ -65,8 +65,6 @@ class SetterToolkit extends OtherToolkit
   # setFixed(fixed?: boolean): void
   setFixed: (isFixed = 'Toggle') ->
     if isFixed != 'Toggle'
-      if isFixed
-        isFixed = 'On'
-      else
-        isFixed = 'Off'
+      if isFixed then isFixed = 'On'
+      else isFixed = 'Off'
     `Winset AlwaysOnTop, % isFixed, A`

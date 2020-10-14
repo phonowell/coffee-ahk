@@ -1,11 +1,33 @@
 import $ from 'fire-keeper'
 import _ from 'lodash'
+import iconv from 'iconv-lite'
 
 // variable
 
 const tag = '# include'
 
 // function
+
+function decode(
+  source: string,
+  content: Buffer | string
+): string {
+
+  if (source.endsWith('.coffee'))
+    return content as string
+
+  if (source.endsWith('.txt'))
+    return '```' + content + '```'
+
+  if (source.endsWith('.ahk')) {
+    content = iconv.decode(content as Buffer, 'utf8', {
+      addBOM: true
+    })
+    return '```' + content + '```'
+  }
+
+  return '```' + content + '```'
+}
 
 async function load_(
   name: string,
@@ -18,7 +40,7 @@ async function load_(
     $.getDirname(source),
     '/',
     name,
-    name.endsWith('.coffee') ? '' : '.coffee'
+    name.includes('.') ? '' : '.coffee'
   ].join('')
 
   const listSource = await $.source_(path)
@@ -29,7 +51,7 @@ async function load_(
     listResult.push(
       content.includes(tag)
         ? await main_(content, source)
-        : content
+        : decode(source, content)
     )
   }
 

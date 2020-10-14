@@ -42,9 +42,8 @@ function $start(
   if (content.equal(content.last, 'sign', '='))
     content.pop()
   else
-    if (cache.last === 'class') {
-      content.pop()
-    } else
+    if (cache.last === 'class') content.pop()
+    else
       throw new Error("ahk/forbidden: 'anonymous function' is not allowed")
 
   cache.push('parameter')

@@ -64,16 +64,20 @@ class BasicToolkit extends ArrayToolkit {
   }
   length(input) { ; length(input: string | array | object): number
     type := $.type(input)
-    if (type == "string") {
-      return StrLen(input)
+    switch type {
+      case "array": {
+        return input.Length()
+      }
+      case "object": {
+        return input.Count()
+      }
+      case "string": {
+        return StrLen(input)
+      }
+      default: {
+        throw Exception("$.length: invalid type '" . (type) . "'")
+      }
     }
-    if (type == "array") {
-      return input.Length()
-    }
-    if (type == "object") {
-      return input.Count()
-    }
-    throw Exception("$.length: invalid type '" . (type) . "'")
   }
   type(input) { ; type(input: unknown): 'array' | 'number' | 'object' | 'string'
     if input is Number
@@ -347,6 +351,16 @@ class SystemToolkit extends StringToolkit {
     }
     Run, % source
   }
+  pause(isPaused := "Toggle") { ; pause(paused?: boolean): void
+    if (isPaused != "Toggle") {
+      if (isPaused) {
+        isPaused := "On"
+      } else {
+        isPaused := "Off"
+      }
+    }
+    Pause, % isPaused
+  }
   reload() { ; reload(): void
     Reload
   }
@@ -372,6 +386,7 @@ class Toolkit extends TimerToolkit {
   version := "0.0.1"
 }
 global $ := new Toolkit()
+
 actionE() { ; function
   $.press("e")
 }
@@ -426,6 +441,10 @@ fastPick() {
   stepPick++
   $.setTimeout("fastPick", 100)
 }
+pause() {
+  $.beep()
+  $.pause()
+}
 global isPicking := false
 pick() {
   if (isPicking) {
@@ -438,6 +457,7 @@ jump() {
   $.press("space")
 }
 $.on("alt + f4", "exit") ; binding
+$.on("f12", "pause")
 $.on("1", "changeCharacter1")
 $.on("2", "changeCharacter2")
 $.on("3", "changeCharacter3")

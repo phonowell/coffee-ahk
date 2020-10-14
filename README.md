@@ -156,6 +156,8 @@ type Point = [number, number]
 
 #### open(source: string): void
 
+#### pause(paused?: boolean): void
+
 #### reload(): void
 
 #### sleep(time: number): void

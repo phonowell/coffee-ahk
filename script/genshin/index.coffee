@@ -1,6 +1,6 @@
-# include ../include/admin
-# include ../include/head
-# include ../toolkit/index
+# include ../include/admin.ahk
+# include ../include/head.ahk
+# include ../toolkit/index.ahk
 
 # function
 
@@ -56,6 +56,10 @@ fastPick = ->
   stepPick++
   $.setTimeout fastPick, 100
 
+pause = ->
+  $.beep()
+  $.pause()
+
 isPicking = false
 pick = ->
   
@@ -69,6 +73,7 @@ jump = -> $.press 'space'
 # binding
 
 $.on 'alt + f4', exit
+$.on 'f12', pause
 
 $.on '1', changeCharacter1
 $.on '2', changeCharacter2
