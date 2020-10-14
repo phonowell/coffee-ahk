@@ -68,7 +68,7 @@ $.on 'space', ->
   jump()
   $.setTimeout jump, 200
 
-$.on 'wheel-down', ->
+$.on 'f', ->
   if isPicking then return
   isPicking = true
   fastPick()

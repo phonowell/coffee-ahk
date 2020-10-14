@@ -419,7 +419,7 @@ $.on("3", "anonymous_5")
 $.on("4", "anonymous_6")
 $.on("5", "anonymous_7")
 $.on("space", "anonymous_8")
-$.on("wheel-down", "anonymous_9")
+$.on("f", "anonymous_9")
 anonymous_1() {
   $.beep()
   $.exit()
