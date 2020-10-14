@@ -72,6 +72,11 @@ class Content {
     return [...this._list]
   }
 
+  add(item: Item): this {
+    this._list.push({ ...item })
+    return this
+  }
+
   clear(): this {
     this._list = []
     return this
@@ -149,6 +154,17 @@ class Content {
         value: type,
         scope: cache.list
       })
+    return this
+  }
+
+  update(): this {
+
+    const listResult: Item[] = []
+    this._list.forEach(it => {
+      if (it.type === 'void') return
+      listResult.push(it)
+    })
+    this._list = listResult
     return this
   }
 }

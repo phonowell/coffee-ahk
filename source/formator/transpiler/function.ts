@@ -11,8 +11,7 @@ function $arrow(
 
   const { cache, content } = ctx
 
-  if (content.last.type === 'edge') null
-  else if (content.equal(content.last, 'sign', '=')) {
+  if (content.equal(content.last, 'sign', '=')) {
     content.pop()
     cache.push('parameter')
     content
@@ -25,8 +24,11 @@ function $arrow(
       content
         .push('edge', 'parameter-start')
         .push('edge', 'parameter-end')
-    } else
-      throw new Error("ahk/forbidden: 'anonymous function' is not allowed")
+    } else content
+      .push('identifier', 'anonymous')
+      .push('edge', 'parameter-start')
+      .push('edge', 'parameter-end')
+
   }
 
   cache.push('function')
@@ -43,8 +45,7 @@ function $start(
     content.pop()
   else
     if (cache.last === 'class') content.pop()
-    else
-      throw new Error("ahk/forbidden: 'anonymous function' is not allowed")
+    else content.push('identifier', 'anonymous')
 
   cache.push('parameter')
   content.push('edge', 'parameter-start')

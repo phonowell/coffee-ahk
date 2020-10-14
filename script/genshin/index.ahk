@@ -387,44 +387,11 @@ class Toolkit extends TimerToolkit {
 }
 global $ := new Toolkit()
 
+global isPicking := false ; variable
+global stepPick := 0
 actionE() { ; function
   $.press("e")
 }
-autoFly() {
-  $.clearTimeout("jump")
-  jump()
-  $.setTimeout("jump", 200)
-}
-changeCharacter1() {
-  $.clearTimeout("actionE")
-  $.press("1")
-  $.setTimeout("actionE", 100)
-}
-changeCharacter2() {
-  $.clearTimeout("actionE")
-  $.press("2")
-  $.setTimeout("actionE", 100)
-}
-changeCharacter3() {
-  $.clearTimeout("actionE")
-  $.press("3")
-  $.setTimeout("actionE", 100)
-}
-changeCharacter4() {
-  $.clearTimeout("actionE")
-  $.press("4")
-  $.setTimeout("actionE", 100)
-}
-changeCharacter5() {
-  $.clearTimeout("actionE")
-  $.press("5")
-  $.setTimeout("actionE", 100)
-}
-exit() {
-  $.beep()
-  $.exit()
-}
-global stepPick := 0
 fastPick() {
   switch stepPick {
     case 0, 1, 2, 3, 4, 5, 6, 7: {
@@ -441,27 +408,60 @@ fastPick() {
   stepPick++
   $.setTimeout("fastPick", 100)
 }
-pause() {
+jump() {
+  $.press("space")
+}
+$.on("alt + f4", "anonymous_1") ; binding
+$.on("f12", "anonymous_2")
+$.on("1", "anonymous_3")
+$.on("2", "anonymous_4")
+$.on("3", "anonymous_5")
+$.on("4", "anonymous_6")
+$.on("5", "anonymous_7")
+$.on("space", "anonymous_8")
+$.on("wheel-down", "anonymous_9")
+anonymous_1() {
+  $.beep()
+  $.exit()
+}
+anonymous_2() {
   $.beep()
   $.pause()
 }
-global isPicking := false
-pick() {
+anonymous_3() {
+  $.clearTimeout("actionE")
+  $.press("1")
+  $.setTimeout("actionE", 100)
+}
+anonymous_4() {
+  $.clearTimeout("actionE")
+  $.press("2")
+  $.setTimeout("actionE", 100)
+}
+anonymous_5() {
+  $.clearTimeout("actionE")
+  $.press("3")
+  $.setTimeout("actionE", 100)
+}
+anonymous_6() {
+  $.clearTimeout("actionE")
+  $.press("4")
+  $.setTimeout("actionE", 100)
+}
+anonymous_7() {
+  $.clearTimeout("actionE")
+  $.press("5")
+  $.setTimeout("actionE", 100)
+}
+anonymous_8() {
+  $.clearTimeout("jump")
+  jump()
+  $.setTimeout("jump", 200)
+}
+anonymous_9() {
   if (isPicking) {
     return
   }
   isPicking := true
   fastPick()
 }
-jump() {
-  $.press("space")
-}
-$.on("alt + f4", "exit") ; binding
-$.on("f12", "pause")
-$.on("1", "changeCharacter1")
-$.on("2", "changeCharacter2")
-$.on("3", "changeCharacter3")
-$.on("4", "changeCharacter4")
-$.on("5", "changeCharacter5")
-$.on("space", "autoFly")
-$.on("wheel-down", "pick")
