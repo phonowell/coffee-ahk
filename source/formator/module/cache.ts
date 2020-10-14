@@ -9,14 +9,17 @@ const listRule = [
   'array',
   'call',
   'case',
+  'catch',
   'class',
   'else',
+  'finally',
   'for',
   'function',
   'if',
   'object',
   'parameter',
   'switch',
+  'try',
   'while'
 ] as const
 

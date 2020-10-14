@@ -1,11 +1,7 @@
-﻿switch a {
-  case 1: {
-    1
-  }
-  case 2, 3: {
-    2
-  }
-  default: {
-    3
+﻿fn() {
+  try {
+    alert(1)
+  } catch e {
+    throw e
   }
 }

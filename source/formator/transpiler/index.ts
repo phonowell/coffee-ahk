@@ -20,6 +20,7 @@ import $sign from './sign'
 import $statement from './statement'
 import $string from './string'
 import $switch from './switch'
+import $try from './try'
 import $while from './while'
 
 // interface
@@ -51,6 +52,7 @@ const map = {
   statement: $statement,
   string: $string,
   switch: $switch,
+  try: $try,
   while: $while
 } as const
 

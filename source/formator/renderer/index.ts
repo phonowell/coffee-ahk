@@ -37,7 +37,6 @@ const mapMethod = {
   'logical-operator': $logicalOperator,
   'math': ' ~ ',
   'new-line': $newLine,
-  case: $case,
   class: 'class ',
   compare: ' ~ ',
   for: 'for ',
@@ -45,7 +44,7 @@ const mapMethod = {
   negative: $negative,
   sign: $sign,
   statement: $statement,
-  switch: 'switch ',
+  try: $try,
   void: '',
   while: 'while '
 } as const
@@ -53,15 +52,6 @@ const mapMethod = {
 let cacheComment: string[] = []
 
 // function
-
-function $case(
-  ctx: Context
-): string {
-
-  const { value } = ctx.it
-  if (value === 'case') return 'case '
-  return value
-}
 
 function $commaLike(
   ctx: Context
@@ -100,14 +90,20 @@ function $if(
 ): string {
 
   const { content, i, it } = ctx
+  const { value } = it
 
-  if (it.value === 'if') {
+  if (value === 'case') return 'case '
+  if (value === 'default') return 'default'
+  if (value === 'else') return ' else'
+
+  if (value === 'if') {
     const _prev = content.eq(i - 1)
     if (content.equal(_prev, 'if', 'else'))
       return ' if '
     else return 'if '
   }
-  if (it.value === 'else') return ' else'
+
+  if (value === 'switch') return 'switch '
   return ''
 }
 
@@ -160,6 +156,25 @@ function $statement(
   if (value === 'extends') return ' extends '
   if (['new', 'return', 'throw'].includes(value)) return $commaLike(ctx)
   return ctx.it.value
+}
+
+function $try(
+  ctx: Context
+): string {
+
+  const { content, i, it } = ctx
+  const { value } = it
+
+  if (value === 'catch') {
+    const _next = content.eq(i + 1)
+    if (content.equal(_next, 'edge', 'block-start'))
+      return ' catch'
+    return ' catch '
+  }
+
+  if (value === 'finally') return ' finally'
+  if (value === 'try') return 'try'
+  return ''
 }
 
 function injectComment(

@@ -24,7 +24,7 @@ function main(
       cache.push('case')
       content
         .push('new-line', ctx.indent)
-        .push('case', 'default')
+        .push('if', 'default')
       return true
     }
     cache.next = 'else'

@@ -12,13 +12,13 @@ function main(
 
   if (type === 'switch') {
     cache.push('switch')
-    content.push('switch')
+    content.push('if', 'switch')
     return true
   }
 
   if (type === 'leading_when') {
     cache.push('case')
-    content.push('case')
+    content.push('if', 'case')
     return true
   }
 

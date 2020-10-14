@@ -19,14 +19,14 @@ function main(
 
     const last = cache.last
     if (['case', 'for', 'function', 'switch'].includes(last)) {
-      if (!['else', 'if'].includes(cache.next)) {
+      if (!['catch', 'else', 'if'].includes(cache.next)) {
         if (last === 'case')
           content.push('sign', ':')
         content.push('edge', 'block-start')
       }
     }
 
-    if (['class', 'else'].includes(cache.next)) {
+    if (['catch', 'class', 'else'].includes(cache.next)) {
       const _next = cache.next
       cache.next = ''
       cache.push(_next)

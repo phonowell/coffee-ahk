@@ -27,30 +27,29 @@ const listType = [
   '--',
   '.',
   'boolean',
-  'bracket',
-  'case',
+  'bracket', // ()
   'class',
   'compare',
-  'edge',
+  'edge', // array-end array-start block-end block-start call-end call-start expression-end expression-start index-end index-start interpolation-end interpolation-start parameter-end parameter-start
   'error',
   'for',
-  'for-in',
+  'for-in', // in of
   'function',
   'identifier',
-  'if',
-  'logical-operator',
+  'if', // case default else if switch
+  'logical-operator', // ! && ||
   'math',
-  'negative',
+  'negative', // + -
   'new-line',
   'number',
   'origin',
   'property',
   'prototype',
-  'sign',
-  'statement',
+  'sign', // , ... : =
+  'statement', // break continue extends new return throw
   'string',
-  'switch',
   'this',
+  'try', // catch finally try
   'void',
   'while'
 ] as const

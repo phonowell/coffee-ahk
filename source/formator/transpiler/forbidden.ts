@@ -5,11 +5,7 @@ import { Context } from '../type'
 // variable
 
 const listForbidden = [
-  '..',
-  'catch',
-  'finally',
-  'try',
-  'when'
+  '..'
 ] as const
 
 // function
