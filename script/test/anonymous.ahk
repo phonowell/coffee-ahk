@@ -1,4 +1,4 @@
-﻿setTimeout("anonymous_4", 4000)
+setTimeout("anonymous_4", 4000)
 anonymous_1() {
   1
 }

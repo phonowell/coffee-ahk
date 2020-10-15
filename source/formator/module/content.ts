@@ -73,7 +73,9 @@ class Content {
   }
 
   add(item: Item): this {
-    this._list.push({ ...item })
+    const it = { ...item }
+    it.scope = [...it.scope]
+    this._list.push(it)
     return this
   }
 

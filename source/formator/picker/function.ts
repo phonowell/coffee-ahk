@@ -1,3 +1,4 @@
+import findIndex from 'lodash/findIndex'
 import findLastIndex from 'lodash/findLastIndex'
 import isEqual from 'lodash/isEqual'
 
@@ -84,6 +85,7 @@ function pickAnonymous(
 
   const { content } = ctx
 
+  content.update()
   const i = findLastIndex(content.list, {
     type: 'function',
     value: 'anonymous'
@@ -91,11 +93,14 @@ function pickAnonymous(
   if (!~i) return
 
   const it = content.eq(i)
-
   it.value = `anonymous_${seed}`
+
   pickItem(ctx, seed, i, [...it.scope, 'function'])
-    .forEach(it => content.add(it))
-  content.update()
+    .forEach(it => {
+      if (!it.type) return
+      if (it.type === 'void') return
+      content.add(it)
+    })
 
   pickAnonymous(ctx, seed + 1)
 }
@@ -110,26 +115,53 @@ function pickItem(
 
   const { content } = ctx
 
-  const it = content.eq(i)
-  listResult.push({ ...it })
+  const item = content.eq(i)
 
-  // last one
+  // clone
+  const it = { ...item }
+  it.scope = [...it.scope]
+
+  // reset scope
+  for (let i = 0; i < scope.length - 1; i++)
+    it.scope.shift()
+
+  listResult.push(it)
+
   if (
-    content.equal(it, 'edge', 'block-end')
-    && isEqual(it.scope, scope)
+    !content.equal(item, 'edge', 'block-end')
+    || !isEqual(item.scope, scope)
   ) {
-    it.type = 'string'
-    it.value = `"anonymous_${seed}"`
-    listResult.push({
-      type: 'new-line',
-      value: '0',
-      scope
-    })
-    return listResult
+    item.type = 'void'
+    return pickItem(ctx, seed, i + 1, scope, listResult)
   }
 
-  it.type = 'void'
-  return pickItem(ctx, seed, i + 1, scope, listResult)
+  // last one
+  item.type = 'string'
+  item.value = `"anonymous_${seed}"`
+  listResult.push({
+    type: 'new-line',
+    value: '0',
+    scope
+  })
+
+  // reset indent
+  const diff: number = parseInt(
+    listResult[
+      findIndex(listResult, {
+        type: 'new-line'
+      })
+    ].value
+  ) - 1
+  if (diff > 0) {
+    listResult.forEach(it => {
+      if (it.type !== 'new-line') return
+      let value = parseInt(it.value) - diff
+      if (!(value >= 0)) value = 0
+      it.value = value.toString()
+    })
+  }
+
+  return listResult
 }
 
 // export
