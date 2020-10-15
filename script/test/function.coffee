@@ -9,3 +9,4 @@ fn(
   1
   2
 )
+fn fn fn

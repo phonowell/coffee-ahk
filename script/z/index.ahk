@@ -29,16 +29,28 @@ class MathToolkit {
 }
 global Math := new MathToolkit()
 clearInterval(fn) { ; clearInterval(fn: Function | string): void
+  if !(fn) {
+    return
+  }
   SetTimer, % fn, Delete
 }
 clearTimeout(fn) { ; clearTimeout(fn: Function | string): void
+  if !(fn) {
+    return
+  }
   SetTimer, % fn, Delete
 }
-setInterval(fn, time) { ; setInterval(fn: Function | string, time: number): string
+setInterval(fn, time := 0) { ; setInterval(fn: Function | string, time: number): string
+  if !(fn) {
+    return fn
+  }
   SetTimer, % fn, % time
   return fn
 }
-setTimeout(fn, time) { ; setTimeout(fn: Function | string, time: number): string
+setTimeout(fn, time := 0) { ; setTimeout(fn: Function | string, time: number): string
+  if !(fn) {
+    return fn
+  }
   SetTimer, % fn, % 0 - time
   return fn
 }
@@ -383,7 +395,10 @@ class Toolkit extends SystemToolkit {
 }
 global $ := new Toolkit()
 
-$.on("win + n", "anonymous_1")
-anonymous_1() {
-  $.open("notepad.exe")
+fn(n, callback) {
+  Func(callback).Call(n)
+}
+fn(2, "anonymous_1")
+anonymous_1(result) {
+  $.alert(result)
 }

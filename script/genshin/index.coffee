@@ -6,10 +6,9 @@
 
 isPicking = false
 stepPick = 0
+timer = ''
 
 # function
-
-actionE = -> $.press 'e'
 
 fastPick = ->
 
@@ -28,6 +27,8 @@ fastPick = ->
 
 jump = -> $.press 'space'
 
+useE = -> $.press 'e'
+
 # binding
 
 $.on 'alt + f4', ->
@@ -39,36 +40,36 @@ $.on 'f12', ->
   $.pause()
 
 $.on '1', ->
-  clearTimeout actionE
+  clearTimeout timer
   $.press '1'
-  setTimeout actionE, 100
+  timer = setTimeout useE, 100
 
 $.on '2', ->
-  clearTimeout actionE
+  clearTimeout timer
   $.press '2'
-  setTimeout actionE, 100
+  timer = setTimeout useE, 100
 
 $.on '3', ->
-  clearTimeout actionE
+  clearTimeout timer
   $.press '3'
-  setTimeout actionE, 100
+  timer = setTimeout useE, 100
 
 $.on '4', ->
-  clearTimeout actionE
+  clearTimeout timer
   $.press '4'
-  setTimeout actionE, 100
+  timer = setTimeout useE, 100
 
 $.on '5', ->
-  clearTimeout actionE
+  clearTimeout timer
   $.press '5'
-  setTimeout actionE, 100
-
-$.on 'space', ->
-  clearTimeout jump
-  jump()
-  setTimeout jump, 200
+  timer = setTimeout useE, 100
 
 $.on 'f', ->
   if isPicking then return
   isPicking = true
   fastPick()
+
+$.on 'space', ->
+  clearTimeout timer
+  jump()
+  timer = setTimeout jump, 200

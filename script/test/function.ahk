@@ -11,3 +11,4 @@ fn(a := 1, b := 2) {
   return a + b
 }
 fn(1, 2)
+fn(fn("fn"))

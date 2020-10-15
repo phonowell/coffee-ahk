@@ -6,7 +6,7 @@ import compile_ from '../source'
 async function main_(): Promise<void> {
   await compile_('./script/y/index.coffee', {
     save: true,
-    verbose: false
+    verbose: true
   })
 }
 

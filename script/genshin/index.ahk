@@ -389,10 +389,8 @@ global $ := new Toolkit()
 
 global isPicking := false ; variable
 global stepPick := 0
-actionE() { ; function
-  $.press("e")
-}
-fastPick() {
+global timer := ""
+fastPick() { ; function
   switch stepPick {
     case 0, 1, 2, 3, 4, 5, 6, 7: {
       $.press("f")
@@ -411,6 +409,9 @@ fastPick() {
 jump() {
   $.press("space")
 }
+useE() {
+  $.press("e")
+}
 $.on("alt + f4", "anonymous_9") ; binding
 $.on("f12", "anonymous_8")
 $.on("1", "anonymous_7")
@@ -418,44 +419,44 @@ $.on("2", "anonymous_6")
 $.on("3", "anonymous_5")
 $.on("4", "anonymous_4")
 $.on("5", "anonymous_3")
-$.on("space", "anonymous_2")
-$.on("f", "anonymous_1")
+$.on("f", "anonymous_2")
+$.on("space", "anonymous_1")
 anonymous_1() {
+  clearTimeout(timer)
+  jump()
+  timer := setTimeout("jump", 200)
+}
+anonymous_2() {
   if (isPicking) {
     return
   }
   isPicking := true
   fastPick()
 }
-anonymous_2() {
-  clearTimeout("jump")
-  jump()
-  setTimeout("jump", 200)
-}
 anonymous_3() {
-  clearTimeout("actionE")
+  clearTimeout(timer)
   $.press("5")
-  setTimeout("actionE", 100)
+  timer := setTimeout("useE", 100)
 }
 anonymous_4() {
-  clearTimeout("actionE")
+  clearTimeout(timer)
   $.press("4")
-  setTimeout("actionE", 100)
+  timer := setTimeout("useE", 100)
 }
 anonymous_5() {
-  clearTimeout("actionE")
+  clearTimeout(timer)
   $.press("3")
-  setTimeout("actionE", 100)
+  timer := setTimeout("useE", 100)
 }
 anonymous_6() {
-  clearTimeout("actionE")
+  clearTimeout(timer)
   $.press("2")
-  setTimeout("actionE", 100)
+  timer := setTimeout("useE", 100)
 }
 anonymous_7() {
-  clearTimeout("actionE")
+  clearTimeout(timer)
   $.press("1")
-  setTimeout("actionE", 100)
+  timer := setTimeout("useE", 100)
 }
 anonymous_8() {
   $.beep()

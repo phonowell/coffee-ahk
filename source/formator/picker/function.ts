@@ -67,14 +67,25 @@ function main(
   }
 
   // fn in parameter -> "fn"
-  content.list.forEach(it => {
+  content.list.forEach((it, i) => {
 
     if (it.type !== 'identifier') return
     if (it.scope[it.scope.length - 1] !== 'call') return
     if (!listFn.has(it.value)) return
+    if (content.equal(content.eq(i + 1), 'edge', 'call-start')) return
 
     it.type = 'string'
     it.value = `"${it.value}"`
+  })
+
+  // call
+  content.list.forEach((it, i) => {
+
+    if (!content.equal(it, 'edge', 'call-start')) return
+    const _prev = content.eq(i - 1)
+    if (!content.equal(_prev, 'identifier', 'callback')) return
+    _prev.type = 'origin'
+    _prev.value = `Func(${_prev.value}).Call`
   })
 }
 
