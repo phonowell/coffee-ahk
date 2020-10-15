@@ -48,134 +48,33 @@ npm run test
 
 ## Notice
 
-- `ahk`中没有如下类型：
-  - `boolean`: `true`和`false`实际上就是`1`和`0`
-  - `array`: `array`实际上就是`object`
-  - `buffer`, `error`, `date`...
+- `.coffee`文件编码使用`utf8`。`.ahk`文件编码使用`uft8 with BOM`。
+- `=>`不可用。实际上由于`ahk`和`js`在`this`上的差异，这个关键字很难实现。
+- `ahk`中字符和数字的区别非常模糊，`'0'`在`ahk`中返回为`false`。
+- `ahk`并不支持匿名函数，编译器所提供的模拟方案并未经过详细测试。
+- 函数必须在最外层声明。且不能将函数直接赋予至其他变量。
+- 可以使用`true`、`false`、`on`和`off`，但要注意不要试图使用类型判断。在`ahk`中不存在`boolean`类型。
+- 尚不支持`a = 1 unless a >= 1`这样的倒装语法，必须使用正常语序。
+- 尚未实现`do`关键字。也不支持任何方式的函数自执行。
+- 慎用类，编译器的实现尚不完善。
+- 数组的起始是`1`。因为非常重要所以请一定注意，数组下标从`1`开始，不是`0`！
+- 没有`import`和`export`，使用`# include xxx`替代这一功能。
+- 没有列出的`js`内置函数几乎都不存在，需要自行实现。
 
-- `ahk`的函数比较弱：
-  - 没有匿名函数
-  - 函数不能直接作为参数（但编译器模拟了一下
+## Todo
 
-- 没有`import`和`export`，暂且使用`# include xxx`凑合一下吧
-
-- 几乎所有的`js`内置函数都是没有的
-
-- 慎用类。相关功能基本都不好使……
-
-- 准备实现但还没有搞完的内容：
-  - 匿名函数
-
-- `./script/toolkit`是一个内置的工具类，包含了写一个游戏脚本的最基础功能
+- `do`关键字
+- 函数嵌套
+- 函数赋予
 
 ## Toolkit
 
-### type
+一个用于实现`js`部分内置函数，并提供少量基础功能函数的內建组件。
 
-```typescript
-type Point = [number, number]
+在文件头部添加如下内容引入
+
+```coffee
+# include ../toolkit/index.ahk
 ```
 
-### array
-
-#### reverse(input: unknown[]): unknown[]
-
-### basic
-
-#### includes(input: string | array, needle: string): boolean
-
-#### length(input: string | array | object): number
-
-#### type(input: unknown): 'array' | 'number' | 'object' | 'string'
-
-### finder
-
-#### findColor(color: number, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], variation: number): Point
-
-#### findImage(source: string, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight]): Point
-
-### getter
-
-#### getColor(point?: Point): number
-
-#### getPosition(): Point
-
-#### getState(key: string): string
-
-### other
-
-#### formatHotkey(key: string): string
-
-#### now(): number
-
-#### random(min: number = 0, max: number = 1): number
-
-### setter
-
-#### click(key?: string): void
-
-#### move(point: Point, speed: number = 0): void
-
-#### setFixed(fixed?: boolean): void
-
-### speaker
-
-#### alert(message: string): string
-
-#### beep(): void
-
-#### info(message: string, point?: Point): string
-
-### string
-
-#### replace(input: string, searchment: string, replacement: string, limit: number = -1): string
-
-#### split(input: string, delimiter: string): string
-
-#### toLowerCase(input: string): string
-
-#### toString(input: unknown): string
-
-#### toUpperCase(input: string): string
-
-#### trim(input: string, omitting: string): string
-
-#### trimEnd(input: string, omitting: string): string
-
-#### trimStart(input: string, omitting: string): string
-
-### system
-
-#### exit(): void
-
-#### off(key: string, fn: Function | string): void
-
-#### on(key, string, fn: Function | string): void
-
-#### open(source: string): void
-
-#### pause(paused?: boolean): void
-
-#### reload(): void
-
-#### sleep(time: number): void
-
-### math
-
-#### abs(n: number): number
-  
-#### ceil(n: number): number
-
-#### floor(n: number): number
-
-#### round(n: number): number
-
-### timer
-
-#### clearInterval(fn: Function | string): void
-
-#### clearTimeout(fn: Function | string): void
-
-#### setInterval(fn: Function | string, time: number): string
-
-#### setTimeout(fn: Function | string, time: number): string
+详细内容点击[这里](doc/toolkit.md)。
