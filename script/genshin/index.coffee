@@ -10,21 +10,6 @@ timer = ''
 
 # function
 
-fastPick = ->
-
-  switch stepPick
-    when 0, 1, 2, 3, 4, 5, 6, 7
-      $.press 'f'
-      $.click 'wheel-down:down'
-    else
-      $.click 'wheel-down:up'
-      isPicking = false
-      stepPick = 0
-      return
-  
-  stepPick++
-  $.setTimeout fastPick, 100
-
 jump = -> $.press 'space'
 
 useE = -> $.press 'e'
@@ -65,9 +50,59 @@ $.on '5', ->
   timer = setTimeout useE, 100
 
 $.on 'f', ->
-  if isPicking then return
-  isPicking = true
-  fastPick()
+
+  $.press 'f'
+  $.click 'wheel-down:down'
+
+  setTimeout ->
+    $.press 'f'
+    $.click 'wheel-down:down'
+  , 100
+
+  setTimeout ->
+    $.press 'f'
+    $.click 'wheel-down:down'
+  , 200
+
+  setTimeout ->
+    $.press 'f'
+    $.click 'wheel-down:down'
+  , 300
+
+  setTimeout ->
+    $.press 'f'
+    $.click 'wheel-down:down'
+  , 400
+
+  setTimeout ->
+    $.press 'f'
+    $.click 'wheel-down:down'
+  , 500
+
+  setTimeout ->
+    $.press 'f'
+    $.click 'wheel-down:down'
+  , 600
+
+  setTimeout ->
+    $.press 'f'
+    $.click 'wheel-down:down'
+  , 700
+
+  setTimeout ->
+    $.press 'f'
+    $.click 'wheel-down:down'
+  , 800
+
+  setTimeout ->
+    $.press 'f'
+    $.click 'wheel-down:down'
+  , 900
+
+  setTimeout ->
+    $.press 'f'
+    $.click 'wheel-down:up'
+  , 1e3
 
 $.on 'space', ->
   clearTimeout timer

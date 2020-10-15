@@ -33,16 +33,28 @@ class MathToolkit {
 }
 global Math := new MathToolkit()
 clearInterval(fn) { ; clearInterval(fn: Function | string): void
+  if !(fn) {
+    return
+  }
   SetTimer, % fn, Delete
 }
 clearTimeout(fn) { ; clearTimeout(fn: Function | string): void
+  if !(fn) {
+    return
+  }
   SetTimer, % fn, Delete
 }
-setInterval(fn, time) { ; setInterval(fn: Function | string, time: number): string
+setInterval(fn, time := 0) { ; setInterval(fn: Function | string, time: number): string
+  if !(fn) {
+    return fn
+  }
   SetTimer, % fn, % time
   return fn
 }
-setTimeout(fn, time) { ; setTimeout(fn: Function | string, time: number): string
+setTimeout(fn, time := 0) { ; setTimeout(fn: Function | string, time: number): string
+  if !(fn) {
+    return fn
+  }
   SetTimer, % fn, % 0 - time
   return fn
 }
@@ -390,36 +402,20 @@ global $ := new Toolkit()
 global isPicking := false ; variable
 global stepPick := 0
 global timer := ""
-fastPick() { ; function
-  switch stepPick {
-    case 0, 1, 2, 3, 4, 5, 6, 7: {
-      $.press("f")
-      $.click("wheel-down:down")
-    }
-    default: {
-      $.click("wheel-down:up")
-      isPicking := false
-      stepPick := 0
-      return
-    }
-  }
-  stepPick++
-  $.setTimeout("fastPick", 100)
-}
-jump() {
+jump() { ; function
   $.press("space")
 }
 useE() {
   $.press("e")
 }
-$.on("alt + f4", "anonymous_9") ; binding
-$.on("f12", "anonymous_8")
-$.on("1", "anonymous_7")
-$.on("2", "anonymous_6")
-$.on("3", "anonymous_5")
-$.on("4", "anonymous_4")
-$.on("5", "anonymous_3")
-$.on("f", "anonymous_2")
+$.on("alt + f4", "anonymous_19") ; binding
+$.on("f12", "anonymous_18")
+$.on("1", "anonymous_17")
+$.on("2", "anonymous_16")
+$.on("3", "anonymous_15")
+$.on("4", "anonymous_14")
+$.on("5", "anonymous_13")
+$.on("f", "anonymous_12")
 $.on("space", "anonymous_1")
 anonymous_1() {
   clearTimeout(timer)
@@ -427,42 +423,89 @@ anonymous_1() {
   timer := setTimeout("jump", 200)
 }
 anonymous_2() {
-  if (isPicking) {
-    return
-  }
-  isPicking := true
-  fastPick()
+  $.press("f")
+  $.click("wheel-down:up")
 }
 anonymous_3() {
+  $.press("f")
+  $.click("wheel-down:down")
+}
+anonymous_4() {
+  $.press("f")
+  $.click("wheel-down:down")
+}
+anonymous_5() {
+  $.press("f")
+  $.click("wheel-down:down")
+}
+anonymous_6() {
+  $.press("f")
+  $.click("wheel-down:down")
+}
+anonymous_7() {
+  $.press("f")
+  $.click("wheel-down:down")
+}
+anonymous_8() {
+  $.press("f")
+  $.click("wheel-down:down")
+}
+anonymous_9() {
+  $.press("f")
+  $.click("wheel-down:down")
+}
+anonymous_10() {
+  $.press("f")
+  $.click("wheel-down:down")
+}
+anonymous_11() {
+  $.press("f")
+  $.click("wheel-down:down")
+}
+anonymous_12() {
+  $.press("f")
+  $.click("wheel-down:down")
+  setTimeout("anonymous_11", 100)
+  setTimeout("anonymous_10", 200)
+  setTimeout("anonymous_9", 300)
+  setTimeout("anonymous_8", 400)
+  setTimeout("anonymous_7", 500)
+  setTimeout("anonymous_6", 600)
+  setTimeout("anonymous_5", 700)
+  setTimeout("anonymous_4", 800)
+  setTimeout("anonymous_3", 900)
+  setTimeout("anonymous_2", 1000)
+}
+anonymous_13() {
   clearTimeout(timer)
   $.press("5")
   timer := setTimeout("useE", 100)
 }
-anonymous_4() {
+anonymous_14() {
   clearTimeout(timer)
   $.press("4")
   timer := setTimeout("useE", 100)
 }
-anonymous_5() {
+anonymous_15() {
   clearTimeout(timer)
   $.press("3")
   timer := setTimeout("useE", 100)
 }
-anonymous_6() {
+anonymous_16() {
   clearTimeout(timer)
   $.press("2")
   timer := setTimeout("useE", 100)
 }
-anonymous_7() {
+anonymous_17() {
   clearTimeout(timer)
   $.press("1")
   timer := setTimeout("useE", 100)
 }
-anonymous_8() {
+anonymous_18() {
   $.beep()
   $.pause()
 }
-anonymous_9() {
+anonymous_19() {
   $.beep()
   $.exit()
 }
