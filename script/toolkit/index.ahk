@@ -13,6 +13,20 @@
   }
 }
 global Math := new MathToolkit()
+clearInterval(fn) { ; clearInterval(fn: Function | string): void
+  SetTimer, % fn, Delete
+}
+clearTimeout(fn) { ; clearTimeout(fn: Function | string): void
+  SetTimer, % fn, Delete
+}
+setInterval(fn, time) { ; setInterval(fn: Function | string, time: number): string
+  SetTimer, % fn, % time
+  return fn
+}
+setTimeout(fn, time) { ; setTimeout(fn: Function | string, time: number): string
+  SetTimer, % fn, % 0 - time
+  return fn
+}
 class ArrayToolkit {
   reverse(input := "") { ; reverse(input: unknown[]): unknown[]
     type := $.type(input)
@@ -349,21 +363,7 @@ class SystemToolkit extends StringToolkit {
     Sleep, % time
   }
 }
-class TimerToolkit extends SystemToolkit {
-  clearInterval(fn) { ; clearInterval(fn: Function | string): void
-    SetTimer, % fn, Delete
-  }
-  clearTimeout(fn) { ; clearTimeout(fn: Function | string): void
-    SetTimer, % fn, Delete
-  }
-  setInterval(fn, time) { ; setInterval(fn: Function | string, time: number): void
-    SetTimer, % fn, % time
-  }
-  setTimeout(fn, time) { ; setTimeout(fn: Function | string, time: number): void
-    SetTimer, % fn, % 0 - time
-  }
-}
-class Toolkit extends TimerToolkit {
+class Toolkit extends SystemToolkit {
   version := "0.0.1"
 }
 global $ := new Toolkit()

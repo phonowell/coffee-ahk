@@ -131,10 +131,9 @@ function $newLine(
   ctx: Context
 ): string {
 
-  const n = parseInt(ctx.it.value)
-  return n >= 0
-    ? '\n' + _.repeat(' ', n * 2)
-    : ''
+  let n = parseInt(ctx.it.value)
+  if (!(n >= 0)) n = 0
+  return '\n' + _.repeat(' ', n * 2)
 }
 
 function $sign(

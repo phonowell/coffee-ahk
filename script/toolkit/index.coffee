@@ -1,7 +1,8 @@
 # include math
-# include include/timer
+# include timer
+# include include/system
 
-class Toolkit extends TimerToolkit
+class Toolkit extends SystemToolkit
   version: '0.0.1'
 
 $ = new Toolkit()

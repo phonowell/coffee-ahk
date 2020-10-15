@@ -32,6 +32,20 @@ class MathToolkit {
   }
 }
 global Math := new MathToolkit()
+clearInterval(fn) { ; clearInterval(fn: Function | string): void
+  SetTimer, % fn, Delete
+}
+clearTimeout(fn) { ; clearTimeout(fn: Function | string): void
+  SetTimer, % fn, Delete
+}
+setInterval(fn, time) { ; setInterval(fn: Function | string, time: number): string
+  SetTimer, % fn, % time
+  return fn
+}
+setTimeout(fn, time) { ; setTimeout(fn: Function | string, time: number): string
+  SetTimer, % fn, % 0 - time
+  return fn
+}
 class ArrayToolkit {
   reverse(input := "") { ; reverse(input: unknown[]): unknown[]
     type := $.type(input)
@@ -368,21 +382,7 @@ class SystemToolkit extends StringToolkit {
     Sleep, % time
   }
 }
-class TimerToolkit extends SystemToolkit {
-  clearInterval(fn) { ; clearInterval(fn: Function | string): void
-    SetTimer, % fn, Delete
-  }
-  clearTimeout(fn) { ; clearTimeout(fn: Function | string): void
-    SetTimer, % fn, Delete
-  }
-  setInterval(fn, time) { ; setInterval(fn: Function | string, time: number): void
-    SetTimer, % fn, % time
-  }
-  setTimeout(fn, time) { ; setTimeout(fn: Function | string, time: number): void
-    SetTimer, % fn, % 0 - time
-  }
-}
-class Toolkit extends TimerToolkit {
+class Toolkit extends SystemToolkit {
   version := "0.0.1"
 }
 global $ := new Toolkit()
@@ -411,57 +411,57 @@ fastPick() {
 jump() {
   $.press("space")
 }
-$.on("alt + f4", "anonymous_1") ; binding
-$.on("f12", "anonymous_2")
-$.on("1", "anonymous_3")
-$.on("2", "anonymous_4")
+$.on("alt + f4", "anonymous_9") ; binding
+$.on("f12", "anonymous_8")
+$.on("1", "anonymous_7")
+$.on("2", "anonymous_6")
 $.on("3", "anonymous_5")
-$.on("4", "anonymous_6")
-$.on("5", "anonymous_7")
-$.on("space", "anonymous_8")
-$.on("f", "anonymous_9")
+$.on("4", "anonymous_4")
+$.on("5", "anonymous_3")
+$.on("space", "anonymous_2")
+$.on("f", "anonymous_1")
 anonymous_1() {
-  $.beep()
-  $.exit()
-}
-anonymous_2() {
-  $.beep()
-  $.pause()
-}
-anonymous_3() {
-  $.clearTimeout("actionE")
-  $.press("1")
-  $.setTimeout("actionE", 100)
-}
-anonymous_4() {
-  $.clearTimeout("actionE")
-  $.press("2")
-  $.setTimeout("actionE", 100)
-}
-anonymous_5() {
-  $.clearTimeout("actionE")
-  $.press("3")
-  $.setTimeout("actionE", 100)
-}
-anonymous_6() {
-  $.clearTimeout("actionE")
-  $.press("4")
-  $.setTimeout("actionE", 100)
-}
-anonymous_7() {
-  $.clearTimeout("actionE")
-  $.press("5")
-  $.setTimeout("actionE", 100)
-}
-anonymous_8() {
-  $.clearTimeout("jump")
-  jump()
-  $.setTimeout("jump", 200)
-}
-anonymous_9() {
   if (isPicking) {
     return
   }
   isPicking := true
   fastPick()
+}
+anonymous_2() {
+  clearTimeout("jump")
+  jump()
+  setTimeout("jump", 200)
+}
+anonymous_3() {
+  clearTimeout("actionE")
+  $.press("5")
+  setTimeout("actionE", 100)
+}
+anonymous_4() {
+  clearTimeout("actionE")
+  $.press("4")
+  setTimeout("actionE", 100)
+}
+anonymous_5() {
+  clearTimeout("actionE")
+  $.press("3")
+  setTimeout("actionE", 100)
+}
+anonymous_6() {
+  clearTimeout("actionE")
+  $.press("2")
+  setTimeout("actionE", 100)
+}
+anonymous_7() {
+  clearTimeout("actionE")
+  $.press("1")
+  setTimeout("actionE", 100)
+}
+anonymous_8() {
+  $.beep()
+  $.pause()
+}
+anonymous_9() {
+  $.beep()
+  $.exit()
 }

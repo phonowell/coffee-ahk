@@ -160,16 +160,6 @@ type Point = [number, number]
 
 #### sleep(time: number): void
 
-### timer
-
-#### clearInterval(fn: Function | string): void
-
-#### clearTimeout(fn: Function | string): void
-
-#### setInterval(fn: Function | string, time: number): void
-
-#### setTimeout(fn: Function | string, time: number): void
-
 ### math
 
 #### abs(n: number): number
@@ -179,3 +169,13 @@ type Point = [number, number]
 #### floor(n: number): number
 
 #### round(n: number): number
+
+### timer
+
+#### clearInterval(fn: Function | string): void
+
+#### clearTimeout(fn: Function | string): void
+
+#### setInterval(fn: Function | string, time: number): string
+
+#### setTimeout(fn: Function | string, time: number): string

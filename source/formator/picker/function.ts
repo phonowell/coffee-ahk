@@ -1,9 +1,10 @@
-import findIndex from 'lodash/findIndex'
+import findLastIndex from 'lodash/findLastIndex'
 import isEqual from 'lodash/isEqual'
 
 // interface
 
 import { Context } from '../type'
+type Item = Context['content']['list'][number]
 
 // variable
 
@@ -17,9 +18,23 @@ const listForbidden = [
 
 // function
 
+function countFn(
+  ctx: Context
+): Set<string> {
+
+  const { content } = ctx
+  const listFn: Set<string> = new Set()
+
+  content.list.forEach(it => {
+    if (it.type !== 'function') return
+    listFn.add(it.value)
+  })
+
+  return listFn
+}
+
 function main(
-  ctx: Context,
-  seed: number = 0
+  ctx: Context
 ): void {
 
   const { content } = ctx
@@ -36,11 +51,7 @@ function main(
   })
 
   // list
-  const listFn: Set<string> = new Set()
-  content.list.forEach(it => {
-    if (it.type !== 'function') return
-    listFn.add(it.value)
-  })
+  let listFn = countFn(ctx)
 
   // validate
   listFn.forEach(it => {
@@ -50,49 +61,8 @@ function main(
 
   // anonymous function
   if (listFn.has('anonymous')) {
-
-    type Item = typeof content['list'][number]
-    const list: Item[] = []
-
-    function next(
-      n: number,
-      scope: Item['scope']
-    ): void {
-
-      const it = content.eq(n)
-      list.push({ ...it })
-
-      // last one
-      if (
-        content.equal(it, 'edge', 'block-end')
-        && isEqual(it.scope, scope)
-      ) {
-        it.type = 'string'
-        it.value = `"anonymous_${seed}"`
-        list.push({
-          type: 'new-line',
-          value: '0',
-          scope
-        })
-        return
-      }
-
-      it.type = 'void'
-      next(n + 1, scope)
-    }
-
-    const i = findIndex(content.list, {
-      type: 'function',
-      value: 'anonymous'
-    })
-    const it = content.eq(i)
-
-    it.value = `anonymous_${++seed}`
-    next(i, [...it.scope, 'function'])
-
-    list.forEach(_it => content.add(_it))
-    content.update()
-    return main(ctx, seed)
+    pickAnonymous(ctx)
+    listFn = countFn(ctx) // re-list
   }
 
   // fn in parameter -> "fn"
@@ -105,6 +75,61 @@ function main(
     it.type = 'string'
     it.value = `"${it.value}"`
   })
+}
+
+function pickAnonymous(
+  ctx: Context,
+  seed = 1
+): void {
+
+  const { content } = ctx
+
+  const i = findLastIndex(content.list, {
+    type: 'function',
+    value: 'anonymous'
+  })
+  if (!~i) return
+
+  const it = content.eq(i)
+
+  it.value = `anonymous_${seed}`
+  pickItem(ctx, seed, i, [...it.scope, 'function'])
+    .forEach(it => content.add(it))
+  content.update()
+
+  pickAnonymous(ctx, seed + 1)
+}
+
+function pickItem(
+  ctx: Context,
+  seed: number,
+  i: number,
+  scope: Item['scope'],
+  listResult: Item[] = []
+): Item[] {
+
+  const { content } = ctx
+
+  const it = content.eq(i)
+  listResult.push({ ...it })
+
+  // last one
+  if (
+    content.equal(it, 'edge', 'block-end')
+    && isEqual(it.scope, scope)
+  ) {
+    it.type = 'string'
+    it.value = `"anonymous_${seed}"`
+    listResult.push({
+      type: 'new-line',
+      value: '0',
+      scope
+    })
+    return listResult
+  }
+
+  it.type = 'void'
+  return pickItem(ctx, seed, i + 1, scope, listResult)
 }
 
 // export

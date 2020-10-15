@@ -11,7 +11,8 @@ function $arrow(
 
   const { cache, content } = ctx
 
-  if (content.equal(content.last, 'sign', '=')) {
+  if (content.equal(content.last, 'edge', 'parameter-end')) null
+  else if (content.equal(content.last, 'sign', '=')) {
     content.pop()
     cache.push('parameter')
     content

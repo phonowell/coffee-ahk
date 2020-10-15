@@ -39,34 +39,34 @@ $.on 'f12', ->
   $.pause()
 
 $.on '1', ->
-  $.clearTimeout actionE
+  clearTimeout actionE
   $.press '1'
-  $.setTimeout actionE, 100
+  setTimeout actionE, 100
 
 $.on '2', ->
-  $.clearTimeout actionE
+  clearTimeout actionE
   $.press '2'
-  $.setTimeout actionE, 100
+  setTimeout actionE, 100
 
 $.on '3', ->
-  $.clearTimeout actionE
+  clearTimeout actionE
   $.press '3'
-  $.setTimeout actionE, 100
+  setTimeout actionE, 100
 
 $.on '4', ->
-  $.clearTimeout actionE
+  clearTimeout actionE
   $.press '4'
-  $.setTimeout actionE, 100
+  setTimeout actionE, 100
 
 $.on '5', ->
-  $.clearTimeout actionE
+  clearTimeout actionE
   $.press '5'
-  $.setTimeout actionE, 100
+  setTimeout actionE, 100
 
 $.on 'space', ->
-  $.clearTimeout jump
+  clearTimeout jump
   jump()
-  $.setTimeout jump, 200
+  setTimeout jump, 200
 
 $.on 'f', ->
   if isPicking then return
