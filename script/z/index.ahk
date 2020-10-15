@@ -395,10 +395,3 @@ class Toolkit extends SystemToolkit {
 }
 global $ := new Toolkit()
 
-fn(n, callback) {
-  Func(callback).Call(n)
-}
-fn(2, "anonymous_1")
-anonymous_1(result) {
-  $.alert(result)
-}
