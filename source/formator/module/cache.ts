@@ -8,6 +8,7 @@ const listRule = [
   '',
   'array',
   'call',
+  'call:anonymous',
   'case',
   'catch',
   'class',

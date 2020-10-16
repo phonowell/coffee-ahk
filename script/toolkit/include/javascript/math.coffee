@@ -1,5 +1,5 @@
-class MathToolkit
-  
+Math =
+
   # abs(n: number): number
   abs: (n) -> return Abs n
   
@@ -11,5 +11,3 @@ class MathToolkit
 
   # round(n: number): number
   round: (n) -> return Round n
-
-Math = new MathToolkit()

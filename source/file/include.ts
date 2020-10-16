@@ -40,7 +40,7 @@ async function load_(
     $.getDirname(source),
     '/',
     name,
-    name.includes('.') ? '' : '.coffee'
+    (_.last(name.split('/')) as string).includes('.') ? '' : '.coffee'
   ].join('')
 
   const listSource = await $.source_(path)

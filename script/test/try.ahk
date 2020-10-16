@@ -10,9 +10,10 @@ try {
 } finally {
   3
 }
-fn() {
+global fn := Func("anonymous_1")
+anonymous_1() {
   try {
-    alert(1)
+    alert.Call(1)
   } catch e {
     throw e
   }

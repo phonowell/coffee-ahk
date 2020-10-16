@@ -82,6 +82,14 @@ function $edge(
     return ` ${_value}`
   }
 
+  if (value === 'call-start') {
+
+    const { value } = content.eq(i - 1)
+    return value[0] === value[0].toLowerCase()
+      ? '.Call('
+      : '('
+  }
+
   return mapEdge[value] || value
 }
 

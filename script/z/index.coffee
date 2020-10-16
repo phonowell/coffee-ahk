@@ -1,7 +1,12 @@
 # include ../include/head.ahk
-# include ../toolkit/index.ahk
+# include ../toolkit/index
 
-for i in [1, 2, 3, 4, 5]
-  setTimeout ->
-    $.info $.now()
-  , i * 1e3
+timer = ''
+
+$.on '1', ->
+  clearTimeout timer
+  timer = setTimeout ->
+    alert 1
+  , 1e3
+
+$.on '2', -> clearTimeout timer

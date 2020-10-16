@@ -1,4 +1,4 @@
-a(this)
+a.Call(this)
 this.a := 1
-a(a.prototype)
+a.Call(a.prototype)
 a.prototype.a := 1

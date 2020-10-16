@@ -1,70 +1,63 @@
-# include other
+# click(key?: string): void
+$.click = (key = 'left') ->
+  key = $.replace key, '-', ''
+  key = $.replace key, ':', ' '
+  `Click, % key`
 
-class SetterToolkit extends OtherToolkit
+# move(point: Point, speed: number = 0): void
+$.move = (point = '', speed = 0) ->
+  unless point
+    throw new Error '$.move: invalid point'
+  `MouseMove, point[1], point[2], speed`
 
-  # click(key?: string): void
-  click: (key = '') ->
-    unless key
-      Click
-      return
-    key = $.replace key, '-', ''
-    key = $.replace key, ':', ' '
-    `Click, % key`
+# press(key...: string): void
+$.press = (listInput...) ->
+  
+  # validate
+  unless $.length listInput
+    throw new Error '$.press: invalid key'
 
-  # move(point: Point, speed: number = 0): void
-  move: (point = '', speed = 0) ->
-    unless point
-      throw new Error '$.move: invalid point'
-    `MouseMove, point[1], point[2], speed`
+  # format
+  listKey = []
+  for input in listInput
+    _input = $.toLowerCase input
+    _input = $.replace _input, ' ', ''
+    _input = $.replace _input, '-', ''
+    _list = $.split _input, '+'
+    for _it in _list
+      listKey.Push _it
 
-  # press(key...: string): void
-  press: (listInput...) ->
-    
-    # validate
-    unless $.length listInput
-      throw new Error '$.press: invalid key'
+  # unfold
+  listResult = []
+  len = $.length listKey
+  for key, i in listKey
+    # last
+    if i == len
+      listResult[i] = $.split key, ':'
+      continue
+    # other
+    if $.includes key, ':'
+      listResult[i] = $.split key, ':'
+      listResult[len * 2 - i] = $.split key, ':'
+    else
+      listResult[i] = [key, 'down']
+      listResult[len * 2 - i] = [key, 'up']
 
-    # format
-    listKey = []
-    for input in listInput
-      _input = $.toLowerCase input
-      _input = $.replace _input, ' ', ''
-      _input = $.replace _input, '-', ''
-      _list = $.split _input, '+'
-      for _it in _list
-        listKey.push _it
+  # alias & join
+  for it, i in listResult
+    if it[1] == 'win'
+      it[1] = 'lwin'
+    listResult[i] = $.trim "#{it[1]} #{it[2]}"
 
-    # unfold
-    listResult = []
-    len = $.length listKey
-    for key, i in listKey
-      # last
-      if i == len
-        listResult[i] = $.split key, ':'
-        continue
-      # other
-      if $.includes key, ':'
-        listResult[i] = $.split key, ':'
-        listResult[len * 2 - i] = $.split key, ':'
-      else
-        listResult[i] = [key, 'down']
-        listResult[len * 2 - i] = [key, 'up']
+  # execute
+  output = ''
+  for it in listResult
+    output = "#{output}{#{it}}"
+  `Send, % output`
 
-    # alias & join
-    for it, i in listResult
-      if it[1] == 'win'
-        it[1] = 'lwin'
-      listResult[i] = $.trim "#{it[1]} #{it[2]}"
-
-    # execute
-    output = ''
-    for it in listResult
-      output = "#{output}{#{it}}"
-    `Send, % output`
-
-  # setFixed(fixed?: boolean): void
-  setFixed: (isFixed = 'Toggle') ->
-    if isFixed != 'Toggle'
-      if isFixed then isFixed = 'On'
-      else isFixed = 'Off'
-    `Winset AlwaysOnTop, % isFixed, A`
+# setFixed(fixed?: boolean): void
+$.setFixed = (isFixed = 'Toggle') ->
+  if isFixed != 'Toggle'
+    if isFixed then isFixed = 'On'
+    else isFixed = 'Off'
+  `Winset AlwaysOnTop, % isFixed, A`

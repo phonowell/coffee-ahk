@@ -12,26 +12,25 @@ function $arrow(
   const { cache, content } = ctx
 
   if (content.equal(content.last, 'edge', 'parameter-end')) null
-  else if (content.equal(content.last, 'sign', '=')) {
-    content.pop()
-    cache.push('parameter')
-    content
-      .push('edge', 'parameter-start')
-      .push('edge', 'parameter-end')
-    cache.pop()
-  } else {
-    if (cache.last === 'class') {
-      content.pop()
+  else {
+    if (
+      content.last.type === 'sign'
+      && ['=', ':'].includes(content.last.value)
+    ) {
+      content.push('identifier', 'Func')
+      cache.push('call:anonymous')
       content
+        .push('edge', 'call-start')
+        .push('identifier', 'anonymous')
         .push('edge', 'parameter-start')
         .push('edge', 'parameter-end')
-    } else content
-      .push('identifier', 'anonymous')
-      .push('edge', 'parameter-start')
-      .push('edge', 'parameter-end')
-
+    } else {
+      content
+        .push('identifier', 'anonymous')
+        .push('edge', 'parameter-start')
+        .push('edge', 'parameter-end')
+    }
   }
-
   cache.push('function')
   return true
 }
@@ -42,11 +41,18 @@ function $start(
 
   const { cache, content } = ctx
 
-  if (content.equal(content.last, 'sign', '='))
-    content.pop()
-  else
-    if (cache.last === 'class') content.pop()
-    else content.push('identifier', 'anonymous')
+  if (
+    content.last.type === 'sign'
+    && ['=', ':'].includes(content.last.value)
+  ) {
+    content.push('identifier', 'Func')
+    cache.push('call:anonymous')
+    content
+      .push('edge', 'call-start')
+      .push('identifier', 'anonymous')
+  } else {
+    content.push('identifier', 'anonymous')
+  }
 
   cache.push('parameter')
   content.push('edge', 'parameter-start')

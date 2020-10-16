@@ -1,35 +1,28 @@
-# include string
+# exit(): void
+$.exit = -> ExitApp
 
-class SystemToolkit extends StringToolkit
+# off(key: string, fn: Function | string): void
+$.off = (key, fn) ->
+  key = $.formatHotkey key
+  `Hotkey, % key, % fn, Off`
 
-  # exit(): void
-  exit: -> ExitApp
+# on(key, string, fn: Function | string): void
+$.on = (key, fn) ->
+  key = $.formatHotkey key
+  `Hotkey, % key, % fn, On`
 
-  # off(key: string, fn: Function | string): void
-  off: (key, fn) ->
-    key = $.formatHotkey key
-    `Hotkey, % key, % fn, Off`
+# open(source: string): void
+$.open = (source) -> `Run, % source`
 
-  # on(key, string, fn: Function | string): void
-  on: (key, fn) ->
-    key = $.formatHotkey key
-    `Hotkey, % key, % fn, On`
+# pause(paused?: boolean): void
+$.pause = (isPaused = 'Toggle') ->
+  if isPaused != 'Toggle'
+    if isPaused then isPaused = 'On'
+    else isPaused = 'Off'
+  `Pause, % isPaused`
 
-  # open(source: string): void
-  open: (source = '') ->
-    unless source
-      throw new Error '$.open: invalid source'
-    `Run, % source`
+# reload(): void
+$.reload = -> Reload
 
-  # pause(paused?: boolean): void
-  pause: (isPaused = 'Toggle') ->
-    if isPaused != 'Toggle'
-      if isPaused then isPaused = 'On'
-      else isPaused = 'Off'
-    `Pause, % isPaused`
-
-  # reload(): void
-  reload: -> Reload
-
-  # sleep(time: number): void
-  sleep: (time) -> `Sleep, % time`
+# sleep(time: number): void
+$.sleep = (time) -> `Sleep, % time`

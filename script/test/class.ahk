@@ -1,13 +1,16 @@
 class T {
-  a() {
-    return 1
-  }
-  b(n) {
-    return n
-  }
+  a := Func("anonymous_3")
+  b := Func("anonymous_2")
   c := 0
-  d() {
-    return this.c
-  }
+  d := Func("anonymous_1")
 }
 global t := new T()
+anonymous_1() {
+  return this.c
+}
+anonymous_2(n) {
+  return n
+}
+anonymous_3() {
+  return 1
+}

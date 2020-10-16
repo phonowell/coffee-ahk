@@ -50,8 +50,6 @@ type Point = [number, number]
 
 ## speaker
 
-### alert(message: string): string
-
 ### beep(): void
 
 ### info(message: string, point?: Point): string
@@ -78,9 +76,9 @@ type Point = [number, number]
 
 ### exit(): void
 
-### off(key: string, fn: Function | string): void
+### off(key: string, fn: Function): void
 
-### on(key, string, fn: Function | string): void
+### on(key, string, fn: Function): void
 
 ### open(source: string): void
 
@@ -100,12 +98,16 @@ type Point = [number, number]
 
 ### round(n: number): number
 
+## other
+
+### alert(message: string): string
+
 ## timer
 
-### clearInterval(fn: Function | string): void
+### clearInterval(fn: Function): void
 
-### clearTimeout(fn: Function | string): void
+### clearTimeout(fn: Function): void
 
-### setInterval(fn: Function | string, time: number): string
+### setInterval(fn: Function, time: number): Function
 
-### setTimeout(fn: Function | string, time: number): string
+### setTimeout(fn: Function, time: number): Function
