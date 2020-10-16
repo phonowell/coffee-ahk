@@ -38,18 +38,8 @@ function main(
   ctx: Context
 ): void {
 
-  const { content } = ctx
-
   // function
-  content.list.forEach((it, i) => {
-
-    if (it.type !== 'edge' || it.value !== 'parameter-start') return
-
-    const _prev = content.eq(i - 1)
-    if (_prev.type !== 'identifier') return
-
-    _prev.type = 'function'
-  })
+  transFn(ctx)
 
   // list
   let listFn = countFn(ctx)
@@ -66,27 +56,11 @@ function main(
     listFn = countFn(ctx) // re-list
   }
 
-  // fn in parameter -> "fn"
-  content.list.forEach((it, i) => {
+  // function as parameter
+  transFnAsParam(ctx, listFn)
 
-    if (it.type !== 'identifier') return
-    if (it.scope[it.scope.length - 1] !== 'call') return
-    if (!listFn.has(it.value)) return
-    if (content.equal(content.eq(i + 1), 'edge', 'call-start')) return
-
-    it.type = 'string'
-    it.value = `"${it.value}"`
-  })
-
-  // call
-  content.list.forEach((it, i) => {
-
-    if (!content.equal(it, 'edge', 'call-start')) return
-    const _prev = content.eq(i - 1)
-    if (!content.equal(_prev, 'identifier', 'callback')) return
-    _prev.type = 'origin'
-    _prev.value = `Func(${_prev.value}).Call`
-  })
+  // call function(s) which as parameter
+  transCallAsParam(ctx)
 }
 
 function pickAnonymous(
@@ -173,6 +147,96 @@ function pickItem(
   }
 
   return listResult
+}
+
+function transCallAsParam(
+  ctx: Context
+): void {
+
+  const { content } = ctx
+
+  content.list.forEach((it, i) => {
+
+    if (it.type !== 'function') return
+
+    function pick(
+      i: number,
+      listResult: string[] = []
+    ): string[] {
+
+      const it = content.eq(i)
+
+      if (content.equal(it, 'edge', 'parameter-end')) return listResult
+      if (it.type !== 'identifier') return pick(i + 1, listResult)
+      listResult.push(it.value)
+      return pick(i + 1, listResult)
+    }
+    const listParameter = pick(i)
+
+    function change(
+      i: number,
+      scope: Item['scope']
+    ): void {
+
+      const it = content.eq(i)
+
+      if (!it) return
+      if (
+        content.equal(it, 'edge', 'block-end')
+        && it.scope.length === 1
+        && it.scope[0] === 'function'
+      ) return
+
+      if (it.type !== 'identifier') return change(i + 1, scope)
+      if (!listParameter.includes(it.value)) return change(i + 1, scope)
+
+      const _next = content.eq(i + 1)
+      if (!_next) return change(i + 1, scope)
+      if (!content.equal(_next, 'edge', 'call-start')) return change(i + 1, scope)
+
+      it.type = 'origin'
+      it.value = `Func(${it.value}).Call`
+
+      return change(i + 1, scope)
+    }
+    change(i, it.scope)
+  })
+}
+
+function transFn(
+  ctx: Context
+): void {
+
+  const { content } = ctx
+
+  content.list.forEach((it, i) => {
+
+    if (it.type !== 'edge' || it.value !== 'parameter-start') return
+
+    const _prev = content.eq(i - 1)
+    if (_prev.type !== 'identifier') return
+
+    _prev.type = 'function'
+  })
+}
+
+function transFnAsParam(
+  ctx: Context,
+  listFn: Set<string>
+): void {
+
+  const { content } = ctx
+
+  content.list.forEach((it, i) => {
+
+    if (it.type !== 'identifier') return
+    if (it.scope[it.scope.length - 1] !== 'call') return
+    if (!listFn.has(it.value)) return
+    if (content.equal(content.eq(i + 1), 'edge', 'call-start')) return
+
+    it.type = 'string'
+    it.value = `"${it.value}"`
+  })
 }
 
 // export

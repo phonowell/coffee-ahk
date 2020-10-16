@@ -10,3 +10,7 @@ fn(
   2
 )
 fn fn fn
+fn = (a, b, c) ->
+  a
+  b()
+  c a

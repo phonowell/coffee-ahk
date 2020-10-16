@@ -12,3 +12,8 @@ fn(a := 1, b := 2) {
 }
 fn(1, 2)
 fn(fn("fn"))
+fn(a, b, c) {
+  a
+  Func(b).Call()
+  Func(c).Call(a)
+}

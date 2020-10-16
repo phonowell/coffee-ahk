@@ -395,3 +395,9 @@ class Toolkit extends SystemToolkit {
 }
 global $ := new Toolkit()
 
+for __i__, i in [1, 2, 3, 4, 5] {
+  setTimeout("anonymous_1", i * 1000)
+}
+anonymous_1() {
+  $.info($.now())
+}
