@@ -3,10 +3,12 @@
 
 timer = ''
 
-$.on '1', ->
+$.on 'win + n', ->
   clearTimeout timer
   timer = setTimeout ->
-    alert 1
+    $.open 'notepad.exe'
   , 1e3
 
-$.on '2', -> clearTimeout timer
+$.on 'esc', -> clearTimeout timer
+
+$.on 'alt + f4', -> $.exit()

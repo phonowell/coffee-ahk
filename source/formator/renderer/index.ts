@@ -200,7 +200,7 @@ function injectComment(
 
   const newLine = $newLine(ctx)
 
-  const output = `${seprator}${cacheComment.join(' ; ')}${newLine}`
+  const output = `${seprator}${cacheComment.join(' ')}${newLine}`
   cacheComment = []
   return output
 }
