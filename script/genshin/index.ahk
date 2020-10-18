@@ -18,58 +18,59 @@ SetKeyDelay, 0, 50
 SetMouseDelay, 0, 50
 StringCaseSense, On
 global $ := {}
-$.reverse := Func("anonymous_63") ; reverse(input: unknown[]): unknown[]
-$.includes := Func("anonymous_62")
-$.length := Func("anonymous_61") ; length(input: string | array | object): number
-$.type := Func("anonymous_60") ; type(input: unknown): 'array' | 'number' | 'object' | 'string'
-$.findColor := Func("anonymous_59") ; findColor( ; color: number, ; start: Point = [0, 0], ; end: Point = [A_ScreenWidth, A_ScreenHeight], ; variation = 0 ; ): Point
-$.findImage := Func("anonymous_58") ; findImage( ; source: string, ; start: Point = [0, 0], ; end: Point = [A_ScreenWidth, A_ScreenHeight], ; ): Point
-$.getColor := Func("anonymous_57") ; getColor(point?: Point): number
-$.getPosition := Func("anonymous_56") ; getPosition(): Point
-$.getState := Func("anonymous_55") ; getState(key: string): string
-$.formatHotkey := Func("anonymous_54") ; formatHotkey(key: string): string
-$.now := Func("anonymous_53") ; now(): number
-$.random := Func("anonymous_52") ; random(min: number = 0, max: number = 1): number
-$.click := Func("anonymous_51") ; click(key?: string): void
-$.move := Func("anonymous_50") ; move(point: Point, speed: number = 0): void
-$.press := Func("anonymous_49") ; press(key...: string): void
-$.setFixed := Func("anonymous_48") ; setFixed(fixed?: boolean): void
-$.beep := Func("anonymous_47") ; beep(): void
-$.info := Func("anonymous_46") ; info(message: string, point?: Point): string
-$.replace := Func("anonymous_45") ; replace( ; input: string, ; searchment: string, ; replacement: string, ; limit: number = -1 ; )
-$.split := Func("anonymous_44") ; split(input: string, delimiter: string): string
-$.toLowerCase := Func("anonymous_43") ; toLowerCase(input: string): string
-$.toString := Func("anonymous_42") ; toString(input: unknown): string
-$.toUpperCase := Func("anonymous_41") ; toUpperCase(input: string): string
-$.trim := Func("anonymous_40") ; trim(input: string, omitting: string): string
-$.trimEnd := Func("anonymous_39") ; trimEnd(input: string, omitting: string): string
-$.trimStart := Func("anonymous_38") ; trimStart(input: string, omitting: string): string
-$.exit := Func("anonymous_37") ; exit(): void
-$.off := Func("anonymous_36") ; off(key: string, fn: Function | string): void
-$.on := Func("anonymous_35") ; on(key, string, fn: Function | string): void
-$.open := Func("anonymous_34") ; open(source: string): void
-$.pause := Func("anonymous_33") ; pause(paused?: boolean): void
-$.reload := Func("anonymous_32") ; reload(): void
-$.sleep := Func("anonymous_31") ; sleep(time: number): void
-global Math := {abs: Func("anonymous_30"), ceil: Func("anonymous_29"), floor: Func("anonymous_28"), round: Func("anonymous_27")} ; abs(n: number): number ; ceil(n: number): number ; floor(n: number): number ; round(n: number): number
-global alert := Func("anonymous_26") ; alert(message: string): string
-global clearInterval := Func("anonymous_25") ; clearInterval(fn: Function | string): void
-global clearTimeout := Func("anonymous_24") ; clearTimeout(fn: Function | string): void
-global setInterval := Func("anonymous_23") ; setInterval(fn: Function | string, time: number): string
-global setTimeout := Func("anonymous_22") ; setTimeout(fn: Function | string, time: number): string
-global isPicking := false ; variable
-global stepPick := 0
-global timer := ""
-global jump := Func("anonymous_21") ; function
-global useE := Func("anonymous_20")
-$.on.Call("alt + f4", "anonymous_19") ; binding
-$.on.Call("f12", "anonymous_18")
-$.on.Call("1", "anonymous_17")
-$.on.Call("2", "anonymous_16")
-$.on.Call("3", "anonymous_15")
-$.on.Call("4", "anonymous_14")
-$.on.Call("5", "anonymous_13")
-$.on.Call("f", "anonymous_12")
+$.reverse := Func("anonymous_56") ; reverse(input: unknown[]): unknown[]
+$.includes := Func("anonymous_55")
+$.length := Func("anonymous_54") ; length(input: string | array | object): number
+$.type := Func("anonymous_53") ; type(input: unknown): 'array' | 'number' | 'object' | 'string'
+$.findColor := Func("anonymous_52") ; findColor( color: number, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], variation = 0 ): Point
+$.findImage := Func("anonymous_51") ; findImage( source: string, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], ): Point
+$.getColor := Func("anonymous_50") ; getColor(point?: Point): number
+$.getPosition := Func("anonymous_49") ; getPosition(): Point
+$.getState := Func("anonymous_48") ; getState(key: string): string
+$.formatHotkey := Func("anonymous_47") ; formatHotkey(key: string): string
+$.now := Func("anonymous_46") ; now(): number
+$.random := Func("anonymous_45") ; random(min: number = 0, max: number = 1): number
+$.click := Func("anonymous_44") ; click(key?: string): void
+$.move := Func("anonymous_43") ; move(point: Point, speed: number = 0): void
+$.press := Func("anonymous_42") ; press(key...: string): void
+$.setFixed := Func("anonymous_41") ; setFixed(fixed?: boolean): void
+$.beep := Func("anonymous_40") ; beep(): void
+$.info := Func("anonymous_39") ; info(message: string, point?: Point): string
+$.replace := Func("anonymous_38") ; replace( input: string, searchment: string, replacement: string, limit: number = -1 )
+$.split := Func("anonymous_37") ; split(input: string, delimiter: string): string
+$.toLowerCase := Func("anonymous_36") ; toLowerCase(input: string): string
+$.toString := Func("anonymous_35") ; toString(input: unknown): string
+$.toUpperCase := Func("anonymous_34") ; toUpperCase(input: string): string
+$.trim := Func("anonymous_33") ; trim(input: string, omitting: string): string
+$.trimEnd := Func("anonymous_32") ; trimEnd(input: string, omitting: string): string
+$.trimStart := Func("anonymous_31") ; trimStart(input: string, omitting: string): string
+$.exit := Func("anonymous_30") ; exit(): void
+$.off := Func("anonymous_29") ; off(key: string, fn: Function | string): void
+$.on := Func("anonymous_28") ; on(key, string, fn: Function | string): void
+$.open := Func("anonymous_27") ; open(source: string): void
+$.pause := Func("anonymous_26") ; pause(paused?: boolean): void
+$.reload := Func("anonymous_25") ; reload(): void
+$.sleep := Func("anonymous_24") ; sleep(time: number): void
+global Math := {abs: Func("anonymous_23"), ceil: Func("anonymous_22"), floor: Func("anonymous_21"), round: Func("anonymous_20")} ; abs(n: number): number ceil(n: number): number floor(n: number): number round(n: number): number
+global alert := Func("anonymous_19") ; alert(message: string): string
+global clearInterval := Func("anonymous_18") ; clearInterval(fn: Function | string): void
+global clearTimeout := Func("anonymous_17") ; clearTimeout(fn: Function | string): void
+global setInterval := Func("anonymous_16") ; setInterval(fn: Function | string, time: number): string
+global setTimeout := Func("anonymous_15") ; setTimeout(fn: Function | string, time: number): string
+global timer := "" ; variable
+global dataAct := [1, 5] ; function
+global act := Func("anonymous_14")
+global jump := Func("anonymous_12")
+global dataPick := [1, 10]
+global pick := Func("anonymous_11")
+$.on.Call("alt + f4", "anonymous_9") ; binding
+$.on.Call("f12", "anonymous_8")
+$.on.Call("1", "anonymous_7")
+$.on.Call("2", "anonymous_6")
+$.on.Call("3", "anonymous_5")
+$.on.Call("4", "anonymous_4")
+$.on.Call("5", "anonymous_3")
+$.on.Call("f", "anonymous_2")
 $.on.Call("space", "anonymous_1")
 anonymous_1() {
   clearTimeout.Call(timer)
@@ -77,125 +78,94 @@ anonymous_1() {
   timer := setTimeout.Call(jump, 200)
 }
 anonymous_2() {
-  $.press.Call("f")
-  $.click.Call("wheel-down:up")
+  pick.Call()
 }
 anonymous_3() {
-  $.press.Call("f")
-  $.click.Call("wheel-down:down")
+  $.press.Call("5")
+  act.Call()
 }
 anonymous_4() {
-  $.press.Call("f")
-  $.click.Call("wheel-down:down")
+  $.press.Call("4")
+  act.Call()
 }
 anonymous_5() {
-  $.press.Call("f")
-  $.click.Call("wheel-down:down")
+  $.press.Call("3")
+  act.Call()
 }
 anonymous_6() {
-  $.press.Call("f")
-  $.click.Call("wheel-down:down")
+  $.press.Call("2")
+  act.Call()
 }
 anonymous_7() {
-  $.press.Call("f")
-  $.click.Call("wheel-down:down")
+  $.press.Call("1")
+  act.Call()
 }
 anonymous_8() {
-  $.press.Call("f")
-  $.click.Call("wheel-down:down")
-}
-anonymous_9() {
-  $.press.Call("f")
-  $.click.Call("wheel-down:down")
-}
-anonymous_10() {
-  $.press.Call("f")
-  $.click.Call("wheel-down:down")
-}
-anonymous_11() {
-  $.press.Call("f")
-  $.click.Call("wheel-down:down")
-}
-anonymous_12() {
-  $.press.Call("f")
-  $.click.Call("wheel-down:down")
-  setTimeout.Call("anonymous_11", 100)
-  setTimeout.Call("anonymous_10", 200)
-  setTimeout.Call("anonymous_9", 300)
-  setTimeout.Call("anonymous_8", 400)
-  setTimeout.Call("anonymous_7", 500)
-  setTimeout.Call("anonymous_6", 600)
-  setTimeout.Call("anonymous_5", 700)
-  setTimeout.Call("anonymous_4", 800)
-  setTimeout.Call("anonymous_3", 900)
-  setTimeout.Call("anonymous_2", 1000)
-}
-anonymous_13() {
-  clearTimeout.Call(timer)
-  $.press.Call("5")
-  timer := setTimeout.Call(useE, 100)
-}
-anonymous_14() {
-  clearTimeout.Call(timer)
-  $.press.Call("4")
-  timer := setTimeout.Call(useE, 100)
-}
-anonymous_15() {
-  clearTimeout.Call(timer)
-  $.press.Call("3")
-  timer := setTimeout.Call(useE, 100)
-}
-anonymous_16() {
-  clearTimeout.Call(timer)
-  $.press.Call("2")
-  timer := setTimeout.Call(useE, 100)
-}
-anonymous_17() {
-  clearTimeout.Call(timer)
-  $.press.Call("1")
-  timer := setTimeout.Call(useE, 100)
-}
-anonymous_18() {
   $.beep.Call()
   $.pause.Call()
 }
-anonymous_19() {
+anonymous_9() {
   $.beep.Call()
   $.exit.Call()
 }
-anonymous_20() {
-  $.press.Call("e")
+anonymous_10() {
+  pick.Call()
 }
-anonymous_21() {
+anonymous_11() {
+  if (dataPick[1] > dataPick[2]) {
+    dataPick[1] := 1
+    $.press.Call("f")
+    $.click.Call("wheel-down:up")
+    return
+  }
+  dataPick[1]++
+  $.press.Call("f")
+  $.click.Call("wheel-down:down")
+  setTimeout.Call("anonymous_10", 100)
+}
+anonymous_12() {
   $.press.Call("space")
 }
-anonymous_22(fn, time := 0) {
+anonymous_13() {
+  act.Call()
+}
+anonymous_14() {
+  if (dataAct[1] > dataAct[2]) {
+    dataAct[1] := 1
+    $.press.Call("e")
+    return
+  }
+  dataAct[1]++
+  $.press.Call("e")
+  setTimeout.Call("anonymous_13", 100)
+}
+anonymous_15(fn, time := 0) {
   if !(fn) {
     return fn
   }
   SetTimer, % fn, % 0 - time
   return fn
 }
-anonymous_23(fn, time := 0) {
+anonymous_16(fn, time := 0) {
   if !(fn) {
     return fn
   }
   SetTimer, % fn, % time
   return fn
 }
-anonymous_24(fn) {
+anonymous_17(fn) {
   if !(fn) {
     return
   }
   SetTimer, % fn, Delete
 }
-anonymous_25(fn) {
+anonymous_18(fn) {
   if !(fn) {
     return
   }
   SetTimer, % fn, Delete
 }
-anonymous_26(message := "") {
+anonymous_19(message := "") {
   if !(message) {
     return
   }
@@ -203,25 +173,25 @@ anonymous_26(message := "") {
   MsgBox, % msg
   return message
 }
-anonymous_27(n) {
+anonymous_20(n) {
   return Round(n)
 }
-anonymous_28(n) {
+anonymous_21(n) {
   return Floor(n)
 }
-anonymous_29(n) {
+anonymous_22(n) {
   return Ceil(n)
 }
-anonymous_30(n) {
+anonymous_23(n) {
   return Abs(n)
 }
-anonymous_31(time) {
+anonymous_24(time) {
   Sleep, % time
 }
-anonymous_32() {
+anonymous_25() {
   Reload
 }
-anonymous_33(isPaused := "Toggle") {
+anonymous_26(isPaused := "Toggle") {
   if (isPaused != "Toggle") {
     if (isPaused) {
       isPaused := "On"
@@ -231,34 +201,34 @@ anonymous_33(isPaused := "Toggle") {
   }
   Pause, % isPaused
 }
-anonymous_34(source) {
+anonymous_27(source) {
   Run, % source
 }
-anonymous_35(key, fn) {
+anonymous_28(key, fn) {
   key := $.formatHotkey.Call(key)
   Hotkey, % key, % fn, On
 }
-anonymous_36(key, fn) {
+anonymous_29(key, fn) {
   key := $.formatHotkey.Call(key)
   Hotkey, % key, % fn, Off
 }
-anonymous_37() {
+anonymous_30() {
   ExitApp
 }
-anonymous_38(input, omitting := " `t") {
+anonymous_31(input, omitting := " `t") {
   return LTrim(input, omitting)
 }
-anonymous_39(input, omitting := " `t") {
+anonymous_32(input, omitting := " `t") {
   return RTrim(input, omitting)
 }
-anonymous_40(input, omitting := " `t") {
+anonymous_33(input, omitting := " `t") {
   return Trim(input, omitting)
 }
-anonymous_41(input) {
+anonymous_34(input) {
   StringUpper, __Result__, input
   return __Result__
 }
-anonymous_42(input) {
+anonymous_35(input) {
   type := $.type.Call(input)
   if (type == "array") {
     result := ""
@@ -275,17 +245,17 @@ anonymous_42(input) {
   }
   return input
 }
-anonymous_43(input) {
+anonymous_36(input) {
   StringLower, __Result__, input
   return __Result__
 }
-anonymous_44(input, delimiter) {
+anonymous_37(input, delimiter) {
   return StrSplit(input, delimiter)
 }
-anonymous_45(input, searchment, replacement, limit := -1) {
+anonymous_38(input, searchment, replacement, limit := -1) {
   return StrReplace(input, searchment, replacement, limit)
 }
-anonymous_46(message, point := "") {
+anonymous_39(message, point := "") {
   if !(message) {
     return
   }
@@ -296,10 +266,10 @@ anonymous_46(message, point := "") {
   ToolTip, % msg, % point[1], % point[2]
   return message
 }
-anonymous_47() {
+anonymous_40() {
   SoundBeep
 }
-anonymous_48(isFixed := "Toggle") {
+anonymous_41(isFixed := "Toggle") {
   if (isFixed != "Toggle") {
     if (isFixed) {
       isFixed := "On"
@@ -309,7 +279,7 @@ anonymous_48(isFixed := "Toggle") {
   }
   Winset AlwaysOnTop, % isFixed, A
 }
-anonymous_49(listInput*) {
+anonymous_42(listInput*) {
   if !($.length.Call(listInput)) { ; validate
     throw Exception("$.press: invalid key")
   }
@@ -350,25 +320,25 @@ anonymous_49(listInput*) {
   }
   Send, % output
 }
-anonymous_50(point := "", speed := 0) {
+anonymous_43(point := "", speed := 0) {
   if !(point) {
     throw Exception("$.move: invalid point")
   }
   MouseMove, point[1], point[2], speed
 }
-anonymous_51(key := "left") {
+anonymous_44(key := "left") {
   key := $.replace.Call(key, "-", "")
   key := $.replace.Call(key, ":", " ")
   Click, % key
 }
-anonymous_52(min := 0, max := 1) {
+anonymous_45(min := 0, max := 1) {
   Random, __Result__, min, max
   return __Result__
 }
-anonymous_53() {
+anonymous_46() {
   return A_TickCount
 }
-anonymous_54(key) {
+anonymous_47(key) {
   listKey := [] ; format
   _key := $.toLowerCase.Call(key)
   _key := $.replace.Call(_key, " ", "")
@@ -420,21 +390,21 @@ anonymous_54(key) {
   }
   return $.replace.Call("" . (prefix) . "" . ($.trim.Call(result, " &")) . "", ":", " ")
 }
-anonymous_55(key) {
+anonymous_48(key) {
   return GetKeyState(key)
 }
-anonymous_56() {
+anonymous_49() {
   MouseGetPos, __X__, __Y__
   return [__X__, __Y__]
 }
-anonymous_57(point := "") {
+anonymous_50(point := "") {
   if !(point) {
     point := $.getPosition.Call()
   }
   PixelGetColor, __Result__, % point[1], % point[2], RGB
   return __Result__
 }
-anonymous_58(source, start := "", end := "") {
+anonymous_51(source, start := "", end := "") {
   if !(start) {
     start := [0, 0]
   }
@@ -444,7 +414,7 @@ anonymous_58(source, start := "", end := "") {
   ImageSearch __x__, __Y__, start[1], start[2], end[1], end[2], % A_ScriptDir . "\\\" . source
   return [__X__, __Y__]
 }
-anonymous_59(color, start := "", end := "", variation := 0) {
+anonymous_52(color, start := "", end := "", variation := 0) {
   if !(start) {
     start := [0, 0]
   }
@@ -454,7 +424,7 @@ anonymous_59(color, start := "", end := "", variation := 0) {
   PixelSearch __X__, __Y__, start[1], start[2], end[1], end[2], color, variation, Fast RGB
   return [__X__, __Y__]
 }
-anonymous_60(input) {
+anonymous_53(input) {
   if input is Number
     return "number"
   if (IsObject(input)) {
@@ -465,7 +435,7 @@ anonymous_60(input) {
   }
   return "string"
 }
-anonymous_61(input) {
+anonymous_54(input) {
   type := $.type.Call(input)
   switch type {
     case "array": {
@@ -482,7 +452,7 @@ anonymous_61(input) {
     }
   }
 }
-anonymous_62(input, needle) {
+anonymous_55(input, needle) {
   type := $.type.Call(input)
   if (type == "string" || type == "number") {
     return (InStr(input, needle)) > 0
@@ -497,7 +467,7 @@ anonymous_62(input, needle) {
   }
   throw Exception("$.includes: invalid type '" . (type) . "'")
 }
-anonymous_63(input) {
+anonymous_56(input) {
   type := $.type.Call(input)
   if !(type == "array") {
     throw Exception("$.reverse: invalid type '" . (type) . "'")

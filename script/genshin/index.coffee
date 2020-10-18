@@ -4,15 +4,43 @@
 
 # variable
 
-isPicking = false
-stepPick = 0
 timer = ''
 
 # function
 
+dataAct = [1, 5]
+act = ->
+
+  if dataAct[1] > dataAct[2]
+    dataAct[1] = 1
+    $.press 'e'
+    return
+  
+  dataAct[1]++
+  $.press 'e'
+
+  setTimeout ->
+    act()
+  , 100
+
 jump = -> $.press 'space'
 
-useE = -> $.press 'e'
+dataPick = [1, 10]
+pick = ->
+
+  if dataPick[1] > dataPick[2]
+    dataPick[1] = 1
+    $.press 'f'
+    $.click 'wheel-down:up'
+    return
+  
+  dataPick[1]++
+  $.press 'f'
+  $.click 'wheel-down:down'
+
+  setTimeout ->
+    pick()
+  , 100
 
 # binding
 
@@ -25,84 +53,26 @@ $.on 'f12', ->
   $.pause()
 
 $.on '1', ->
-  clearTimeout timer
   $.press '1'
-  timer = setTimeout useE, 100
+  act()
 
 $.on '2', ->
-  clearTimeout timer
   $.press '2'
-  timer = setTimeout useE, 100
+  act()
 
 $.on '3', ->
-  clearTimeout timer
   $.press '3'
-  timer = setTimeout useE, 100
+  act()
 
 $.on '4', ->
-  clearTimeout timer
   $.press '4'
-  timer = setTimeout useE, 100
+  act()
 
 $.on '5', ->
-  clearTimeout timer
   $.press '5'
-  timer = setTimeout useE, 100
+  act()
 
-$.on 'f', ->
-
-  $.press 'f'
-  $.click 'wheel-down:down'
-
-  setTimeout ->
-    $.press 'f'
-    $.click 'wheel-down:down'
-  , 100
-
-  setTimeout ->
-    $.press 'f'
-    $.click 'wheel-down:down'
-  , 200
-
-  setTimeout ->
-    $.press 'f'
-    $.click 'wheel-down:down'
-  , 300
-
-  setTimeout ->
-    $.press 'f'
-    $.click 'wheel-down:down'
-  , 400
-
-  setTimeout ->
-    $.press 'f'
-    $.click 'wheel-down:down'
-  , 500
-
-  setTimeout ->
-    $.press 'f'
-    $.click 'wheel-down:down'
-  , 600
-
-  setTimeout ->
-    $.press 'f'
-    $.click 'wheel-down:down'
-  , 700
-
-  setTimeout ->
-    $.press 'f'
-    $.click 'wheel-down:down'
-  , 800
-
-  setTimeout ->
-    $.press 'f'
-    $.click 'wheel-down:down'
-  , 900
-
-  setTimeout ->
-    $.press 'f'
-    $.click 'wheel-down:up'
-  , 1e3
+$.on 'f', -> pick()
 
 $.on 'space', ->
   clearTimeout timer
