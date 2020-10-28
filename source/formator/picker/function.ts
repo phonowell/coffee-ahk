@@ -17,6 +17,11 @@ const listForbidden = [
   'toggle'
 ]
 
+const salt = Math.random()
+  .toString(32)
+  .split('.')[1]
+  .padStart(11, '0')
+
 // function
 
 function countFn(
@@ -78,7 +83,7 @@ function pickAnonymous(
   if (!~i) return
 
   const it = content.eq(i)
-  it.value = `anonymous_${seed}`
+  it.value = `${salt}_${seed}`
 
   pickItem(ctx, seed, i, [...it.scope, 'function'])
     .forEach(it => {
@@ -122,7 +127,7 @@ function pickItem(
 
   // last one
   item.type = 'string'
-  item.value = `"anonymous_${seed}"`
+  item.value = `"${salt}_${seed}"`
   listResult.push({
     type: 'new-line',
     value: '0',

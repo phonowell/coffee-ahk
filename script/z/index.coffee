@@ -1,5 +1,5 @@
 # include ../include/head.ahk
-# include ../toolkit/index
+# include ../toolkit/index.ahk
 
 timer = ''
 

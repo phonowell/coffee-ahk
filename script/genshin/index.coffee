@@ -1,6 +1,6 @@
 # include ../include/admin.ahk
 # include ../include/head.ahk
-# include ../toolkit/index
+# include ../toolkit/index.ahk
 
 # variable
 
@@ -8,14 +8,14 @@ timer = ''
 
 # function
 
-dataAct = [1, 5]
+dataAct = [1, 2]
 act = ->
 
   if dataAct[1] > dataAct[2]
     dataAct[1] = 1
     $.press 'e'
     return
-  
+
   dataAct[1]++
   $.press 'e'
 
@@ -33,7 +33,7 @@ pick = ->
     $.press 'f'
     $.click 'wheel-down:up'
     return
-  
+
   dataPick[1]++
   $.press 'f'
   $.click 'wheel-down:down'

@@ -6,7 +6,7 @@ Just a little toy to code `ahk` in `coffeescript`.
 
 ## Usage
 
-- 安装`git`、`nodej`和`ahk`。
+- 安装`git`、`nodejs`和`ahk`。
 
   Install. Download and install `git`, `nodejs` & `ahk`
 
@@ -29,7 +29,7 @@ npm i
   Code.
 
 - 编译，控制台走起。
-  
+
   Build.
 
 ```shell
@@ -37,7 +37,7 @@ npm run alice build xxx // 'xxx' is your script's dirname
 ```
 
 - 现在你应该获得了一个`.ahk`文件，跑跑看。
-  
+
   Run. Now you got a `.ahk` file, run it.
 
 ## Test
@@ -68,7 +68,7 @@ npm run test
 
 - `do`关键字
 - 函数嵌套
-- 函数赋予
+- tree-shaking
 
 ## Toolkit
 

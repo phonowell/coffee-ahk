@@ -14,89 +14,72 @@ SetKeyDelay, 0, 50
 SetMouseDelay, 0, 50
 StringCaseSense, On
 global $ := {}
-$.reverse := Func("anonymous_46") ; reverse(input: unknown[]): unknown[]
-$.includes := Func("anonymous_45")
-$.length := Func("anonymous_44") ; length(input: string | array | object): number
-$.type := Func("anonymous_43") ; type(input: unknown): 'array' | 'number' | 'object' | 'string'
-$.findColor := Func("anonymous_42") ; findColor( color: number, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], variation = 0 ): Point
-$.findImage := Func("anonymous_41") ; findImage( source: string, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], ): Point
-$.getColor := Func("anonymous_40") ; getColor(point?: Point): number
-$.getPosition := Func("anonymous_39") ; getPosition(): Point
-$.getState := Func("anonymous_38") ; getState(key: string): string
-$.formatHotkey := Func("anonymous_37") ; formatHotkey(key: string): string
-$.now := Func("anonymous_36") ; now(): number
-$.random := Func("anonymous_35") ; random(min: number = 0, max: number = 1): number
-$.click := Func("anonymous_34") ; click(key?: string): void
-$.move := Func("anonymous_33") ; move(point: Point, speed: number = 0): void
-$.press := Func("anonymous_32") ; press(key...: string): void
-$.setFixed := Func("anonymous_31") ; setFixed(fixed?: boolean): void
-$.beep := Func("anonymous_30") ; beep(): void
-$.info := Func("anonymous_29") ; info(message: string, point?: Point): string
-$.replace := Func("anonymous_28") ; replace( input: string, searchment: string, replacement: string, limit: number = -1 )
-$.split := Func("anonymous_27") ; split(input: string, delimiter: string): string
-$.toLowerCase := Func("anonymous_26") ; toLowerCase(input: string): string
-$.toString := Func("anonymous_25") ; toString(input: unknown): string
-$.toUpperCase := Func("anonymous_24") ; toUpperCase(input: string): string
-$.trim := Func("anonymous_23") ; trim(input: string, omitting: string): string
-$.trimEnd := Func("anonymous_22") ; trimEnd(input: string, omitting: string): string
-$.trimStart := Func("anonymous_21") ; trimStart(input: string, omitting: string): string
-$.exit := Func("anonymous_20") ; exit(): void
-$.off := Func("anonymous_19") ; off(key: string, fn: Function | string): void
-$.on := Func("anonymous_18") ; on(key, string, fn: Function | string): void
-$.open := Func("anonymous_17") ; open(source: string): void
-$.pause := Func("anonymous_16") ; pause(paused?: boolean): void
-$.reload := Func("anonymous_15") ; reload(): void
-$.sleep := Func("anonymous_14") ; sleep(time: number): void
-global Math := {abs: Func("anonymous_13"), ceil: Func("anonymous_12"), floor: Func("anonymous_11"), round: Func("anonymous_10")} ; abs(n: number): number ceil(n: number): number floor(n: number): number round(n: number): number
-global alert := Func("anonymous_9") ; alert(message: string): string
-global clearInterval := Func("anonymous_8") ; clearInterval(fn: Function | string): void
-global clearTimeout := Func("anonymous_7") ; clearTimeout(fn: Function | string): void
-global setInterval := Func("anonymous_6") ; setInterval(fn: Function | string, time: number): string
-global setTimeout := Func("anonymous_5") ; setTimeout(fn: Function | string, time: number): string
-global timer := ""
-$.on.Call("win + n", "anonymous_4")
-$.on.Call("esc", "anonymous_2")
-$.on.Call("alt + f4", "anonymous_1")
-anonymous_1() {
-  $.exit.Call()
-}
-anonymous_2() {
-  clearTimeout.Call(timer)
-}
-anonymous_3() {
-  $.open.Call("notepad.exe")
-}
-anonymous_4() {
-  clearTimeout.Call(timer)
-  timer := setTimeout.Call("anonymous_3", 1000)
-}
-anonymous_5(fn, time := 0) {
+$.reverse := Func("madsjf79g38_42") ; reverse(input: unknown[]): unknown[]
+$.includes := Func("madsjf79g38_41")
+$.length := Func("madsjf79g38_40") ; length(input: string | array | object): number
+$.type := Func("madsjf79g38_39") ; type(input: unknown): 'array' | 'number' | 'object' | 'string'
+$.findColor := Func("madsjf79g38_38") ; findColor( color: number, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], variation = 0 ): Point
+$.findImage := Func("madsjf79g38_37") ; findImage( source: string, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], ): Point
+$.getColor := Func("madsjf79g38_36") ; getColor(point?: Point): number
+$.getPosition := Func("madsjf79g38_35") ; getPosition(): Point
+$.getState := Func("madsjf79g38_34") ; getState(key: string): string
+$.formatHotkey := Func("madsjf79g38_33") ; formatHotkey(key: string): string
+$.now := Func("madsjf79g38_32") ; now(): number
+$.random := Func("madsjf79g38_31") ; random(min: number = 0, max: number = 1): number
+$.click := Func("madsjf79g38_30") ; click(key?: string): void
+$.move := Func("madsjf79g38_29") ; move(point: Point, speed: number = 0): void
+$.press := Func("madsjf79g38_28") ; press(key...: string): void
+$.setFixed := Func("madsjf79g38_27") ; setFixed(fixed?: boolean): void
+$.beep := Func("madsjf79g38_26") ; beep(): void
+$.info := Func("madsjf79g38_25") ; info(message: string, point?: Point): string
+$.replace := Func("madsjf79g38_24") ; replace( input: string, searchment: string, replacement: string, limit: number = -1 )
+$.split := Func("madsjf79g38_23") ; split(input: string, delimiter: string): string
+$.toLowerCase := Func("madsjf79g38_22") ; toLowerCase(input: string): string
+$.toString := Func("madsjf79g38_21") ; toString(input: unknown): string
+$.toUpperCase := Func("madsjf79g38_20") ; toUpperCase(input: string): string
+$.trim := Func("madsjf79g38_19") ; trim(input: string, omitting: string): string
+$.trimEnd := Func("madsjf79g38_18") ; trimEnd(input: string, omitting: string): string
+$.trimStart := Func("madsjf79g38_17") ; trimStart(input: string, omitting: string): string
+$.exit := Func("madsjf79g38_16") ; exit(): void
+$.off := Func("madsjf79g38_15") ; off(key: string, fn: Function | string): void
+$.on := Func("madsjf79g38_14") ; on(key, string, fn: Function | string): void
+$.open := Func("madsjf79g38_13") ; open(source: string): void
+$.pause := Func("madsjf79g38_12") ; pause(paused?: boolean): void
+$.reload := Func("madsjf79g38_11") ; reload(): void
+$.sleep := Func("madsjf79g38_10") ; sleep(time: number): void
+global Math := {abs: Func("madsjf79g38_9"), ceil: Func("madsjf79g38_8"), floor: Func("madsjf79g38_7"), round: Func("madsjf79g38_6")} ; abs(n: number): number ceil(n: number): number floor(n: number): number round(n: number): number
+global alert := Func("madsjf79g38_5") ; alert(message: string): string
+global clearInterval := Func("madsjf79g38_4") ; clearInterval(fn: Function | string): void
+global clearTimeout := Func("madsjf79g38_3") ; clearTimeout(fn: Function | string): void
+global setInterval := Func("madsjf79g38_2") ; setInterval(fn: Function | string, time: number): string
+global setTimeout := Func("madsjf79g38_1") ; setTimeout(fn: Function | string, time: number): string
+madsjf79g38_1(fn, time := 0) {
   if !(fn) {
     return fn
   }
   SetTimer, % fn, % 0 - time
   return fn
 }
-anonymous_6(fn, time := 0) {
+madsjf79g38_2(fn, time := 0) {
   if !(fn) {
     return fn
   }
   SetTimer, % fn, % time
   return fn
 }
-anonymous_7(fn) {
+madsjf79g38_3(fn) {
   if !(fn) {
     return
   }
   SetTimer, % fn, Delete
 }
-anonymous_8(fn) {
+madsjf79g38_4(fn) {
   if !(fn) {
     return
   }
   SetTimer, % fn, Delete
 }
-anonymous_9(message := "") {
+madsjf79g38_5(message := "") {
   if !(message) {
     return
   }
@@ -104,25 +87,25 @@ anonymous_9(message := "") {
   MsgBox, % msg
   return message
 }
-anonymous_10(n) {
+madsjf79g38_6(n) {
   return Round(n)
 }
-anonymous_11(n) {
+madsjf79g38_7(n) {
   return Floor(n)
 }
-anonymous_12(n) {
+madsjf79g38_8(n) {
   return Ceil(n)
 }
-anonymous_13(n) {
+madsjf79g38_9(n) {
   return Abs(n)
 }
-anonymous_14(time) {
+madsjf79g38_10(time) {
   Sleep, % time
 }
-anonymous_15() {
+madsjf79g38_11() {
   Reload
 }
-anonymous_16(isPaused := "Toggle") {
+madsjf79g38_12(isPaused := "Toggle") {
   if (isPaused != "Toggle") {
     if (isPaused) {
       isPaused := "On"
@@ -132,34 +115,34 @@ anonymous_16(isPaused := "Toggle") {
   }
   Pause, % isPaused
 }
-anonymous_17(source) {
+madsjf79g38_13(source) {
   Run, % source
 }
-anonymous_18(key, fn) {
+madsjf79g38_14(key, fn) {
   key := $.formatHotkey.Call(key)
   Hotkey, % key, % fn, On
 }
-anonymous_19(key, fn) {
+madsjf79g38_15(key, fn) {
   key := $.formatHotkey.Call(key)
   Hotkey, % key, % fn, Off
 }
-anonymous_20() {
+madsjf79g38_16() {
   ExitApp
 }
-anonymous_21(input, omitting := " `t") {
+madsjf79g38_17(input, omitting := " `t") {
   return LTrim(input, omitting)
 }
-anonymous_22(input, omitting := " `t") {
+madsjf79g38_18(input, omitting := " `t") {
   return RTrim(input, omitting)
 }
-anonymous_23(input, omitting := " `t") {
+madsjf79g38_19(input, omitting := " `t") {
   return Trim(input, omitting)
 }
-anonymous_24(input) {
+madsjf79g38_20(input) {
   StringUpper, __Result__, input
   return __Result__
 }
-anonymous_25(input) {
+madsjf79g38_21(input) {
   type := $.type.Call(input)
   if (type == "array") {
     result := ""
@@ -176,17 +159,17 @@ anonymous_25(input) {
   }
   return input
 }
-anonymous_26(input) {
+madsjf79g38_22(input) {
   StringLower, __Result__, input
   return __Result__
 }
-anonymous_27(input, delimiter) {
+madsjf79g38_23(input, delimiter) {
   return StrSplit(input, delimiter)
 }
-anonymous_28(input, searchment, replacement, limit := -1) {
+madsjf79g38_24(input, searchment, replacement, limit := -1) {
   return StrReplace(input, searchment, replacement, limit)
 }
-anonymous_29(message, point := "") {
+madsjf79g38_25(message, point := "") {
   if !(message) {
     return
   }
@@ -197,10 +180,10 @@ anonymous_29(message, point := "") {
   ToolTip, % msg, % point[1], % point[2]
   return message
 }
-anonymous_30() {
+madsjf79g38_26() {
   SoundBeep
 }
-anonymous_31(isFixed := "Toggle") {
+madsjf79g38_27(isFixed := "Toggle") {
   if (isFixed != "Toggle") {
     if (isFixed) {
       isFixed := "On"
@@ -210,7 +193,7 @@ anonymous_31(isFixed := "Toggle") {
   }
   Winset AlwaysOnTop, % isFixed, A
 }
-anonymous_32(listInput*) {
+madsjf79g38_28(listInput*) {
   if !($.length.Call(listInput)) { ; validate
     throw Exception("$.press: invalid key")
   }
@@ -251,25 +234,25 @@ anonymous_32(listInput*) {
   }
   Send, % output
 }
-anonymous_33(point := "", speed := 0) {
+madsjf79g38_29(point := "", speed := 0) {
   if !(point) {
     throw Exception("$.move: invalid point")
   }
   MouseMove, point[1], point[2], speed
 }
-anonymous_34(key := "left") {
+madsjf79g38_30(key := "left") {
   key := $.replace.Call(key, "-", "")
   key := $.replace.Call(key, ":", " ")
   Click, % key
 }
-anonymous_35(min := 0, max := 1) {
+madsjf79g38_31(min := 0, max := 1) {
   Random, __Result__, min, max
   return __Result__
 }
-anonymous_36() {
+madsjf79g38_32() {
   return A_TickCount
 }
-anonymous_37(key) {
+madsjf79g38_33(key) {
   listKey := [] ; format
   _key := $.toLowerCase.Call(key)
   _key := $.replace.Call(_key, " ", "")
@@ -321,21 +304,21 @@ anonymous_37(key) {
   }
   return $.replace.Call("" . (prefix) . "" . ($.trim.Call(result, " &")) . "", ":", " ")
 }
-anonymous_38(key) {
+madsjf79g38_34(key) {
   return GetKeyState(key)
 }
-anonymous_39() {
+madsjf79g38_35() {
   MouseGetPos, __X__, __Y__
   return [__X__, __Y__]
 }
-anonymous_40(point := "") {
+madsjf79g38_36(point := "") {
   if !(point) {
     point := $.getPosition.Call()
   }
   PixelGetColor, __Result__, % point[1], % point[2], RGB
   return __Result__
 }
-anonymous_41(source, start := "", end := "") {
+madsjf79g38_37(source, start := "", end := "") {
   if !(start) {
     start := [0, 0]
   }
@@ -345,7 +328,7 @@ anonymous_41(source, start := "", end := "") {
   ImageSearch __x__, __Y__, start[1], start[2], end[1], end[2], % A_ScriptDir . "\\\" . source
   return [__X__, __Y__]
 }
-anonymous_42(color, start := "", end := "", variation := 0) {
+madsjf79g38_38(color, start := "", end := "", variation := 0) {
   if !(start) {
     start := [0, 0]
   }
@@ -355,7 +338,7 @@ anonymous_42(color, start := "", end := "", variation := 0) {
   PixelSearch __X__, __Y__, start[1], start[2], end[1], end[2], color, variation, Fast RGB
   return [__X__, __Y__]
 }
-anonymous_43(input) {
+madsjf79g38_39(input) {
   if input is Number
     return "number"
   if (IsObject(input)) {
@@ -366,7 +349,7 @@ anonymous_43(input) {
   }
   return "string"
 }
-anonymous_44(input) {
+madsjf79g38_40(input) {
   type := $.type.Call(input)
   switch type {
     case "array": {
@@ -383,7 +366,7 @@ anonymous_44(input) {
     }
   }
 }
-anonymous_45(input, needle) {
+madsjf79g38_41(input, needle) {
   type := $.type.Call(input)
   if (type == "string" || type == "number") {
     return (InStr(input, needle)) > 0
@@ -398,7 +381,7 @@ anonymous_45(input, needle) {
   }
   throw Exception("$.includes: invalid type '" . (type) . "'")
 }
-anonymous_46(input) {
+madsjf79g38_42(input) {
   type := $.type.Call(input)
   if !(type == "array") {
     throw Exception("$.reverse: invalid type '" . (type) . "'")
@@ -409,4 +392,22 @@ anonymous_46(input) {
     output[len - i + 1] := key
   }
   return output
+}
+
+global timer := ""
+$.on.Call("win + n", "0envgi3t9n4_4")
+$.on.Call("esc", "0envgi3t9n4_2")
+$.on.Call("alt + f4", "0envgi3t9n4_1")
+0envgi3t9n4_1() {
+  $.exit.Call()
+}
+0envgi3t9n4_2() {
+  clearTimeout.Call(timer)
+}
+0envgi3t9n4_3() {
+  $.open.Call("notepad.exe")
+}
+0envgi3t9n4_4() {
+  clearTimeout.Call(timer)
+  timer := setTimeout.Call("0envgi3t9n4_3", 1000)
 }
