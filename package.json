@@ -11,7 +11,7 @@
   },
   "description": "coffeescript -> ahk",
   "devDependencies": {
-    "@types/lodash": "^4.14.162",
+    "@types/lodash": "^4.14.163",
     "@types/node": "^14.14.5"
   },
   "homepage": "https://github.com/phonowell/coffee-ahk",

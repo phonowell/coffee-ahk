@@ -12,48 +12,48 @@ $.move = (point = '', speed = 0) ->
 
 # press(key...: string): void
 $.press = (listInput...) ->
-  
+
   # validate
   unless $.length listInput
     throw new Error '$.press: invalid key'
 
   # format
-  listKey = []
+  _listKey = []
   for input in listInput
     _input = $.toLowerCase input
     _input = $.replace _input, ' ', ''
     _input = $.replace _input, '-', ''
     _list = $.split _input, '+'
-    for _it in _list
-      listKey.Push _it
+    for it in _list
+      _listKey.Push it
 
   # unfold
-  listResult = []
-  len = $.length listKey
-  for key, i in listKey
+  _listResult = []
+  _len = $.length _listKey
+  for key, i in _listKey
     # last
-    if i == len
-      listResult[i] = $.split key, ':'
+    if i == _len
+      _listResult[i] = $.split key, ':'
       continue
     # other
     if $.includes key, ':'
-      listResult[i] = $.split key, ':'
-      listResult[len * 2 - i] = $.split key, ':'
+      _listResult[i] = $.split key, ':'
+      _listResult[_len * 2 - i] = $.split key, ':'
     else
-      listResult[i] = [key, 'down']
-      listResult[len * 2 - i] = [key, 'up']
+      _listResult[i] = [key, 'down']
+      _listResult[_len * 2 - i] = [key, 'up']
 
   # alias & join
-  for it, i in listResult
+  for it, i in _listResult
     if it[1] == 'win'
       it[1] = 'lwin'
-    listResult[i] = $.trim "#{it[1]} #{it[2]}"
+    _listResult[i] = $.trim "#{it[1]} #{it[2]}"
 
   # execute
-  output = ''
-  for it in listResult
-    output = "#{output}{#{it}}"
-  `Send, % output`
+  _output = ''
+  for it in _listResult
+    _output = "#{_output}{#{it}}"
+  `Send, % _output`
 
 # setFixed(fixed?: boolean): void
 $.setFixed = (isFixed = 'Toggle') ->

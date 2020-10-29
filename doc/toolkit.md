@@ -82,16 +82,16 @@ type Point = [number, number]
 
 ### open(source: string): void
 
-### pause(paused?: boolean): void
-
 ### reload(): void
 
 ### sleep(time: number): void
 
+### suspend(suspended?: boolean): void
+
 ## math
 
 ### abs(n: number): number
-  
+
 ### ceil(n: number): number
 
 ### floor(n: number): number

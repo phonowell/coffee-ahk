@@ -1,13 +1,13 @@
 # reverse(input: unknown[]): unknown[]
 $.reverse = (input) ->
-  
-  type = $.type input
-  unless type == 'array'
-    throw new Error "$.reverse: invalid type '#{type}'"
 
-  len = $.length input
-  output = []
+  _type = $.type input
+  unless _type == 'array'
+    throw new Error "$.reverse: invalid type '#{_type}'"
+
+  _len = $.length input
+  _output = []
   for key, i in input
-    output[len - i + 1] = key
+    _output[_len - i + 1] = key
 
-  return output
+  return _output

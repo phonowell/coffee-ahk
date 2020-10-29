@@ -2,6 +2,6 @@
 alert = (message = '') ->
   unless message
     return
-  msg = $.toString message
-  `MsgBox, % msg`
+  _msg = $.toString message
+  `MsgBox, % _msg`
   return message

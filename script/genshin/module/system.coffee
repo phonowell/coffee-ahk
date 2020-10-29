@@ -1,9 +1,18 @@
-# include ../include/head.ahk
-# include ../toolkit/index.ahk
+# variable
 
-id = WinExist 'A'
+id = ''
 isSuspend = false
-setInterval ->
+timer = ''
+
+# function
+
+init = ->
+  id = WinExist 'A'
+  bind()
+  setInterval watch, 200
+  $.beep()
+
+watch = ->
 
   if !isSuspend and !WinActive "ahk_id #{id}"
     $.suspend true
@@ -15,6 +24,10 @@ setInterval ->
     isSuspend = false
     return
 
-, 200
+# binding
 
-$.on '1', -> alert 1
+$.on 'f12', init
+
+$.on 'alt + f4', ->
+  $.beep()
+  $.exit()

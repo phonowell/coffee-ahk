@@ -2,45 +2,45 @@
 $.formatHotkey = (key) ->
 
   # format
-  listKey = []
+  _listKey = []
   _key = $.toLowerCase key
   _key = $.replace _key, ' ', ''
   _key = $.replace _key, '-', ''
   _list = $.split _key, '+'
-  for _it in _list
-    listKey.Push _it
+  for it in _list
+    _listKey.Push it
 
   # unfold
-  isAlt = false
-  isCtrl = false
-  isShift = false
-  isWin = false
-  listResult = []
-  for key in listKey
+  _isAlt = false
+  _isCtrl = false
+  _isShift = false
+  _isWin = false
+  _listResult = []
+  for key in _listKey
     if key == 'alt'
-      isAlt = true
+      _isAlt = true
       continue
     if key == 'ctrl'
-      isCtrl = true
+      _isCtrl = true
       continue
     if key == 'shift'
-      isShift = true
+      _isShift = true
       continue
     if key == 'win'
-      isWin = true
+      _isWin = true
       continue
-    listResult.Push key
+    _listResult.Push key
 
-  prefix = ''
-  if isAlt then prefix = "#{prefix}!"
-  if isCtrl then prefix = "#{prefix}^"
-  if isShift then prefix = "#{prefix}+"
-  if isWin then prefix = "#{prefix}#"
+  _prefix = ''
+  if _isAlt then _prefix = "#{_prefix}!"
+  if _isCtrl then _prefix = "#{_prefix}^"
+  if _isShift then _prefix = "#{_prefix}+"
+  if _isWin then _prefix = "#{_prefix}#"
 
-  result = ''
-  for it in listResult
-    result = "#{result} & #{it}"
-  return $.replace "#{prefix}#{$.trim result, ' &'}", ':', ' '
+  _result = ''
+  for it in _listResult
+    _result = "#{_result} & #{it}"
+  return $.replace "#{_prefix}#{$.trim _result, ' &'}", ':', ' '
 
 # now(): number
 $.now = -> return A_TickCount

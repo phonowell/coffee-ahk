@@ -17,17 +17,17 @@ $.toLowerCase = (input) ->
 
 # toString(input: unknown): string
 $.toString = (input) ->
-  type = $.type input
-  if type == 'array'
-    result = ''
+  _type = $.type input
+  if _type == 'array'
+    _result = ''
     for key in input
-      result = "#{result}, #{$.toString key}"
-    return "[#{$.trim result, ' ,'}]"
-  else if type == 'object'
-    result = ''
+      _result = "#{_result}, #{$.toString key}"
+    return "[#{$.trim _result, ' ,'}]"
+  else if _type == 'object'
+    _result = ''
     for key, value of input
-      result = "#{result}, #{key}: #{$.toString value}"
-    return "{#{$.trim result, ' ,'}}"
+      _result = "#{_result}, #{key}: #{$.toString value}"
+    return "{#{$.trim _result, ' ,'}}"
   return input
 
 # toUpperCase(input: string): string

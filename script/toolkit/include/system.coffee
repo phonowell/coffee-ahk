@@ -14,15 +14,15 @@ $.on = (key, fn) ->
 # open(source: string): void
 $.open = (source) -> `Run, % source`
 
-# pause(paused?: boolean): void
-$.pause = (isPaused = 'Toggle') ->
-  if isPaused != 'Toggle'
-    if isPaused then isPaused = 'On'
-    else isPaused = 'Off'
-  `Pause, % isPaused`
-
 # reload(): void
 $.reload = -> Reload
 
 # sleep(time: number): void
 $.sleep = (time) -> `Sleep, % time`
+
+# suspend(suspended?: boolean): void
+$.suspend = (isSuspended = 'Toggle') ->
+  if isSuspended != 'Toggle'
+    if isSuspended then isSuspended = 'On'
+    else isSuspended = 'Off'
+  `Suspend, % isSuspended`
