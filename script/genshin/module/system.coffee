@@ -8,6 +8,7 @@ timer = ''
 
 init = ->
   id = WinExist 'A'
+  $.off 'f12', init
   bind()
   setInterval watch, 200
   $.beep()

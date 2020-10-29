@@ -1,5 +1,4 @@
 bind = ->
-  $.off 'f12', init
   $.on '1', bind1
   $.on '2', bind2
   $.on '3', bind3

@@ -398,30 +398,30 @@ h5vo8andlu8_42(input) {
   return _output
 }
 
-global bind := Func("07q8l50k5po_16")
-global bind1 := Func("07q8l50k5po_15")
-global bind2 := Func("07q8l50k5po_14")
-global bind3 := Func("07q8l50k5po_13")
-global bind4 := Func("07q8l50k5po_12")
-global bind5 := Func("07q8l50k5po_11")
-global bindF := Func("07q8l50k5po_10")
-global bindSpace := Func("07q8l50k5po_9")
+global bind := Func("pot65mangbg_16")
+global bind1 := Func("pot65mangbg_15")
+global bind2 := Func("pot65mangbg_14")
+global bind3 := Func("pot65mangbg_13")
+global bind4 := Func("pot65mangbg_12")
+global bind5 := Func("pot65mangbg_11")
+global bindF := Func("pot65mangbg_10")
+global bindSpace := Func("pot65mangbg_9")
 global id := "" ; variable
 global isSuspend := false
 global timer := ""
-global init := Func("07q8l50k5po_8") ; function
-global watch := Func("07q8l50k5po_7")
+global init := Func("pot65mangbg_8") ; function
+global watch := Func("pot65mangbg_7")
 $.on.Call("f12", init) ; binding
-$.on.Call("alt + f4", "07q8l50k5po_6")
+$.on.Call("alt + f4", "pot65mangbg_6")
 global dataAct := [1, 2]
-global act := Func("07q8l50k5po_5")
-global jump := Func("07q8l50k5po_3")
+global act := Func("pot65mangbg_5")
+global jump := Func("pot65mangbg_3")
 global dataPick := [1, 10]
-global pick := Func("07q8l50k5po_2")
-07q8l50k5po_1() {
+global pick := Func("pot65mangbg_2")
+pot65mangbg_1() {
   pick.Call()
 }
-07q8l50k5po_2() {
+pot65mangbg_2() {
   if (dataPick[1] > dataPick[2]) {
     dataPick[1] := 1
     $.press.Call("f")
@@ -431,15 +431,15 @@ global pick := Func("07q8l50k5po_2")
   dataPick[1]++
   $.press.Call("f")
   $.click.Call("wheel-down:down")
-  setTimeout.Call("07q8l50k5po_1", 100)
+  setTimeout.Call("pot65mangbg_1", 100)
 }
-07q8l50k5po_3() {
+pot65mangbg_3() {
   $.press.Call("space")
 }
-07q8l50k5po_4() {
+pot65mangbg_4() {
   act.Call()
 }
-07q8l50k5po_5() {
+pot65mangbg_5() {
   if (dataAct[1] > dataAct[2]) {
     dataAct[1] := 1
     $.press.Call("e")
@@ -447,13 +447,13 @@ global pick := Func("07q8l50k5po_2")
   }
   dataAct[1]++
   $.press.Call("e")
-  setTimeout.Call("07q8l50k5po_4", 100)
+  setTimeout.Call("pot65mangbg_4", 100)
 }
-07q8l50k5po_6() {
+pot65mangbg_6() {
   $.beep.Call()
   $.exit.Call()
 }
-07q8l50k5po_7() {
+pot65mangbg_7() {
   if (!isSuspend && !WinActive("ahk_id " . (id) . "")) {
     $.suspend.Call(true)
     isSuspend := true
@@ -465,42 +465,42 @@ global pick := Func("07q8l50k5po_2")
     return
   }
 }
-07q8l50k5po_8() {
+pot65mangbg_8() {
   id := WinExist("A")
+  $.off.Call("f12", init)
   bind.Call()
   setInterval.Call(watch, 200)
   $.beep.Call()
 }
-07q8l50k5po_9() {
+pot65mangbg_9() {
   clearTimeout.Call(timer)
   jump.Call()
   timer := setTimeout.Call(jump, 200)
 }
-07q8l50k5po_10() {
+pot65mangbg_10() {
   pick.Call()
 }
-07q8l50k5po_11() {
+pot65mangbg_11() {
   $.press.Call("5")
   act.Call()
 }
-07q8l50k5po_12() {
+pot65mangbg_12() {
   $.press.Call("4")
   act.Call()
 }
-07q8l50k5po_13() {
+pot65mangbg_13() {
   $.press.Call("3")
   act.Call()
 }
-07q8l50k5po_14() {
+pot65mangbg_14() {
   $.press.Call("2")
   act.Call()
 }
-07q8l50k5po_15() {
+pot65mangbg_15() {
   $.press.Call("1")
   act.Call()
 }
-07q8l50k5po_16() {
-  $.off.Call("f12", init)
+pot65mangbg_16() {
   $.on.Call("1", bind1)
   $.on.Call("2", bind2)
   $.on.Call("3", bind3)
