@@ -8,7 +8,7 @@ timer = ''
 
 init = ->
   id = WinExist 'A'
-  $.off 'f12', init
+  $.off 'f1', init
   bind()
   setInterval watch, 200
   $.beep()
@@ -27,7 +27,7 @@ watch = ->
 
 # binding
 
-$.on 'f12', init
+$.on 'f1', init
 
 $.on 'alt + f4', ->
   $.beep()

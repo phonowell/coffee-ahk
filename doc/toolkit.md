@@ -52,6 +52,8 @@ type Point = [number, number]
 
 ### beep(): void
 
+### i(message: string): string
+
 ### info(message: string, point?: Point): string
 
 ## string

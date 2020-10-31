@@ -1,35 +1,55 @@
 bind = ->
-  $.on '1', bind1
-  $.on '2', bind2
-  $.on '3', bind3
-  $.on '4', bind4
-  $.on '5', bind5
-  $.on 'f', bindF
-  $.on 'space', bindSpace
 
-bind1 = ->
-  $.press '1'
-  act()
+  $.on '1', ->
+    $.press '1'
+    doAs ->
+      $.press 'e'
+    , 100, 2, 100
 
-bind2 = ->
-  $.press '2'
-  act()
+  $.on '2', ->
+    $.press '2'
+    doAs ->
+      $.press 'e'
+    , 100, 2, 100
 
-bind3 = ->
-  $.press '3'
-  act()
+  $.on '3', ->
+    $.press '3'
+    doAs ->
+      $.press 'e'
+    , 100, 2, 100
 
-bind4 = ->
-  $.press '4'
-  act()
+  $.on '4', ->
+    $.press '4'
+    doAs ->
+      $.press 'e'
+    , 100, 2, 100
 
-bind5 = ->
-  $.press '5'
-  act()
+  $.on '5', ->
+    $.press '5'
+    doAs ->
+      $.press 'e'
+    , 100, 2, 100
 
-bindF = -> pick()
+  $.on 'f', ->
+    doAs (e) ->
+      $.press 'f'
+      unless e.count >= 10
+        $.click 'wheel-down:down'
+      else $.press 'wheel-down:up'
+    , 100, 10
 
-bindSpace = ->
-  clearTimeout timer
-  jump()
-  timer = setTimeout jump, 200
+  $.on 's', ->
+    $.press 's:down'
+    startJumpBack()
+
+  $.on 's:up', ->
+    $.press 's:up'
+    stopJumpBack()
+
+  $.on 'space', -> jumpTwice()
+
+  $.on 'w', ->
+    $.press 'w:down'
+    viewFar()
+
+  $.on 'w:up', -> $.press 'w:up'
