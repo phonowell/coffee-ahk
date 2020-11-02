@@ -403,60 +403,60 @@ hk2najs5beg_43(input) {
   return _output
 }
 
-global bind := Func("e6b36vhfmkg_29")
+global bind := Func("9tvt9tmbc58_29")
 global $dataDoAs := {count: 0, fn: "", interval: 0, limit: 1}
-global doAs := Func("e6b36vhfmkg_11")
+global doAs := Func("9tvt9tmbc58_11")
 global id := "" ; variable
 global isSuspend := false
 global timer := ""
-global init := Func("e6b36vhfmkg_9") ; function
-global watch := Func("e6b36vhfmkg_8")
+global init := Func("9tvt9tmbc58_9") ; function
+global watch := Func("9tvt9tmbc58_8")
 $.on.Call("f1", init) ; binding
-$.on.Call("alt + f4", "e6b36vhfmkg_7")
+$.on.Call("alt + f4", "9tvt9tmbc58_7")
 global isJumping := false
 global timerJump := ""
-global jumpTwice := Func("e6b36vhfmkg_6")
-global startJumpBack := Func("e6b36vhfmkg_4")
-global stopJumpBack := Func("e6b36vhfmkg_3")
+global jumpTwice := Func("9tvt9tmbc58_6")
+global startJumpBack := Func("9tvt9tmbc58_4")
+global stopJumpBack := Func("9tvt9tmbc58_3")
 global tsViewFar := 0
-global viewFar := Func("e6b36vhfmkg_2")
-e6b36vhfmkg_1() {
+global viewFar := Func("9tvt9tmbc58_2")
+9tvt9tmbc58_1() {
   $.click.Call("wheel-down:up")
 }
-e6b36vhfmkg_2() {
+9tvt9tmbc58_2() {
   if !($.now.Call() - tsViewFar > 2000) {
     return
   }
   tsViewFar := $.now.Call()
   $.click.Call("wheel-down:down")
-  setTimeout.Call("e6b36vhfmkg_1", 500)
+  setTimeout.Call("9tvt9tmbc58_1", 500)
 }
-e6b36vhfmkg_3() {
+9tvt9tmbc58_3() {
   if !(isJumping) {
     return
   }
   isJumping := false
   clearTimeout.Call(timerJump)
 }
-e6b36vhfmkg_4() {
+9tvt9tmbc58_4() {
   if (isJumping) {
     return
   }
   isJumping := true
   timerJump := setTimeout.Call(jumpTwice, 100)
 }
-e6b36vhfmkg_5() {
+9tvt9tmbc58_5() {
   $.press.Call("space")
 }
-e6b36vhfmkg_6() {
+9tvt9tmbc58_6() {
   $.press.Call("space")
-  doAs.Call("e6b36vhfmkg_5", 100, 2, 200)
+  doAs.Call("9tvt9tmbc58_5", 100, 2, 200)
 }
-e6b36vhfmkg_7() {
+9tvt9tmbc58_7() {
   $.beep.Call()
   $.exit.Call()
 }
-e6b36vhfmkg_8() {
+9tvt9tmbc58_8() {
   if (!isSuspend && !WinActive("ahk_id " . (id) . "")) {
     $.suspend.Call(true)
     isSuspend := true
@@ -468,17 +468,17 @@ e6b36vhfmkg_8() {
     return
   }
 }
-e6b36vhfmkg_9() {
+9tvt9tmbc58_9() {
   id := WinExist("A")
   $.off.Call("f1", init)
   bind.Call()
   setInterval.Call(watch, 200)
   $.beep.Call()
 }
-e6b36vhfmkg_10() {
+9tvt9tmbc58_10() {
   doAs.Call()
 }
-e6b36vhfmkg_11(fn := "", interval := 100, limit := 1, delay := 0) {
+9tvt9tmbc58_11(fn := "", interval := 100, limit := 1, delay := 0) {
   if (fn) {
     $dataDoAs.count := 0
     $dataDoAs.fn := fn
@@ -494,27 +494,27 @@ e6b36vhfmkg_11(fn := "", interval := 100, limit := 1, delay := 0) {
   }
   $dataDoAs.count++
   (Func($dataDoAs.fn)).Call($dataDoAs)
-  setTimeout.Call("e6b36vhfmkg_10", $dataDoAs.interval)
+  setTimeout.Call("9tvt9tmbc58_10", $dataDoAs.interval)
 }
-e6b36vhfmkg_12() {
+9tvt9tmbc58_12() {
   $.press.Call("w:up")
 }
-e6b36vhfmkg_13() {
+9tvt9tmbc58_13() {
   $.press.Call("w:down")
   viewFar.Call()
 }
-e6b36vhfmkg_14() {
+9tvt9tmbc58_14() {
   jumpTwice.Call()
 }
-e6b36vhfmkg_15() {
+9tvt9tmbc58_15() {
   $.press.Call("s:up")
   stopJumpBack.Call()
 }
-e6b36vhfmkg_16() {
+9tvt9tmbc58_16() {
   $.press.Call("s:down")
   startJumpBack.Call()
 }
-e6b36vhfmkg_17(e) {
+9tvt9tmbc58_17(e) {
   $.press.Call("f")
   if !(e.count >= 10) {
     $.click.Call("wheel-down:down")
@@ -522,54 +522,54 @@ e6b36vhfmkg_17(e) {
     $.press.Call("wheel-down:up")
   }
 }
-e6b36vhfmkg_18() {
-  doAs.Call("e6b36vhfmkg_17", 100, 10)
+9tvt9tmbc58_18() {
+  doAs.Call("9tvt9tmbc58_17", 100, 10)
 }
-e6b36vhfmkg_19() {
+9tvt9tmbc58_19() {
   $.press.Call("e")
 }
-e6b36vhfmkg_20() {
+9tvt9tmbc58_20() {
   $.press.Call("5")
-  doAs.Call("e6b36vhfmkg_19", 100, 2, 100)
+  doAs.Call("9tvt9tmbc58_19", 100, 2, 100)
 }
-e6b36vhfmkg_21() {
+9tvt9tmbc58_21() {
   $.press.Call("e")
 }
-e6b36vhfmkg_22() {
+9tvt9tmbc58_22() {
   $.press.Call("4")
-  doAs.Call("e6b36vhfmkg_21", 100, 2, 100)
+  doAs.Call("9tvt9tmbc58_21", 100, 2, 100)
 }
-e6b36vhfmkg_23() {
+9tvt9tmbc58_23() {
   $.press.Call("e")
 }
-e6b36vhfmkg_24() {
+9tvt9tmbc58_24() {
   $.press.Call("3")
-  doAs.Call("e6b36vhfmkg_23", 100, 2, 100)
+  doAs.Call("9tvt9tmbc58_23", 100, 2, 100)
 }
-e6b36vhfmkg_25() {
+9tvt9tmbc58_25() {
   $.press.Call("e")
 }
-e6b36vhfmkg_26() {
+9tvt9tmbc58_26() {
   $.press.Call("2")
-  doAs.Call("e6b36vhfmkg_25", 100, 2, 100)
+  doAs.Call("9tvt9tmbc58_25", 100, 2, 100)
 }
-e6b36vhfmkg_27() {
+9tvt9tmbc58_27() {
   $.press.Call("e")
 }
-e6b36vhfmkg_28() {
+9tvt9tmbc58_28() {
   $.press.Call("1")
-  doAs.Call("e6b36vhfmkg_27", 100, 2, 100)
+  doAs.Call("9tvt9tmbc58_27", 100, 2, 100)
 }
-e6b36vhfmkg_29() {
-  $.on.Call("1", "e6b36vhfmkg_28")
-  $.on.Call("2", "e6b36vhfmkg_26")
-  $.on.Call("3", "e6b36vhfmkg_24")
-  $.on.Call("4", "e6b36vhfmkg_22")
-  $.on.Call("5", "e6b36vhfmkg_20")
-  $.on.Call("f", "e6b36vhfmkg_18")
-  $.on.Call("s", "e6b36vhfmkg_16")
-  $.on.Call("s:up", "e6b36vhfmkg_15")
-  $.on.Call("space", "e6b36vhfmkg_14")
-  $.on.Call("w", "e6b36vhfmkg_13")
-  $.on.Call("w:up", "e6b36vhfmkg_12")
+9tvt9tmbc58_29() {
+  $.on.Call("1", "9tvt9tmbc58_28")
+  $.on.Call("2", "9tvt9tmbc58_26")
+  $.on.Call("3", "9tvt9tmbc58_24")
+  $.on.Call("4", "9tvt9tmbc58_22")
+  $.on.Call("5", "9tvt9tmbc58_20")
+  $.on.Call("f", "9tvt9tmbc58_18")
+  $.on.Call("s", "9tvt9tmbc58_16")
+  $.on.Call("s:up", "9tvt9tmbc58_15")
+  $.on.Call("space", "9tvt9tmbc58_14")
+  $.on.Call("w", "9tvt9tmbc58_13")
+  $.on.Call("w:up", "9tvt9tmbc58_12")
 }
