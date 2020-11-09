@@ -107,6 +107,14 @@ class Content {
     return this
   }
 
+  make(
+    type: Item['type'],
+    value: Item['value'],
+    scope: Item['scope']
+  ): Item {
+    return { scope, type, value }
+  }
+
   pop(): Item {
     return this._list.pop() || itemEmpty
   }

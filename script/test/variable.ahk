@@ -1,13 +1,31 @@
 global a := 1
 a := 2
-global fn := Func("anonymous_2")
+global fn := Func("anonymous_3")
 global c := 1
 c := 2
+fn := Func("anonymous_2")
+global __array__ := [1, 2]
+a := __array__[1]
+global b := __array__[2]
+__array__ := [1, 2, 3]
+a := __array__[1]
+__array__ := list
+a := __array__[1]
+b := __array__[2]
+__array__ := fn.Call()
+a := __array__[1]
+b := __array__[2]
 fn := Func("anonymous_1")
 anonymous_1() {
-  c := 3
+  __array__ := [1, 2, 3]
+  a := __array__[1]
+  b := __array__[2]
+  c := __array__[3]
 }
 anonymous_2() {
+  c := 3
+}
+anonymous_3() {
   b := 1
   b := 2
 }
