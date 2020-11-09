@@ -66,6 +66,7 @@ npm run test
 
 ## Todo
 
+- 匿名函数带入上下文
 - `do`关键字
 - 函数嵌套
 - tree-shaking
@@ -77,7 +78,7 @@ npm run test
 在文件头部添加如下内容引入
 
 ```coffee
-# include ../toolkit/index
+# include ../toolkit/index.ahk
 ```
 
 详细内容点击[这里](doc/toolkit.md)。
