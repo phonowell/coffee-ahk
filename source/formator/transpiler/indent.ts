@@ -12,6 +12,9 @@ function main(
 
   if (type === 'indent') {
 
+    // indent after '='
+    if (content.equal(content.last, 'sign', '=')) return true
+
     if ([
       'array', 'call', 'object', 'parameter'
     ].includes(cache.last)) return true
@@ -46,6 +49,10 @@ function main(
   }
 
   if (type === 'outdent') {
+
+    // outdent after '}'
+    if (content.equal(content.last, 'bracket', '}') && cache.last !== 'object')
+      return true
 
     if (['array', 'call', 'object', 'parameter'].includes(cache.last)) return true
     ctx.indent--

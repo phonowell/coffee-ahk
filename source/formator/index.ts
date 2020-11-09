@@ -26,7 +26,8 @@ declare global {
 // function
 
 function main(
-  cont: string
+  cont: string,
+  option: Context['option']
 ): {
   ast: Context['content']['list']
   content: string,
@@ -43,6 +44,7 @@ function main(
     cache,
     content,
     indent: 0,
+    option,
     raw: {},
     type: '',
     value: ''

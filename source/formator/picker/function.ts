@@ -10,17 +10,13 @@ type Item = Context['content']['list'][number]
 // variable
 
 const listForbidden = [
-  // 'anonymous',
   'exception',
   'off',
   'on',
   'toggle'
 ]
 
-const salt = Math.random()
-  .toString(32)
-  .split('.')[1]
-  .padStart(11, '0')
+let salt = ''
 
 // function
 
@@ -42,6 +38,12 @@ function countFn(
 function main(
   ctx: Context
 ): void {
+
+  // salt
+  salt = ctx.option.salt || Math.random()
+    .toString(32)
+    .split('.')[1]
+    .padStart(11, '0')
 
   // function
   transFn(ctx)

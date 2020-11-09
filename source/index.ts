@@ -4,7 +4,8 @@ import format from './formator'
 
 // interface
 
-type Option = {
+export type Option = {
+  salt?: string,
   save?: boolean
   verbose?: boolean
 }
@@ -17,7 +18,7 @@ async function compile_(
 ): Promise<string> {
 
   const content = await read_(source)
-  const result = format(content)
+  const result = format(content, option)
   if (option.verbose) {
     $.i(result.raw)
     $.i(result.ast)

@@ -1,16 +1,19 @@
-fn = -> 1
-fn = (a = 1) -> return a
-fn = (a, b...) -> return b[1]
-fn = (
+a = a: 1
+a = a: 1, b: 2
+a =
+  a: 1
+a =
+  a: 1
+  b: 2
+a =
+  a: 1
+  b: 2
+  c:
+    a: 1, b: 2, c: 3
+fn = ->
+  a =
+    a: 1
+    b:
+      a: 1
+      b: 2
   a = 1
-  b = 2
-) -> return a + b
-fn(
-  1
-  2
-)
-fn fn fn
-fn = (a, b, c) ->
-  a
-  b()
-  c a

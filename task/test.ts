@@ -16,7 +16,9 @@ async function main_(): Promise<void> {
       .replace(/\r/g, '')
       .trim()
 
-    const content = (await compile_(source))
+    const content = (await compile_(source, {
+      salt: 'anonymous'
+    }))
       .replace(/\r/g, '')
       .trim()
 
