@@ -1,34 +1,12 @@
 bind = ->
 
-  $.on '1', ->
-    $.press '1'
-    doAs ->
-      $.press 'e'
-    , 100, 2, 100
-
-  $.on '2', ->
-    $.press '2'
-    doAs ->
-      $.press 'e'
-    , 100, 2, 100
-
-  $.on '3', ->
-    $.press '3'
-    doAs ->
-      $.press 'e'
-    , 100, 2, 100
-
-  $.on '4', ->
-    $.press '4'
-    doAs ->
-      $.press 'e'
-    , 100, 2, 100
-
-  $.on '5', ->
-    $.press '5'
-    doAs ->
-      $.press 'e'
-    , 100, 2, 100
+  for key in ['1', '2', '3', '4', '5']
+    fn = (key) ->
+      $.press key
+      doAs ->
+        $.press 'e'
+      , 100, 2, 100
+    $.on key, fn.Bind key
 
   $.on 'f', ->
     doAs (e) ->

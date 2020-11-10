@@ -17,74 +17,75 @@ SetBatchLines, 100ms
 SetKeyDelay, 0, 50
 SetMouseDelay, 0, 50
 StringCaseSense, On
+global __ctx_toolkit__ := {}
 global $ := {}
-$.reverse := Func("hk2najs5beg_43") ; reverse(input: unknown[]): unknown[]
-$.includes := Func("hk2najs5beg_42")
-$.length := Func("hk2najs5beg_41") ; length(input: string | array | object): number
-$.type := Func("hk2najs5beg_40") ; type(input: unknown): 'array' | 'number' | 'object' | 'string'
-$.findColor := Func("hk2najs5beg_39") ; findColor( color: number, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], variation = 0 ): Point
-$.findImage := Func("hk2najs5beg_38") ; findImage( source: string, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], ): Point
-$.getColor := Func("hk2najs5beg_37") ; getColor(point?: Point): number
-$.getPosition := Func("hk2najs5beg_36") ; getPosition(): Point
-$.getState := Func("hk2najs5beg_35") ; getState(key: string): string
-$.formatHotkey := Func("hk2najs5beg_34") ; formatHotkey(key: string): string
-$.now := Func("hk2najs5beg_33") ; now(): number
-$.random := Func("hk2najs5beg_32") ; random(min: number = 0, max: number = 1): number
-$.click := Func("hk2najs5beg_31") ; click(key?: string): void
-$.move := Func("hk2najs5beg_30") ; move(point: Point, speed: number = 0): void
-$.press := Func("hk2najs5beg_29") ; press(key...: string): void
-$.setFixed := Func("hk2najs5beg_28") ; setFixed(fixed?: boolean): void
-$.beep := Func("hk2najs5beg_27") ; beep(): void
-$.i := Func("hk2najs5beg_26") ; i(message: string): string
-$.info := Func("hk2najs5beg_25") ; info(message: string, point?: Point): string
-$.replace := Func("hk2najs5beg_24") ; replace( input: string, searchment: string, replacement: string, limit: number = -1 )
-$.split := Func("hk2najs5beg_23") ; split(input: string, delimiter: string): string
-$.toLowerCase := Func("hk2najs5beg_22") ; toLowerCase(input: string): string
-$.toString := Func("hk2najs5beg_21") ; toString(input: unknown): string
-$.toUpperCase := Func("hk2najs5beg_20") ; toUpperCase(input: string): string
-$.trim := Func("hk2najs5beg_19") ; trim(input: string, omitting: string): string
-$.trimEnd := Func("hk2najs5beg_18") ; trimEnd(input: string, omitting: string): string
-$.trimStart := Func("hk2najs5beg_17") ; trimStart(input: string, omitting: string): string
-$.exit := Func("hk2najs5beg_16") ; exit(): void
-$.off := Func("hk2najs5beg_15") ; off(key: string, fn: Function | string): void
-$.on := Func("hk2najs5beg_14") ; on(key, string, fn: Function | string): void
-$.open := Func("hk2najs5beg_13") ; open(source: string): void
-$.reload := Func("hk2najs5beg_12") ; reload(): void
-$.sleep := Func("hk2najs5beg_11") ; sleep(time: number): void
-$.suspend := Func("hk2najs5beg_10") ; suspend(suspended?: boolean): void
-global Math := {abs: Func("hk2najs5beg_9"), ceil: Func("hk2najs5beg_8"), floor: Func("hk2najs5beg_7"), round: Func("hk2najs5beg_6")} ; abs(n: number): number ceil(n: number): number floor(n: number): number round(n: number): number
-global alert := Func("hk2najs5beg_5") ; alert(message: string): string
-global clearInterval := Func("hk2najs5beg_4") ; clearInterval(fn: Function | string): void
-global clearTimeout := Func("hk2najs5beg_3") ; clearTimeout(fn: Function | string): void
-global setInterval := Func("hk2najs5beg_2") ; setInterval(fn: Function | string, time: number): string
-global setTimeout := Func("hk2najs5beg_1") ; setTimeout(fn: Function | string, time: number): string
-hk2najs5beg_1(fn, time := 0) {
+$.reverse := Func("toolkit_43") ; reverse(input: unknown[]): unknown[]
+$.includes := Func("toolkit_42")
+$.length := Func("toolkit_41") ; length(input: string | array | object): number
+$.type := Func("toolkit_40") ; type(input: unknown): 'array' | 'number' | 'object' | 'string'
+$.findColor := Func("toolkit_39") ; findColor( color: number, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], variation = 0 ): Point
+$.findImage := Func("toolkit_38") ; findImage( source: string, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], ): Point
+$.getColor := Func("toolkit_37") ; getColor(point?: Point): number
+$.getPosition := Func("toolkit_36") ; getPosition(): Point
+$.getState := Func("toolkit_35") ; getState(key: string): string
+$.formatHotkey := Func("toolkit_34") ; formatHotkey(key: string): string
+$.now := Func("toolkit_33") ; now(): number
+$.random := Func("toolkit_32") ; random(min: number = 0, max: number = 1): number
+$.click := Func("toolkit_31") ; click(key?: string): void
+$.move := Func("toolkit_30") ; move(point: Point, speed: number = 0): void
+$.press := Func("toolkit_29") ; press(key...: string): void
+$.setFixed := Func("toolkit_28") ; setFixed(fixed?: boolean): void
+$.beep := Func("toolkit_27") ; beep(): void
+$.i := Func("toolkit_26") ; i(message: string): string
+$.info := Func("toolkit_25") ; info(message: string, point?: Point): string
+$.replace := Func("toolkit_24") ; replace( input: string, searchment: string, replacement: string, limit: number = -1 )
+$.split := Func("toolkit_23") ; split(input: string, delimiter: string): string
+$.toLowerCase := Func("toolkit_22") ; toLowerCase(input: string): string
+$.toString := Func("toolkit_21") ; toString(input: unknown): string
+$.toUpperCase := Func("toolkit_20") ; toUpperCase(input: string): string
+$.trim := Func("toolkit_19") ; trim(input: string, omitting: string): string
+$.trimEnd := Func("toolkit_18") ; trimEnd(input: string, omitting: string): string
+$.trimStart := Func("toolkit_17") ; trimStart(input: string, omitting: string): string
+$.exit := Func("toolkit_16") ; exit(): void
+$.off := Func("toolkit_15") ; off(key: string, fn: Function | string): void
+$.on := Func("toolkit_14") ; on(key, string, fn: Function | string): void
+$.open := Func("toolkit_13") ; open(source: string): void
+$.reload := Func("toolkit_12") ; reload(): void
+$.sleep := Func("toolkit_11") ; sleep(time: number): void
+$.suspend := Func("toolkit_10") ; suspend(suspended?: boolean): void
+global Math := {abs: Func("toolkit_9"), ceil: Func("toolkit_8"), floor: Func("toolkit_7"), round: Func("toolkit_6")} ; abs(n: number): number ceil(n: number): number floor(n: number): number round(n: number): number
+global alert := Func("toolkit_5") ; alert(message: string): string
+global clearInterval := Func("toolkit_4") ; clearInterval(fn: Function | string): void
+global clearTimeout := Func("toolkit_3") ; clearTimeout(fn: Function | string): void
+global setInterval := Func("toolkit_2") ; setInterval(fn: Function | string, time: number): string
+global setTimeout := Func("toolkit_1") ; setTimeout(fn: Function | string, time: number): string
+toolkit_1(fn, time := 0) {
   if !(fn) {
     return fn
   }
   SetTimer, % fn, % 0 - time
   return fn
 }
-hk2najs5beg_2(fn, time := 0) {
+toolkit_2(fn, time := 0) {
   if !(fn) {
     return fn
   }
   SetTimer, % fn, % time
   return fn
 }
-hk2najs5beg_3(fn) {
+toolkit_3(fn) {
   if !(fn) {
     return
   }
   SetTimer, % fn, Delete
 }
-hk2najs5beg_4(fn) {
+toolkit_4(fn) {
   if !(fn) {
     return
   }
   SetTimer, % fn, Delete
 }
-hk2najs5beg_5(message := "") {
+toolkit_5(message := "") {
   if !(message) {
     return
   }
@@ -92,19 +93,19 @@ hk2najs5beg_5(message := "") {
   MsgBox, % _msg
   return message
 }
-hk2najs5beg_6(n) {
+toolkit_6(n) {
   return Round(n)
 }
-hk2najs5beg_7(n) {
+toolkit_7(n) {
   return Floor(n)
 }
-hk2najs5beg_8(n) {
+toolkit_8(n) {
   return Ceil(n)
 }
-hk2najs5beg_9(n) {
+toolkit_9(n) {
   return Abs(n)
 }
-hk2najs5beg_10(isSuspended := "Toggle") {
+toolkit_10(isSuspended := "Toggle") {
   if (isSuspended != "Toggle") {
     if (isSuspended) {
       isSuspended := "On"
@@ -114,40 +115,40 @@ hk2najs5beg_10(isSuspended := "Toggle") {
   }
   Suspend, % isSuspended
 }
-hk2najs5beg_11(time) {
+toolkit_11(time) {
   Sleep, % time
 }
-hk2najs5beg_12() {
+toolkit_12() {
   Reload
 }
-hk2najs5beg_13(source) {
+toolkit_13(source) {
   Run, % source
 }
-hk2najs5beg_14(key, fn) {
+toolkit_14(key, fn) {
   key := $.formatHotkey.Call(key)
   Hotkey, % key, % fn, On
 }
-hk2najs5beg_15(key, fn) {
+toolkit_15(key, fn) {
   key := $.formatHotkey.Call(key)
   Hotkey, % key, % fn, Off
 }
-hk2najs5beg_16() {
+toolkit_16() {
   ExitApp
 }
-hk2najs5beg_17(input, omitting := " `t") {
+toolkit_17(input, omitting := " `t") {
   return LTrim(input, omitting)
 }
-hk2najs5beg_18(input, omitting := " `t") {
+toolkit_18(input, omitting := " `t") {
   return RTrim(input, omitting)
 }
-hk2najs5beg_19(input, omitting := " `t") {
+toolkit_19(input, omitting := " `t") {
   return Trim(input, omitting)
 }
-hk2najs5beg_20(input) {
+toolkit_20(input) {
   StringUpper, __Result__, input
   return __Result__
 }
-hk2najs5beg_21(input) {
+toolkit_21(input) {
   _type := $.type.Call(input)
   if (_type == "array") {
     _result := ""
@@ -164,17 +165,17 @@ hk2najs5beg_21(input) {
   }
   return input
 }
-hk2najs5beg_22(input) {
+toolkit_22(input) {
   StringLower, __Result__, input
   return __Result__
 }
-hk2najs5beg_23(input, delimiter) {
+toolkit_23(input, delimiter) {
   return StrSplit(input, delimiter)
 }
-hk2najs5beg_24(input, searchment, replacement, limit := -1) {
+toolkit_24(input, searchment, replacement, limit := -1) {
   return StrReplace(input, searchment, replacement, limit)
 }
-hk2najs5beg_25(message, point := "") {
+toolkit_25(message, point := "") {
   if !(message) {
     return message
   }
@@ -185,14 +186,14 @@ hk2najs5beg_25(message, point := "") {
   ToolTip, % _msg, % point[1], % point[2]
   return message
 }
-hk2najs5beg_26(message) {
+toolkit_26(message) {
   $.info.Call("" . ($.now.Call()) . " " . ($.toString.Call(message)) . "")
   return message
 }
-hk2najs5beg_27() {
+toolkit_27() {
   SoundBeep
 }
-hk2najs5beg_28(isFixed := "Toggle") {
+toolkit_28(isFixed := "Toggle") {
   if (isFixed != "Toggle") {
     if (isFixed) {
       isFixed := "On"
@@ -202,7 +203,7 @@ hk2najs5beg_28(isFixed := "Toggle") {
   }
   Winset AlwaysOnTop, % isFixed, A
 }
-hk2najs5beg_29(listInput*) {
+toolkit_29(listInput*) {
   if !($.length.Call(listInput)) { ; validate
     throw Exception("$.press: invalid key")
   }
@@ -243,25 +244,25 @@ hk2najs5beg_29(listInput*) {
   }
   Send, % _output
 }
-hk2najs5beg_30(point := "", speed := 0) {
+toolkit_30(point := "", speed := 0) {
   if !(point) {
     throw Exception("$.move: invalid point")
   }
   MouseMove, point[1], point[2], speed
 }
-hk2najs5beg_31(key := "left") {
+toolkit_31(key := "left") {
   key := $.replace.Call(key, "-", "")
   key := $.replace.Call(key, ":", " ")
   Click, % key
 }
-hk2najs5beg_32(min := 0, max := 1) {
+toolkit_32(min := 0, max := 1) {
   Random, __Result__, min, max
   return __Result__
 }
-hk2najs5beg_33() {
+toolkit_33() {
   return A_TickCount
 }
-hk2najs5beg_34(key) {
+toolkit_34(key) {
   _listKey := [] ; format
   _key := $.toLowerCase.Call(key)
   _key := $.replace.Call(_key, " ", "")
@@ -313,21 +314,21 @@ hk2najs5beg_34(key) {
   }
   return $.replace.Call("" . (_prefix) . "" . ($.trim.Call(_result, " &")) . "", ":", " ")
 }
-hk2najs5beg_35(key) {
+toolkit_35(key) {
   return GetKeyState(key)
 }
-hk2najs5beg_36() {
+toolkit_36() {
   MouseGetPos, __X__, __Y__
   return [__X__, __Y__]
 }
-hk2najs5beg_37(point := "") {
+toolkit_37(point := "") {
   if !(point) {
     point := $.getPosition.Call()
   }
   PixelGetColor, __Result__, % point[1], % point[2], RGB
   return __Result__
 }
-hk2najs5beg_38(source, start := "", end := "") {
+toolkit_38(source, start := "", end := "") {
   if !(start) {
     start := [0, 0]
   }
@@ -337,7 +338,7 @@ hk2najs5beg_38(source, start := "", end := "") {
   ImageSearch __x__, __Y__, start[1], start[2], end[1], end[2], % A_ScriptDir . "\\\" . source
   return [__X__, __Y__]
 }
-hk2najs5beg_39(color, start := "", end := "", variation := 0) {
+toolkit_39(color, start := "", end := "", variation := 0) {
   if !(start) {
     start := [0, 0]
   }
@@ -347,7 +348,7 @@ hk2najs5beg_39(color, start := "", end := "", variation := 0) {
   PixelSearch __X__, __Y__, start[1], start[2], end[1], end[2], color, variation, Fast RGB
   return [__X__, __Y__]
 }
-hk2najs5beg_40(input) {
+toolkit_40(input) {
   if input is Number
     return "number"
   if (IsObject(input)) {
@@ -358,7 +359,7 @@ hk2najs5beg_40(input) {
   }
   return "string"
 }
-hk2najs5beg_41(input) {
+toolkit_41(input) {
   _type := $.type.Call(input)
   switch _type {
     case "array": {
@@ -375,7 +376,7 @@ hk2najs5beg_41(input) {
     }
   }
 }
-hk2najs5beg_42(input, needle) {
+toolkit_42(input, needle) {
   _type := $.type.Call(input)
   if (_type == "string" || _type == "number") {
     return (InStr(input, needle)) > 0
@@ -390,7 +391,7 @@ hk2najs5beg_42(input, needle) {
   }
   throw Exception("$.includes: invalid type '" . (_type) . "'")
 }
-hk2najs5beg_43(input) {
+toolkit_43(input) {
   _type := $.type.Call(input)
   if !(_type == "array") {
     throw Exception("$.reverse: invalid type '" . (_type) . "'")
@@ -403,60 +404,61 @@ hk2najs5beg_43(input) {
   return _output
 }
 
-global bind := Func("9tvt9tmbc58_29")
+global __ctx_olcs9csh8e8__ := {}
+global bind := Func("olcs9csh8e8_21")
 global $dataDoAs := {count: 0, fn: "", interval: 0, limit: 1}
-global doAs := Func("9tvt9tmbc58_11")
+global doAs := Func("olcs9csh8e8_11")
 global id := "" ; variable
 global isSuspend := false
 global timer := ""
-global init := Func("9tvt9tmbc58_9") ; function
-global watch := Func("9tvt9tmbc58_8")
+global init := Func("olcs9csh8e8_9") ; function
+global watch := Func("olcs9csh8e8_8")
 $.on.Call("f1", init) ; binding
-$.on.Call("alt + f4", "9tvt9tmbc58_7")
+$.on.Call("alt + f4", "olcs9csh8e8_7")
 global isJumping := false
 global timerJump := ""
-global jumpTwice := Func("9tvt9tmbc58_6")
-global startJumpBack := Func("9tvt9tmbc58_4")
-global stopJumpBack := Func("9tvt9tmbc58_3")
+global jumpTwice := Func("olcs9csh8e8_6")
+global startJumpBack := Func("olcs9csh8e8_4")
+global stopJumpBack := Func("olcs9csh8e8_3")
 global tsViewFar := 0
-global viewFar := Func("9tvt9tmbc58_2")
-9tvt9tmbc58_1() {
+global viewFar := Func("olcs9csh8e8_2")
+olcs9csh8e8_1() {
   $.click.Call("wheel-down:up")
 }
-9tvt9tmbc58_2() {
+olcs9csh8e8_2() {
   if !($.now.Call() - tsViewFar > 2000) {
     return
   }
   tsViewFar := $.now.Call()
   $.click.Call("wheel-down:down")
-  setTimeout.Call("9tvt9tmbc58_1", 500)
+  setTimeout.Call("olcs9csh8e8_1", 500)
 }
-9tvt9tmbc58_3() {
+olcs9csh8e8_3() {
   if !(isJumping) {
     return
   }
   isJumping := false
   clearTimeout.Call(timerJump)
 }
-9tvt9tmbc58_4() {
+olcs9csh8e8_4() {
   if (isJumping) {
     return
   }
   isJumping := true
   timerJump := setTimeout.Call(jumpTwice, 100)
 }
-9tvt9tmbc58_5() {
+olcs9csh8e8_5() {
   $.press.Call("space")
 }
-9tvt9tmbc58_6() {
+olcs9csh8e8_6() {
   $.press.Call("space")
-  doAs.Call("9tvt9tmbc58_5", 100, 2, 200)
+  doAs.Call("olcs9csh8e8_5", 100, 2, 200)
 }
-9tvt9tmbc58_7() {
+olcs9csh8e8_7() {
   $.beep.Call()
   $.exit.Call()
 }
-9tvt9tmbc58_8() {
+olcs9csh8e8_8() {
   if (!isSuspend && !WinActive("ahk_id " . (id) . "")) {
     $.suspend.Call(true)
     isSuspend := true
@@ -468,17 +470,17 @@ global viewFar := Func("9tvt9tmbc58_2")
     return
   }
 }
-9tvt9tmbc58_9() {
+olcs9csh8e8_9() {
   id := WinExist("A")
   $.off.Call("f1", init)
   bind.Call()
   setInterval.Call(watch, 200)
   $.beep.Call()
 }
-9tvt9tmbc58_10() {
+olcs9csh8e8_10() {
   doAs.Call()
 }
-9tvt9tmbc58_11(fn := "", interval := 100, limit := 1, delay := 0) {
+olcs9csh8e8_11(fn := "", interval := 100, limit := 1, delay := 0) {
   if (fn) {
     $dataDoAs.count := 0
     $dataDoAs.fn := fn
@@ -494,27 +496,27 @@ global viewFar := Func("9tvt9tmbc58_2")
   }
   $dataDoAs.count++
   (Func($dataDoAs.fn)).Call($dataDoAs)
-  setTimeout.Call("9tvt9tmbc58_10", $dataDoAs.interval)
+  setTimeout.Call("olcs9csh8e8_10", $dataDoAs.interval)
 }
-9tvt9tmbc58_12() {
+olcs9csh8e8_12() {
   $.press.Call("w:up")
 }
-9tvt9tmbc58_13() {
+olcs9csh8e8_13() {
   $.press.Call("w:down")
   viewFar.Call()
 }
-9tvt9tmbc58_14() {
+olcs9csh8e8_14() {
   jumpTwice.Call()
 }
-9tvt9tmbc58_15() {
+olcs9csh8e8_15() {
   $.press.Call("s:up")
   stopJumpBack.Call()
 }
-9tvt9tmbc58_16() {
+olcs9csh8e8_16() {
   $.press.Call("s:down")
   startJumpBack.Call()
 }
-9tvt9tmbc58_17(e) {
+olcs9csh8e8_17(e) {
   $.press.Call("f")
   if !(e.count >= 10) {
     $.click.Call("wheel-down:down")
@@ -522,54 +524,25 @@ global viewFar := Func("9tvt9tmbc58_2")
     $.press.Call("wheel-down:up")
   }
 }
-9tvt9tmbc58_18() {
-  doAs.Call("9tvt9tmbc58_17", 100, 10)
+olcs9csh8e8_18() {
+  doAs.Call("olcs9csh8e8_17", 100, 10)
 }
-9tvt9tmbc58_19() {
+olcs9csh8e8_19() {
   $.press.Call("e")
 }
-9tvt9tmbc58_20() {
-  $.press.Call("5")
-  doAs.Call("9tvt9tmbc58_19", 100, 2, 100)
+olcs9csh8e8_20(key) {
+  $.press.Call(key)
+  doAs.Call("olcs9csh8e8_19", 100, 2, 100)
 }
-9tvt9tmbc58_21() {
-  $.press.Call("e")
-}
-9tvt9tmbc58_22() {
-  $.press.Call("4")
-  doAs.Call("9tvt9tmbc58_21", 100, 2, 100)
-}
-9tvt9tmbc58_23() {
-  $.press.Call("e")
-}
-9tvt9tmbc58_24() {
-  $.press.Call("3")
-  doAs.Call("9tvt9tmbc58_23", 100, 2, 100)
-}
-9tvt9tmbc58_25() {
-  $.press.Call("e")
-}
-9tvt9tmbc58_26() {
-  $.press.Call("2")
-  doAs.Call("9tvt9tmbc58_25", 100, 2, 100)
-}
-9tvt9tmbc58_27() {
-  $.press.Call("e")
-}
-9tvt9tmbc58_28() {
-  $.press.Call("1")
-  doAs.Call("9tvt9tmbc58_27", 100, 2, 100)
-}
-9tvt9tmbc58_29() {
-  $.on.Call("1", "9tvt9tmbc58_28")
-  $.on.Call("2", "9tvt9tmbc58_26")
-  $.on.Call("3", "9tvt9tmbc58_24")
-  $.on.Call("4", "9tvt9tmbc58_22")
-  $.on.Call("5", "9tvt9tmbc58_20")
-  $.on.Call("f", "9tvt9tmbc58_18")
-  $.on.Call("s", "9tvt9tmbc58_16")
-  $.on.Call("s:up", "9tvt9tmbc58_15")
-  $.on.Call("space", "9tvt9tmbc58_14")
-  $.on.Call("w", "9tvt9tmbc58_13")
-  $.on.Call("w:up", "9tvt9tmbc58_12")
+olcs9csh8e8_21() {
+  for __i__, key in ["1", "2", "3", "4", "5"] {
+    fn := Func("olcs9csh8e8_20")
+    $.on.Call(key, fn.Bind(key))
+  }
+  $.on.Call("f", "olcs9csh8e8_18")
+  $.on.Call("s", "olcs9csh8e8_16")
+  $.on.Call("s:up", "olcs9csh8e8_15")
+  $.on.Call("space", "olcs9csh8e8_14")
+  $.on.Call("w", "olcs9csh8e8_13")
+  $.on.Call("w:up", "olcs9csh8e8_12")
 }
