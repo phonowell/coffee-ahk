@@ -3,6 +3,7 @@
   ExitApp
 }
 #KeyHistory, 0
+#MaxHotkeysPerInterval 200
 #MaxThreads, 20
 #NoEnv
 #Persistent
@@ -404,61 +405,61 @@ toolkit_43(input) {
   return _output
 }
 
-global __ctx_olcs9csh8e8__ := {}
-global bind := Func("olcs9csh8e8_21")
+global __ctx_hfgkj2pdsko__ := {}
+global bind := Func("hfgkj2pdsko_21")
 global $dataDoAs := {count: 0, fn: "", interval: 0, limit: 1}
-global doAs := Func("olcs9csh8e8_11")
+global doAs := Func("hfgkj2pdsko_11")
 global id := "" ; variable
 global isSuspend := false
 global timer := ""
-global init := Func("olcs9csh8e8_9") ; function
-global watch := Func("olcs9csh8e8_8")
+global init := Func("hfgkj2pdsko_9") ; function
+global watch := Func("hfgkj2pdsko_8")
 $.on.Call("f1", init) ; binding
-$.on.Call("alt + f4", "olcs9csh8e8_7")
+$.on.Call("alt + f4", "hfgkj2pdsko_7")
 global isJumping := false
 global timerJump := ""
-global jumpTwice := Func("olcs9csh8e8_6")
-global startJumpBack := Func("olcs9csh8e8_4")
-global stopJumpBack := Func("olcs9csh8e8_3")
+global jumpTwice := Func("hfgkj2pdsko_6")
+global startJumpBack := Func("hfgkj2pdsko_4")
+global stopJumpBack := Func("hfgkj2pdsko_3")
 global tsViewFar := 0
-global viewFar := Func("olcs9csh8e8_2")
-olcs9csh8e8_1() {
+global viewFar := Func("hfgkj2pdsko_2")
+hfgkj2pdsko_1() {
   $.click.Call("wheel-down:up")
 }
-olcs9csh8e8_2() {
+hfgkj2pdsko_2() {
   if !($.now.Call() - tsViewFar > 2000) {
     return
   }
   tsViewFar := $.now.Call()
   $.click.Call("wheel-down:down")
-  setTimeout.Call("olcs9csh8e8_1", 500)
+  setTimeout.Call("hfgkj2pdsko_1", 500)
 }
-olcs9csh8e8_3() {
+hfgkj2pdsko_3() {
   if !(isJumping) {
     return
   }
   isJumping := false
   clearTimeout.Call(timerJump)
 }
-olcs9csh8e8_4() {
+hfgkj2pdsko_4() {
   if (isJumping) {
     return
   }
   isJumping := true
   timerJump := setTimeout.Call(jumpTwice, 100)
 }
-olcs9csh8e8_5() {
+hfgkj2pdsko_5() {
   $.press.Call("space")
 }
-olcs9csh8e8_6() {
+hfgkj2pdsko_6() {
   $.press.Call("space")
-  doAs.Call("olcs9csh8e8_5", 100, 2, 200)
+  doAs.Call("hfgkj2pdsko_5", 100, 2, 200)
 }
-olcs9csh8e8_7() {
+hfgkj2pdsko_7() {
   $.beep.Call()
   $.exit.Call()
 }
-olcs9csh8e8_8() {
+hfgkj2pdsko_8() {
   if (!isSuspend && !WinActive("ahk_id " . (id) . "")) {
     $.suspend.Call(true)
     isSuspend := true
@@ -470,17 +471,17 @@ olcs9csh8e8_8() {
     return
   }
 }
-olcs9csh8e8_9() {
+hfgkj2pdsko_9() {
   id := WinExist("A")
   $.off.Call("f1", init)
   bind.Call()
   setInterval.Call(watch, 200)
   $.beep.Call()
 }
-olcs9csh8e8_10() {
+hfgkj2pdsko_10() {
   doAs.Call()
 }
-olcs9csh8e8_11(fn := "", interval := 100, limit := 1, delay := 0) {
+hfgkj2pdsko_11(fn := "", interval := 100, limit := 1, delay := 0) {
   if (fn) {
     $dataDoAs.count := 0
     $dataDoAs.fn := fn
@@ -496,27 +497,27 @@ olcs9csh8e8_11(fn := "", interval := 100, limit := 1, delay := 0) {
   }
   $dataDoAs.count++
   (Func($dataDoAs.fn)).Call($dataDoAs)
-  setTimeout.Call("olcs9csh8e8_10", $dataDoAs.interval)
+  setTimeout.Call("hfgkj2pdsko_10", $dataDoAs.interval)
 }
-olcs9csh8e8_12() {
+hfgkj2pdsko_12() {
   $.press.Call("w:up")
 }
-olcs9csh8e8_13() {
+hfgkj2pdsko_13() {
   $.press.Call("w:down")
   viewFar.Call()
 }
-olcs9csh8e8_14() {
+hfgkj2pdsko_14() {
   jumpTwice.Call()
 }
-olcs9csh8e8_15() {
+hfgkj2pdsko_15() {
   $.press.Call("s:up")
   stopJumpBack.Call()
 }
-olcs9csh8e8_16() {
+hfgkj2pdsko_16() {
   $.press.Call("s:down")
   startJumpBack.Call()
 }
-olcs9csh8e8_17(e) {
+hfgkj2pdsko_17(e) {
   $.press.Call("f")
   if !(e.count >= 10) {
     $.click.Call("wheel-down:down")
@@ -524,25 +525,25 @@ olcs9csh8e8_17(e) {
     $.press.Call("wheel-down:up")
   }
 }
-olcs9csh8e8_18() {
-  doAs.Call("olcs9csh8e8_17", 100, 10)
+hfgkj2pdsko_18() {
+  doAs.Call("hfgkj2pdsko_17", 100, 10)
 }
-olcs9csh8e8_19() {
+hfgkj2pdsko_19() {
   $.press.Call("e")
 }
-olcs9csh8e8_20(key) {
+hfgkj2pdsko_20(key) {
   $.press.Call(key)
-  doAs.Call("olcs9csh8e8_19", 100, 2, 100)
+  doAs.Call("hfgkj2pdsko_19", 100, 2, 100)
 }
-olcs9csh8e8_21() {
+hfgkj2pdsko_21() {
   for __i__, key in ["1", "2", "3", "4", "5"] {
-    fn := Func("olcs9csh8e8_20")
+    fn := Func("hfgkj2pdsko_20")
     $.on.Call(key, fn.Bind(key))
   }
-  $.on.Call("f", "olcs9csh8e8_18")
-  $.on.Call("s", "olcs9csh8e8_16")
-  $.on.Call("s:up", "olcs9csh8e8_15")
-  $.on.Call("space", "olcs9csh8e8_14")
-  $.on.Call("w", "olcs9csh8e8_13")
-  $.on.Call("w:up", "olcs9csh8e8_12")
+  $.on.Call("f", "hfgkj2pdsko_18")
+  $.on.Call("s", "hfgkj2pdsko_16")
+  $.on.Call("s:up", "hfgkj2pdsko_15")
+  $.on.Call("space", "hfgkj2pdsko_14")
+  $.on.Call("w", "hfgkj2pdsko_13")
+  $.on.Call("w:up", "hfgkj2pdsko_12")
 }
