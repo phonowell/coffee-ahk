@@ -59,7 +59,7 @@ function cache(
   listCache = [
     ...listCache,
     [index, listA],
-    [i, listB]
+    [i + 1, listB]
   ]
 }
 

@@ -7,23 +7,23 @@ fn.Call(1, 2)
 fn.Call(fn.Call(fn))
 fn := Func("ahk_5")
 fn := Func("ahk_4")
-ahk_1()
+ahk_1() {
   a := __ctx_ahk__.a
   b := __ctx_ahk__.b
-  c := __ctx_ahk__.c {
+  c := __ctx_ahk__.c
   return a + b + c
 }
-ahk_2()
+ahk_2() {
   a := __ctx_ahk__.a
-  b := __ctx_ahk__.b {
+  b := __ctx_ahk__.b
   c := 3
   __ctx_ahk__.a := a
   __ctx_ahk__.b := b
   __ctx_ahk__.c := c
   return fn3.Call("ahk_1")
 }
-ahk_3()
-  a := __ctx_ahk__.a {
+ahk_3() {
+  a := __ctx_ahk__.a
   b := 2
   __ctx_ahk__.a := a
   __ctx_ahk__.b := b

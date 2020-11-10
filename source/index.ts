@@ -20,7 +20,7 @@ async function compile_(
   const content = await read_(source)
   const result = format(content, option)
   if (option.verbose) {
-    $.i(result.raw)
+    // $.i(result.raw)
     $.i(result.ast)
   }
   if (option.save) await write_(source, result)

@@ -62,7 +62,7 @@ npm run test
 - 没有`import`和`export`，使用`# include xxx`替代这一功能；
 - 没有`undefined`和`null`，使用空字符串`''`来替代；
 - 没有列出的`js`内置函数几乎都不存在，需要自行实现；
-- 没有隐式`return`，所有`return`都需要显示写出；
+- 没有隐式`return`，所有`return`都需要显式写出；
 
 ## Todo
 
