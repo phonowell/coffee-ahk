@@ -30,7 +30,6 @@ function transPair(
 
   const listPre: string[] = []
   const token = '__array__'
-  let indent = 0
   let listContent: typeof content.list = []
 
   function pickIndent(
@@ -53,48 +52,50 @@ function transPair(
   }
 
   // each
-  content.list.forEach((it, i) => {
+  content.list.forEach((item, i) => {
 
     // output
-    if (it.type === 'new-line' && listPre.length) {
+    if (listPre.length && item.type === 'new-line') {
+
+      const indent = pickIndent(i - 1)
+      const scope = item.scope
+
       for (let i = 0; i < listPre.length; i++) {
         listContent = [
           ...listContent,
           // \n xxx = token[n]
-          content.make('new-line', indent.toString(), it.scope),
-          content.make('identifier', listPre[listPre.length - i - 1], it.scope),
-          content.make('sign', '=', it.scope),
-          content.make('identifier', token, it.scope),
-          content.make('edge', 'index-start', it.scope),
-          content.make('number', (i + 1).toString(), it.scope),
-          content.make('edge', 'index-end', it.scope)
+          content.new('new-line', indent.toString(), scope),
+          content.new('identifier', listPre[listPre.length - i - 1], scope),
+          content.new('sign', '=', scope),
+          content.new('identifier', token, scope),
+          content.new('edge', 'index-start', scope),
+          content.new('number', (i + 1).toString(), scope),
+          content.new('edge', 'index-end', scope)
         ]
       }
 
-      indent = 0
       listPre.length = 0
-      listContent.push(it)
+      listContent.push(item)
       return
     }
 
     // find
-    if (!content.equal(it, 'sign', '=')) {
-      listContent.push(it)
+    if (!content.equal(item, 'sign', '=')) {
+      listContent.push(item)
       return
     }
     if (!content.equal(content.eq(i - 1), 'edge', 'array-end')) {
-      listContent.push(it)
+      listContent.push(item)
       return
     }
 
     // pick
-    indent = pickIndent(i)
     pickPre(i)
 
     listContent = [
       ...listContent,
-      content.make('identifier', token, it.scope),
-      content.make('sign', '=', it.scope)
+      content.new('identifier', token, item.scope),
+      content.new('sign', '=', item.scope)
     ]
   })
 

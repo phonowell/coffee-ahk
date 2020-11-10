@@ -2,9 +2,11 @@ import findIndex from 'lodash/findIndex'
 import findLastIndex from 'lodash/findLastIndex'
 import isEqual from 'lodash/isEqual'
 
+import injectContext from './context'
+
 // interface
 
-import { Context } from '../type'
+import { Context } from '../../type'
 type Item = Context['content']['list'][number]
 
 // variable
@@ -16,8 +18,6 @@ const listForbidden = [
   'toggle'
 ]
 
-let salt = ''
-
 // function
 
 function countFn(
@@ -27,9 +27,9 @@ function countFn(
   const { content } = ctx
   const listFn: Set<string> = new Set()
 
-  content.list.forEach(it => {
-    if (it.type !== 'function') return
-    listFn.add(it.value)
+  content.list.forEach(item => {
+    if (item.type !== 'function') return
+    listFn.add(item.value)
   })
 
   return listFn
@@ -39,23 +39,17 @@ function main(
   ctx: Context
 ): void {
 
-  // salt
-  salt = ctx.option.salt || Math.random()
-    .toString(32)
-    .split('.')[1]
-    .padStart(11, '0')
-
   // function
-  transFn(ctx)
+  // from `fn: identifier(...)` to `fn: function(...)`
+  replaceFnType(ctx)
 
   // list
   let listFn = countFn(ctx)
+  validateFnName(listFn)
 
-  // validate
-  listFn.forEach(it => {
-    if (!listForbidden.includes(it.toLowerCase())) return
-    throw new Error(`ahk/forbidden: function name '${it}' is not allowed`)
-  })
+  // replace ctx in parameter
+  // from `fn(a = a)` to `fn()`
+  injectContext(ctx)
 
   // anonymous function
   if (listFn.has('anonymous')) {
@@ -63,11 +57,12 @@ function main(
     listFn = countFn(ctx) // re-list
   }
 
-  // function as parameter
-  transFnAsParam(ctx, listFn)
-
-  // call function(s) which as parameter
-  transCallAsParam(ctx)
+  // replace function as parameter
+  // from `fn(callback)` to `fn('callback')`
+  replaceFnAsParam(ctx, listFn)
+  // then call function(s) which as parameter
+  // from `callback()` to `Func('callback').Call()`
+  replaceCallAsParam(ctx)
 }
 
 function pickAnonymous(
@@ -85,7 +80,7 @@ function pickAnonymous(
   if (!~i) return
 
   const it = content.eq(i)
-  it.value = `${salt}_${seed}`
+  it.value = `${ctx.option.salt}_${seed}`
 
   pickItem(ctx, seed, i, [...it.scope, 'function'])
     .forEach(it => {
@@ -129,7 +124,7 @@ function pickItem(
 
   // last one
   item.type = 'string'
-  item.value = `"${salt}_${seed}"`
+  item.value = `"${ctx.option.salt}_${seed}"`
   listResult.push({
     type: 'new-line',
     value: '0',
@@ -156,7 +151,7 @@ function pickItem(
   return listResult
 }
 
-function transCallAsParam(
+function replaceCallAsParam(
   ctx: Context
 ): void {
 
@@ -210,24 +205,7 @@ function transCallAsParam(
   })
 }
 
-function transFn(
-  ctx: Context
-): void {
-
-  const { content } = ctx
-
-  content.list.forEach((it, i) => {
-
-    if (it.type !== 'edge' || it.value !== 'parameter-start') return
-
-    const _prev = content.eq(i - 1)
-    if (_prev.type !== 'identifier') return
-
-    _prev.type = 'function'
-  })
-}
-
-function transFnAsParam(
+function replaceFnAsParam(
   ctx: Context,
   listFn: Set<string>
 ): void {
@@ -243,6 +221,34 @@ function transFnAsParam(
 
     it.type = 'string'
     it.value = `"${it.value}"`
+  })
+}
+
+function replaceFnType(
+  ctx: Context
+): void {
+
+  const { content } = ctx
+
+  content.list.forEach((item, i) => {
+
+    if (item.type !== 'edge') return
+    if (item.value !== 'parameter-start') return
+
+    const it = content.eq(i - 1)
+    if (it.type !== 'identifier') return
+
+    it.type = 'function'
+  })
+}
+
+function validateFnName(
+  listFn: Set<string>
+): void {
+
+  listFn.forEach(item => {
+    if (!listForbidden.includes(item.toLowerCase())) return
+    throw new Error(`ahk/forbidden: function name '${item}' is not allowed`)
   })
 }
 

@@ -10,8 +10,9 @@ try {
 } finally {
   3
 }
-global fn := Func("anonymous_1")
-anonymous_1() {
+global __ctx_ahk__ := {}
+global fn := Func("ahk_1")
+ahk_1() {
   try {
     alert.Call(1)
   } catch e {

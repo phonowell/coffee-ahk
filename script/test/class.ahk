@@ -1,16 +1,17 @@
 class T {
-  a := Func("anonymous_3")
-  b := Func("anonymous_2")
+  a := Func("ahk_3")
+  b := Func("ahk_2")
   c := 0
-  d := Func("anonymous_1")
+  d := Func("ahk_1")
 }
+global __ctx_ahk__ := {}
 global t := new T()
-anonymous_1() {
+ahk_1() {
   return this.c
 }
-anonymous_2(n) {
+ahk_2(n) {
   return n
 }
-anonymous_3() {
+ahk_3() {
   return 1
 }

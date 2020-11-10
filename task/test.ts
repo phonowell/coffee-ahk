@@ -17,7 +17,7 @@ async function main_(): Promise<void> {
       .trim()
 
     const content = (await compile_(source, {
-      salt: 'anonymous'
+      salt: 'ahk'
     }))
       .replace(/\r/g, '')
       .trim()

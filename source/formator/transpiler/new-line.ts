@@ -10,18 +10,25 @@ function main(
 
   const { cache, content, type, value } = ctx
 
-  if (type === 'terminator' && value === '\n') {
+  if (type === 'terminator') {
 
-    if (['array', 'call', 'object', 'parameter'].includes(cache.last)) {
-      if (!content.equal(content.last, 'sign', ',')) {
-        if (content.last.type === 'new-line') content.pop()
-        content.push('sign', ',')
+    if (value === '\n') {
+      if (['array', 'call', 'object', 'parameter'].includes(cache.last)) {
+        if (!content.equal(content.last, 'sign', ',')) {
+          if (content.last.type === 'new-line') content.pop()
+          content.push('sign', ',')
+        }
+        return true
       }
+
+      content.push('new-line', ctx.indent)
       return true
     }
 
-    content.push('new-line', ctx.indent)
-    return true
+    if (value === ';') {
+      content.push('new-line', ctx.indent)
+      return true
+    }
   }
 
   return false

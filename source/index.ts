@@ -36,6 +36,13 @@ async function main_(
   if (!listSource.length)
     throw new Error(`invalid source '${source}'`)
 
+  // salt
+  if (!option.salt)
+    option.salt = Math.random()
+      .toString(32)
+      .split('.')[1]
+      .padStart(11, '0')
+
   return await compile_(listSource[0], option)
 }
 

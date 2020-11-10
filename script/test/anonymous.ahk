@@ -1,13 +1,14 @@
-setTimeout.Call("anonymous_4", 4000)
-anonymous_1() {
+global __ctx_ahk__ := {}
+setTimeout.Call("ahk_4", 4000)
+ahk_1() {
   1
 }
-anonymous_2() {
-  setTimeout.Call("anonymous_1", 1000)
+ahk_2() {
+  setTimeout.Call("ahk_1", 1000)
 }
-anonymous_3() {
-  setTimeout.Call("anonymous_2", 2000)
+ahk_3() {
+  setTimeout.Call("ahk_2", 2000)
 }
-anonymous_4() {
-  setTimeout.Call("anonymous_3", 3000)
+ahk_4() {
+  setTimeout.Call("ahk_3", 3000)
 }

@@ -104,15 +104,16 @@ class Content {
 
   load(list: Item[]): this {
     this._list = list
+    this.update()
     return this
   }
 
-  make(
+  new(
     type: Item['type'],
     value: Item['value'],
     scope: Item['scope']
   ): Item {
-    return { scope, type, value }
+    return { type, value, scope }
   }
 
   pop(): Item {

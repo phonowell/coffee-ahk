@@ -1,3 +1,4 @@
+global __ctx_ahk__ := {}
 switch a {
   case 1: {
     1

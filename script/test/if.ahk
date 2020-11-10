@@ -27,13 +27,14 @@ if (a > 1) {
 } else {
   3
 }
-global fn := Func("anonymous_1")
+global __ctx_ahk__ := {}
+global fn := Func("ahk_1")
 if !(fn.Call(1)) {
   1
 } else {
   2
 }
-anonymous_1() {
+ahk_1() {
   if !(1) {
     1
   } else {
