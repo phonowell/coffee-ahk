@@ -3,7 +3,7 @@
   ExitApp
 }
 #KeyHistory, 0
-#MaxHotkeysPerInterval 200
+#MaxHotkeysPerInterval, 200
 #MaxThreads, 20
 #NoEnv
 #Persistent
@@ -405,48 +405,48 @@ toolkit_43(input) {
   return _output
 }
 
-global __ctx_al86ioh4gug__ := {}
-global bind := Func("al86ioh4gug_17")
+global __ctx_vcdsok2qjpo__ := {}
+global bind := Func("vcdsok2qjpo_17")
 global $dataDoAs := {count: 0, fn: "", interval: 0, limit: 1}
-global doAs := Func("al86ioh4gug_9")
+global doAs := Func("vcdsok2qjpo_9")
 global id := "" ; variable
 global isSuspend := false
 global timer := ""
-global init := Func("al86ioh4gug_7") ; function
-global watch := Func("al86ioh4gug_6")
+global init := Func("vcdsok2qjpo_7") ; function
+global watch := Func("vcdsok2qjpo_6")
 $.on.Call("f1", init) ; binding
-$.on.Call("alt + f4", Func("al86ioh4gug_5"))
+$.on.Call("alt + f4", Func("vcdsok2qjpo_5"))
 global isJumping := false
 global timerJump := ""
-global jumpTwice := Func("al86ioh4gug_4")
-global startJumpBack := Func("al86ioh4gug_2")
-global stopJumpBack := Func("al86ioh4gug_1")
-al86ioh4gug_1() {
+global jumpTwice := Func("vcdsok2qjpo_4")
+global startJumpBack := Func("vcdsok2qjpo_2")
+global stopJumpBack := Func("vcdsok2qjpo_1")
+vcdsok2qjpo_1() {
   if !(isJumping) {
     return
   }
   isJumping := false
   clearTimeout.Call(timerJump)
 }
-al86ioh4gug_2() {
+vcdsok2qjpo_2() {
   if (isJumping) {
     return
   }
   isJumping := true
   timerJump := setTimeout.Call(jumpTwice, 100)
 }
-al86ioh4gug_3() {
+vcdsok2qjpo_3() {
   $.press.Call("space")
 }
-al86ioh4gug_4() {
+vcdsok2qjpo_4() {
   $.press.Call("space")
-  doAs.Call(Func("al86ioh4gug_3"), 100, 2, 200)
+  doAs.Call(Func("vcdsok2qjpo_3"), 100, 2, 200)
 }
-al86ioh4gug_5() {
+vcdsok2qjpo_5() {
   $.beep.Call()
   $.exit.Call()
 }
-al86ioh4gug_6() {
+vcdsok2qjpo_6() {
   if (!isSuspend && !WinActive("ahk_id " . (id) . "")) {
     $.suspend.Call(true)
     isSuspend := true
@@ -458,17 +458,17 @@ al86ioh4gug_6() {
     return
   }
 }
-al86ioh4gug_7() {
+vcdsok2qjpo_7() {
   id := WinExist("A")
   $.off.Call("f1", init)
   bind.Call()
   setInterval.Call(watch, 200)
   $.beep.Call()
 }
-al86ioh4gug_8() {
+vcdsok2qjpo_8() {
   doAs.Call()
 }
-al86ioh4gug_9(fn := "", interval := 100, limit := 1, delay := 0) {
+vcdsok2qjpo_9(fn := "", interval := 100, limit := 1, delay := 0) {
   if (fn) {
     $dataDoAs.count := 0
     $dataDoAs.fn := fn
@@ -484,20 +484,20 @@ al86ioh4gug_9(fn := "", interval := 100, limit := 1, delay := 0) {
   }
   $dataDoAs.count++
   $dataDoAs.fn.Call($dataDoAs)
-  setTimeout.Call(Func("al86ioh4gug_8"), $dataDoAs.interval)
+  setTimeout.Call(Func("vcdsok2qjpo_8"), $dataDoAs.interval)
 }
-al86ioh4gug_10() {
+vcdsok2qjpo_10() {
   jumpTwice.Call()
 }
-al86ioh4gug_11() {
+vcdsok2qjpo_11() {
   $.press.Call("s:up")
   stopJumpBack.Call()
 }
-al86ioh4gug_12() {
+vcdsok2qjpo_12() {
   $.press.Call("s:down")
   startJumpBack.Call()
 }
-al86ioh4gug_13(e) {
+vcdsok2qjpo_13(e) {
   $.press.Call("f")
   if !(e.count >= 10) {
     $.click.Call("wheel-down:down")
@@ -505,22 +505,22 @@ al86ioh4gug_13(e) {
     $.press.Call("wheel-down:up")
   }
 }
-al86ioh4gug_14() {
-  doAs.Call(Func("al86ioh4gug_13"), 100, 10)
+vcdsok2qjpo_14() {
+  doAs.Call(Func("vcdsok2qjpo_13"), 100, 10)
 }
-al86ioh4gug_15() {
+vcdsok2qjpo_15() {
   $.press.Call("e")
 }
-al86ioh4gug_16(key) {
+vcdsok2qjpo_16(key) {
   $.press.Call(key)
-  doAs.Call(Func("al86ioh4gug_15"), 100, 2, 100)
+  doAs.Call(Func("vcdsok2qjpo_15"), 100, 2, 100)
 }
-al86ioh4gug_17() {
+vcdsok2qjpo_17() {
   for __i__, key in ["1", "2", "3", "4", "5"] {
-    $.on.Call(key, (Func("al86ioh4gug_16")).Bind(key))
+    $.on.Call(key, (Func("vcdsok2qjpo_16")).Bind(key))
   }
-  $.on.Call("f", Func("al86ioh4gug_14"))
-  $.on.Call("s", Func("al86ioh4gug_12"))
-  $.on.Call("s:up", Func("al86ioh4gug_11"))
-  $.on.Call("space", Func("al86ioh4gug_10"))
+  $.on.Call("f", Func("vcdsok2qjpo_14"))
+  $.on.Call("s", Func("vcdsok2qjpo_12"))
+  $.on.Call("s:up", Func("vcdsok2qjpo_11"))
+  $.on.Call("space", Func("vcdsok2qjpo_10"))
 }
