@@ -63,11 +63,6 @@ function main(
       .push('new-line', ctx.indent)
       .push('edge', 'block-end')
 
-    if (cache.last === 'function' && cache.eq(-2) === 'call:anonymous') {
-      cache.pop()
-      content.push('edge', 'call-end')
-    }
-
     cache.pop()
     return true
   }

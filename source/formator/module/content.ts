@@ -102,18 +102,42 @@ class Content {
     return item.type === type && item.value === value
   }
 
-  load(list: Item[]): this {
-    this._list = list
-    this.update()
+  load(
+    list: Item[] = this.list
+  ): this {
+
+    const listResult: Item[] = []
+    list.forEach(it => {
+      if (it.type === 'void') return
+      listResult.push(it)
+    })
+    this._list = listResult
     return this
   }
 
+  new(item: Item): Item
+  new(type: Item['type'], value: Item['value'], scope: Item['scope']): Item
   new(
-    type: Item['type'],
-    value: Item['value'],
-    scope: Item['scope']
+    ...arg: [Item] | [Item['type']?, Item['value']?, Item['scope']?]
   ): Item {
-    return { type, value, scope }
+
+    // clone
+    if (
+      arg.length === 1
+      && arg[0]
+      && typeof arg[0] === 'object'
+    ) {
+      const it = { ...arg[0] } as Item
+      it.scope = [...it.scope]
+      return it
+    }
+
+    // new
+    return {
+      type: arg[0] as Item['type'] || 'void',
+      value: arg[1] || '',
+      scope: arg[2] || []
+    }
   }
 
   pop(): Item {
@@ -165,17 +189,6 @@ class Content {
         value: type,
         scope: cache.list
       })
-    return this
-  }
-
-  update(): this {
-
-    const listResult: Item[] = []
-    this._list.forEach(it => {
-      if (it.type === 'void') return
-      listResult.push(it)
-    })
-    this._list = listResult
     return this
   }
 }

@@ -11,26 +11,12 @@ function $arrow(
 
   const { cache, content } = ctx
 
-  if (content.equal(content.last, 'edge', 'parameter-end')) null
-  else {
-    if (
-      content.last.type === 'sign'
-      && ['=', ':'].includes(content.last.value)
-    ) {
-      content.push('identifier', 'Func')
-      cache.push('call:anonymous')
-      content
-        .push('edge', 'call-start')
-        .push('identifier', 'anonymous')
-        .push('edge', 'parameter-start')
-        .push('edge', 'parameter-end')
-    } else {
-      content
-        .push('identifier', 'anonymous')
-        .push('edge', 'parameter-start')
-        .push('edge', 'parameter-end')
-    }
-  }
+  if (!content.equal(content.last, 'edge', 'parameter-end'))
+    content
+      .push('identifier', 'anonymous')
+      .push('edge', 'parameter-start')
+      .push('edge', 'parameter-end')
+
   cache.push('function')
   return true
 }
@@ -45,10 +31,8 @@ function $start(
     content.last.type === 'sign'
     && ['=', ':'].includes(content.last.value)
   ) {
-    content.push('identifier', 'Func')
-    cache.push('call:anonymous')
     content
-      .push('edge', 'call-start')
+      // .push('edge', 'call-start')
       .push('identifier', 'anonymous')
   } else {
     content.push('identifier', 'anonymous')

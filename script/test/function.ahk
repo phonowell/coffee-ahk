@@ -20,24 +20,24 @@ ahk_2() {
   __ctx_ahk__.a := a
   __ctx_ahk__.b := b
   __ctx_ahk__.c := c
-  return fn3.Call("ahk_1")
+  return fn3.Call(Func("ahk_1"))
 }
 ahk_3() {
   a := __ctx_ahk__.a
   b := 2
   __ctx_ahk__.a := a
   __ctx_ahk__.b := b
-  return fn2.Call("ahk_2")
+  return fn2.Call(Func("ahk_2"))
 }
 ahk_4() {
   a := 1
   __ctx_ahk__.a := a
-  return fn1.Call("ahk_3")
+  return fn1.Call(Func("ahk_3"))
 }
 ahk_5(a, b, c) {
   a
-  Func(b).Call()
-  Func(c).Call(a)
+  b.Call()
+  c.Call(a)
 }
 ahk_6(a := 1, b := 2) {
   return a + b
