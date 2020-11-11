@@ -405,61 +405,48 @@ toolkit_43(input) {
   return _output
 }
 
-global __ctx_hfgkj2pdsko__ := {}
-global bind := Func("hfgkj2pdsko_21")
+global __ctx_al86ioh4gug__ := {}
+global bind := Func("al86ioh4gug_17")
 global $dataDoAs := {count: 0, fn: "", interval: 0, limit: 1}
-global doAs := Func("hfgkj2pdsko_11")
+global doAs := Func("al86ioh4gug_9")
 global id := "" ; variable
 global isSuspend := false
 global timer := ""
-global init := Func("hfgkj2pdsko_9") ; function
-global watch := Func("hfgkj2pdsko_8")
+global init := Func("al86ioh4gug_7") ; function
+global watch := Func("al86ioh4gug_6")
 $.on.Call("f1", init) ; binding
-$.on.Call("alt + f4", "hfgkj2pdsko_7")
+$.on.Call("alt + f4", Func("al86ioh4gug_5"))
 global isJumping := false
 global timerJump := ""
-global jumpTwice := Func("hfgkj2pdsko_6")
-global startJumpBack := Func("hfgkj2pdsko_4")
-global stopJumpBack := Func("hfgkj2pdsko_3")
-global tsViewFar := 0
-global viewFar := Func("hfgkj2pdsko_2")
-hfgkj2pdsko_1() {
-  $.click.Call("wheel-down:up")
-}
-hfgkj2pdsko_2() {
-  if !($.now.Call() - tsViewFar > 2000) {
-    return
-  }
-  tsViewFar := $.now.Call()
-  $.click.Call("wheel-down:down")
-  setTimeout.Call("hfgkj2pdsko_1", 500)
-}
-hfgkj2pdsko_3() {
+global jumpTwice := Func("al86ioh4gug_4")
+global startJumpBack := Func("al86ioh4gug_2")
+global stopJumpBack := Func("al86ioh4gug_1")
+al86ioh4gug_1() {
   if !(isJumping) {
     return
   }
   isJumping := false
   clearTimeout.Call(timerJump)
 }
-hfgkj2pdsko_4() {
+al86ioh4gug_2() {
   if (isJumping) {
     return
   }
   isJumping := true
   timerJump := setTimeout.Call(jumpTwice, 100)
 }
-hfgkj2pdsko_5() {
+al86ioh4gug_3() {
   $.press.Call("space")
 }
-hfgkj2pdsko_6() {
+al86ioh4gug_4() {
   $.press.Call("space")
-  doAs.Call("hfgkj2pdsko_5", 100, 2, 200)
+  doAs.Call(Func("al86ioh4gug_3"), 100, 2, 200)
 }
-hfgkj2pdsko_7() {
+al86ioh4gug_5() {
   $.beep.Call()
   $.exit.Call()
 }
-hfgkj2pdsko_8() {
+al86ioh4gug_6() {
   if (!isSuspend && !WinActive("ahk_id " . (id) . "")) {
     $.suspend.Call(true)
     isSuspend := true
@@ -471,17 +458,17 @@ hfgkj2pdsko_8() {
     return
   }
 }
-hfgkj2pdsko_9() {
+al86ioh4gug_7() {
   id := WinExist("A")
   $.off.Call("f1", init)
   bind.Call()
   setInterval.Call(watch, 200)
   $.beep.Call()
 }
-hfgkj2pdsko_10() {
+al86ioh4gug_8() {
   doAs.Call()
 }
-hfgkj2pdsko_11(fn := "", interval := 100, limit := 1, delay := 0) {
+al86ioh4gug_9(fn := "", interval := 100, limit := 1, delay := 0) {
   if (fn) {
     $dataDoAs.count := 0
     $dataDoAs.fn := fn
@@ -496,28 +483,21 @@ hfgkj2pdsko_11(fn := "", interval := 100, limit := 1, delay := 0) {
     return
   }
   $dataDoAs.count++
-  (Func($dataDoAs.fn)).Call($dataDoAs)
-  setTimeout.Call("hfgkj2pdsko_10", $dataDoAs.interval)
+  $dataDoAs.fn.Call($dataDoAs)
+  setTimeout.Call(Func("al86ioh4gug_8"), $dataDoAs.interval)
 }
-hfgkj2pdsko_12() {
-  $.press.Call("w:up")
-}
-hfgkj2pdsko_13() {
-  $.press.Call("w:down")
-  viewFar.Call()
-}
-hfgkj2pdsko_14() {
+al86ioh4gug_10() {
   jumpTwice.Call()
 }
-hfgkj2pdsko_15() {
+al86ioh4gug_11() {
   $.press.Call("s:up")
   stopJumpBack.Call()
 }
-hfgkj2pdsko_16() {
+al86ioh4gug_12() {
   $.press.Call("s:down")
   startJumpBack.Call()
 }
-hfgkj2pdsko_17(e) {
+al86ioh4gug_13(e) {
   $.press.Call("f")
   if !(e.count >= 10) {
     $.click.Call("wheel-down:down")
@@ -525,25 +505,22 @@ hfgkj2pdsko_17(e) {
     $.press.Call("wheel-down:up")
   }
 }
-hfgkj2pdsko_18() {
-  doAs.Call("hfgkj2pdsko_17", 100, 10)
+al86ioh4gug_14() {
+  doAs.Call(Func("al86ioh4gug_13"), 100, 10)
 }
-hfgkj2pdsko_19() {
+al86ioh4gug_15() {
   $.press.Call("e")
 }
-hfgkj2pdsko_20(key) {
+al86ioh4gug_16(key) {
   $.press.Call(key)
-  doAs.Call("hfgkj2pdsko_19", 100, 2, 100)
+  doAs.Call(Func("al86ioh4gug_15"), 100, 2, 100)
 }
-hfgkj2pdsko_21() {
+al86ioh4gug_17() {
   for __i__, key in ["1", "2", "3", "4", "5"] {
-    fn := Func("hfgkj2pdsko_20")
-    $.on.Call(key, fn.Bind(key))
+    $.on.Call(key, (Func("al86ioh4gug_16")).Bind(key))
   }
-  $.on.Call("f", "hfgkj2pdsko_18")
-  $.on.Call("s", "hfgkj2pdsko_16")
-  $.on.Call("s:up", "hfgkj2pdsko_15")
-  $.on.Call("space", "hfgkj2pdsko_14")
-  $.on.Call("w", "hfgkj2pdsko_13")
-  $.on.Call("w:up", "hfgkj2pdsko_12")
+  $.on.Call("f", Func("al86ioh4gug_14"))
+  $.on.Call("s", Func("al86ioh4gug_12"))
+  $.on.Call("s:up", Func("al86ioh4gug_11"))
+  $.on.Call("space", Func("al86ioh4gug_10"))
 }

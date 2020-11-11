@@ -1,12 +1,13 @@
 bind = ->
 
   for key in ['1', '2', '3', '4', '5']
-    fn = (key) ->
-      $.press key
-      doAs ->
-        $.press 'e'
-      , 100, 2, 100
-    $.on key, fn.Bind key
+    $.on key, (
+      (key) ->
+        $.press key
+        doAs ->
+          $.press 'e'
+        , 100, 2, 100
+    ).Bind key
 
   $.on 'f', ->
     doAs (e) ->
@@ -25,9 +26,3 @@ bind = ->
     stopJumpBack()
 
   $.on 'space', -> jumpTwice()
-
-  $.on 'w', ->
-    $.press 'w:down'
-    viewFar()
-
-  $.on 'w:up', -> $.press 'w:up'

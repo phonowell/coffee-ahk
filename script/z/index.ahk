@@ -1,5 +1,6 @@
-﻿global __ctx_7u0t5cov4jo__ := {}
+﻿global __ctx_hgfu120ln18__ := {}
 #KeyHistory, 0
+#MaxHotkeysPerInterval 200
 #MaxThreads, 20
 #NoEnv
 #Persistent
@@ -401,10 +402,12 @@ toolkit_43(input) {
   return _output
 }
 
-for __i__, i in [1, 2, 3, 4, 5] {
-  fn := Func("7u0t5cov4jo_1")
-  setTimeout.Call(fn.Bind(i), i * 1000)
-}
-7u0t5cov4jo_1(n) {
+$.on.Call("f1", Func("hgfu120ln18_2"))
+hgfu120ln18_1(n) {
   $.info.Call(n)
+}
+hgfu120ln18_2() {
+  for __i__, i in [1, 2, 3, 4, 5] {
+    setTimeout.Call(((Func("hgfu120ln18_1")).Bind(i)), i * 1000)
+  }
 }

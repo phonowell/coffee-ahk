@@ -20,7 +20,7 @@ doAs = (fn = '', interval = 100, limit = 1, delay = 0) ->
     return
 
   $dataDoAs.count++
-  (Func $dataDoAs.fn) $dataDoAs
+  $dataDoAs.fn $dataDoAs
 
   setTimeout ->
     doAs()
