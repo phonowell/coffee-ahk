@@ -44,7 +44,7 @@ function main(
       content.push('edge', 'block-start')
     }
 
-    content.push('new-line', ctx.indent)
+    content.push('new-line', ctx.indent.toString())
     return true
   }
 
@@ -60,7 +60,7 @@ function main(
     if (!cache.length) return true
 
     content
-      .push('new-line', ctx.indent)
+      .push('new-line', ctx.indent.toString())
       .push('edge', 'block-end')
 
     cache.pop()

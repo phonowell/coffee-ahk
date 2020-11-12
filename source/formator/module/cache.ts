@@ -47,6 +47,10 @@ class Cache {
     return this
   }
 
+  clone(): Item[] {
+    return [...this._list]
+  }
+
   eq(
     n: number
   ): Item {

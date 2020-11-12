@@ -1,6 +1,7 @@
 import $ from 'fire-keeper'
-import { read_, write_ } from './file'
 import format from './formator'
+import log from './logger'
+import { read_, write_ } from './file'
 
 // interface
 
@@ -21,7 +22,7 @@ async function compile_(
   const result = format(content, option)
   if (option.verbose) {
     // $.i(result.raw)
-    $.i(result.ast)
+    log(result.ast)
   }
   if (option.save) await write_(source, result)
   return result.content

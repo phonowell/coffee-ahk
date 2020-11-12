@@ -21,12 +21,12 @@ function main(
         return true
       }
 
-      content.push('new-line', ctx.indent)
+      content.push('new-line', ctx.indent.toString())
       return true
     }
 
     if (value === ';') {
-      content.push('new-line', ctx.indent)
+      content.push('new-line', ctx.indent.toString())
       return true
     }
   }

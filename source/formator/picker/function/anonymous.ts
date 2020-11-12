@@ -37,7 +37,7 @@ function next(
     .forEach(it => {
       if (!it.type) return
       if (it.type === 'void') return
-      content.add(it)
+      content.push(it)
     })
 
   next(ctx, count + 1)
@@ -73,11 +73,7 @@ function pickItem(
   // last one
   item.type = 'origin'
   item.value = `Func("${ctx.option.salt}_${count}")`
-  listResult.push({
-    type: 'new-line',
-    value: '0',
-    scope
-  })
+  listResult.push(content.new('new-line', '0', scope))
 
   // reset indent
   const diff: number = parseInt(

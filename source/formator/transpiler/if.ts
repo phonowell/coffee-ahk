@@ -23,7 +23,7 @@ function main(
     if (cache.last === 'switch') {
       cache.push('case')
       content
-        .push('new-line', ctx.indent)
+        .push('new-line', ctx.indent.toString())
         .push('if', 'default')
       return true
     }
