@@ -1,21 +1,26 @@
 bind = ->
 
   for key in ['1', '2', '3', '4', '5']
-    $.on key, (
-      (key) ->
-        $.press key
-        doAs ->
-          $.press 'e'
-        , 100, 2, 100
-    ).Bind key
+    $.on key, toggle.Bind key
+
+  $.on 'e', -> $.press 'e:down'
+  $.on 'e:up', ->
+    $.press 'e:up'
+    clearTimeout timer
+    timer = setTimeout $.beep, 5e3
 
   $.on 'f', ->
     doAs (e) ->
       $.press 'f'
       unless e.count >= 10
         $.click 'wheel-down:down'
-      else $.press 'wheel-down:up'
+      else $.click 'wheel-down:up'
     , 100, 10
+
+  $.on 'mbutton', toggleView
+
+  $.on 'rbutton', startDash
+  $.on 'rbutton:up', stopDash
 
   $.on 's', ->
     $.press 's:down'
@@ -25,4 +30,4 @@ bind = ->
     $.press 's:up'
     stopJumpBack()
 
-  $.on 'space', -> jumpTwice()
+  $.on 'space', jumpTwice
