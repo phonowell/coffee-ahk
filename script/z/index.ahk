@@ -1,4 +1,4 @@
-﻿global __ctx_02lrqv5ij9m__ := {}
+﻿global __ctx_0e45abdoubv__ := {}
 #KeyHistory, 0
 #MaxHotkeysPerInterval, 200
 #MaxThreads, 20
@@ -17,23 +17,23 @@ SetMouseDelay, 0, 50
 StringCaseSense, On
 global __ctx_toolkit__ := {}
 global $ := {}
-$.reverse := Func("toolkit_44") ; reverse(input: unknown[]): unknown[]
-$.includes := Func("toolkit_43")
-$.length := Func("toolkit_42") ; length(input: string | array | object): number
-$.type := Func("toolkit_41") ; type(input: unknown): 'array' | 'number' | 'object' | 'string'
-$.findColor := Func("toolkit_40") ; findColor( color: number, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], variation = 0 ): Point
-$.findImage := Func("toolkit_39") ; findImage( source: string, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], ): Point
-$.getColor := Func("toolkit_38") ; getColor(point?: Point): number
-$.getPosition := Func("toolkit_37") ; getPosition(): Point
-$.getState := Func("toolkit_36") ; getState(key: string): string
-$.formatHotkey := Func("toolkit_35") ; formatHotkey(key: string): string
-$.now := Func("toolkit_34") ; now(): number
-$.random := Func("toolkit_33") ; random(min: number = 0, max: number = 1): number
-$.click := Func("toolkit_32") ; click(key?: string): void
-$.move := Func("toolkit_31") ; move(point: Point, speed: number = 0): void
-$.press := Func("toolkit_30") ; press(key...: string): void
-$.setFixed := Func("toolkit_29") ; setFixed(fixed?: boolean): void
-$.beep := Func("toolkit_28") ; beep(): void
+$.reverse := Func("toolkit_43") ; reverse(input: unknown[]): unknown[]
+$.includes := Func("toolkit_42")
+$.length := Func("toolkit_41") ; length(input: string | array | object): number
+$.type := Func("toolkit_40") ; type(input: unknown): 'array' | 'number' | 'object' | 'string'
+$.findColor := Func("toolkit_39") ; findColor( color: number, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], variation = 0 ): Point
+$.findImage := Func("toolkit_38") ; findImage( source: string, start: Point = [0, 0], end: Point = [A_ScreenWidth, A_ScreenHeight], ): Point
+$.getColor := Func("toolkit_37") ; getColor(point?: Point): number
+$.getPosition := Func("toolkit_36") ; getPosition(): Point
+$.getState := Func("toolkit_35") ; getState(key: string): string
+$.formatHotkey := Func("toolkit_34") ; formatHotkey(key: string): string
+$.now := Func("toolkit_33") ; now(): number
+$.random := Func("toolkit_32") ; random(min: number = 0, max: number = 1): number
+$.click := Func("toolkit_31") ; click(key?: string): void
+$.move := Func("toolkit_30") ; move(point: Point, speed: number = 0): void
+$.press := Func("toolkit_29") ; press(key...: string): void
+$.setFixed := Func("toolkit_28") ; setFixed(fixed?: boolean): void
+$.beep := Func("toolkit_27") ; beep(): void
 $.i := Func("toolkit_26") ; i(message: string): string
 $.info := Func("toolkit_25") ; info(message: string, point?: Point): string
 $.replace := Func("toolkit_24") ; replace( input: string, searchment: string, replacement: string, limit: number = -1 )
@@ -191,15 +191,7 @@ toolkit_26(message) {
 toolkit_27() {
   SoundBeep
 }
-toolkit_28(n := 1) {
-  SoundBeep
-  __i__ := 1
-  while (__i__ < n) {
-    setTimeout.Call((Func("toolkit_27")).Bind(), __i__ * 1000)
-    __i__++
-  }
-}
-toolkit_29(isFixed := "Toggle") {
+toolkit_28(isFixed := "Toggle") {
   if (isFixed != "Toggle") {
     if (isFixed) {
       isFixed := "On"
@@ -209,11 +201,11 @@ toolkit_29(isFixed := "Toggle") {
   }
   Winset AlwaysOnTop, % isFixed, A
 }
-toolkit_30(listInput*) {
-  if !($.length.Call(listInput)) {
+toolkit_29(listInput*) {
+  if !($.length.Call(listInput)) { ; validate
     throw Exception("$.press: invalid key")
   }
-  _listKey := []
+  _listKey := [] ; format
   for __i__, input in listInput {
     _input := $.toLowerCase.Call(input)
     _input := $.replace.Call(_input, " ", "")
@@ -223,14 +215,14 @@ toolkit_30(listInput*) {
       _listKey.Push(it)
     }
   }
-  _listResult := []
+  _listResult := [] ; unfold
   _len := $.length.Call(_listKey)
   for i, key in _listKey {
-    if (i == _len) {
+    if (i == _len) { ; last
       _listResult[i] := $.split.Call(key, ":")
       continue
     }
-    if ($.includes.Call(key, ":")) {
+    if ($.includes.Call(key, ":")) { ; other
       _listResult[i] := $.split.Call(key, ":")
       _listResult[_len * 2 - i] := $.split.Call(key, ":")
     } else {
@@ -244,32 +236,32 @@ toolkit_30(listInput*) {
     }
     _listResult[i] := $.trim.Call("" . (it[1]) . " " . (it[2]) . "")
   }
-  _output := ""
+  _output := "" ; execute
   for __i__, it in _listResult {
     _output := "" . (_output) . "{" . (it) . "}"
   }
   Send, % _output
 }
-toolkit_31(point := "", speed := 0) {
+toolkit_30(point := "", speed := 0) {
   if !(point) {
     throw Exception("$.move: invalid point")
   }
   MouseMove, point[1], point[2], speed
 }
-toolkit_32(key := "left") {
+toolkit_31(key := "left") {
   key := $.replace.Call(key, "-", "")
   key := $.replace.Call(key, ":", " ")
   Click, % key
 }
-toolkit_33(min := 0, max := 1) {
+toolkit_32(min := 0, max := 1) {
   Random, __Result__, min, max
   return __Result__
 }
-toolkit_34() {
+toolkit_33() {
   return A_TickCount
 }
-toolkit_35(key) {
-  _listKey := []
+toolkit_34(key) {
+  _listKey := [] ; format
   _key := $.toLowerCase.Call(key)
   _key := $.replace.Call(_key, " ", "")
   _key := $.replace.Call(_key, "-", "")
@@ -277,7 +269,7 @@ toolkit_35(key) {
   for __i__, it in _list {
     _listKey.Push(it)
   }
-  _isAlt := false
+  _isAlt := false ; unfold
   _isCtrl := false
   _isShift := false
   _isWin := false
@@ -320,21 +312,21 @@ toolkit_35(key) {
   }
   return $.replace.Call("" . (_prefix) . "" . ($.trim.Call(_result, " &")) . "", ":", " ")
 }
-toolkit_36(key) {
+toolkit_35(key) {
   return GetKeyState(key)
 }
-toolkit_37() {
+toolkit_36() {
   MouseGetPos, __X__, __Y__
   return [__X__, __Y__]
 }
-toolkit_38(point := "") {
+toolkit_37(point := "") {
   if !(point) {
     point := $.getPosition.Call()
   }
   PixelGetColor, __Result__, % point[1], % point[2], RGB
   return __Result__
 }
-toolkit_39(source, start := "", end := "") {
+toolkit_38(source, start := "", end := "") {
   if !(start) {
     start := [0, 0]
   }
@@ -344,7 +336,7 @@ toolkit_39(source, start := "", end := "") {
   ImageSearch __x__, __Y__, start[1], start[2], end[1], end[2], % A_ScriptDir . "\\\" . source
   return [__X__, __Y__]
 }
-toolkit_40(color, start := "", end := "", variation := 0) {
+toolkit_39(color, start := "", end := "", variation := 0) {
   if !(start) {
     start := [0, 0]
   }
@@ -354,7 +346,7 @@ toolkit_40(color, start := "", end := "", variation := 0) {
   PixelSearch __X__, __Y__, start[1], start[2], end[1], end[2], color, variation, Fast RGB
   return [__X__, __Y__]
 }
-toolkit_41(input) {
+toolkit_40(input) {
   if input is Number
     return "number"
   if (IsObject(input)) {
@@ -365,7 +357,7 @@ toolkit_41(input) {
   }
   return "string"
 }
-toolkit_42(input) {
+toolkit_41(input) {
   _type := $.type.Call(input)
   switch _type {
     case "array": {
@@ -382,7 +374,7 @@ toolkit_42(input) {
     }
   }
 }
-toolkit_43(input, needle) {
+toolkit_42(input, needle) {
   _type := $.type.Call(input)
   if (_type == "string" || _type == "number") {
     return (InStr(input, needle)) > 0
@@ -397,7 +389,7 @@ toolkit_43(input, needle) {
   }
   throw Exception("$.includes: invalid type '" . (_type) . "'")
 }
-toolkit_44(input) {
+toolkit_43(input) {
   _type := $.type.Call(input)
   if !(_type == "array") {
     throw Exception("$.reverse: invalid type '" . (_type) . "'")
@@ -410,7 +402,7 @@ toolkit_44(input) {
   return _output
 }
 
-$.on.Call("1", Func("02lrqv5ij9m_1"))
-02lrqv5ij9m_1() {
-  $.beep.Call(5)
+$.on.Call("1", Func("0e45abdoubv_1"))
+0e45abdoubv_1() {
+  $.beep.Call()
 }

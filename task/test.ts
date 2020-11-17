@@ -1,5 +1,5 @@
 import $ from 'fire-keeper'
-import compile_ from '../source/index'
+import compile_ from '../dist'
 
 // function
 

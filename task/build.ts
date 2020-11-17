@@ -1,24 +1,26 @@
 import $ from 'fire-keeper'
-import compile_ from '../source'
 
 // function
 
-async function main_(): Promise<void> {
+async function compile_(): Promise<void> {
 
-  const target = pickTarget()
-  if (!target)
-    throw new Error('found no target')
-
-  await $.remove_(`./script/${target}/*.ahk`)
-
-  await compile_(`./script/${target}/index.coffee`, {
-    save: true
-  })
+  await $.compile_(
+    './source/**/*.ts',
+    './dist',
+    {
+      base: './source',
+      minify: false
+    }
+  )
 }
 
-function pickTarget(): string {
-  const argv = $.argv()
-  return argv._[1] || argv.target || ''
+async function main_(): Promise<void> {
+  await prepare_()
+  await compile_()
+}
+
+async function prepare_(): Promise<void> {
+  await $.remove_('./dist')
 }
 
 // export

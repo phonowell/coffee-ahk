@@ -1,5 +1,4 @@
-// import $ from 'fire-keeper'
-import compile_ from '../source'
+import compile_ from '../dist'
 
 // function
 

@@ -44,6 +44,10 @@ async function main_(
       .split('.')[1]
       .padStart(11, '0')
 
+  // save
+  if (typeof option.save === 'undefined')
+    option.save = true
+
   return await compile_(listSource[0], option)
 }
 
