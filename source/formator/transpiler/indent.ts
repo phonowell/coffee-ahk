@@ -22,7 +22,7 @@ function main(
 
     const last = cache.last
     if (['case', 'for', 'function', 'switch'].includes(last)) {
-      if (!['catch', 'else', 'if'].includes(cache.next)) {
+      if (!['catch', 'else', 'if', 'while'].includes(cache.next)) {
         if (last === 'case')
           content.push('sign', ':')
         content.push('edge', 'block-start')

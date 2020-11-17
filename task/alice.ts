@@ -2,66 +2,54 @@ import $ from 'fire-keeper'
 
 // function
 
-class M {
-
+async function ask_(
   list: string[]
+): Promise<string> {
 
-  constructor() {
-    this.list = []
+  const answer = await $.prompt_({
+    id: 'default-task',
+    list,
+    message: 'select a task',
+    type: 'auto'
+  })
+  if (!answer) return ''
+  if (!list.includes(answer)) return await ask_(list)
+  return answer
+}
+
+async function load_(): Promise<string[]> {
+
+  const listSource = await $.source_('./task/*.ts')
+  const listResult: string[] = []
+  for (const source of listSource) {
+    const basename = $.getBasename(source)
+    if (basename === 'alice') continue
+    listResult.push(basename)
   }
+  return listResult
+}
 
-  async ask_(): Promise<void> {
+async function main_(): Promise<void> {
 
-    const task: string = await $.prompt_({
-      id: 'default-task',
-      list: this.list,
-      message: 'input a task name',
-      type: 'auto'
-    })
+  let task: string = $.argv()._[0]
+  const list = await load_()
+
+  if (!task) {
+    task = await ask_(list)
     if (!task) return
-    await this.run_(task)
   }
 
-  async load_(): Promise<void> {
+  await run_(task)
+}
 
-    const listSource: string[] = await $.source_('./task/*.ts')
-    const listTask: string[] = []
-    for (const source of listSource) {
-      const basename: string = $.getBasename(source)
-      if (basename === 'alice') continue
-      listTask.push(basename)
-    }
-    this.list = listTask
-  }
+async function run_(
+  task: string
+): Promise<void> {
 
-  async main_(): Promise<void> {
-
-    const task: string = $.argv()._[0]
-
-    await this.load_()
-
-    if (!task) {
-      await this.ask_()
-      return
-    }
-
-    if (this.list.includes(task)) {
-      await this.run_(task)
-      return
-    }
-
-    $.i(`found no task named as '${task}'`)
-  }
-
-  async run_(
-    task: string
-  ): Promise<void> {
-
-    const [source]: string[] = await $.source_(`./task/${task}.ts`)
-    const fn_: Function = (await import(source)).default
-    await fn_()
-  }
+  const [source] = await $.source_(`./task/${task}.ts`)
+  const fn_: Function = (await import(source)).default
+  await fn_()
 }
 
 // execute
-new M().main_()
+main_()

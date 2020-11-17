@@ -34,6 +34,7 @@ class Content {
     type: string,
     value?: string
   ): boolean {
+    if (!(item instanceof Item)) return false
     if (typeof value === 'undefined')
       return item.type === type
     return item.type === type && item.value === value

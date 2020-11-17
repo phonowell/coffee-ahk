@@ -14,6 +14,7 @@ function main(
 ): void {
 
   next(ctx)
+  transFunc(ctx)
 }
 
 function next(
@@ -93,6 +94,40 @@ function pickItem(
   }
 
   return listResult
+}
+
+function transFunc(
+  ctx: Context
+): void {
+
+  const { content } = ctx
+
+  const listContent: Item[] = []
+  content.list.forEach(item => {
+
+    if (!(
+      item.type === 'origin'
+      && item.value.startsWith('Func(')
+      && item.value.endsWith(')')
+    )) {
+      listContent.push(item)
+      return
+    }
+
+    const scope = [...item.scope]
+    scope.pop()
+
+    listContent.push(content.new('identifier', 'Func', scope))
+    listContent.push(content.new('edge', 'call-start', [...scope, 'call']))
+    listContent.push(content.new(
+      'string',
+      item.value.slice(5, item.value.length - 1),
+      [...scope, 'call']
+    ))
+    listContent.push(content.new('edge', 'call-end', [...scope, 'call']))
+  })
+
+  content.load(listContent)
 }
 
 // export

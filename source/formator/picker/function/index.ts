@@ -1,4 +1,5 @@
 import count from './counter'
+import $do from './do'
 import injectContext from './context'
 import pickAnonymous from './anonymous'
 import transParam from './parameter'
@@ -34,6 +35,8 @@ function main(
   }
 
   transParam(ctx, listFn)
+
+  $do(ctx)
 }
 
 // export

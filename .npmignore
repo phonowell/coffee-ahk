@@ -14,4 +14,3 @@ temp
 *.md
 .stylintrc
 coffeelint.json
-package-lock.json
