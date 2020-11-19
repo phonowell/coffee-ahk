@@ -1,3 +1,5 @@
+import sortBy from 'lodash/sortBy'
+
 // interface
 
 import { Context } from '../../type'
@@ -20,61 +22,46 @@ function cache(
 
   const { content } = ctx
 
-  const [indent, index] = findIndent(i, content.list)
-  const scope = [
-    [...content.eq(index).scope],
-    [...item.scope]
+  const scope = [item.scope.slice(0, item.scope.length - 1)]
+  scope[1] = [...scope[0], 'call']
+
+  let listItem: Item[] = listParam.map(
+    name => content.new('identifier', name, scope[1])
+  )
+
+  const limit = listItem.length - 1
+  for (let j = 0; j < limit; j++)
+    listItem.splice(limit - j, 0, content.new('sign', ',', scope[1]))
+
+  listItem = [
+    content.new('.', '.', scope[0]),
+    content.new('identifier', 'Bind', scope[0]),
+    content.new('edge', 'call-start', scope[1]),
+    ...listItem,
+    content.new('edge', 'call-end', scope[1])
   ]
-  const token = `__ctx_${ctx.option.salt}__`
-  let listA: Item[] = []
-  let listB: Item[] = []
 
-  for (let j = 0; j < listParam.length; j++) {
-
-    const name = listParam[j]
-
-    listA = [
-      ...listA,
-      // \n token.a = a
-      content.new('new-line', indent.toString(), scope[0]),
-      content.new('identifier', token, scope[0]),
-      content.new('.', '.', scope[0]),
-      content.new('property', name, scope[0]),
-      content.new('sign', '=', scope[0]),
-      content.new('identifier', name, scope[0])
-    ]
-
-    listB = [
-      ...listB,
-      // \n a = token.a
-      content.new('new-line', (indent + 1).toString(), scope[1]),
-      content.new('identifier', name, scope[1]),
-      content.new('sign', '=', scope[1]),
-      content.new('identifier', token, scope[1]),
-      content.new('.', '.', scope[1]),
-      content.new('property', name, scope[1])
-    ]
-  }
-
-  listCache = [
-    ...listCache,
-    [index, listA],
-    [i + 1, listB]
-  ]
+  listCache.push([
+    findIndex(ctx, item, i) + 1,
+    listItem
+  ])
 }
 
-function findIndent(
-  i: number,
-  listTarget: Item[]
-): [number, number] {
+function findIndex(
+  ctx: Context,
+  item: Item,
+  i: number
+): number {
 
-  const item = listTarget[i]
-  if (!item) return [0, 0]
-  if (item.type === 'new-line') return [
-    parseInt(item.value),
-    i,
-  ]
-  return findIndent(i - 1, listTarget)
+  const { content } = ctx
+
+  const it = content.eq(i)
+  if (!it) return 0
+  if (
+    content.equal(it, 'edge', 'block-end')
+    && it.scope.join('|') === item.scope.join('|')
+  ) return i
+  return findIndex(ctx, item, i + 1)
 }
 
 function main(
@@ -114,12 +101,9 @@ function main(
   })
 
   // insert
-  let diff = 0
-  for (let i = 0; i < listCache.length; i++) {
-    const [index, listItem] = listCache[i]
-    listContent.splice(index + diff, 0, ...listItem)
-    diff += listItem.length
-  }
+  for (const [index, listItem] of sortBy(listCache, item => item[0]).reverse())
+    listContent.splice(index, 0, ...listItem)
+
   content.load(listContent)
 }
 
@@ -140,12 +124,7 @@ function pick(
   if (itNext.value !== itPrev.value) return false
 
   // pick
-  listContent[listContent.length - 1].type = 'void'
-  const it = listContent[listContent.length - 2]
-  if (content.equal(it, 'sign', ','))
-    it.type = 'void'
-  listContent.push(content.new('void', '', []))
-
+  listContent.push(content.new('void'))
   listParam.push(itNext.value)
   flagIgnore = true
   return true

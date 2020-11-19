@@ -1,4 +1,3 @@
-global __ctx_ahk__ := {}
 global fn := Func("ahk_9")
 fn := Func("ahk_8")
 fn := Func("ahk_7")
@@ -7,32 +6,20 @@ fn.Call(1, 2)
 fn.Call(fn.Call(fn))
 fn := Func("ahk_5")
 fn := Func("ahk_4")
-ahk_1() {
-  a := __ctx_ahk__.a
-  b := __ctx_ahk__.b
-  c := __ctx_ahk__.c
+ahk_1(a, b, c) {
   return a + b + c
 }
-ahk_2() {
-  a := __ctx_ahk__.a
-  b := __ctx_ahk__.b
+ahk_2(a, b) {
   c := 3
-  __ctx_ahk__.a := a
-  __ctx_ahk__.b := b
-  __ctx_ahk__.c := c
-  return fn3.Call(Func("ahk_1"))
+  return fn3.Call(Func("ahk_1").Bind(a, b, c))
 }
-ahk_3() {
-  a := __ctx_ahk__.a
+ahk_3(a) {
   b := 2
-  __ctx_ahk__.a := a
-  __ctx_ahk__.b := b
-  return fn2.Call(Func("ahk_2"))
+  return fn2.Call(Func("ahk_2").Bind(a, b))
 }
 ahk_4() {
   a := 1
-  __ctx_ahk__.a := a
-  return fn1.Call(Func("ahk_3"))
+  return fn1.Call(Func("ahk_3").Bind(a))
 }
 ahk_5(a, b, c) {
   a

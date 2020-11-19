@@ -1,4 +1,3 @@
-global __ctx_ahk__ := {}
 global a := 1
 a := 2
 global fn := Func("ahk_3")

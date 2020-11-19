@@ -1,5 +1,4 @@
 Func("ahk_3").Call()
-global __ctx_ahk__ := {}
 global fn := Func("ahk_2")
 fn.Call()
 global a := Func("ahk_1").Call()

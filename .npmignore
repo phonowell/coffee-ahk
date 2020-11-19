@@ -4,10 +4,14 @@
 .temp
 .vscode
 data/sync
+script
 secret
 source
+src
 storage
+task
 temp
+test
 # file
 *.coffee
 *.map

@@ -4,7 +4,6 @@ class T {
   c := 0
   d := Func("ahk_1")
 }
-global __ctx_ahk__ := {}
 global t := new T()
 ahk_1() {
   return this.c

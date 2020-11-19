@@ -25,7 +25,7 @@ function main(
   validate(listFn)
 
   // replace ctx in parameter
-  // from `fn(a = a)` to `fn()`
+  // from `fn(a = a)` to `fn(a)`
   injectContext(ctx)
 
   // anonymous

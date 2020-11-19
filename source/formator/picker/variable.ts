@@ -46,38 +46,6 @@ function main(
     it.value = 'Exception'
   })
   content.load(listContent)
-
-  prependSystemVariable(ctx)
-}
-
-function prependSystemVariable(
-  ctx: Context
-): void {
-
-  const { content } = ctx
-
-  function findFirst(
-    i: number = 0
-  ): number {
-
-    const it = content.eq(i)
-    if (!it) return 0
-    if (it.type === 'identifier' && it.value.startsWith('global ')) return i
-    return findFirst(i + 1)
-  }
-
-  const index = findFirst()
-  const listContent = [...content.list]
-
-  listContent.splice(index, 0, ...[
-    content.new('identifier', `global __ctx_${ctx.option.salt}__`, []),
-    content.new('sign', '=', []),
-    content.new('bracket', '{', []),
-    content.new('bracket', '}', []),
-    content.new('new-line', '0', [])
-  ])
-
-  content.load(listContent)
 }
 
 // export

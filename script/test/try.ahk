@@ -10,7 +10,6 @@ try {
 } finally {
   3
 }
-global __ctx_ahk__ := {}
 global fn := Func("ahk_1")
 ahk_1() {
   try {

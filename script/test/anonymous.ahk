@@ -1,5 +1,4 @@
-global __ctx_ahk__ := {}
-setTimeout.Call(Func("ahk_4"), 4000)
+﻿setTimeout.Call(Func("ahk_4"), 4000)
 ahk_1() {
   1
 }

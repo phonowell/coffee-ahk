@@ -27,7 +27,6 @@ if (a > 1) {
 } else {
   3
 }
-global __ctx_ahk__ := {}
 global fn := Func("ahk_1")
 if !(fn.Call(1)) {
   1

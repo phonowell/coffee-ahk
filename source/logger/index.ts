@@ -25,8 +25,9 @@ function main(
   let line = 0
   log(++line)
 
-  for (const item of ast) {
-    console.log(item)
+  for (let i = 0; i < ast.length; i++) {
+    const item = ast[i]
+    console.log(i, item)
     if (item.type === 'new-line')
       log(++line)
   }

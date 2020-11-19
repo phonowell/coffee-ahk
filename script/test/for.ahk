@@ -1,4 +1,3 @@
-global __ctx_ahk__ := {}
 for __i__, value in list {
   value
 }
