@@ -1,10 +1,11 @@
-import count from './counter'
+import $class from './class'
 import $do from './do'
+import count from './counter'
 import injectContext from './context'
+import mark from './mark'
 import pickAnonymous from './anonymous'
 import transParam from './parameter'
 import validate from './validator'
-import mark from './mark'
 
 // interface
 
@@ -23,6 +24,8 @@ function main(
   // list
   let listFn = count(ctx)
   validate(listFn)
+
+  $class(ctx)
 
   // replace ctx in parameter
   // from `fn(a = a)` to `fn(a)`

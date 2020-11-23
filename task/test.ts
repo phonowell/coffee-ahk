@@ -17,6 +17,7 @@ async function main_(): Promise<void> {
       .trim()
 
     const content = (await compile_(source, {
+      ignoreComment: false,
       salt: 'ahk',
       save: false
     }))

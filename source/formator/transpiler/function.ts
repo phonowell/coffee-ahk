@@ -27,17 +27,7 @@ function $start(
 
   const { cache, content } = ctx
 
-  if (
-    content.last.type === 'sign'
-    && ['=', ':'].includes(content.last.value)
-  ) {
-    content
-      // .push('edge', 'call-start')
-      .push('identifier', 'anonymous')
-  } else {
-    content.push('identifier', 'anonymous')
-  }
-
+  content.push('identifier', 'anonymous')
   cache.push('parameter')
   content.push('edge', 'parameter-start')
   return true

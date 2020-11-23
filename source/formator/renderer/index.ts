@@ -189,6 +189,8 @@ function injectComment(
   ctx: Context
 ): string {
 
+  if (ctx.option.ignoreComment) return input
+
   const { i, it } = ctx
   if (!cacheComment.length) return input
   if (it.type !== 'new-line') return input

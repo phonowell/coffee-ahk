@@ -11,6 +11,7 @@ export type Option = Partial<typeof optionDefault>
 
 const optionDefault = {
   ast: false,
+  ignoreComment: true,
   salt: '',
   save: true,
   verbose: false
