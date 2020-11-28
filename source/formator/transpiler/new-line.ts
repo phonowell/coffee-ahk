@@ -13,6 +13,10 @@ function main(
   if (type === 'terminator') {
 
     if (value === '\n') {
+
+      if (content.equal(content.last, 'bracket', '}-'))
+        content.last.value = '}'
+
       if (['array', 'call', 'object', 'parameter'].includes(cache.last)) {
         if (!content.equal(content.last, 'sign', ',')) {
           if (content.last.type === 'new-line') content.pop()
@@ -26,6 +30,10 @@ function main(
     }
 
     if (value === ';') {
+
+      if (content.equal(content.last, 'bracket', '}-'))
+        content.last.value = '}'
+        
       content.push('new-line', ctx.indent.toString())
       return true
     }

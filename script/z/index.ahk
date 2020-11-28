@@ -1,5 +1,14 @@
-﻿global fn := Func("z_1")
-global a := 1
-z_1() {
-  a := {a: 1, b: {a: 1, b: 2}}
+﻿class A {
+  a := 0
+  b := {}
+  c := {a: 1}
+  d := Func("z_2").Bind(this)
+  e := Func("z_1").Bind(this)
+}
+global a := new A()
+z_1(this, n) {
+  this.a + n
+}
+z_2(this) {
+  return 1
 }

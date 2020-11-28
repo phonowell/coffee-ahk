@@ -50,10 +50,10 @@ function main(
 
   if (type === 'outdent') {
 
-    if (
-      cache.last === 'class'
-      && content.equal(content.last, 'bracket', '}')
-    ) return true
+    if (content.equal(content.last, 'bracket', '}-')) {
+      content.last.value = '}'
+      return true
+    }
 
     if ([
       'array', 'call', 'object', 'parameter'

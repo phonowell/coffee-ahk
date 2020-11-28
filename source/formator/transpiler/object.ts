@@ -29,7 +29,8 @@ function main(
 
     if (cache.last === 'class') return true
 
-    content.push('bracket', '}')
+    if (raw.generated) content.push('bracket', '}-')
+    else content.push('bracket', '}')
     cache.pop()
     return true
   }
