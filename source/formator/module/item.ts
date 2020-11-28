@@ -9,7 +9,7 @@ const listType = [
   '--',
   '.',
   'boolean',
-  'bracket', // ()
+  'bracket', // (){}
   'class',
   'compare',
   'edge', // array-end array-start block-end block-start call-end call-start expression-end expression-start index-end index-start interpolation-end interpolation-start parameter-end parameter-start

@@ -11,6 +11,7 @@ export type Option = Partial<typeof optionDefault>
 
 const optionDefault = {
   ast: false,
+  displayCoffeescriptAst: false,
   ignoreComment: true,
   salt: '',
   save: true,
@@ -27,7 +28,8 @@ async function compile_(
   const content = await read_(source)
   const result = format(content, option)
   if (option.verbose) {
-    // $.i(result.raw)
+    if (option.displayCoffeescriptAst)
+      $.i(result.raw)
     log(result.ast)
   }
   if (option.save) await write_(source, result, option)

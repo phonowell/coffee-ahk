@@ -1,4 +1,7 @@
-class A
-  display: -> alert @value
-  add: (n) -> @value += n
-  value: 0
+fn = ->
+  a =
+    a: 1
+    b:
+      a: 1
+      b: 2
+  a = 1

@@ -50,11 +50,14 @@ function main(
 
   if (type === 'outdent') {
 
-    // outdent after '}'
-    if (content.equal(content.last, 'bracket', '}') && cache.last !== 'object')
-      return true
+    if (
+      cache.last === 'class'
+      && content.equal(content.last, 'bracket', '}')
+    ) return true
 
-    if (['array', 'call', 'object', 'parameter'].includes(cache.last)) return true
+    if ([
+      'array', 'call', 'object', 'parameter'
+    ].includes(cache.last)) return true
     ctx.indent--
 
     if (!cache.length) return true

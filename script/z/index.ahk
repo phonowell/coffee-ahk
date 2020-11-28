@@ -1,11 +1,5 @@
-﻿class A {
-  display := Func("z_2").Bind(this)
-  add := Func("z_1").Bind(this)
-  value := 0
-}
-z_1(this, n) {
-  this.value += n
-}
-z_2(this) {
-  alert.Call(this.value)
+﻿global fn := Func("z_1")
+global a := 1
+z_1() {
+  a := {a: 1, b: {a: 1, b: 2}}
 }

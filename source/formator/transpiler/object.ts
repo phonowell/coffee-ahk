@@ -12,7 +12,10 @@ function main(
 
   if (type === '{') {
 
-    if (cache.last === 'class') return true
+    if (
+      cache.last === 'class'
+      && !content.equal(content.last, 'sign', '=')
+    ) return true
 
     if (content.last.type === 'new-line' && raw.generated)
       content.pop()

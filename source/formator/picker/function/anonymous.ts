@@ -55,6 +55,8 @@ function pickItem(
   const { content } = ctx
 
   const item = content.eq(i)
+  if (!item) return listResult
+
   const it = content.new(item)
 
   // reset scope

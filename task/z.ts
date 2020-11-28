@@ -4,6 +4,7 @@ import compile_ from '../source'
 
 async function main_(): Promise<void> {
   await compile_('./script/z/index.coffee', {
+    displayCoffeescriptAst: true,
     salt: 'z',
     verbose: true
   })

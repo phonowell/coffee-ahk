@@ -1,16 +1,14 @@
-class T {
-  a := Func("ahk_3").Bind(this)
-  b := Func("ahk_2").Bind(this)
-  c := 0
-  d := Func("ahk_1").Bind(this)
+class A {
+  a := 0
+  b := {}
+  c := {a: 1}
+  d := Func("ahk_2").Bind(this)
+  e := Func("ahk_1").Bind(this)
 }
-global t := new T()
-ahk_1(this) {
-  return this.c
+global a := new A()
+ahk_1(this, n) {
+  this.a + n
 }
-ahk_2(this, n) {
-  return n
-}
-ahk_3(this) {
+ahk_2(this) {
   return 1
 }
