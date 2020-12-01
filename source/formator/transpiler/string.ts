@@ -40,6 +40,7 @@ function transAlias(
     .replace(/\\n/g, '`n')
     .replace(/\\r/g, '`r')
     .replace(/\\t/g, '`t')
+    .replace(/\n/g, ' ')
 }
 
 // export

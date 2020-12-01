@@ -119,7 +119,7 @@ function pick(
   if (item.scope[item.scope.length - 1] !== 'parameter') return false
 
   const itNext = content.eq(i + 1)
-  if (itNext.type !== 'identifier') return false
+  if (!['identifier', 'this'].includes(itNext.type)) return false
   const itPrev = content.eq(i - 1)
   if (itNext.value !== itPrev.value) return false
 
