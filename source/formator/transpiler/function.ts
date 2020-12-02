@@ -17,7 +17,10 @@ function $arrow(
   // fn = -> xxx
   if (!content.equal(content.last, 'edge', 'parameter-end')) {
 
-    content.push('identifier', 'anonymous')
+    if (!content.equal(
+      content.list[content.list.length - 2],
+      'property', 'constructor'
+    )) content.push('identifier', 'anonymous')
 
     cache.push('parameter')
     content.push('edge', 'parameter-start')
@@ -54,7 +57,11 @@ function $start(
 
   const { cache, content } = ctx
 
-  content.push('identifier', 'anonymous')
+  if (!content.equal(
+    content.list[content.list.length - 2],
+    'property', 'constructor'
+  )) content.push('identifier', 'anonymous')
+
   cache.push('parameter')
   content.push('edge', 'parameter-start')
   return true

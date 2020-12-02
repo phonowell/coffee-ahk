@@ -1,9 +1,10 @@
 ﻿class A {
-  fn := Func("z_2").Bind(this)
+  value := Func("z_1").Bind(this)
+  __New() {
+    1
+  }.Bind(this)
 }
-z_1(this, a) {
-  this.value
-}
-z_2(this) {
-  Func("z_1").Bind(this, a).Call()
+global b := new A()
+z_1(this) {
+  1
 }

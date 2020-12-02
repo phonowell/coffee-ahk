@@ -1,2 +1,4 @@
 class A
-  fn: -> do (a = a) => @value
+  value: -> 1
+  constructor: -> 1
+b = new A()

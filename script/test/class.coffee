@@ -5,4 +5,5 @@ class A
     a: 1
   d: -> return 1
   e: (n) -> @a + n
-a = new A()
+  constructor: -> 1
+b = new A()

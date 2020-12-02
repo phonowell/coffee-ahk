@@ -19,6 +19,8 @@ function appendBind(
     if (item.scope[item.scope.length - 1] !== 'function') return
     if (item.scope[item.scope.length - 2] !== 'class') return
 
+    // TODO: find edge of parameter start, then check function name
+
     const scope = [[...item.scope]]
     scope[1] = [...scope[0], 'call']
     listContent.push(content.new('.', '.', scope[0]))
@@ -37,6 +39,7 @@ function main(
 
   prependThis(ctx)
   appendBind(ctx)
+  renameConstructor(ctx)
 }
 
 function prependThis(
@@ -50,6 +53,15 @@ function prependThis(
 
     listContent.push(item)
     if (!content.equal(item, 'edge', 'parameter-start')) return
+
+    if (content.equal(
+      listContent[listContent.length - 3],
+      'property', 'constructor'
+    )) {
+      listContent[listContent.length - 2].type = 'void'
+      return
+    }
+
     if (!(
       item.scope[item.scope.length - 1] === 'class'
       || (
@@ -67,6 +79,17 @@ function prependThis(
   })
 
   content.load(listContent)
+}
+
+function renameConstructor(
+  ctx: Context
+): void {
+
+  const { content } = ctx
+  content.list.forEach(it => {
+    if (!content.equal(it, 'property', 'constructor')) return
+    it.value = '__New'
+  })
 }
 
 // export
