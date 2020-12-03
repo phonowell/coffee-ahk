@@ -12,14 +12,15 @@ function appendBind(
   const { content } = ctx
 
   const listContent: Item[] = []
-  content.list.forEach(item => {
+  content.list.forEach((item, i) => {
 
     listContent.push(item)
     if (!content.equal(item, 'edge', 'block-end')) return
     if (item.scope[item.scope.length - 1] !== 'function') return
     if (item.scope[item.scope.length - 2] !== 'class') return
 
-    // TODO: find edge of parameter start, then check function name
+    const index = findEdge(ctx, i)
+    if (content.equal(content.eq(index - 1), 'property', 'constructor')) return
 
     const scope = [[...item.scope]]
     scope[1] = [...scope[0], 'call']
@@ -31,6 +32,19 @@ function appendBind(
   })
 
   content.load(listContent)
+}
+
+function findEdge(
+  ctx: Context,
+  i: number
+): number {
+
+  const { content } = ctx
+
+  const it = content.eq(i)
+  if (!it) return 0
+  if (content.equal(it, 'edge', 'parameter-start')) return i
+  return findEdge(ctx, i - 1)
 }
 
 function main(
