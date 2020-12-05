@@ -7,8 +7,8 @@ type Item = Context['content']['list'][number]
 
 // variable
 
-const listParam: string[] = []
-let flagIgnore = false
+const listParam: Item[][] = []
+let countIgnore = 0
 let listCache: [number, Item[]][] = []
 let listContent: Item[] = []
 
@@ -25,13 +25,17 @@ function cache(
   const scope = [item.scope.slice(0, item.scope.length - 1)]
   scope[1] = [...scope[0], 'call']
 
-  let listItem: Item[] = listParam.map(
-    name => content.new('identifier', name, scope[1])
-  )
-
-  const limit = listItem.length - 1
-  for (let j = 0; j < limit; j++)
-    listItem.splice(limit - j, 0, content.new('sign', ',', scope[1]))
+  let listItem: Item[] = []
+  for (const listIt of listParam) {
+    for (const item of listIt) {
+      item.scope = item.scope.join(',')
+        .replace(/^.*?parameter/, scope[1].join(','))
+        .split(',') as Item['scope']
+      listItem.push(item)
+    }
+    listItem.push(content.new('sign', ',', scope[1]))
+  }
+  listItem.pop()
 
   listItem = [
     content.new('.', '.', scope[0]),
@@ -71,7 +75,7 @@ function main(
   const { content } = ctx
 
   // reset
-  flagIgnore = false
+  countIgnore = 0
   listContent.length = 0
   listCache.length = 0
   listParam.length = 0
@@ -80,8 +84,8 @@ function main(
   content.list.forEach((item, i) => {
 
     // ignore
-    if (flagIgnore) {
-      flagIgnore = false
+    if (countIgnore) {
+      countIgnore--
       listContent.push(content.new('void', '', []))
       return
     }
@@ -125,9 +129,30 @@ function pick(
 
   // pick
   listContent.push(content.new('void'))
-  listParam.push(itNext.value)
-  flagIgnore = true
+  listParam.push(pickItem(ctx, itNext, i + 1))
+  countIgnore = listParam[listParam.length - 1].length
   return true
+}
+
+function pickItem(
+  ctx: Context,
+  item: Item,
+  i: number,
+  listItem: Item[] = []
+): Item[] {
+
+  const { content } = ctx
+
+  const it = content.eq(i)
+  if (!it) return listItem
+
+  if (
+    it.scope.join('') === item.scope.join('')
+    && (content.equal(it, 'sign', ',') || content.equal(it, 'edge', 'parameter-end'))
+  ) return listItem
+
+  listItem.push(it)
+  return pickItem(ctx, item, i + 1, listItem)
 }
 
 // export
