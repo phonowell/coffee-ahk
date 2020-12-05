@@ -121,7 +121,7 @@ function pick(
   const itNext = content.eq(i + 1)
   if (!['identifier', 'this'].includes(itNext.type)) return false
   const itPrev = content.eq(i - 1)
-  if (itNext.value !== itPrev.value) return false
+  if (!['identifier', 'this'].includes(itPrev.type)) return false
 
   // pick
   listContent.push(content.new('void'))
