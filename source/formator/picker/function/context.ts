@@ -22,27 +22,27 @@ function cache(
 
   const { content } = ctx
 
-  const scope = [item.scope.slice(0, item.scope.length - 1)]
-  scope[1] = [...scope[0], 'call']
+  const _scope = [item.scope.slice(0, item.scope.length - 1)]
+  _scope[1] = [..._scope[0], 'call']
 
   let listItem: Item[] = []
   for (const listIt of listParam) {
     for (const item of listIt) {
       item.scope = item.scope.join(',')
-        .replace(/^.*?parameter/, scope[1].join(','))
+        .replace(/^.*?parameter/, _scope[1].join(','))
         .split(',') as Item['scope']
       listItem.push(item)
     }
-    listItem.push(content.new('sign', ',', scope[1]))
+    listItem.push(content.new('sign', ',', _scope[1]))
   }
   listItem.pop()
 
   listItem = [
-    content.new('.', '.', scope[0]),
-    content.new('identifier', 'Bind', scope[0]),
-    content.new('edge', 'call-start', scope[1]),
+    content.new('.', '.', _scope[0]),
+    content.new('identifier', 'Bind', _scope[0]),
+    content.new('edge', 'call-start', _scope[1]),
     ...listItem,
-    content.new('edge', 'call-end', scope[1])
+    content.new('edge', 'call-end', _scope[1])
   ]
 
   listCache.push([

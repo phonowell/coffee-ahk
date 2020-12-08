@@ -8,10 +8,10 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, type } = ctx
+  const { content, scope, type } = ctx
 
   if (type === '...') {
-    if (cache.last !== 'parameter')
+    if (scope.last !== 'parameter')
       throw new Error(`ahk/forbidden: '...' is not allowed`)
     content.push('sign', '...')
   }
@@ -27,7 +27,7 @@ function main(
   }
 
   if (type === ':') {
-    if (cache.last === 'class') {
+    if (scope.last === 'class') {
       content.push('sign', '=')
       return true
     }

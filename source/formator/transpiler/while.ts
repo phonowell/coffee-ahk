@@ -8,10 +8,10 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, type } = ctx
+  const { content, scope, type } = ctx
 
   if (type === 'while') {
-    cache.next = 'while'
+    scope.next = 'while'
     content
       .push('while')
       .push('edge', 'expression-start')

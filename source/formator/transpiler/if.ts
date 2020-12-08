@@ -8,10 +8,10 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, type, value } = ctx
+  const { content, scope, type, value } = ctx
 
   if (type === 'if') {
-    cache.next = 'if'
+    scope.next = 'if'
     content.push('if')
     if (value === 'unless')
       content.push('logical-operator', '!')
@@ -20,14 +20,14 @@ function main(
   }
 
   if (type === 'else') {
-    if (cache.last === 'switch') {
-      cache.push('case')
+    if (scope.last === 'switch') {
+      scope.push('case')
       content
         .push('new-line', ctx.indent.toString())
         .push('if', 'default')
       return true
     }
-    cache.next = 'else'
+    scope.next = 'else'
     content.push('if', 'else')
     return true
   }

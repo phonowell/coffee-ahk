@@ -8,7 +8,7 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, type, value } = ctx
+  const { content, scope, type, value } = ctx
 
   if (type === 'terminator') {
 
@@ -17,7 +17,7 @@ function main(
       if (content.equal(content.last, 'bracket', '}-'))
         content.last.value = '}'
 
-      if (['array', 'call', 'object', 'parameter'].includes(cache.last)) {
+      if (['array', 'call', 'object', 'parameter'].includes(scope.last)) {
         if (!content.equal(content.last, 'sign', ',')) {
           if (content.last.type === 'new-line') content.pop()
           content.push('sign', ',')
@@ -33,7 +33,7 @@ function main(
 
       if (content.equal(content.last, 'bracket', '}-'))
         content.last.value = '}'
-        
+
       content.push('new-line', ctx.indent.toString())
       return true
     }

@@ -8,16 +8,16 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, type } = ctx
+  const { content, scope, type } = ctx
 
   if (type === 'switch') {
-    cache.push('switch')
+    scope.push('switch')
     content.push('if', 'switch')
     return true
   }
 
   if (type === 'leading_when') {
-    cache.push('case')
+    scope.push('case')
     content.push('if', 'case')
     return true
   }

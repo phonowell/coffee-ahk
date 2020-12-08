@@ -58,19 +58,19 @@ function transPair(
     if (listPre.length && item.type === 'new-line') {
 
       const indent = pickIndent(i - 1)
-      const scope = item.scope
+      const _scope = item.scope
 
       for (let i = 0; i < listPre.length; i++) {
         listContent = [
           ...listContent,
           // \n xxx = token[n]
-          content.new('new-line', indent.toString(), scope),
-          content.new('identifier', listPre[listPre.length - i - 1], scope),
-          content.new('sign', '=', scope),
-          content.new('identifier', token, scope),
-          content.new('edge', 'index-start', scope),
-          content.new('number', (i + 1).toString(), scope),
-          content.new('edge', 'index-end', scope)
+          content.new('new-line', indent.toString(), _scope),
+          content.new('identifier', listPre[listPre.length - i - 1], _scope),
+          content.new('sign', '=', _scope),
+          content.new('identifier', token, _scope),
+          content.new('edge', 'index-start', _scope),
+          content.new('number', (i + 1).toString(), _scope),
+          content.new('edge', 'index-end', _scope)
         ]
       }
 

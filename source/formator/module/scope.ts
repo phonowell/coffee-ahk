@@ -25,7 +25,7 @@ const listRule = [
 
 // function
 
-class Cache {
+class Scope {
 
   private _list: Item[] = []
   next: Item = ''
@@ -67,12 +67,12 @@ class Cache {
     name: Item
   ): void {
 
-    if (!name) throw new Error('cache.push: name is empty')
-    if (this.next)
-      throw new Error(`cache.push: clear cache.next '${this.next}' at first`)
+    if (!name) throw new Error('scope.push: name is empty')
+    // if (this.next)
+    //   throw new Error(`scope.push: clear scope.next '${this.next}' at first`)
     this._list.push(name)
   }
 }
 
 // export
-export default new Cache()
+export default new Scope()

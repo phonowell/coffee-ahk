@@ -1,6 +1,6 @@
 // interface
 
-import { Item as Scope } from './cache'
+import { Item as Scope } from './scope'
 
 // variable
 

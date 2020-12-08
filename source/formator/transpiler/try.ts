@@ -8,24 +8,24 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, type } = ctx
+  const { content, scope, type } = ctx
 
   if (type === 'catch') {
-    cache.next = 'catch'
+    scope.next = 'catch'
     content.push('try', 'catch')
     return true
   }
 
   if (type === 'finally') {
     content.push('try', 'finally')
-    cache.push('finally')
+    scope.push('finally')
     content.push('edge', 'block-start')
     return true
   }
 
   if (type === 'try') {
     content.push('try')
-    cache.push('try')
+    scope.push('try')
     content.push('edge', 'block-start')
     return true
   }

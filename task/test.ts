@@ -1,5 +1,5 @@
 import $ from 'fire-keeper'
-import compile_ from '../dist'
+import compile_ from '../source'
 
 // function
 
@@ -18,6 +18,7 @@ async function main_(): Promise<void> {
 
     const content = (await compile_(source, {
       ignoreComment: false,
+      insertCompilerInformation: false,
       salt: 'ahk',
       save: false
     }))

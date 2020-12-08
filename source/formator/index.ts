@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import coffee from 'coffeescript'
 
-import cache from './module/cache'
+import scope from './module/scope'
 import content from './module/content'
 
 import transpile from './transpiler'
@@ -38,14 +38,14 @@ function main(
     ast: true
   })
 
-  cache.clear()
+  scope.clear()
   content.clear()
   const ctx: Context = {
-    cache,
     content,
     indent: 0,
     option,
     raw: {},
+    scope,
     type: '',
     value: ''
   }

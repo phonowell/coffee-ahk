@@ -81,10 +81,10 @@ function main(
     return true
   }
 
-  if (type === 'compound_assign') {
-    content.push('math', value)
-    return true
-  }
+  // if (type === 'compound_assign') {
+  //   content.push('math', value)
+  //   return true
+  // }
 
   if (type === 'math') {
     content.push('math', value)

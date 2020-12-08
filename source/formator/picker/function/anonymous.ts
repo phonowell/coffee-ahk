@@ -116,17 +116,17 @@ function transFunc(
       return
     }
 
-    const scope = [...item.scope]
-    scope.pop()
+    const _scope = [...item.scope]
+    _scope.pop()
 
-    listContent.push(content.new('identifier', 'Func', scope))
-    listContent.push(content.new('edge', 'call-start', [...scope, 'call']))
+    listContent.push(content.new('identifier', 'Func', _scope))
+    listContent.push(content.new('edge', 'call-start', [..._scope, 'call']))
     listContent.push(content.new(
       'string',
       item.value.slice(5, item.value.length - 1),
-      [...scope, 'call']
+      [..._scope, 'call']
     ))
-    listContent.push(content.new('edge', 'call-end', [...scope, 'call']))
+    listContent.push(content.new('edge', 'call-end', [..._scope, 'call']))
   })
 
   content.load(listContent)

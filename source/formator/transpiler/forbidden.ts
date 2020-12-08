@@ -7,6 +7,12 @@ import { Context } from '../type'
 const listForbidden = [
   '..',
   '?',
+  '?.',
+  'bin?',
+  'compound_assign',
+  'export',
+  'func_exist',
+  'import',
   'null',
   'undefined'
 ] as const

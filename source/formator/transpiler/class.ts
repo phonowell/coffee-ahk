@@ -8,10 +8,10 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, type } = ctx
+  const { content, scope, type } = ctx
 
   if (type === 'class') {
-    cache.next = 'class'
+    scope.next = 'class'
     content.push('class')
     return true
   }

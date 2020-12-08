@@ -1,13 +1,13 @@
 import { Option } from '../index'
-import cache from './module/cache'
+import scope from './module/scope'
 import content from './module/content'
 
 export type Context = {
-  cache: typeof cache
   content: typeof content
   indent: number
   option: Option
   raw: Token
+  scope: typeof scope
   type: string
   value: string
 }
@@ -17,6 +17,8 @@ export type Token = {
     content: string
   }[]
   generated?: boolean
-  origin?: [string]
+  origin?: unknown[] & {
+    [key: string]: unknown
+  }
   spaced?: boolean
 }

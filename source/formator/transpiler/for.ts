@@ -8,10 +8,10 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, type, value } = ctx
+  const { content, scope, type, value } = ctx
 
   if (type === 'for') {
-    cache.push('for')
+    scope.push('for')
     content.push('for')
     return true
   }

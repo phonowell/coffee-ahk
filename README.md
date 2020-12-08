@@ -34,7 +34,6 @@ npm run test
 - 可以使用`true`、`false`、`on`和`off`，但要注意不要试图使用类型判断。在`ahk`中不存在`boolean`类型；
 - 尚不支持`?`；
 - 尚不支持`a = 1 unless a >= 1`这样的倒装语法，必须使用正常语序；
-- 尚未实现`do`关键字，且不支持任何类型的立刻执行；
 - 数组的起始是`1`；
 - 没有`getter`/`setter`；
 - 没有`import`和`export`，使用`# include xxx`替代这一功能；
@@ -48,7 +47,3 @@ npm run test
 - online preview
 - target: v2
 - tree-shaking
-
-## Contact
-
-QQ: 515565970

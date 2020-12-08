@@ -22,13 +22,13 @@ function appendBind(
     const index = findEdge(ctx, i)
     if (content.equal(content.eq(index - 1), 'property', 'constructor')) return
 
-    const scope = [[...item.scope]]
-    scope[1] = [...scope[0], 'call']
-    listContent.push(content.new('.', '.', scope[0]))
-    listContent.push(content.new('identifier', 'Bind', scope[0]))
-    listContent.push(content.new('edge', 'call-start', scope[1]))
-    listContent.push(content.new('this', 'this', scope[1]))
-    listContent.push(content.new('edge', 'call-end', scope[1]))
+    const _scope = [[...item.scope]]
+    _scope[1] = [..._scope[0], 'call']
+    listContent.push(content.new('.', '.', _scope[0]))
+    listContent.push(content.new('identifier', 'Bind', _scope[0]))
+    listContent.push(content.new('edge', 'call-start', _scope[1]))
+    listContent.push(content.new('this', 'this', _scope[1]))
+    listContent.push(content.new('edge', 'call-end', _scope[1]))
   })
 
   content.load(listContent)
@@ -84,12 +84,12 @@ function prependThis(
       )
     )) return
 
-    const scope = [...item.scope]
-    listContent.push(content.new('this', 'this', scope))
+    const _scope = [...item.scope]
+    listContent.push(content.new('this', 'this', _scope))
 
     const it = content.eq(i + 1)
     if (content.equal(it, 'edge', 'parameter-end')) return
-    listContent.push(content.new('sign', ',', scope))
+    listContent.push(content.new('sign', ',', _scope))
   })
 
   content.load(listContent)

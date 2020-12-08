@@ -8,7 +8,7 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, type } = ctx
+  const { content, scope, type } = ctx
 
   if (type === 'indent') {
 
@@ -17,30 +17,30 @@ function main(
 
     if ([
       'array', 'call', 'object', 'parameter'
-    ].includes(cache.last)) return true
+    ].includes(scope.last)) return true
     ctx.indent++
 
-    const last = cache.last
+    const last = scope.last
     if (['case', 'for', 'function', 'switch'].includes(last)) {
-      if (!['catch', 'else', 'if', 'while'].includes(cache.next)) {
+      if (!['catch', 'else', 'if', 'while'].includes(scope.next)) {
         if (last === 'case')
           content.push('sign', ':')
         content.push('edge', 'block-start')
       }
     }
 
-    if (['catch', 'class', 'else'].includes(cache.next)) {
-      const _next = cache.next
-      cache.next = ''
-      cache.push(_next)
+    if (['catch', 'class', 'else'].includes(scope.next)) {
+      const _next = scope.next
+      scope.next = ''
+      scope.push(_next)
       content.push('edge', 'block-start')
     }
 
-    if (['if', 'while'].includes(cache.next)) {
+    if (['if', 'while'].includes(scope.next)) {
       content.push('edge', 'expression-end')
-      const _next = cache.next
-      cache.next = ''
-      cache.push(_next)
+      const _next = scope.next
+      scope.next = ''
+      scope.push(_next)
       content.push('edge', 'block-start')
     }
 
@@ -57,16 +57,16 @@ function main(
 
     if ([
       'array', 'call', 'object', 'parameter'
-    ].includes(cache.last)) return true
+    ].includes(scope.last)) return true
     ctx.indent--
 
-    if (!cache.length) return true
+    if (!scope.length) return true
 
     content
       .push('new-line', ctx.indent.toString())
       .push('edge', 'block-end')
 
-    cache.pop()
+    scope.pop()
     return true
   }
 

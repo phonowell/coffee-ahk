@@ -18,9 +18,9 @@ function main(
 
     if (flag && content.equal(item, 'new-line')) {
       flag = false
-      const scope: Item['scope'] = [...item.scope, 'call']
-      listContent.push(content.new('edge', 'call-start', scope))
-      listContent.push(content.new('edge', 'call-end', scope))
+      const _scope: Item['scope'] = [...item.scope, 'call']
+      listContent.push(content.new('edge', 'call-start', _scope))
+      listContent.push(content.new('edge', 'call-end', _scope))
       listContent.push(item)
       return
     }

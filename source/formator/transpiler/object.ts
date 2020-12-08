@@ -8,30 +8,31 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, raw, type } = ctx
+  const { content, raw, scope, type } = ctx
 
   if (type === '{') {
 
     if (
-      cache.last === 'class'
+      scope.last === 'class'
       && !content.equal(content.last, 'sign', '=')
     ) return true
 
     if (content.last.type === 'new-line' && raw.generated)
       content.pop()
 
-    cache.push('object')
+    scope.push('object')
     content.push('bracket', '{')
     return true
   }
 
   if (type === '}') {
 
-    if (cache.last === 'class') return true
+    if (scope.last === 'class') return true
 
-    if (raw.generated) content.push('bracket', '}-')
+    if (raw.generated && typeof raw.origin?.indentSize === 'number')
+      content.push('bracket', '}-')
     else content.push('bracket', '}')
-    cache.pop()
+    scope.pop()
     return true
   }
 

@@ -1,5 +1,5 @@
 import Item from './item'
-import cache from './cache'
+import scope from './scope'
 
 // function
 
@@ -83,7 +83,7 @@ class Content {
 
     const it = this.new(...arg)
     if (!it.scope.length)
-      it.scope = cache.clone()
+      it.scope = scope.clone()
     this.list.push(it)
     return this
   }
@@ -98,7 +98,7 @@ class Content {
 
     const it = this.new(...arg)
     if (!it.scope.length)
-      it.scope = [...cache.list]
+      it.scope = [...scope.list]
     this.list.unshift(it)
     return this
   }

@@ -8,16 +8,16 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { cache, content, type } = ctx
+  const { content, scope, type } = ctx
 
   if (type === '[') {
-    cache.push('array')
+    scope.push('array')
     content.push('edge', 'array-start')
     return true
   }
 
   if (type === ']') {
-    cache.pop()
+    scope.pop()
     content.push('edge', 'array-end')
     return true
   }

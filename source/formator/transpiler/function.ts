@@ -1,6 +1,6 @@
 // interface
 
-import cache from '../module/cache'
+import scope from '../module/scope'
 import { Context } from '../type'
 
 type Item = Context['content']['list'][number]
@@ -12,7 +12,7 @@ function $arrow(
   type: string
 ): boolean {
 
-  const { cache, content } = ctx
+  const { content, scope } = ctx
 
   // fn = -> xxx
   if (!content.equal(content.last, 'edge', 'parameter-end')) {
@@ -22,7 +22,7 @@ function $arrow(
       'property', 'constructor'
     )) content.push('identifier', 'anonymous')
 
-    cache.push('parameter')
+    scope.push('parameter')
     content.push('edge', 'parameter-start')
 
     if (type === '=>')
@@ -32,22 +32,22 @@ function $arrow(
         .push('this')
 
     content.push('edge', 'parameter-end')
-    cache.pop()
+    scope.pop()
   } else {
     if (type === '=>') {
-      const scope: Item['scope'] = [...cache.clone(), 'parameter']
+      const _scope: Item['scope'] = [...scope.clone(), 'parameter']
       content.list.splice(
         findEdge(ctx) + 1,
         0,
-        content.new('this', 'this', scope),
-        content.new('sign', '=', scope),
-        content.new('this', 'this', scope),
-        content.new('sign', ',', scope)
+        content.new('this', 'this', _scope),
+        content.new('sign', '=', _scope),
+        content.new('this', 'this', _scope),
+        content.new('sign', ',', _scope)
       )
     }
   }
 
-  cache.push('function')
+  scope.push('function')
   return true
 }
 
@@ -55,7 +55,7 @@ function $start(
   ctx: Context
 ): boolean {
 
-  const { cache, content } = ctx
+  const { scope: cache, content } = ctx
 
   if (!content.equal(
     content.list[content.list.length - 2],
@@ -90,17 +90,17 @@ function main(
   if (['->', '=>'].includes(type)) return $arrow(ctx, type)
 
   if (type === 'call_start') {
-    const _next = cache.next
-    cache.next = ''
-    cache.push('call')
-    cache.next = _next
+    const _next = scope.next
+    scope.next = ''
+    scope.push('call')
+    scope.next = _next
     content.push('edge', 'call-start')
     return true
   }
 
   if (type === 'call_end') {
     content.push('edge', 'call-end')
-    cache.pop()
+    scope.pop()
     return true
   }
 
@@ -108,7 +108,7 @@ function main(
 
   if (type === 'param_end') {
     content.push('edge', 'parameter-end')
-    cache.pop()
+    scope.pop()
     return true
   }
 
