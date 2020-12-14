@@ -1,5 +1,13 @@
-import Client from 'module'
+# include 'module'
 
-notepad = new Client 'notepad.exe'
+globalThis.a = 2
 
-$.on 'ctrl + n', notepad.open
+try
+  notepad = new Client 'notepad.exe'
+  $.on 'ctrl + n', notepad.open
+
+catch e
+  throw new Error e
+
+finally
+  alert 'Aha!'

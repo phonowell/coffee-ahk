@@ -14,28 +14,20 @@ function main(
   // global
   if (ctx.option.insertGlobalThis)
     content.list.unshift(
-      content.new('origin', 'if !(globalThis) {global globalThis := {}}', []),
+      content.new('origin', 'global ', []),
+      content.new('identifier', 'globalThis', []),
+      content.new('sign', '=', []),
+      content.new('bracket', '{', []),
+      content.new('bracket', '}', []),
       content.new('new-line', '0', [])
     )
 
-  // // const cacheVariable: Set<string> = new Set()
+  // global
+  content.list.forEach(item => {
 
-  // // global
-  // content.list.forEach((item, i) => {
-
-  //   if (!content.equal(item, 'sign', '=')) return
-
-  //   const it = content.eq(i - 1)
-  //   if (it.type !== 'identifier') return
-  //   if (it.scope.length) return
-  //   if (content.eq(i - 2).type !== 'new-line') return
-
-  //   throw new Error("ahk/forbidden: global variables are not allowed to be declared, use 'globalThis' instead")
-
-  //   // if (cacheVariable.has(it.value)) return
-  //   // cacheVariable.add(it.value)
-  //   // it.value = `global ${it.value}`
-  // })
+    if (!content.equal(item, 'identifier', 'globalThis')) return
+    item.value = `__globalThis_${ctx.option.salt}__`
+  })
 
   // new Error -> Exception
   let listContent: Item[] = []
