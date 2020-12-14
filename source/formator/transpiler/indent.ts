@@ -22,7 +22,7 @@ function main(
 
     const last = scope.last
     if (['case', 'for', 'function', 'switch'].includes(last)) {
-      if (!['catch', 'else', 'if', 'while'].includes(scope.next)) {
+      if (!['catch', 'class', 'else', 'if', 'while'].includes(scope.next)) {
         if (last === 'case')
           content.push('sign', ':')
         content.push('edge', 'block-start')

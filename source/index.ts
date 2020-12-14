@@ -13,7 +13,8 @@ const optionDefault = {
   ast: false,
   displayCoffeescriptAst: false,
   ignoreComment: true,
-  insertCompilerInformation: true,
+  insertGlobalThis: true,
+  insertTranslatorInformation: true,
   salt: '',
   save: true,
   verbose: false

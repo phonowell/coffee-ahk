@@ -4,17 +4,30 @@ import iconv from 'iconv-lite'
 
 // variable
 
-const tag = '# include'
+const tag = [
+  '# include',
+  'import '
+]
 
 // function
 
-function decode(
-  source: string,
+function decode({
+  content, importer, source
+}: {
   content: Buffer | string
-): string {
+  importer: string
+  source: string
+}): string {
 
-  if (source.endsWith('.coffee'))
-    return content as string
+  if (source.endsWith('.coffee')) {
+    if (!importer) return content as string
+    // closure
+    const list = (content as string)
+      .split(/\n/)
+      .map(line => `  ${line}`)
+    list.unshift(`${importer} = do ->`)
+    return list.join('\n')
+  }
 
   if (source.endsWith('.txt'))
     return '```' + content + '```'
@@ -29,29 +42,34 @@ function decode(
   return '```' + content + '```'
 }
 
-async function load_(
-  name: string,
+async function load_({
+  importer, path, source
+}: {
+  importer: string
+  path: string
   source: string
-): Promise<string> {
+}): Promise<string> {
 
-  name = _.trim(name, '\'" ')
+  path = _.trim(path, '\'" ')
 
-  const path = [
+  const filepath = [
     $.getDirname(source),
     '/',
-    name,
-    (_.last(name.split('/')) as string).includes('.') ? '' : '.coffee'
+    path,
+    (_.last(path.split('/')) as string).includes('.') ? '' : '.coffee'
   ].join('')
 
-  const listSource = await $.source_(path)
+  const listSource = await $.source_(filepath)
   const listResult: string[] = []
 
   for (const source of listSource) {
+
     const content = await $.read_(source) as string
+
     listResult.push(
-      content.includes(tag)
+      content.includes(tag[0]) || content.includes(tag[1])
         ? await main_(content, source)
-        : decode(source, content)
+        : decode({ content, importer, source })
     )
   }
 
@@ -68,16 +86,24 @@ async function main_(
   const listResult: string[] = []
   for (const line of listContent) {
 
-    if (!line.startsWith(tag)) {
+    if (!(line.startsWith(tag[0]) || line.startsWith(tag[1]))) {
       listResult.push(line)
       continue
     }
 
-    const name = line
-      .replace(tag, '')
-      .trim()
+    const [importer, path] = line.startsWith(tag[0])
+      ? [
+        '',
+        line
+          .replace(tag[0], '')
+          .trim()
+      ]
+      : line
+        .replace(tag[1], '')
+        .split(' from ')
+        .map(it => it.trim())
 
-    listResult.push(await load_(name, source))
+    listResult.push(await load_({ importer, path, source }))
   }
 
   return listResult.join('\n')

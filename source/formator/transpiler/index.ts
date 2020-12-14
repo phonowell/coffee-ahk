@@ -11,6 +11,7 @@ import $function from './function'
 import $if from './if'
 import $indent from './indent'
 import $indentifier from './identifier'
+import $module from './module'
 import $newLine from './new-line'
 import $number from './number'
 import $object from './object'
@@ -45,6 +46,7 @@ const map = {
   if: $if,
   indent: $indent,
   indentifier: $indentifier,
+  module: $module,
   number: $number,
   object: $object,
   operator: $operator,

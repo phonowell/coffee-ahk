@@ -1,17 +1,5 @@
-@mask = (id, data = {}, callback) ->
+import Client from 'module'
 
-  if app.refs.mask.isVisible
-    $.mask false
-    $.delay 500, => @mask id, data, callback
-    return
+notepad = new Client 'notepad.exe'
 
-  theme = if ['address', 'batch-buy'].includes id
-    'default'
-  else 'custom'
-
-  $.mask
-    data: data
-    id: id
-    isVisible: true
-    theme: theme
-  , callback or -> $.mask false
+$.on 'ctrl + n', notepad.open
