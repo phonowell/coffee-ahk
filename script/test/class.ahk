@@ -8,7 +8,7 @@ class A {
     1
   }
 }
-b := new A()
+global b := new A()
 ahk_1(this, n) {
   this.a + n
 }

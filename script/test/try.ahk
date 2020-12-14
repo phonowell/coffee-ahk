@@ -10,7 +10,7 @@ try {
 } finally {
   3
 }
-fn := Func("ahk_1")
+global fn := Func("ahk_1")
 ahk_1() {
   try {
     alert.Call(1)

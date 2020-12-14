@@ -1,3 +1,3 @@
-a := -1
-b := 2 - 1
-c := fn.Call(-1)
+global a := -1
+global b := 2 - 1
+global c := fn.Call(-1)

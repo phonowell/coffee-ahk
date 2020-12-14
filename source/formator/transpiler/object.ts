@@ -29,7 +29,11 @@ function main(
 
     if (scope.last === 'class') return true
 
-    if (raw.generated && typeof raw.origin?.indentSize === 'number')
+    if (
+      raw.generated
+      && raw.origin
+      && typeof raw.origin.indentSize === 'number'
+    )
       content.push('bracket', '}-')
     else content.push('bracket', '}')
     scope.pop()

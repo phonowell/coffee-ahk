@@ -11,22 +11,21 @@ function main(
 
   const { content } = ctx
 
-  // global
-  if (ctx.option.insertGlobalThis)
-    content.list.unshift(
-      content.new('origin', 'global ', []),
-      content.new('identifier', 'globalThis', []),
-      content.new('sign', '=', []),
-      content.new('bracket', '{', []),
-      content.new('bracket', '}', []),
-      content.new('new-line', '0', [])
-    )
+  const cacheVariable: Set<string> = new Set()
 
   // global
-  content.list.forEach(item => {
+  content.list.forEach((item, i) => {
 
-    if (!content.equal(item, 'identifier', 'globalThis')) return
-    item.value = `__globalThis_${ctx.option.salt}__`
+    if (!content.equal(item, 'sign', '=')) return
+
+    const it = content.eq(i - 1)
+    if (it.type !== 'identifier') return
+    if (it.scope.length) return
+    if (content.eq(i - 2).type !== 'new-line') return
+
+    if (cacheVariable.has(it.value)) return
+    cacheVariable.add(it.value)
+    it.value = `global ${it.value}`
   })
 
   // new Error -> Exception
