@@ -48,7 +48,7 @@ function catchIdentifier(
   const last = getVariable(name, isGlobal, type)
   if (!last) return
 
-  if (last.type !== type)
+  if (last.isGlobal && last.type !== type)
     throw new Error(`type error: '${name}' should be a(n) '${last.type}', but is incorrectly set to '${type}'`)
 }
 
