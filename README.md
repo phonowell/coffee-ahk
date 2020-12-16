@@ -71,4 +71,4 @@ npm run test
 - array starts from 0
 - online preview
 - target: v2
-- tree-shaking
+- type check

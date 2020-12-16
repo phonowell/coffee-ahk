@@ -24,9 +24,11 @@ class Content {
     n: number
   ): Item {
 
-    return n >= 0
-      ? this.list[n]
-      : this.list[this.list.length + n]
+    return (
+      n >= 0
+        ? this.list[n]
+        : this.list[this.list.length + n]
+    ) || this.new('void')
   }
 
   equal(

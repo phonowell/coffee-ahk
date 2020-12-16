@@ -11,7 +11,7 @@ function deconstruct(
   const { content } = ctx
 
   const listPre: string[] = []
-  const token = '__array__'
+  const token = '__object__'
   let listContent: typeof content.list = []
 
   function pickIndent(
@@ -27,7 +27,7 @@ function deconstruct(
     i: number
   ): void {
     const it = content.eq(i)
-    if (content.equal(it, 'edge', 'array-start')) return
+    if (content.equal(it, 'bracket', '{')) return
     if (it.type === 'identifier') listPre.push(it.value)
     listContent.pop()
     pickPre(i - 1)
@@ -45,13 +45,13 @@ function deconstruct(
       for (let i = 0; i < listPre.length; i++) {
         listContent = [
           ...listContent,
-          // \n xxx = token[n]
+          // \n xxx = token[xxx]
           content.new('new-line', indent.toString(), _scope),
           content.new('identifier', listPre[listPre.length - i - 1], _scope),
           content.new('sign', '=', _scope),
           content.new('identifier', token, _scope),
           content.new('edge', 'index-start', _scope),
-          content.new('number', (i + 1).toString(), _scope),
+          content.new('string', `"${listPre[listPre.length - i - 1]}"`, _scope),
           content.new('edge', 'index-end', _scope)
         ]
       }
@@ -66,7 +66,7 @@ function deconstruct(
       listContent.push(item)
       return
     }
-    if (!content.equal(content.eq(i - 1), 'edge', 'array-end')) {
+    if (!content.equal(content.eq(i - 1), 'bracket', '}')) {
       listContent.push(item)
       return
     }
@@ -89,18 +89,7 @@ function main(
   ctx: Context
 ): void {
 
-  const { content } = ctx
-
-  // never use array[0]
-  content.list.forEach((it, i) => {
-    if (!content.equal(it, 'edge', 'index-start')) return
-    if (!content.equal(content.eq(i + 1), 'number', '0')) return
-    if (!content.equal(content.eq(i + 2), 'edge', 'index-end')) return
-    throw new Error("ahk/forbidden: 'Array[0]' is not allowed, Array of ahk is beginning from '1'")
-  })
-
   // deconstruction
-  // [a, b] = [1, 2]
   deconstruct(ctx)
 }
 

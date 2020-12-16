@@ -1,5 +1,7 @@
 import $array from './array'
 import $function from './function'
+import $object from './object'
+import $type from './type'
 import $variable from './variable'
 
 // interface
@@ -11,6 +13,7 @@ import { Context } from '../type'
 const map = {
   array: $array,
   function: $function,
+  object: $object,
   variable: $variable
 } as const
 
@@ -22,6 +25,9 @@ function main(
 
   for (const key of Object.keys(map))
     map[key](ctx)
+
+  if (ctx.option.checkType)
+    $type(ctx)
 }
 
 // export

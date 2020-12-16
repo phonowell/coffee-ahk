@@ -1,13 +1,14 @@
-# include 'module'
+timer = ''
 
-globalThis.a = 2
+$.on 'ctrl + k', ->
 
-try
-  notepad = new Client 'notepad.exe'
-  $.on 'ctrl + n', notepad.open
+  callback = ->
+    $.off 'ctrl + o'
+    alert 'xxx'
 
-catch e
-  throw new Error e
+  $.on 'ctrl + o', callback
 
-finally
-  alert 'Aha!'
+  clearTimeout timer
+  timer = setTimeout (callback = callback) ->
+    $.off 'ctrl + o', callback
+  , 1e3
