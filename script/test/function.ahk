@@ -30,7 +30,7 @@ ahk_6(a := 1, b := 2) {
   return a + b
 }
 ahk_7(a, b*) {
-  return b[1]
+  return b[2]
 }
 ahk_8(a := 1) {
   return a

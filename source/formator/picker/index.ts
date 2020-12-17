@@ -1,4 +1,6 @@
 import $array from './array'
+import $buildIn from './build-in'
+import $for from './for'
 import $function from './function'
 import $object from './object'
 import $type from './type'
@@ -12,7 +14,7 @@ import { Context } from '../type'
 
 const map = {
   array: $array,
-  function: $function,
+  for: $for,
   object: $object,
   variable: $variable
 } as const
@@ -25,6 +27,9 @@ function main(
 
   for (const key of Object.keys(map))
     map[key](ctx)
+
+  $buildIn(ctx)
+  $function(ctx)
 
   if (ctx.option.checkType)
     $type(ctx)

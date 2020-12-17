@@ -33,7 +33,11 @@ function main(
       list.reverse()
 
     if (list.length === 1)
-      list.unshift('__i__')
+      list.unshift(
+        type === 'forin'
+          ? '__index_for__'
+          : '__key_for__'
+      )
 
     content
       .push('identifier', list[0])

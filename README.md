@@ -54,9 +54,6 @@ npm run test
 - 尚不支持`a = 1 unless a >= 1`这样的倒装语法，必须使用正常语序；
   Inversion syntax such as `a = 1 unless a >= 1` is not yet supported, do use normal order.
 
-- 数组的起始是`1`；
-  Array starts with `1`.
-
 - 没有`getter`/`setter`；
   No `getter`/`setter`.
 
@@ -68,7 +65,4 @@ npm run test
 
 ## Todo
 
-- array starts from 0
 - online preview
-- target: v2
-- type check

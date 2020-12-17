@@ -42,6 +42,7 @@ function main(
   content.clear()
   const ctx: Context = {
     content,
+    flag: {},
     indent: 0,
     option,
     raw: {},
