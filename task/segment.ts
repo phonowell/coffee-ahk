@@ -9,7 +9,6 @@ async function main_(): Promise<void> {
   for (const source of listSource) {
     await compile_(source, {
       ast: true,
-      autoGlobal: false,
       insertTranslatorInformation: false,
       pickAnonymous: false,
       salt: 'salt',

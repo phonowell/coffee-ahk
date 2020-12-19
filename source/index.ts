@@ -12,7 +12,6 @@ export type Option = Partial<typeof optionDefault>
 const optionDefault = {
   asText: false,
   ast: false,
-  autoGlobal: true,
   checkType: true,
   displayCoffeescriptAst: false,
   ignoreComment: true,
