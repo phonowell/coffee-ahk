@@ -14,19 +14,20 @@ function main(
   const cacheVariable: Set<string> = new Set()
 
   // global
-  content.list.forEach((item, i) => {
+  if (ctx.option.autoGlobal)
+    content.list.forEach((item, i) => {
 
-    if (!content.equal(item, 'sign', '=')) return
+      if (!content.equal(item, 'sign', '=')) return
 
-    const it = content.eq(i - 1)
-    if (it.type !== 'identifier') return
-    if (it.scope.length) return
-    if (content.eq(i - 2).type !== 'new-line') return
+      const it = content.eq(i - 1)
+      if (it.type !== 'identifier') return
+      if (it.scope.length) return
+      if (content.eq(i - 2).type !== 'new-line') return
 
-    if (cacheVariable.has(it.value)) return
-    cacheVariable.add(it.value)
-    it.value = `global ${it.value}`
-  })
+      if (cacheVariable.has(it.value)) return
+      cacheVariable.add(it.value)
+      it.value = `global ${it.value}`
+    })
 
   // new Error -> Exception
   let listContent: Item[] = []

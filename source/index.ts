@@ -10,12 +10,14 @@ export type Option = Partial<typeof optionDefault>
 // variable
 
 const optionDefault = {
+  asText: false,
   ast: false,
+  autoGlobal: true,
   checkType: true,
   displayCoffeescriptAst: false,
   ignoreComment: true,
-  insertGlobalThis: true,
   insertTranslatorInformation: true,
+  pickAnonymous: true,
   salt: '',
   save: true,
   verbose: false
@@ -28,14 +30,17 @@ async function compile_(
   option: Option
 ): Promise<string> {
 
-  const content = await read_(source)
+  const content = option.asText
+    ? source
+    : await read_(source)
+
   const result = format(content, option)
   if (option.verbose) {
     if (option.displayCoffeescriptAst)
       $.i(result.raw)
     log(result.ast)
   }
-  if (option.save) await write_(source, result, option)
+  if (option.save && !option.asText) await write_(source, result, option)
   return result.content
 }
 
@@ -43,10 +48,6 @@ async function main_(
   source: string,
   option: Option = {}
 ): Promise<string> {
-
-  const listSource = await $.source_(source)
-  if (!listSource.length)
-    throw new Error(`invalid source '${source}'`)
 
   option = Object.assign({}, optionDefault, option)
 
@@ -56,6 +57,12 @@ async function main_(
       .toString(32)
       .split('.')[1]
       .padStart(11, '0')
+
+  if (option.asText) return await compile_(source, option)
+
+  const listSource = await $.source_(source)
+  if (!listSource.length)
+    throw new Error(`invalid source '${source}'`)
 
   return await compile_(listSource[0], option)
 }

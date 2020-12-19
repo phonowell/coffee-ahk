@@ -18,7 +18,6 @@ async function main_(): Promise<void> {
 
     const content = (await compile_(source, {
       ignoreComment: false,
-      insertGlobalThis: false,
       insertTranslatorInformation: false,
       salt: 'ahk',
       save: false

@@ -13,11 +13,10 @@ function changeIndex(
 ): void {
 
   const { content } = ctx
+  const token = `__ci_${ctx.option.salt}__`
+  let countIgnore = 0
 
-  const listCache: {
-    range: Range
-    list: Item[]
-  }[] = []
+  // function
 
   function pickItem(
     item: Item,
@@ -25,25 +24,67 @@ function changeIndex(
     listResult: Item[] = []
   ): [number, Item[]] {
 
-    const it = content.eq(i)
-    if (!it) return [i, listResult]
+    if (listResult.length >= 10)
+      throw new Error('too many executions')
 
-    listResult.unshift(it)
+    const it = content.eq(i)
+    if (!it) {
+      countIgnore = 0
+      return [i, listResult]
+    }
+
+    listResult.push(it)
 
     if (
       content.equal(it, 'edge', 'index-start')
       && it.scope.join('|') === item.scope.join('|')
-    ) return [i, listResult]
+    ) {
+      countIgnore++
+      return pickItem(item, i + 1, listResult)
+    }
 
-    return pickItem(item, i - 1, listResult)
+    if (
+      content.equal(it, 'edge', 'index-end')
+      && it.scope.join('|') === item.scope.join('|')
+    ) {
+      countIgnore--
+      if (countIgnore === 0)
+        return [i, listResult]
+      return pickItem(item, i + 1, listResult)
+    }
+
+    return pickItem(item, i + 1, listResult)
+  }
+
+  function update(
+    range: Range,
+    list: Item[]
+  ): void {
+
+    const listContent: Item[] = [...content.list]
+    listContent.splice(
+      range[0], range[1] - range[0] + 1,
+      ...list
+    )
+    content.load(listContent)
   }
 
   // each
-  content.list.forEach((item, i) => {
+  let i = -1
+  let len = content.list.length
+  while (i < len) {
 
-    if (!content.equal(item, 'edge', 'index-end')) return
+    i++
+    len = content.list.length
+    const item = content.eq(i)
 
-    const [iStart, listItem] = pickItem(item, i)
+    if (!content.equal(item, 'edge', 'index-start')) continue
+
+    const next = content.eq(i + 1)
+    if (content.equal(next, 'identifier', token)) continue
+    if (content.equal(next, 'edge', 'index-end')) continue
+
+    const [iEnd, listItem] = pickItem(item, i)
     const listUnwrap: Item[] = listItem.slice(1, listItem.length - 1)
     let type: 'identifier' | 'number' | 'string' = 'number'
 
@@ -67,20 +108,22 @@ function changeIndex(
       const list = [...listUnwrap]
       const _scope = list[0].scope
       const _scopeCall = [..._scope, 'call'] as typeof _scope
-      listCache.push({
-        range: [iStart + 1, i - 1],
-        list: [
+
+      update(
+        [i + 1, iEnd - 1],
+        [
           content.new(
             'identifier',
-            `__change_index_${ctx.option.salt}__`,
+            token,
             _scope
           ),
           content.new('edge', 'call-start', _scopeCall),
           ...list,
           content.new('edge', 'call-end', _scopeCall),
         ]
-      })
-      return
+      )
+
+      continue
     }
 
     if (type === 'number') {
@@ -100,22 +143,13 @@ function changeIndex(
         ]
       }
 
-      listCache.push({
-        range: [i - 1, i - 1],
+      update(
+        [i + 1, i + 1],
         list
-      })
-      return
-    }
-  })
+      )
 
-  if (listCache.length) {
-    listCache.reverse()
-    const listContent: Item[] = [...content.list]
-    listCache.forEach(it => listContent.splice(
-      it.range[0], it.range[1] - it.range[0] + 1,
-      ...it.list
-    ))
-    content.load(listContent)
+      continue
+    }
   }
 }
 
@@ -203,16 +237,6 @@ function deconstruct(
 function main(
   ctx: Context
 ): void {
-
-  // const { content } = ctx
-
-  // never use array[0]
-  // content.list.forEach((it, i) => {
-  //   if (!content.equal(it, 'edge', 'index-start')) return
-  //   if (!content.equal(content.eq(i + 1), 'number', '0')) return
-  //   if (!content.equal(content.eq(i + 2), 'edge', 'index-end')) return
-  //   throw new Error("ahk/forbidden: 'Array[0]' is not allowed, Array of ahk is beginning from '1'")
-  // })
 
   // list[0] -> list[1]
   changeIndex(ctx)

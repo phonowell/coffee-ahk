@@ -32,7 +32,7 @@ function main(
   injectContext(ctx)
 
   // anonymous
-  if (listFn.has('anonymous')) {
+  if (ctx.option.pickAnonymous && listFn.has('anonymous')) {
     pickAnonymous(ctx)
     listFn = count(ctx) // re-count
   }
