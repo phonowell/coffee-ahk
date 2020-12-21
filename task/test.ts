@@ -3,6 +3,15 @@ import compile_ from '../source'
 
 // function
 
+async function checkVersion_(): Promise<void> {
+
+  const { version } = await $.read_('./package.json') as { version: string }
+  const content = await $.read_('./source/formator/renderer/index.ts') as string
+
+  if (!content.includes(version))
+    throw new Error('found different version')
+}
+
 async function main_(): Promise<void> {
 
   const target = pickTarget()
@@ -33,6 +42,8 @@ async function main_(): Promise<void> {
     }
   }
   $.info('all test(s) passed!')
+
+  await checkVersion_()
 }
 
 function pickTarget(): string {

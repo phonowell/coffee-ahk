@@ -24,9 +24,6 @@ function changeIndex(
     listResult: Item[] = []
   ): [number, Item[]] {
 
-    if (listResult.length >= 10)
-      throw new Error('too many executions')
-
     const it = content.eq(i)
     if (!it) {
       countIgnore = 0
