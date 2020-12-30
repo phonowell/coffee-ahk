@@ -1,73 +1,77 @@
-import { Context } from './type'
-import coffee from 'coffeescript'
-import content from './module/content'
-import pick from './picker'
-import render from './renderer'
-import scope from './module/scope'
-import transpile from './transpiler'
+import $alias from './alias'
+import $array from './array'
+import $boolean from './boolean'
+import $bracket from './bracket'
+import $class from './class'
+import $comment from './comment'
+import $do from './do'
+import $for from './for'
+import $forbidden from './forbidden'
+import $function from './function'
+import $if from './if'
+import $indent from './indent'
+import $indentifier from './identifier'
+import $module from './module'
+import $newLine from './new-line'
+import $number from './number'
+import $object from './object'
+import $operator from './operator'
+import $origin from './origin'
+import $property from './property'
+import $sign from './sign'
+import $statement from './statement'
+import $string from './string'
+import $switch from './switch'
+import $try from './try'
+import $while from './while'
 
 // interface
 
-type Coffee = {
-  compile: (
-    // eslint-disable-next-line no-shadow
-    content: string,
-    option?: {
-      ast?: boolean
-    }
-  ) => unknown
-}
+import { Context } from '../entry/type'
 
-declare global {
-  // eslint-disable-next-line init-declarations, no-shadow
-  const coffee: Coffee
-}
+// variable
+
+const map = {
+  alias: $alias,
+  array: $array,
+  boolean: $boolean,
+  bracket: $bracket,
+  class: $class,
+  comment: $comment,
+  do: $do,
+  for: $for,
+  forbidden: $forbidden,
+  function: $function,
+  if: $if,
+  indent: $indent,
+  indentifier: $indentifier,
+  module: $module,
+  'new-line': $newLine,
+  number: $number,
+  object: $object,
+  operator: $operator,
+  origin: $origin,
+  property: $property,
+  sign: $sign,
+  statement: $statement,
+  string: $string,
+  switch: $switch,
+  try: $try,
+  while: $while,
+} as const
 
 // function
 
 function main(
-  cont: string,
-  option: Context['option']
-): {
-  ast: Context['content']['list']
-  content: string,
-  raw: Context['raw'][]
-} {
+  ctx: Context
+): void {
 
-  const ast = coffee.compile(cont, {
-    ast: true,
-  })
-
-  scope.clear()
-  content.clear()
-  const ctx: Context = {
-    content,
-    flag: {},
-    indent: 0,
-    option,
-    raw: {},
-    scope,
-    type: '',
-    value: '',
+  for (const key of Object.keys(map)) {
+    if (key === 'comment') continue
+    if (map[key](ctx)) break
   }
 
-  for (const token of ast.tokens) {
-
-    ctx.raw = token
-    ctx.raw[2] = {}
-    ctx.type = token[0].toLowerCase()
-    ctx.value = token[1].toString()
-
-    transpile(ctx)
-  }
-
-  pick(ctx)
-
-  return {
-    ast: content.list,
-    content: render(ctx),
-    raw: ast.tokens,
-  }
+  map.comment(ctx)
 }
 
 // export

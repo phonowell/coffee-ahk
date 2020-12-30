@@ -1,4 +1,4 @@
-for __index_for__, value in list {
+﻿for __index_for__, value in list {
   value
 }
 for index, value in list {

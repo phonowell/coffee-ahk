@@ -21,7 +21,7 @@ rules:
   array-callback-return: 2
   block-scoped-var: 2
   class-methods-use-this: 2
-  complexity: 2
+  complexity: 0
   consistent-return: 2
   curly: 0
   default-case: 2
@@ -30,7 +30,7 @@ rules:
   eqeqeq: 2
   guard-for-in: 2
   max-classes-per-file: 2
-  no-alert: 2
+  no-alert: 1
   no-caller: 2
   no-div-regex: 2
   no-else-return: 2
@@ -90,7 +90,7 @@ rules:
     - warn
     - builtinGlobals: false
   no-undef-init: 2
-  no-undefined: 2
+  no-undefined: 0
   no-use-before-define: 0
 
   no-buffer-constructor: 2
@@ -103,7 +103,7 @@ rules:
   array-element-newline: 0
   block-spacing: 2
   brace-style: 2
-  camelcase: 2
+  camelcase: 1
   capitalized-comments: 0
   comma-dangle:
     - warn
@@ -129,7 +129,7 @@ rules:
   line-comment-position: 0
   linebreak-style: 0
   lines-around-comment: 2
-  lines-between-class-members: 2
+  lines-between-class-members: 0
   max-depth: 0
   max-len: 0
   max-lines: 2
@@ -153,7 +153,7 @@ rules:
   no-mixed-operators: 2
   no-mixed-spaces-and-tabs: 2
   no-multi-assign: 2
-  no-multiple-empty-lines: 2
+  no-multiple-empty-lines: 1
   no-negated-condition: 0
   no-nested-ternary: 0
   no-new-object: 2
@@ -161,7 +161,7 @@ rules:
   no-restricted-syntax: 0
   no-tabs: 2
   no-ternary: 0
-  no-trailing-spaces: 2
+  no-trailing-spaces: 1
   no-underscore-dangle: 0
   no-unneeded-ternary: 2
   no-whitespace-before-property: 2
@@ -187,7 +187,7 @@ rules:
   semi-style: 0
   sort-keys: 1
   sort-vars: 1
-  space-before-blocks: 2
+  space-before-blocks: 1
   space-before-function-paren: 0
   space-in-parens: 2
   space-infix-ops: 2

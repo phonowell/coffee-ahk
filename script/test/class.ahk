@@ -1,4 +1,4 @@
-class A {
+﻿class A {
   a := 0
   b := {}
   c := {a: 1}

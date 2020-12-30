@@ -6,7 +6,7 @@ import compile_ from '../source'
 async function checkVersion_(): Promise<void> {
 
   const { version } = await $.read_('./package.json') as { version: string }
-  const content = await $.read_('./source/formator/renderer/index.ts') as string
+  const content = await $.read_('./source/renderer/index.ts') as string
 
   if (!content.includes(version))
     throw new Error('found different version')

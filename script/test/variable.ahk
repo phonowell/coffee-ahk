@@ -1,4 +1,4 @@
-global a := 1
+﻿global a := 1
 a := 2
 global fn := Func("ahk_3")
 global c := 1

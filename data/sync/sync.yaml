@@ -5,7 +5,6 @@
 - .stylintrc
 - coffeelint.json
 - license.md
-- tslint.json
 
 # task
 - task/alice.ts

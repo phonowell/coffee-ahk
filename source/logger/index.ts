@@ -1,4 +1,4 @@
-import Item from '../formator/module/item'
+import Item from '../module/Item'
 import kleur from 'kleur'
 import pad from 'lodash/pad'
 

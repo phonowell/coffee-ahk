@@ -1,7 +1,5 @@
-import { read_, write_ } from './file'
-import $ from 'fire-keeper'
-import format from './formator'
 import log from './logger'
+import start from './entry'
 
 // interface
 
@@ -24,24 +22,12 @@ const optionDefault = {
 
 // function
 
-async function compile_(
-  source: string,
-  option: Option
-): Promise<string> {
+function generatedSalt(): string {
 
-  const content = option.asText
-    ? source
-    : await read_(source)
-
-  const result = format(content, option)
-  if (option.verbose) {
-    if (option.displayCoffeescriptAst)
-      $.i(result.raw)
-    log(result.ast)
-  }
-  if (option.save && !option.asText)
-    await write_(source, result, option)
-  return result.content
+  return Math.random()
+    .toString(32)
+    .split('.')[1]
+    .padStart(11, '0')
 }
 
 async function main_(
@@ -55,19 +41,54 @@ async function main_(
   }
 
   // salt
-  if (!_option.salt)
-    _option.salt = Math.random()
-      .toString(32)
-      .split('.')[1]
-      .padStart(11, '0')
+  _option.salt ||= generatedSalt()
 
-  if (_option.asText) return compile_(source, _option)
+  if (_option.asText) return transpileAsText(source, _option)
+  return transpileAsFile(source, _option)
+}
 
-  const listSource = await $.source_(source)
-  if (!listSource.length)
+async function transpileAsFile(
+  source: string,
+  option: Option
+): Promise<string> {
+
+  const $ = (await import('fire-keeper')).default
+
+  const [_source] = await $.source_(source)
+  if (!_source)
     throw new Error(`invalid source '${source}'`)
 
-  return compile_(listSource[0], _option)
+  const { read_, write_ } = await import('./file')
+  const content = await read_(_source)
+
+  const result = start(content, option)
+
+  if (option.verbose) {
+    if (option.displayCoffeescriptAst)
+      $.i(result.raw)
+    log(result.ast)
+  }
+
+  if (option.save)
+    await write_(_source, result, option)
+
+  return result.content
+}
+
+function transpileAsText(
+  content: string,
+  option: Option
+): string {
+
+  const result = start(content, option)
+
+  if (option.verbose) {
+    if (option.displayCoffeescriptAst)
+      console.log(result.raw)
+    log(result.ast)
+  }
+
+  return result.content
 }
 
 // export

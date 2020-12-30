@@ -1,5 +1,5 @@
 import $ from 'fire-keeper'
-import Item from '../formator/module/item'
+import Item from '../module/Item'
 import { Option } from '..'
 import iconv from 'iconv-lite'
 
