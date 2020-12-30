@@ -33,7 +33,7 @@ const listType = [
   'this',
   'try', // catch finally try
   'void',
-  'while'
+  'while',
 ] as const
 
 // function
@@ -41,8 +41,11 @@ const listType = [
 class Item {
 
   comment?: string[]
+
   scope: Scope[]
+
   type: typeof listType[number]
+
   value: string
 
   constructor(
@@ -66,6 +69,37 @@ class Item {
       throw new Error('item must be an instance of Item')
 
     return new Item(item.type, item.value, item.scope)
+  }
+
+  static equal(
+    item: Item,
+    type: string,
+    value?: string
+  ): boolean {
+    if (!(item instanceof Item)) return false
+    if (typeof value === 'undefined')
+      return item.type === type
+    return item.type === type && item.value === value
+  }
+
+  static isItem(
+    input: unknown
+  ): boolean {
+
+    return input instanceof Item
+  }
+
+  static new(
+    ...arg: ConstructorParameters<typeof Item> | Parameters<typeof Item['clone']>
+  ): Item {
+
+    if (arg[0] instanceof Item)
+      return Item.clone(arg[0])
+
+    if (typeof arg[0] === 'string')
+      return new Item(...arg as ConstructorParameters<typeof Item>)
+
+    throw new Error(`invalid item: ${JSON.stringify(arg)}`)
   }
 }
 

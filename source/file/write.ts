@@ -1,16 +1,14 @@
 import $ from 'fire-keeper'
-import iconv from 'iconv-lite'
-
-// interface
-
+import Item from '../formator/module/item'
 import { Option } from '..'
+import iconv from 'iconv-lite'
 
 // function
 
 async function main_(
   source: string,
   data: {
-    ast: Object[]
+    ast: Item[]
     content: string
   },
   option: Option
@@ -19,7 +17,7 @@ async function main_(
   const { basename, dirname } = $.getName(source)
 
   await $.write_(`${dirname}/${basename}.ahk`, iconv.encode(data.content, 'utf8', {
-    addBOM: true
+    addBOM: true,
   }).toString())
 
   if (option.ast)

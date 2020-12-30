@@ -1,6 +1,5 @@
-// interface
-
 import { Context } from '../type'
+import Item from '../module/item'
 
 // function
 
@@ -14,7 +13,7 @@ function main(
 
     if (
       scope.last === 'class'
-      && !content.equal(content.last, 'sign', '=')
+      && !Item.equal(content.last, 'sign', '=')
     ) return true
 
     if (content.last.type === 'new-line' && raw.generated)

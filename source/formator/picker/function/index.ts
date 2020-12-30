@@ -1,15 +1,12 @@
 import $class from './class'
 import $do from './do'
+import { Context } from '../../type'
 import count from './counter'
 import injectContext from './context'
 import mark from './mark'
 import pickAnonymous from './anonymous'
 import transParam from './parameter'
 import validate from './validator'
-
-// interface
-
-import { Context } from '../../type'
 
 // function
 

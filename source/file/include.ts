@@ -6,13 +6,13 @@ import iconv from 'iconv-lite'
 
 const tag = [
   '# include',
-  'import '
+  'import ',
 ]
 
 // function
 
 function decode({
-  content, importer, source
+  content, importer, source,
 }: {
   content: Buffer | string
   importer: string
@@ -23,53 +23,55 @@ function decode({
     if (!importer) return content as string
     // closure
     const list = (content as string)
-      .split(/\n/)
+      .split(/\n/u)
       .map(line => `  ${line}`)
     list.unshift(`${importer} = do ->`)
     return list.join('\n')
   }
 
   if (source.endsWith('.txt'))
-    return '```' + content + '```'
+    return `\`\`\`${content}\`\`\``
 
   if (source.endsWith('.ahk')) {
-    content = iconv.decode(content as Buffer, 'utf8', {
-      addBOM: true
+    const cont = iconv.decode(content as Buffer, 'utf8', {
+      addBOM: true,
     })
-    return '```' + content + '```'
+    return `\`\`\`${cont}\`\`\``
   }
 
-  return '```' + content + '```'
+  return `\`\`\`${content}\`\`\``
 }
 
 async function load_({
-  importer, path, source
+  importer, path, source,
 }: {
   importer: string
   path: string
   source: string
 }): Promise<string> {
 
-  path = _.trim(path, '\'" ')
+  const _path = _.trim(path, '\'" ')
 
   const filepath = [
     $.getDirname(source),
     '/',
-    path,
-    (_.last(path.split('/')) as string).includes('.') ? '' : '.coffee'
+    _path,
+    (_.last(_path.split('/')) as string).includes('.') ? '' : '.coffee',
   ].join('')
 
   const listSource = await $.source_(filepath)
   const listResult: string[] = []
 
-  for (const source of listSource) {
+  for (const src of listSource) {
 
-    const content = await $.read_(source) as string
+    // eslint-disable-next-line no-await-in-loop
+    const content = await $.read_(src) as string
 
     listResult.push(
       content.includes(tag[0]) || content.includes(tag[1])
-        ? await main_(content, source)
-        : decode({ content, importer, source })
+        // eslint-disable-next-line no-await-in-loop
+        ? await main_(content, src)
+        : decode({ content, importer, source: src })
     )
   }
 
@@ -96,13 +98,14 @@ async function main_(
         '',
         line
           .replace(tag[0], '')
-          .trim()
+          .trim(),
       ]
       : line
         .replace(tag[1], '')
         .split(' from ')
         .map(it => it.trim())
 
+    // eslint-disable-next-line no-await-in-loop
     listResult.push(await load_({ importer, path, source }))
   }
 

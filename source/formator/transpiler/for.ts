@@ -1,6 +1,5 @@
-// interface
-
 import { Context } from '../type'
+import Item from '../module/item'
 
 // function
 
@@ -24,7 +23,7 @@ function main(
     list.push(last.value)
 
     const _last = content.last
-    if (content.equal(_last, 'sign', ',')) {
+    if (Item.equal(_last, 'sign', ',')) {
       content.pop()
       list.unshift(content.pop().value)
     }

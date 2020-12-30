@@ -1,3 +1,5 @@
+import Item from '../module/item'
+
 // interface
 
 import { Context } from '../type'
@@ -19,7 +21,7 @@ function deconstruct(
   ): number {
     const it = content.eq(i)
     if (!it) return 0
-    if (it.type === 'new-line') return parseInt(it.value)
+    if (it.type === 'new-line') return parseInt(it.value, 10)
     return pickIndent(i - 1)
   }
 
@@ -27,7 +29,7 @@ function deconstruct(
     i: number
   ): void {
     const it = content.eq(i)
-    if (content.equal(it, 'bracket', '{')) return
+    if (Item.equal(it, 'bracket', '{')) return
     if (it.type === 'identifier') listPre.push(it.value)
     listContent.pop()
     pickPre(i - 1)
@@ -42,17 +44,17 @@ function deconstruct(
       const indent = pickIndent(i - 1)
       const _scope = item.scope
 
-      for (let i = 0; i < listPre.length; i++) {
+      for (let j = 0; j < listPre.length; j++) {
         listContent = [
           ...listContent,
           // \n xxx = token[xxx]
-          content.new('new-line', indent.toString(), _scope),
-          content.new('identifier', listPre[listPre.length - i - 1], _scope),
-          content.new('sign', '=', _scope),
-          content.new('identifier', token, _scope),
-          content.new('edge', 'index-start', _scope),
-          content.new('string', `"${listPre[listPre.length - i - 1]}"`, _scope),
-          content.new('edge', 'index-end', _scope)
+          Item.new('new-line', indent.toString(), _scope),
+          Item.new('identifier', listPre[listPre.length - j - 1], _scope),
+          Item.new('sign', '=', _scope),
+          Item.new('identifier', token, _scope),
+          Item.new('edge', 'index-start', _scope),
+          Item.new('string', `"${listPre[listPre.length - j - 1]}"`, _scope),
+          Item.new('edge', 'index-end', _scope),
         ]
       }
 
@@ -62,11 +64,11 @@ function deconstruct(
     }
 
     // find
-    if (!content.equal(item, 'sign', '=')) {
+    if (!Item.equal(item, 'sign', '=')) {
       listContent.push(item)
       return
     }
-    if (!content.equal(content.eq(i - 1), 'bracket', '}')) {
+    if (!Item.equal(content.eq(i - 1), 'bracket', '}')) {
       listContent.push(item)
       return
     }
@@ -76,8 +78,8 @@ function deconstruct(
 
     listContent = [
       ...listContent,
-      content.new('identifier', token, item.scope),
-      content.new('sign', '=', item.scope)
+      Item.new('identifier', token, item.scope),
+      Item.new('sign', '=', item.scope),
     ]
   })
 

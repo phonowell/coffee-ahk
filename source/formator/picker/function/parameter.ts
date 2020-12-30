@@ -1,6 +1,5 @@
-// interface
-
 import { Context } from '../../type'
+import Item from '../../module/item'
 
 // function
 
@@ -26,7 +25,7 @@ function replaceFn(
     if (it.type !== 'identifier') return
     if (it.scope[it.scope.length - 1] !== 'call') return
     if (!listFn.has(it.value)) return
-    if (content.equal(content.eq(i + 1), 'edge', 'call-start')) return
+    if (Item.equal(content.eq(i + 1), 'edge', 'call-start')) return
 
     it.type = 'origin'
     it.value = `Func("${it.value}")`

@@ -1,8 +1,5 @@
-// interface
-
 import { Context } from '../type'
-
-type Item = Context['content']['list'][number]
+import Item from '../module/item'
 
 // function
 
@@ -20,7 +17,7 @@ function main(
     if (!it) return 0
 
     if (
-      content.equal(it, 'edge', 'block-start')
+      Item.equal(it, 'edge', 'block-start')
       && it.scope[it.scope.length - 1] === 'for'
     ) return i
 
@@ -34,7 +31,7 @@ function main(
     const it = content.eq(i)
     if (!it) return ''
 
-    if (content.equal(it, 'for', 'for')) return content.eq(i + 1).value
+    if (Item.equal(it, 'for', 'for')) return content.eq(i + 1).value
 
     return findName(i - 1)
   }
@@ -43,7 +40,7 @@ function main(
   const listCache: [number, Item[]][] = []
   content.list.forEach((item, i) => {
 
-    if (!content.equal(item, 'for-in', 'in')) return
+    if (!Item.equal(item, 'for-in', 'in')) return
 
     const name = findName(i)
     if (
@@ -60,13 +57,13 @@ function main(
     listCache.unshift([
       index + 1,
       [
-        content.new('new-line', indent, scope),
-        content.new('identifier', name, scope),
-        content.new('sign', '=', scope),
-        content.new('identifier', name, scope),
-        content.new('math', '-', scope),
-        content.new('number', '1', scope)
-      ]
+        Item.new('new-line', indent, scope),
+        Item.new('identifier', name, scope),
+        Item.new('sign', '=', scope),
+        Item.new('identifier', name, scope),
+        Item.new('math', '-', scope),
+        Item.new('number', '1', scope),
+      ],
     ])
   })
 

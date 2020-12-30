@@ -4,7 +4,7 @@ const listForbidden = [
   'exception',
   'off',
   'on',
-  'toggle'
+  'toggle',
 ]
 
 // function

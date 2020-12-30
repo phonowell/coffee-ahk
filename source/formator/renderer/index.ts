@@ -1,15 +1,13 @@
+import Item from '../module/item'
 import _ from 'lodash'
+import { Context as _Context } from '../type'
 
 // interface
-
-import { Context as _Context } from '../type'
 
 type Context = _Context & {
   i: number
   it: Item
 }
-
-type Item = Context['content']['list'][number]
 
 // variable
 
@@ -77,7 +75,7 @@ function $edge(
     const _prev = content.eq(i - 1)
 
     if (!_prev) return _value
-    if (content.equal(_prev, 'sign', ':')) return _value
+    if (Item.equal(_prev, 'sign', ':')) return _value
 
     return ` ${_value}`
   }
@@ -106,7 +104,7 @@ function $if(
 
   if (value === 'if') {
     const _prev = content.eq(i - 1)
-    if (content.equal(_prev, 'if', 'else'))
+    if (Item.equal(_prev, 'if', 'else'))
       return ' if '
     return 'if '
   }
@@ -175,7 +173,7 @@ function $try(
 
   if (value === 'catch') {
     const _next = content.eq(i + 1)
-    if (content.equal(_next, 'edge', 'block-start'))
+    if (Item.equal(_next, 'edge', 'block-start'))
       return ' catch'
     return ' catch '
   }

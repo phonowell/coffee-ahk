@@ -1,16 +1,13 @@
-import sortBy from 'lodash/sortBy'
-
-// interface
-
 import { Context } from '../../type'
-type Item = Context['content']['list'][number]
+import Item from '../../module/item'
+import sortBy from 'lodash/sortBy'
 
 // variable
 
+const listCache: [number, Item[]][] = []
+const listContent: Item[] = []
 const listParam: Item[][] = []
 let countIgnore = 0
-let listCache: [number, Item[]][] = []
-let listContent: Item[] = []
 
 // function
 
@@ -20,34 +17,32 @@ function cache(
   i: number
 ): void {
 
-  const { content } = ctx
-
   const _scope = [item.scope.slice(0, item.scope.length - 1)]
   _scope[1] = [..._scope[0], 'call']
 
   let listItem: Item[] = []
   for (const listIt of listParam) {
-    for (const item of listIt) {
-      item.scope = item.scope.join(',')
-        .replace(/^.*?parameter/, _scope[1].join(','))
+    for (const it of listIt) {
+      it.scope = it.scope.join(',')
+        .replace(/^.*?parameter/u, _scope[1].join(','))
         .split(',') as Item['scope']
-      listItem.push(item)
+      listItem.push(it)
     }
-    listItem.push(content.new('sign', ',', _scope[1]))
+    listItem.push(Item.new('sign', ',', _scope[1]))
   }
   listItem.pop()
 
   listItem = [
-    content.new('.', '.', _scope[0]),
-    content.new('identifier', 'Bind', _scope[0]),
-    content.new('edge', 'call-start', _scope[1]),
+    Item.new('.', '.', _scope[0]),
+    Item.new('identifier', 'Bind', _scope[0]),
+    Item.new('edge', 'call-start', _scope[1]),
     ...listItem,
-    content.new('edge', 'call-end', _scope[1])
+    Item.new('edge', 'call-end', _scope[1]),
   ]
 
   listCache.push([
     findIndex(ctx, item, i) + 1,
-    listItem
+    listItem,
   ])
 }
 
@@ -62,7 +57,7 @@ function findIndex(
   const it = content.eq(i)
   if (!it) return 0
   if (
-    content.equal(it, 'edge', 'block-end')
+    Item.equal(it, 'edge', 'block-end')
     && it.scope.join('|') === item.scope.join('|')
   ) return i
   return findIndex(ctx, item, i + 1)
@@ -86,12 +81,12 @@ function main(
     // ignore
     if (countIgnore) {
       countIgnore--
-      listContent.push(content.new('void', '', []))
+      listContent.push(Item.new('void', '', []))
       return
     }
 
     // cache
-    if (listParam.length && content.equal(item, 'edge', 'block-start')) {
+    if (listParam.length && Item.equal(item, 'edge', 'block-start')) {
       listContent.push(item)
       cache(ctx, item, i)
       listParam.length = 0
@@ -119,7 +114,7 @@ function pick(
 
   const { content } = ctx
 
-  if (!content.equal(item, 'sign', '=')) return false
+  if (!Item.equal(item, 'sign', '=')) return false
   if (item.scope[item.scope.length - 1] !== 'parameter') return false
 
   const itNext = content.eq(i + 1)
@@ -128,7 +123,7 @@ function pick(
   if (!['identifier', 'this'].includes(itPrev.type)) return false
 
   // pick
-  listContent.push(content.new('void'))
+  listContent.push(Item.new('void'))
   listParam.push(pickItem(ctx, itNext, i + 1))
   countIgnore = listParam[listParam.length - 1].length
   return true
@@ -148,7 +143,7 @@ function pickItem(
 
   if (
     it.scope.join('') === item.scope.join('')
-    && (content.equal(it, 'sign', ',') || content.equal(it, 'edge', 'parameter-end'))
+    && (Item.equal(it, 'sign', ',') || Item.equal(it, 'edge', 'parameter-end'))
   ) return listItem
 
   listItem.push(it)

@@ -1,8 +1,7 @@
-// interface
-
 import { Context } from '../type'
+import Item from '../module/item'
 
-type Item = Context['content']['list'][number]
+// interface
 
 type Variable = {
   isGlobal: boolean
@@ -38,7 +37,7 @@ function catchIdentifier(
   const { isGlobal, name } = getName(item.value)
 
   const next = content.eq(i + 1)
-  if (!content.equal(next, 'sign', '=')) return
+  if (!Item.equal(next, 'sign', '=')) return
 
   const next2 = content.eq(i + 2)
   const type = getType(next2)
@@ -60,9 +59,7 @@ function getName(
 } {
 
   const list = value.split(' ')
-  const isGlobal = list.length === 1
-    ? false
-    : true
+  const isGlobal = list.length !== 1
   const name = list[list.length - 1]
   return { isGlobal, name }
 }

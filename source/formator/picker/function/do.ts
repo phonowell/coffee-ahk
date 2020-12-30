@@ -1,7 +1,5 @@
-// interface
-
 import { Context } from '../../type'
-type Item = Context['content']['list'][number]
+import Item from '../../module/item'
 
 // function
 
@@ -16,16 +14,16 @@ function main(
   const listContent: Item[] = []
   content.list.forEach(item => {
 
-    if (flag && content.equal(item, 'new-line')) {
+    if (flag && Item.equal(item, 'new-line')) {
       flag = false
       const _scope: Item['scope'] = [...item.scope, 'call']
-      listContent.push(content.new('edge', 'call-start', _scope))
-      listContent.push(content.new('edge', 'call-end', _scope))
+      listContent.push(Item.new('edge', 'call-start', _scope))
+      listContent.push(Item.new('edge', 'call-end', _scope))
       listContent.push(item)
       return
     }
 
-    if (!content.equal(item, 'origin', '__mark:do__')) {
+    if (!Item.equal(item, 'origin', '__mark:do__')) {
       listContent.push(item)
       return
     }

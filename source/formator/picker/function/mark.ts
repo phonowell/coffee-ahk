@@ -1,6 +1,5 @@
-// interface
-
 import { Context } from '../../type'
+import Item from '../../module/item'
 
 // function
 
@@ -12,7 +11,7 @@ function main(
 
   content.list.forEach((item, i) => {
 
-    if (!content.equal(item, 'edge', 'parameter-start')) return
+    if (!Item.equal(item, 'edge', 'parameter-start')) return
 
     const it = content.eq(i - 1)
     if (it.type !== 'identifier') return

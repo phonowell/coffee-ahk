@@ -1,6 +1,5 @@
-// interface
-
 import { Context } from '../type'
+import Item from '../module/item'
 
 // function
 
@@ -13,7 +12,7 @@ function main(
   if (type === 'indent') {
 
     // indent after '='
-    if (content.equal(content.last, 'sign', '=')) return true
+    if (Item.equal(content.last, 'sign', '=')) return true
 
     if ([
       'array', 'call', 'object', 'parameter',
@@ -50,7 +49,7 @@ function main(
 
   if (type === 'outdent') {
 
-    if (content.equal(content.last, 'bracket', '}-')) {
+    if (Item.equal(content.last, 'bracket', '}-')) {
       content.last.value = '}'
       return true
     }

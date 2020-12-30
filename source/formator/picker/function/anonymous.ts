@@ -1,11 +1,8 @@
+import { Context } from '../../type'
+import Item from '../../module/item'
 import findIndex from 'lodash/findIndex'
 import findLastIndex from 'lodash/findLastIndex'
 import isEqual from 'lodash/isEqual'
-
-// interface
-
-import { Context } from '../../type'
-type Item = Context['content']['list'][number]
 
 // function
 
@@ -27,7 +24,7 @@ function next(
   content.load()
   const i = findLastIndex(content.list, {
     type: 'function',
-    value: 'anonymous'
+    value: 'anonymous',
   })
   if (!~i) return
 
@@ -35,10 +32,10 @@ function next(
   it.value = `${ctx.option.salt}_${count}`
 
   pickItem(ctx, count, i, [...it.scope, 'function'])
-    .forEach(it => {
-      if (!it.type) return
-      if (it.type === 'void') return
-      content.push(it)
+    .forEach(_it => {
+      if (!_it.type) return
+      if (_it.type === 'void') return
+      content.push(_it)
     })
 
   next(ctx, count + 1)
@@ -57,16 +54,16 @@ function pickItem(
   const item = content.eq(i)
   if (!item) return listResult
 
-  const it = content.new(item)
+  const it = Item.new(item)
 
   // reset scope
-  for (let i = 0; i < scope.length - 1; i++)
+  for (let j = 0; j < scope.length - 1; j++)
     it.scope.shift()
 
   listResult.push(it)
 
   if (
-    !content.equal(item, 'edge', 'block-end')
+    !Item.equal(item, 'edge', 'block-end')
     || !isEqual(item.scope, scope)
   ) {
     item.type = 'void'
@@ -76,22 +73,22 @@ function pickItem(
   // last one
   item.type = 'origin'
   item.value = `Func("${ctx.option.salt}_${count}")`
-  listResult.push(content.new('new-line', '0', scope))
+  listResult.push(Item.new('new-line', '0', scope))
 
   // reset indent
   const diff: number = parseInt(
     listResult[
       findIndex(listResult, {
-        type: 'new-line'
+        type: 'new-line',
       })
-    ].value
+    ].value, 10
   ) - 1
   if (diff > 0) {
-    listResult.forEach(it => {
-      if (it.type !== 'new-line') return
-      let value = parseInt(it.value) - diff
+    listResult.forEach(_it => {
+      if (_it.type !== 'new-line') return
+      let value = parseInt(_it.value, 10) - diff
       if (!(value >= 0)) value = 0
-      it.value = value.toString()
+      _it.value = value.toString()
     })
   }
 
@@ -119,14 +116,14 @@ function transFunc(
     const _scope = [...item.scope]
     _scope.pop()
 
-    listContent.push(content.new('identifier', 'Func', _scope))
-    listContent.push(content.new('edge', 'call-start', [..._scope, 'call']))
-    listContent.push(content.new(
+    listContent.push(Item.new('identifier', 'Func', _scope))
+    listContent.push(Item.new('edge', 'call-start', [..._scope, 'call']))
+    listContent.push(Item.new(
       'string',
       item.value.slice(5, item.value.length - 1),
       [..._scope, 'call']
     ))
-    listContent.push(content.new('edge', 'call-end', [..._scope, 'call']))
+    listContent.push(Item.new('edge', 'call-end', [..._scope, 'call']))
   })
 
   content.load(listContent)

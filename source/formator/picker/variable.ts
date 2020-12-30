@@ -1,7 +1,5 @@
-// interface
-
 import { Context } from '../type'
-type Item = Context['content']['list'][number]
+import Item from '../module/item'
 
 // function
 
@@ -16,7 +14,7 @@ function main(
   // global
   content.list.forEach((item, i) => {
 
-    if (!content.equal(item, 'sign', '=')) return
+    if (!Item.equal(item, 'sign', '=')) return
 
     const it = content.eq(i - 1)
     if (it.type !== 'identifier') return
@@ -29,16 +27,16 @@ function main(
   })
 
   // new Error -> Exception
-  let listContent: Item[] = []
+  const listContent: Item[] = []
   content.list.forEach((item, i) => {
 
-    if (!content.equal(item, 'statement', 'new')) {
+    if (!Item.equal(item, 'statement', 'new')) {
       listContent.push(item)
       return
     }
 
     const it = content.eq(i + 1)
-    if (!content.equal(it, 'identifier', 'Error')) {
+    if (!Item.equal(it, 'identifier', 'Error')) {
       listContent.push(item)
       return
     }

@@ -4,5 +4,5 @@ import write_ from './write'
 // export
 export {
   read_,
-  write_
+  write_,
 }

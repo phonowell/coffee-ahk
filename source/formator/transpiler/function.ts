@@ -1,9 +1,6 @@
 import { Context } from '../type'
+import Item from '../module/item'
 import scope from '../module/scope'
-
-// interface
-
-type Item = Context['content']['list'][number]
 
 // function
 
@@ -15,9 +12,9 @@ function $arrow(
   const { content, scope: _scope } = ctx
 
   // fn = -> xxx
-  if (!content.equal(content.last, 'edge', 'parameter-end')) {
+  if (!Item.equal(content.last, 'edge', 'parameter-end')) {
 
-    if (!content.equal(
+    if (!Item.equal(
       content.list[content.list.length - 2],
       'property', 'constructor'
     )) content.push('identifier', 'anonymous')
@@ -38,10 +35,10 @@ function $arrow(
     content.list.splice(
       findEdge(ctx) + 1,
       0,
-      content.new('this', 'this', _scope2),
-      content.new('sign', '=', _scope2),
-      content.new('this', 'this', _scope2),
-      content.new('sign', ',', _scope2)
+      Item.new('this', 'this', _scope2),
+      Item.new('sign', '=', _scope2),
+      Item.new('this', 'this', _scope2),
+      Item.new('sign', ',', _scope2)
     )
   }
 
@@ -55,7 +52,7 @@ function $start(
 
   const { scope: cache, content } = ctx
 
-  if (!content.equal(
+  if (!Item.equal(
     content.list[content.list.length - 2],
     'property', 'constructor'
   )) content.push('identifier', 'anonymous')
@@ -75,7 +72,7 @@ function findEdge(
   const it = content.eq(i)
   if (!it) return 0
 
-  if (content.equal(it, 'edge', 'parameter-start')) return i
+  if (Item.equal(it, 'edge', 'parameter-start')) return i
   return findEdge(ctx, i - 1)
 }
 

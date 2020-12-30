@@ -1,6 +1,5 @@
-// interface
-
 import { Context } from '../type'
+import Item from '../module/item'
 
 // function
 
@@ -14,11 +13,11 @@ function main(
 
     if (value === '\n') {
 
-      if (content.equal(content.last, 'bracket', '}-'))
+      if (Item.equal(content.last, 'bracket', '}-'))
         content.last.value = '}'
 
       if (['array', 'call', 'object', 'parameter'].includes(scope.last)) {
-        if (!content.equal(content.last, 'sign', ',')) {
+        if (!Item.equal(content.last, 'sign', ',')) {
           if (content.last.type === 'new-line') content.pop()
           content.push('sign', ',')
         }
@@ -31,7 +30,7 @@ function main(
 
     if (value === ';') {
 
-      if (content.equal(content.last, 'bracket', '}-'))
+      if (Item.equal(content.last, 'bracket', '}-'))
         content.last.value = '}'
 
       content.push('new-line', ctx.indent.toString())

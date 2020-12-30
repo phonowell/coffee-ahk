@@ -16,7 +16,7 @@ const map = {
   array: $array,
   for: $for,
   object: $object,
-  variable: $variable
+  variable: $variable,
 } as const
 
 // function

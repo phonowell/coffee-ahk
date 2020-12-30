@@ -1,7 +1,5 @@
-// interface
-
 import { Context } from '../../type'
-type Item = Context['content']['list'][number]
+import Item from '../../module/item'
 
 // function
 
@@ -15,20 +13,20 @@ function appendBind(
   content.list.forEach((item, i) => {
 
     listContent.push(item)
-    if (!content.equal(item, 'edge', 'block-end')) return
+    if (!Item.equal(item, 'edge', 'block-end')) return
     if (item.scope[item.scope.length - 1] !== 'function') return
     if (item.scope[item.scope.length - 2] !== 'class') return
 
     const index = findEdge(ctx, i)
-    if (content.equal(content.eq(index - 1), 'property', 'constructor')) return
+    if (Item.equal(content.eq(index - 1), 'property', 'constructor')) return
 
     const _scope = [[...item.scope]]
     _scope[1] = [..._scope[0], 'call']
-    listContent.push(content.new('.', '.', _scope[0]))
-    listContent.push(content.new('identifier', 'Bind', _scope[0]))
-    listContent.push(content.new('edge', 'call-start', _scope[1]))
-    listContent.push(content.new('this', 'this', _scope[1]))
-    listContent.push(content.new('edge', 'call-end', _scope[1]))
+    listContent.push(Item.new('.', '.', _scope[0]))
+    listContent.push(Item.new('identifier', 'Bind', _scope[0]))
+    listContent.push(Item.new('edge', 'call-start', _scope[1]))
+    listContent.push(Item.new('this', 'this', _scope[1]))
+    listContent.push(Item.new('edge', 'call-end', _scope[1]))
   })
 
   content.load(listContent)
@@ -43,7 +41,7 @@ function findEdge(
 
   const it = content.eq(i)
   if (!it) return 0
-  if (content.equal(it, 'edge', 'parameter-start')) return i
+  if (Item.equal(it, 'edge', 'parameter-start')) return i
   return findEdge(ctx, i - 1)
 }
 
@@ -66,9 +64,9 @@ function prependThis(
   content.list.forEach((item, i) => {
 
     listContent.push(item)
-    if (!content.equal(item, 'edge', 'parameter-start')) return
+    if (!Item.equal(item, 'edge', 'parameter-start')) return
 
-    if (content.equal(
+    if (Item.equal(
       listContent[listContent.length - 3],
       'property', 'constructor'
     )) {
@@ -85,11 +83,11 @@ function prependThis(
     )) return
 
     const _scope = [...item.scope]
-    listContent.push(content.new('this', 'this', _scope))
+    listContent.push(Item.new('this', 'this', _scope))
 
     const it = content.eq(i + 1)
-    if (content.equal(it, 'edge', 'parameter-end')) return
-    listContent.push(content.new('sign', ',', _scope))
+    if (Item.equal(it, 'edge', 'parameter-end')) return
+    listContent.push(Item.new('sign', ',', _scope))
   })
 
   content.load(listContent)
@@ -101,7 +99,7 @@ function renameConstructor(
 
   const { content } = ctx
   content.list.forEach(it => {
-    if (!content.equal(it, 'property', 'constructor')) return
+    if (!Item.equal(it, 'property', 'constructor')) return
     it.value = '__New'
   })
 }

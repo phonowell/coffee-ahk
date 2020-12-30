@@ -39,7 +39,8 @@ async function compile_(
       $.i(result.raw)
     log(result.ast)
   }
-  if (option.save && !option.asText) await write_(source, result, option)
+  if (option.save && !option.asText)
+    await write_(source, result, option)
   return result.content
 }
 

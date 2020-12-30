@@ -1,8 +1,7 @@
-// interface
-
 import { Context } from '../type'
+import Item from '../module/item'
 
-type Item = Context['content']['list'][number]
+// interface
 
 type Range = [number, number]
 
@@ -33,7 +32,7 @@ function changeIndex(
     listResult.push(it)
 
     if (
-      content.equal(it, 'edge', 'index-start')
+      Item.equal(it, 'edge', 'index-start')
       && it.scope.join('|') === item.scope.join('|')
     ) {
       countIgnore++
@@ -41,7 +40,7 @@ function changeIndex(
     }
 
     if (
-      content.equal(it, 'edge', 'index-end')
+      Item.equal(it, 'edge', 'index-end')
       && it.scope.join('|') === item.scope.join('|')
     ) {
       countIgnore--
@@ -75,11 +74,11 @@ function changeIndex(
     len = content.list.length
     const item = content.eq(i)
 
-    if (!content.equal(item, 'edge', 'index-start')) continue
+    if (!Item.equal(item, 'edge', 'index-start')) continue
 
     const next = content.eq(i + 1)
-    if (content.equal(next, 'identifier', token)) continue
-    if (content.equal(next, 'edge', 'index-end')) continue
+    if (Item.equal(next, 'identifier', token)) continue
+    if (Item.equal(next, 'edge', 'index-end')) continue
 
     const [iEnd, listItem] = pickItem(item, i)
     const listUnwrap: Item[] = listItem.slice(1, listItem.length - 1)
@@ -109,14 +108,14 @@ function changeIndex(
       update(
         [i + 1, iEnd - 1],
         [
-          content.new(
+          Item.new(
             'identifier',
             token,
             _scope
           ),
-          content.new('edge', 'call-start', _scopeCall),
+          Item.new('edge', 'call-start', _scopeCall),
           ...list,
-          content.new('edge', 'call-end', _scopeCall),
+          Item.new('edge', 'call-end', _scopeCall),
         ]
       )
 
@@ -130,13 +129,13 @@ function changeIndex(
 
       if (listUnwrap.length === 1) {
         const it = listUnwrap[0]
-        it.value = (parseInt(it.value) + 1).toString()
+        it.value = (parseInt(it.value, 10) + 1).toString()
         list = [it]
       } else {
         list = [
           listUnwrap[listUnwrap.length - 1],
-          content.new('math', '+', _scope),
-          content.new('number', '1', _scope)
+          Item.new('math', '+', _scope),
+          Item.new('number', '1', _scope),
         ]
       }
 
@@ -165,7 +164,7 @@ function deconstruct(
   ): number {
     const it = content.eq(i)
     if (!it) return 0
-    if (it.type === 'new-line') return parseInt(it.value)
+    if (it.type === 'new-line') return parseInt(it.value, 10)
     return pickIndent(i - 1)
   }
 
@@ -173,7 +172,7 @@ function deconstruct(
     i: number
   ): void {
     const it = content.eq(i)
-    if (content.equal(it, 'edge', 'array-start')) return
+    if (Item.equal(it, 'edge', 'array-start')) return
     if (it.type === 'identifier') listPre.push(it.value)
     listContent.pop()
     pickPre(i - 1)
@@ -188,17 +187,17 @@ function deconstruct(
       const indent = pickIndent(i - 1)
       const _scope = item.scope
 
-      for (let i = 0; i < listPre.length; i++) {
+      for (let j = 0; j < listPre.length; j++) {
         listContent = [
           ...listContent,
           // \n xxx = token[n]
-          content.new('new-line', indent.toString(), _scope),
-          content.new('identifier', listPre[listPre.length - i - 1], _scope),
-          content.new('sign', '=', _scope),
-          content.new('identifier', token, _scope),
-          content.new('edge', 'index-start', _scope),
-          content.new('number', (i + 1).toString(), _scope),
-          content.new('edge', 'index-end', _scope)
+          Item.new('new-line', indent.toString(), _scope),
+          Item.new('identifier', listPre[listPre.length - j - 1], _scope),
+          Item.new('sign', '=', _scope),
+          Item.new('identifier', token, _scope),
+          Item.new('edge', 'index-start', _scope),
+          Item.new('number', (j + 1).toString(), _scope),
+          Item.new('edge', 'index-end', _scope),
         ]
       }
 
@@ -208,11 +207,11 @@ function deconstruct(
     }
 
     // find
-    if (!content.equal(item, 'sign', '=')) {
+    if (!Item.equal(item, 'sign', '=')) {
       listContent.push(item)
       return
     }
-    if (!content.equal(content.eq(i - 1), 'edge', 'array-end')) {
+    if (!Item.equal(content.eq(i - 1), 'edge', 'array-end')) {
       listContent.push(item)
       return
     }
@@ -222,8 +221,8 @@ function deconstruct(
 
     listContent = [
       ...listContent,
-      content.new('identifier', token, item.scope),
-      content.new('sign', '=', item.scope)
+      Item.new('identifier', token, item.scope),
+      Item.new('sign', '=', item.scope),
     ]
   })
 

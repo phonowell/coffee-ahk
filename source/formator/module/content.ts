@@ -11,6 +11,19 @@ class Content {
     return this.eq(-1)
   }
 
+  load(
+    list: Item[] = this.list
+  ): this {
+
+    const listResult: Item[] = []
+    list.forEach(it => {
+      if (it.type === 'void') return
+      listResult.push(it)
+    })
+    this.list = listResult
+    return this
+  }
+
   clear(): this {
     this.list = []
     return this
@@ -28,62 +41,18 @@ class Content {
       n >= 0
         ? this.list[n]
         : this.list[this.list.length + n]
-    ) || this.new('void')
-  }
-
-  equal(
-    item: Item,
-    type: string,
-    value?: string
-  ): boolean {
-    if (!(item instanceof Item)) return false
-    if (typeof value === 'undefined')
-      return item.type === type
-    return item.type === type && item.value === value
-  }
-
-  isItem(
-    input: unknown
-  ): boolean {
-
-    return input instanceof Item
-  }
-
-  load(
-    list: Item[] = this.list
-  ): this {
-
-    const listResult: Item[] = []
-    list.forEach(it => {
-      if (it.type === 'void') return
-      listResult.push(it)
-    })
-    this.list = listResult
-    return this
-  }
-
-  new(
-    ...arg: ConstructorParameters<typeof Item> | Parameters<typeof Item['clone']>
-  ): Item {
-
-    if (arg[0] instanceof Item)
-      return Item.clone(arg[0])
-
-    if (typeof arg[0] === 'string')
-      return new Item(...arg as ConstructorParameters<typeof Item>)
-
-    throw new Error(`invalid item: ${JSON.stringify(arg)}`)
+    ) || Item.new('void')
   }
 
   pop(): Item {
-    return this.list.pop() || this.new()
+    return this.list.pop() || Item.new()
   }
 
   push(
-    ...arg: Parameters<Content['new']>
+    ...args: Parameters<typeof Item['new']>
   ): this {
 
-    const it = this.new(...arg)
+    const it = Item.new(...args)
     if (!it.scope.length)
       it.scope = scope.clone()
     this.list.push(it)
@@ -91,14 +60,14 @@ class Content {
   }
 
   shift(): Item {
-    return this.list.shift() || this.new()
+    return this.list.shift() || Item.new()
   }
 
   unshift(
-    ...arg: Parameters<Content['new']>
+    ...args: Parameters<typeof Item['new']>
   ): this {
 
-    const it = this.new(...arg)
+    const it = Item.new(...args)
     if (!it.scope.length)
       it.scope = [...scope.list]
     this.list.unshift(it)

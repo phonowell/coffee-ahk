@@ -20,7 +20,7 @@ const listRule = [
   'parameter',
   'switch',
   'try',
-  'while'
+  'while',
 ] as const
 
 // function
@@ -28,6 +28,7 @@ const listRule = [
 class Scope {
 
   private _list: Item[] = []
+
   next: Item = ''
 
   get last(): Item {
