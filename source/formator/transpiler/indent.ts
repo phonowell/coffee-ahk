@@ -16,7 +16,7 @@ function main(
     if (content.equal(content.last, 'sign', '=')) return true
 
     if ([
-      'array', 'call', 'object', 'parameter'
+      'array', 'call', 'object', 'parameter',
     ].includes(scope.last)) return true
     ctx.indent++
 
@@ -56,7 +56,7 @@ function main(
     }
 
     if ([
-      'array', 'call', 'object', 'parameter'
+      'array', 'call', 'object', 'parameter',
     ].includes(scope.last)) return true
     ctx.indent--
 

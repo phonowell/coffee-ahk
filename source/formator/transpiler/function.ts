@@ -1,7 +1,7 @@
-// interface
-
-import scope from '../module/scope'
 import { Context } from '../type'
+import scope from '../module/scope'
+
+// interface
 
 type Item = Context['content']['list'][number]
 
@@ -12,7 +12,7 @@ function $arrow(
   type: string
 ): boolean {
 
-  const { content, scope } = ctx
+  const { content, scope: _scope } = ctx
 
   // fn = -> xxx
   if (!content.equal(content.last, 'edge', 'parameter-end')) {
@@ -22,7 +22,7 @@ function $arrow(
       'property', 'constructor'
     )) content.push('identifier', 'anonymous')
 
-    scope.push('parameter')
+    _scope.push('parameter')
     content.push('edge', 'parameter-start')
 
     if (type === '=>')
@@ -32,22 +32,20 @@ function $arrow(
         .push('this')
 
     content.push('edge', 'parameter-end')
-    scope.pop()
-  } else {
-    if (type === '=>') {
-      const _scope: Item['scope'] = [...scope.clone(), 'parameter']
-      content.list.splice(
-        findEdge(ctx) + 1,
-        0,
-        content.new('this', 'this', _scope),
-        content.new('sign', '=', _scope),
-        content.new('this', 'this', _scope),
-        content.new('sign', ',', _scope)
-      )
-    }
+    _scope.pop()
+  } else if (type === '=>') {
+    const _scope2: Item['scope'] = [..._scope.clone(), 'parameter']
+    content.list.splice(
+      findEdge(ctx) + 1,
+      0,
+      content.new('this', 'this', _scope2),
+      content.new('sign', '=', _scope2),
+      content.new('this', 'this', _scope2),
+      content.new('sign', ',', _scope2)
+    )
   }
 
-  scope.push('function')
+  _scope.push('function')
   return true
 }
 

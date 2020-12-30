@@ -1,8 +1,5 @@
-import _ from 'lodash'
-
-// interface
-
 import { Context } from '../type'
+import _ from 'lodash'
 
 // function
 

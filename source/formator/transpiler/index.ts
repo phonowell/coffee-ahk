@@ -32,7 +32,6 @@ import { Context } from '../type'
 // variable
 
 const map = {
-  'new-line': $newLine,
   alias: $alias,
   array: $array,
   boolean: $boolean,
@@ -47,6 +46,7 @@ const map = {
   indent: $indent,
   indentifier: $indentifier,
   module: $module,
+  'new-line': $newLine,
   number: $number,
   object: $object,
   operator: $operator,
@@ -57,7 +57,7 @@ const map = {
   string: $string,
   switch: $switch,
   try: $try,
-  while: $while
+  while: $while,
 } as const
 
 // function

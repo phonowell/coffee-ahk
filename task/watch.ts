@@ -17,7 +17,7 @@ async function main_(): Promise<void> {
   })
 
   $.watch('./script/test/*.coffee', async (e: { path: string }) =>
-    await parseAsync(e.path)
+    parseAsync(e.path)
   )
 }
 

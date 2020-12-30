@@ -1,7 +1,7 @@
+import { read_, write_ } from './file'
 import $ from 'fire-keeper'
 import format from './formator'
 import log from './logger'
-import { read_, write_ } from './file'
 
 // interface
 
@@ -19,7 +19,7 @@ const optionDefault = {
   pickAnonymous: true,
   salt: '',
   save: true,
-  verbose: false
+  verbose: false,
 }
 
 // function
@@ -48,22 +48,25 @@ async function main_(
   option: Option = {}
 ): Promise<string> {
 
-  option = Object.assign({}, optionDefault, option)
+  const _option = {
+    ...optionDefault,
+    ...option,
+  }
 
   // salt
-  if (!option.salt)
-    option.salt = Math.random()
+  if (!_option.salt)
+    _option.salt = Math.random()
       .toString(32)
       .split('.')[1]
       .padStart(11, '0')
 
-  if (option.asText) return await compile_(source, option)
+  if (_option.asText) return compile_(source, _option)
 
   const listSource = await $.source_(source)
   if (!listSource.length)
     throw new Error(`invalid source '${source}'`)
 
-  return await compile_(listSource[0], option)
+  return compile_(listSource[0], _option)
 }
 
 // export

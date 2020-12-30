@@ -1,18 +1,16 @@
-import pad from 'lodash/pad'
-import kleur from 'kleur'
-
-// interface
-
 import Item from '../formator/module/item'
+import kleur from 'kleur'
+import pad from 'lodash/pad'
 
 // function
 
 function log(
-  msg: string | number
+  message: string | number
 ): void {
 
-  if (typeof msg !== 'string')
-    msg = msg.toString()
+  const msg = typeof message !== 'string'
+    ? message.toString()
+    : message
 
   console.log()
   console.log(kleur.blue(pad(msg, 80, '-')))

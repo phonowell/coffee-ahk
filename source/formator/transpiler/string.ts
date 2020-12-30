@@ -35,12 +35,12 @@ function transAlias(
 ): string {
 
   return input
-    .replace(/\%/g, '`%')
-    .replace(/\\b/g, '`b')
-    .replace(/\\n/g, '`n')
-    .replace(/\\r/g, '`r')
-    .replace(/\\t/g, '`t')
-    .replace(/\n/g, ' ')
+    .replace(/%/gu, '`%')
+    .replace(/\\b/gu, '`b')
+    .replace(/\\n/gu, '`n')
+    .replace(/\\r/gu, '`r')
+    .replace(/\\t/gu, '`t')
+    .replace(/\n/gu, ' ')
 }
 
 // export

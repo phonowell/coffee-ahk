@@ -1,8 +1,5 @@
-import _ from 'lodash'
-
-// interface
-
 import { Context } from '../type'
+import _ from 'lodash'
 
 // function
 
@@ -20,11 +17,11 @@ function main(
       throw new Error("ahk/forbidden: 'BigInt' is not allowed")
 
     if (value.includes('_'))
-      _value = _value.replace(/\_/g, '')
+      _value = _value.replace(/_/ug, '')
 
     if (value.includes('e')) {
       const [pre, sub] = _value.split('e')
-      _value = `${pre}${_.repeat('0', parseInt(sub))}`
+      _value = `${pre}${_.repeat('0', parseInt(sub, 10))}`
     }
 
     content.push('number', _value)

@@ -16,22 +16,23 @@ async function main_(): Promise<void> {
 
   const target = pickTarget()
 
-  const listSource = await $.source_(`./script/test/**/${target || '*'}.coffee`)
-  for (const source of listSource) {
+  async function sub_(
+    source: string,
+  ): Promise<void> {
 
-    const target = source.replace('.coffee', '.ahk')
-    const contentTarget = ((await $.read_(target) as Buffer) || '')
+    const _target = source.replace('.coffee', '.ahk')
+    const contentTarget = ((await $.read_(_target) as Buffer) || '')
       .toString()
-      .replace(/\r/g, '')
+      .replace(/\r/gu, '')
       .trim()
 
     const content = (await compile_(source, {
       ignoreComment: false,
       insertTranslatorInformation: false,
       salt: 'ahk',
-      save: false
+      save: false,
     }))
-      .replace(/\r/g, '')
+      .replace(/\r/gu, '')
       .trim()
 
     if (content !== contentTarget) {
@@ -41,6 +42,11 @@ async function main_(): Promise<void> {
       throw new Error(source)
     }
   }
+
+  await Promise.all(
+    (await $.source_(`./script/test/**/${target || '*'}.coffee`))
+      .map(sub_)
+  )
   $.info('all test(s) passed!')
 
   await checkVersion_()

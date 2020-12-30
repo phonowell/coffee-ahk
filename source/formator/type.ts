@@ -1,6 +1,6 @@
 import { Option } from '../index'
-import scope from './module/scope'
 import content from './module/content'
+import scope from './module/scope'
 
 export type Context = {
   content: typeof content

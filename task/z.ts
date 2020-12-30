@@ -6,7 +6,7 @@ async function main_(): Promise<void> {
   await compile_('./script/z/index.coffee', {
     displayCoffeescriptAst: false,
     salt: 'ahk',
-    verbose: true
+    verbose: true,
   })
 }
 

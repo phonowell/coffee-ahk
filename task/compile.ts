@@ -12,7 +12,7 @@ async function main_(): Promise<void> {
   await $.remove_(`./script/${target}/*.ahk`)
 
   await compile_(`./script/${target}/index.coffee`, {
-    save: true
+    save: true,
   })
 }
 

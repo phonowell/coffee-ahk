@@ -9,7 +9,7 @@ async function compile_(): Promise<void> {
     './dist',
     {
       base: './source',
-      minify: false
+      minify: false,
     }
   )
 }

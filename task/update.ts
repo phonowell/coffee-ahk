@@ -15,7 +15,7 @@ type Package = {
 
 async function main_(): Promise<void> {
 
-  const source: string = './package.json'
+  const source = './package.json'
   const pkg: Package = (await $.read_(source)) as Package
   const listCmd: string[] = []
 
@@ -32,7 +32,7 @@ async function main_(): Promise<void> {
       const value = pkg.devDependencies[key]
       if (!value.startsWith('^')) return
       delete pkg.devDependencies[key]
-      listCmd.push(`npm i --legacy-peer-deps --save-dev ${key}`)
+      listCmd.push(`npm i -D --legacy-peer-deps ${key}`)
     })
 
   await $.backup_(source)
@@ -40,15 +40,18 @@ async function main_(): Promise<void> {
 
   await $.exec_('') // cache
 
-  await $.remove_('./node_modules')
+  await $.remove_([
+    './node_modules',
+    './package-lock.json',
+  ])
   await $.exec_([
     'npm i --legacy-peer-deps',
-    ...listCmd
+    ...listCmd,
   ])
 
   const value = await $.prompt_({
+    message: "delete 'package.json.bak'?",
     type: 'confirm',
-    message: "delete 'package.json.bak'?"
   })
   if (value === true)
     await $.remove_(`${source}.bak`)

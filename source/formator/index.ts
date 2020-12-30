@@ -1,26 +1,26 @@
-import _ from 'lodash'
+import { Context } from './type'
 import coffee from 'coffeescript'
-
-import scope from './module/scope'
 import content from './module/content'
-
-import transpile from './transpiler'
 import pick from './picker'
 import render from './renderer'
+import scope from './module/scope'
+import transpile from './transpiler'
 
 // interface
 
-import { Context } from './type'
+type Coffee = {
+  compile: (
+    // eslint-disable-next-line no-shadow
+    content: string,
+    option?: {
+      ast?: boolean
+    }
+  ) => unknown
+}
 
 declare global {
-  const coffee: {
-    compile: (
-      content: string,
-      option?: {
-        ast?: boolean
-      }
-    ) => unknown
-  }
+  // eslint-disable-next-line init-declarations, no-shadow
+  const coffee: Coffee
 }
 
 // function
@@ -35,7 +35,7 @@ function main(
 } {
 
   const ast = coffee.compile(cont, {
-    ast: true
+    ast: true,
   })
 
   scope.clear()
@@ -48,7 +48,7 @@ function main(
     raw: {},
     scope,
     type: '',
-    value: ''
+    value: '',
   }
 
   for (const token of ast.tokens) {
@@ -66,7 +66,7 @@ function main(
   return {
     ast: content.list,
     content: render(ctx),
-    raw: ast.tokens
+    raw: ast.tokens,
   }
 }
 

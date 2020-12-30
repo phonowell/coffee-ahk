@@ -5,16 +5,23 @@ import compile_ from '../source'
 
 async function main_(): Promise<void> {
 
-  const listSource = await $.source_('./script/segment/*.coffee')
-  for (const source of listSource) {
+  async function sub_(
+    source: string,
+  ): Promise<void> {
+
     await compile_(source, {
       ast: true,
       insertTranslatorInformation: false,
       pickAnonymous: false,
       salt: 'salt',
-      verbose: true
+      verbose: true,
     })
   }
+
+  await Promise.all(
+    (await $.source_('./script/segment/*.coffee'))
+      .map(sub_)
+  )
 }
 
 // export
