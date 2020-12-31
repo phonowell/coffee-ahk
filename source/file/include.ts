@@ -1,6 +1,9 @@
-import $ from 'fire-keeper'
-import _ from 'lodash'
+import getDirname from 'fire-keeper/getDirname'
 import iconv from 'iconv-lite'
+import last from 'lodash/last'
+import read_ from 'fire-keeper/read_'
+import source_ from 'fire-keeper/source_'
+import trim from 'lodash/trim'
 
 // variable
 
@@ -50,22 +53,22 @@ async function load_({
   source: string
 }): Promise<string> {
 
-  const _path = _.trim(path, '\'" ')
+  const _path = trim(path, '\'" ')
 
   const filepath = [
-    $.getDirname(source),
+    getDirname(source),
     '/',
     _path,
-    (_.last(_path.split('/')) as string).includes('.') ? '' : '.coffee',
+    (last(_path.split('/')) as string).includes('.') ? '' : '.coffee',
   ].join('')
 
-  const listSource = await $.source_(filepath)
+  const listSource = await source_(filepath)
   const listResult: string[] = []
 
   for (const src of listSource) {
 
     // eslint-disable-next-line no-await-in-loop
-    const content = await $.read_(src) as string
+    const content = await read_(src) as string
 
     listResult.push(
       content.includes(tag[0]) || content.includes(tag[1])

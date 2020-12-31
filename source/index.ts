@@ -52,9 +52,9 @@ async function transpileAsFile(
   option: Option
 ): Promise<string> {
 
-  const $ = (await import('fire-keeper')).default
+  const source_ = (await import('fire-keeper/source_')).default
 
-  const [_source] = await $.source_(source)
+  const [_source] = await source_(source)
   if (!_source)
     throw new Error(`invalid source '${source}'`)
 
@@ -65,7 +65,7 @@ async function transpileAsFile(
 
   if (option.verbose) {
     if (option.displayCoffeescriptAst)
-      $.i(result.raw)
+      console.log(result.raw)
     log(result.ast)
   }
 

@@ -4,7 +4,7 @@
     "url": "https://github.com/phonowell/coffee-ahk/issues"
   },
   "dependencies": {
-    "fire-keeper": "^0.0.179",
+    "fire-keeper": "^0.0.183",
     "iconv-lite": "^0.6.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"

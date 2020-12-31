@@ -1,5 +1,5 @@
-import $ from 'fire-keeper'
 import include_ from './include'
+import read_ from 'fire-keeper/read_'
 
 // function
 
@@ -13,7 +13,7 @@ async function main_(
   if (!src.endsWith(extname)) src += extname
 
   const content = await include_(
-    await $.read_(src) as string,
+    await read_(src) as string,
     src
   )
 

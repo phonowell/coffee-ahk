@@ -132,7 +132,7 @@ rules:
   lines-between-class-members: 0
   max-depth: 0
   max-len: 0
-  max-lines: 2
+  max-lines: 0
   max-lines-per-function: 0
   max-nested-callbacks: 2
   max-params: 0
