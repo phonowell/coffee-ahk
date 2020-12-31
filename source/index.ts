@@ -41,7 +41,7 @@ async function main_(
   }
 
   // salt
-  _option.salt ||= generatedSalt()
+  if (!_option.salt) _option.salt = generatedSalt()
 
   if (_option.asText) return transpileAsText(source, _option)
   return transpileAsFile(source, _option)

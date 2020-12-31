@@ -35,9 +35,8 @@
   "scripts": {
     "alice": "ts-node task/alice",
     "build": "npm run alice build",
-    "publish": "npm run alice build; nrm use npm; npm publish",
     "test": "npm run alice test"
   },
   "url": "https://github.com/phonowell/coffee-ahk",
-  "version": "0.0.19"
+  "version": "0.0.20"
 }

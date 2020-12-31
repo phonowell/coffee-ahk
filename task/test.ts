@@ -16,36 +16,33 @@ async function main_(): Promise<void> {
 
   const target = pickTarget()
 
-  async function sub_(
-    source: string,
-  ): Promise<void> {
-
-    const _target = source.replace('.coffee', '.ahk')
-    const contentTarget = ((await $.read_(_target) as Buffer) || '')
-      .toString()
-      .replace(/\r/gu, '')
-      .trim()
-
-    const content = (await compile_(source, {
-      ignoreComment: false,
-      insertTranslatorInformation: false,
-      salt: 'ahk',
-      save: false,
-    }))
-      .replace(/\r/gu, '')
-      .trim()
-
-    if (content !== contentTarget) {
-      $.i(content)
-      $.i('---')
-      $.i(contentTarget)
-      throw new Error(source)
-    }
-  }
-
   await Promise.all(
-    (await $.source_(`./script/test/**/${target || '*'}.coffee`))
-      .map(sub_)
+    (await $.source_(`./script/test/**/${target || '*'}.coffee`)).map(
+      source => (async () => {
+
+        const _target = source.replace('.coffee', '.ahk')
+        const contentTarget = ((await $.read_(_target) as Buffer) || '')
+          .toString()
+          .replace(/\r/gu, '')
+          .trim()
+
+        const content = (await compile_(source, {
+          ignoreComment: false,
+          insertTranslatorInformation: false,
+          salt: 'ahk',
+          save: false,
+        }))
+          .replace(/\r/gu, '')
+          .trim()
+
+        if (content !== contentTarget) {
+          $.i(content)
+          $.i('---')
+          $.i(contentTarget)
+          throw new Error(source)
+        }
+      })()
+    )
   )
   $.info('all test(s) passed!')
 
