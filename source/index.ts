@@ -54,7 +54,14 @@ async function transpileAsFile(
 
   const source_ = (await import('fire-keeper/source_')).default
 
-  const [_source] = await source_(source)
+  const _listSource = [
+    source,
+    `${source}.coffee`,
+    `${source}/index.coffee`,
+  ]
+
+  const [_source] = (await source_(_listSource))
+    .filter(item => item.endsWith('.coffee'))
   if (!_source)
     throw new Error(`invalid source '${source}'`)
 

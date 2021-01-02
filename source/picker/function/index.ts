@@ -3,6 +3,7 @@ import $do from './do'
 import { Context } from '../../entry/type'
 import count from './counter'
 import injectContext from './context'
+import injectImplicitParamter from './implicit'
 import mark from './mark'
 import pickAnonymous from './anonymous'
 import transParam from './parameter'
@@ -23,6 +24,8 @@ function main(
   validate(listFn)
 
   $class(ctx)
+
+  injectImplicitParamter(ctx)
 
   // replace ctx in parameter
   // from `fn(a = a)` to `fn(a)`

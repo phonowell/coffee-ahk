@@ -90,16 +90,16 @@ class Item {
   }
 
   static new(
-    ...arg: ConstructorParameters<typeof Item> | Parameters<typeof Item['clone']>
+    ...args: ConstructorParameters<typeof Item> | Parameters<typeof Item['clone']>
   ): Item {
 
-    if (arg[0] instanceof Item)
-      return Item.clone(arg[0])
+    if (args[0] instanceof Item)
+      return Item.clone(args[0])
 
-    if (typeof arg[0] === 'string')
-      return new Item(...arg as ConstructorParameters<typeof Item>)
+    if (typeof args[0] === 'string')
+      return new Item(...args as ConstructorParameters<typeof Item>)
 
-    throw new Error(`invalid item: ${JSON.stringify(arg)}`)
+    throw new Error(`invalid item: ${JSON.stringify(args)}`)
   }
 }
 

@@ -10,11 +10,12 @@ const listForbidden = [
   '?.',
   'bin?',
   'compound_assign',
-  // 'export',
+  'export',
   'from',
   'func_exist',
   'import',
   'null',
+  'super',
   'undefined',
 ] as const
 

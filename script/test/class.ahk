@@ -8,7 +8,7 @@
     1
   }
 }
-global b := new A()
+b := new A()
 ahk_1(this, n) {
   this.a + n
 }

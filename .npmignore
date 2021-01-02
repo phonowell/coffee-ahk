@@ -17,6 +17,7 @@ test
 *.map
 *.md
 *.ts
+.eslintrc.yaml
 .stylintrc
 coffeelint.json
 tsconfig.json

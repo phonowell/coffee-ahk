@@ -1,16 +1,9 @@
 import { Context } from '../entry/type'
 import Item from '../module/Item'
 
-// interface
-
-type Variable = {
-  isGlobal: boolean
-  type: string
-}
-
 // variable
 
-const mapVariable: Map<string, Variable> = new Map()
+const mapVariable: Map<string, string> = new Map()
 
 // function
 
@@ -18,13 +11,13 @@ function catchFunction(
   item: Item
 ): void {
 
-  const { isGlobal, name } = getName(item.value)
+  const name = item.value
 
-  const last = getVariable(name, isGlobal, 'function')
-  if (!last) return
+  const lastType = getLastType(name, 'function')
+  if (!lastType) return
 
-  if (last.type !== 'function')
-    throw new Error(`type error: '${name}' should be a 'function', but is incorrectly set to '${last.type}'`)
+  if (lastType !== 'function')
+    throw new Error(`type error: '${name}' should be a 'function', but is incorrectly set to '${lastType}'`)
 }
 
 function catchIdentifier(
@@ -34,7 +27,7 @@ function catchIdentifier(
 ): void {
 
   const { content } = ctx
-  const { isGlobal, name } = getName(item.value)
+  const name = item.value
 
   const next = content.eq(i + 1)
   if (!Item.equal(next, 'sign', '=')) return
@@ -44,24 +37,11 @@ function catchIdentifier(
 
   if (type === 'unknown') return
 
-  const last = getVariable(name, isGlobal, type)
-  if (!last) return
+  const lastType = getLastType(name, type)
+  if (!lastType) return
 
-  if (last.isGlobal && last.type !== type)
-    throw new Error(`type error: '${name}' should be a(n) '${last.type}', but is incorrectly set to '${type}'`)
-}
-
-function getName(
-  value: string
-): {
-  isGlobal: boolean
-  name: string
-} {
-
-  const list = value.split(' ')
-  const isGlobal = list.length !== 1
-  const name = list[list.length - 1]
-  return { isGlobal, name }
+  if (type !== lastType)
+    throw new Error(`type error: '${name}' should be a(n) '${lastType}', but is incorrectly set to '${type}'`)
 }
 
 function getType(
@@ -77,16 +57,16 @@ function getType(
   return 'unknown'
 }
 
-function getVariable(
+function getLastType(
   name: string,
-  isGlobal: boolean,
   type: string
-): Variable | null {
-  const last = mapVariable.get(name)
-  if (last) return last
+): string {
 
-  mapVariable.set(name, { isGlobal, type })
-  return null
+  const lastType = mapVariable.get(name)
+  if (lastType) return lastType
+
+  mapVariable.set(name, type)
+  return ''
 }
 
 function main(

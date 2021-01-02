@@ -1,12 +1,15 @@
-import $ from 'fire-keeper'
+// import $ from 'fire-keeper'
 import transpile from '../source'
 
 // function
 
 async function main_(): Promise<void> {
 
-  const ahk = "a = 'ahk'"
-  $.i(await transpile(ahk, { asText: true }))
+  await transpile('./script/z', {
+    displayCoffeescriptAst: true,
+    salt: 'ahk',
+    verbose: true,
+  })
 }
 
 // export

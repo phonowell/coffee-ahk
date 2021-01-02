@@ -27,7 +27,7 @@ if (a > 1) {
 } else {
   3
 }
-global fn := Func("ahk_1")
+fn := Func("ahk_1")
 if !(fn.Call(1)) {
   1
 } else {

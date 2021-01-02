@@ -22,3 +22,7 @@ fn = ->
       c = 3
       return fn3 (a = a, b = b, c = c) ->
         return a + b + c
+do ->
+  fn1 = -> return a + b
+  fn2 = (a) -> return a + b
+  fn3 = (a, b) -> return a + b

@@ -23,38 +23,17 @@ async function main_(): Promise<void> {
     .forEach(key => {
       const value = pkg.dependencies[key]
       if (!value.startsWith('^')) return
-      delete pkg.dependencies[key]
-      listCmd.push(`npm i --legacy-peer-deps ${key}`)
+      listCmd.push(`npm i --legacy-peer-deps ${key}@latest`)
     })
 
   Object.keys(pkg.devDependencies)
     .forEach(key => {
       const value = pkg.devDependencies[key]
       if (!value.startsWith('^')) return
-      delete pkg.devDependencies[key]
-      listCmd.push(`npm i -D --legacy-peer-deps ${key}`)
+      listCmd.push(`npm i -D --legacy-peer-deps ${key}@latest`)
     })
 
-  await $.backup_(source)
-  await $.write_(source, pkg)
-
-  await $.exec_('') // cache
-
-  await $.remove_([
-    './node_modules',
-    './package-lock.json',
-  ])
-  await $.exec_([
-    'npm i --legacy-peer-deps',
-    ...listCmd,
-  ])
-
-  const value = await $.prompt_({
-    message: "delete 'package.json.bak'?",
-    type: 'confirm',
-  })
-  if (value === true)
-    await $.remove_(`${source}.bak`)
+  await $.exec_(listCmd)
 }
 
 // export
