@@ -1,3 +1,4 @@
-timer = ''
+a = 1
 
-timer = $.delay 1e3, -> 1
+do -> while a > 1
+  a++

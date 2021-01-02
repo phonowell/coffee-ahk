@@ -91,8 +91,13 @@ function pickContext(
     it.type === 'identifier'
     && !cacheContext.get(it.value)
   ) {
+    const prev = content.eq(i - 1)
     const next = content.eq(i + 1)
-    cacheContext.set(it.value, Item.equal(next, 'sign', '='))
+    cacheContext.set(it.value, (
+      Item.equal(prev, 'for', 'for')
+      || Item.equal(next, 'sign', '=')
+      || Item.equal(next, 'for-in')
+    ))
   }
 
   pickContext(ctx, i + 1, item)
