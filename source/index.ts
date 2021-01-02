@@ -13,7 +13,7 @@ const optionDefault = {
   checkType: true,
   displayCoffeescriptAst: false,
   ignoreComment: true,
-  insertTranslatorInformation: true,
+  insertTranspilerInformation: true,
   pickAnonymous: true,
   salt: '',
   save: true,

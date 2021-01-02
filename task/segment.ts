@@ -9,7 +9,7 @@ async function main_(): Promise<void> {
     (await $.source_('./script/segment/*.coffee')).map(
       source => compile_(source, {
         ast: true,
-        insertTranslatorInformation: false,
+        insertTranspilerInformation: false,
         pickAnonymous: false,
         salt: 'salt',
         verbose: true,

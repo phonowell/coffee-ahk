@@ -3,31 +3,57 @@ import Item from '../module/Item'
 
 // function
 
-function main(
+function boostGlobal(
   ctx: Context
 ): void {
 
   const { content } = ctx
+  const cache: Set<string> = new Set()
 
-  // const cacheVariable: Set<string> = new Set()
+  const listContent: Item[] = []
+
+  content.list.forEach((item, i) => {
+
+    listContent.push(item)
+
+    if (!Item.equal(item, 'sign', '=')) return
+
+    const prev = content.eq(i - 1)
+    if (prev.type !== 'identifier') return
+    if (prev.scope.length) return
+    if (content.eq(i - 2).type !== 'new-line') return
+
+    if (cache.has(prev.value)) return
+    cache.add(prev.value)
+
+    listContent.splice(
+      listContent.length - 2, 0,
+      Item.new('origin', 'global ', item.scope),
+    )
+  })
+
+  content.load(listContent)
+  ctx.cache.global = cache
+}
+
+function main(
+  ctx: Context
+): void {
 
   // global
-  // content.list.forEach((item, i) => {
-
-  //   if (!Item.equal(item, 'sign', '=')) return
-
-  //   const it = content.eq(i - 1)
-  //   if (it.type !== 'identifier') return
-  //   if (it.scope.length) return
-  //   if (content.eq(i - 2).type !== 'new-line') return
-
-  //   if (cacheVariable.has(it.value)) return
-  //   cacheVariable.add(it.value)
-  //   it.value = `global ${it.value}`
-  // })
+  boostGlobal(ctx)
 
   // new Error -> Exception
+  translateError(ctx)
+}
+
+function translateError(
+  ctx: Context
+): void {
+
+  const { content } = ctx
   const listContent: Item[] = []
+
   content.list.forEach((item, i) => {
 
     if (!Item.equal(item, 'statement', 'new')) {
@@ -43,6 +69,7 @@ function main(
 
     it.value = 'Exception'
   })
+
   content.load(listContent)
 }
 

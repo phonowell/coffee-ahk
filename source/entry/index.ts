@@ -41,6 +41,9 @@ function main(
   scope.clear()
   content.clear()
   const ctx: Context = {
+    cache: {
+      global: new Set(),
+    },
     content,
     flag: {},
     indent: 0,

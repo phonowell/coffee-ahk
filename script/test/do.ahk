@@ -1,7 +1,7 @@
 ﻿Func("ahk_3").Call()
-fn := Func("ahk_2")
+global fn := Func("ahk_2")
 fn.Call()
-a := Func("ahk_1").Call()
+global a := Func("ahk_1").Call()
 ahk_1() {
   1
 }

@@ -1,4 +1,4 @@
-﻿fn := Func("ahk_13")
+﻿global fn := Func("ahk_13")
 fn := Func("ahk_12")
 fn := Func("ahk_11")
 fn := Func("ahk_10")

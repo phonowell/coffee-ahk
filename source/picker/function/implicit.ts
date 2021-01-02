@@ -45,6 +45,7 @@ function main(
 
       if (isDefined) return
       if (cacheParameter.has(name)) return
+      if (ctx.cache.global.has(name)) return
       if (name.startsWith('__') && name.endsWith('__')) return // like `__xxx__`
       if (name[0].toLowerCase() !== name[0]) return // like `Xxx`
 

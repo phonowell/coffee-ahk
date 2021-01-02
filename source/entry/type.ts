@@ -2,7 +2,12 @@ import { Option } from '../index'
 import content from '../module/Content'
 import scope from '../module/Scope'
 
+export type Cache = {
+  global: Set<string>
+}
+
 export type Context = {
+  cache: Cache
   content: typeof content
   flag: Flag
   indent: number

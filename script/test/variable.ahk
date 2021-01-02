@@ -1,12 +1,12 @@
-﻿a := 1
+﻿global a := 1
 a := 2
-fn := Func("ahk_3")
-c := 1
+global fn := Func("ahk_3")
+global c := 1
 c := 2
 fn := Func("ahk_2")
-__array__ := [1, 2]
+global __array__ := [1, 2]
 a := __array__[1]
-b := __array__[2]
+global b := __array__[2]
 __array__ := [1, 2, 3]
 a := __array__[1]
 __array__ := list

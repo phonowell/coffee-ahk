@@ -10,7 +10,7 @@ try {
 } finally {
   3
 }
-fn := Func("ahk_1").Bind(alert, e)
+global fn := Func("ahk_1").Bind(alert, e)
 ahk_1(alert, e) {
   try {
     alert.Call(1)
