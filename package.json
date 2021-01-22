@@ -11,11 +11,11 @@
   },
   "description": "coffeescript -> ahk",
   "devDependencies": {
-    "@types/lodash": "^4.14.167",
-    "@types/node": "^14.14.19",
-    "@typescript-eslint/eslint-plugin": "^4.11.1",
-    "@typescript-eslint/parser": "^4.11.1",
-    "eslint": "^7.17.0"
+    "@types/lodash": "^4.14.168",
+    "@types/node": "^14.14.22",
+    "@typescript-eslint/eslint-plugin": "^4.14.0",
+    "@typescript-eslint/parser": "^4.14.0",
+    "eslint": "^7.18.0"
   },
   "homepage": "https://github.com/phonowell/coffee-ahk",
   "keywords": [
