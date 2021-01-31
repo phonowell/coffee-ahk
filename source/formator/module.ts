@@ -11,9 +11,7 @@ function main(
   const { content, type } = ctx
 
   if (type === 'export') {
-
     content.push('statement', 'export')
-
     return true
   }
 

@@ -1,25 +1,18 @@
 import $ from 'fire-keeper'
+import transpile from '../source'
 
 // function
 
-async function main_(): Promise<void> {
+async function main(): Promise<void> {
 
-  const parseAsync = (await import('../source/index')).default
+  process.on('uncaughtException', console.error)
 
-  $.watch('./script/ffxiv/**/*.coffee', async (e: { path: string }) => {
-    const dirname = $.getDirname(e.path)
-    const basename = $.getBasename(dirname)
-    const source = `${dirname}/index.coffee`
-    const target = `${dirname}/index.ahk`
-    await parseAsync(source)
-    await $.write_(`${dirname}/${basename}.ahk`, await $.read_(target))
-    await $.remove_(target)
-  })
-
-  $.watch('./script/test/*.coffee', async (e: { path: string }) =>
-    parseAsync(e.path)
+  $.watch('./script/**/*.coffee', async (e: { path: string }) =>
+    transpile(e.path, {
+      salt: 'ahk',
+    })
   )
 }
 
 // export
-export default main_
+export default main
