@@ -39,10 +39,12 @@ async function getListSource_(
   input: string
 ): Promise<string[]> {
 
-  if (input.endsWith('.ahk') || input.endsWith('.coffee'))
-    return source_(input)
+  let list: string[] = []
 
-  let list = await source_(`${input}.coffee`)
+  if (input.endsWith('.ahk') || input.endsWith('.coffee'))
+    list = await source_(input)
+  else list = await source_(`${input}.coffee`)
+
   if (!list.length) list = await source_(`${input}/index.coffee`)
   if (!list.length) {
     const name = last(input.split('/'))
@@ -64,9 +66,11 @@ async function load_({
   source: string
 }): Promise<string> {
 
+  // import xxx from 'xxx/*'
   if (entry && path.includes('*'))
     throw new Error(`unable to set entry for batch import: import ${entry} from ${path}`)
 
+  // import {xxx} from 'xxx'
   if (entry.includes('{'))
     throw new Error(`cannot use deconstructed import: import ${entry} from ${path}`)
 
@@ -79,6 +83,7 @@ async function load_({
 
   const listSource = await getListSource_(filepath)
   if (!listSource.length) throw new Error(`invalid source ${path}`)
+
   const listResult: string[] = []
 
   for (const src of listSource) {

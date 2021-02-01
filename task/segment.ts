@@ -1,5 +1,5 @@
 import $ from 'fire-keeper'
-import compile_ from '../source'
+import transpile from '../source'
 
 // function
 
@@ -7,7 +7,7 @@ async function main_(): Promise<void> {
 
   await Promise.all(
     (await $.source_('./script/segment/*.coffee')).map(
-      source => compile_(source, {
+      source => transpile(source, {
         ast: true,
         insertTranspilerInformation: false,
         pickAnonymous: false,

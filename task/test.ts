@@ -1,5 +1,5 @@
 import $ from 'fire-keeper'
-import compile_ from '../source'
+import transpile from '../source'
 
 // function
 
@@ -26,7 +26,7 @@ async function main_(): Promise<void> {
           .replace(/\r/gu, '')
           .trim()
 
-        const content = (await compile_(source, {
+        const content = (await transpile(source, {
           ignoreComment: false,
           insertTranspilerInformation: false,
           salt: 'ahk',

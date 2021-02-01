@@ -1,5 +1,5 @@
 import $ from 'fire-keeper'
-import compile_ from '../dist'
+import transpile from '../dist'
 
 // function
 
@@ -11,7 +11,7 @@ async function main_(): Promise<void> {
 
   await $.remove_(`./script/${target}/*.ahk`)
 
-  await compile_(`./script/${target}/index.coffee`, {
+  await transpile(`./script/${target}/index.coffee`, {
     save: true,
   })
 }

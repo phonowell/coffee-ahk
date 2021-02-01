@@ -1,8 +1,5 @@
-import Item from '../module/Item'
-
-// interface
-
 import { Context } from '../entry/type'
+import Item from '../module/Item'
 
 // function
 

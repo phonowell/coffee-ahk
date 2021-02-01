@@ -9,7 +9,9 @@ async function main(): Promise<void> {
 
   $.watch('./script/**/*.coffee', async (e: { path: string }) =>
     transpile(e.path, {
+      displayCoffeescriptAst: true,
       salt: 'ahk',
+      verbose: true,
     })
   )
 }
