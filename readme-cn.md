@@ -34,7 +34,6 @@ npm run test
 - 可以使用`true`、`false`、`on`和`off`，但注意不要使用类型判断。在`ahk`中不存在`boolean`类型；
 - 尚不支持`?`；
 - 尚不支持`a = 1 unless a >= 1`这样的倒装语法，必须使用正常语序；
-- 尚不支持`super`；
 - 没有`getter`/`setter`；
 - 没有`undefined`和`null`，使用空字符串`''`来替代；
 - 没有隐式`return`，所有`return`都需要显式写出；

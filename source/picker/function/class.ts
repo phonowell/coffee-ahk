@@ -45,6 +45,32 @@ function findEdge(
   return findEdge(ctx, i - 1)
 }
 
+function formatSuper(
+  ctx: Context
+): void {
+
+  const { content } = ctx
+
+  const listContent: Item[] = []
+  content.list.forEach((item, i) => {
+
+    listContent.push(item)
+    if (!Item.equal(item, 'super')) return
+
+    const next = content.eq(i + 1)
+    if (!Item.equal(next, 'edge', 'call-start')) return
+
+    const _scope = [...next.scope]
+
+    listContent.push(
+      new Item('.', '.', _scope),
+      new Item('property', '__New', _scope),
+    )
+  })
+
+  content.load(listContent)
+}
+
 function main(
   ctx: Context
 ): void {
@@ -52,6 +78,7 @@ function main(
   prependThis(ctx)
   appendBind(ctx)
   renameConstructor(ctx)
+  formatSuper(ctx)
 }
 
 function prependThis(

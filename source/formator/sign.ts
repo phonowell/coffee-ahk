@@ -11,7 +11,7 @@ function main(
   const { content, scope, type } = ctx
 
   if (type === '...') {
-    if (scope.last !== 'parameter')
+    if (!['call', 'parameter'].includes(scope.last))
       throw new Error(`ahk/forbidden: '...' is not allowed`)
     content.push('sign', '...')
   }

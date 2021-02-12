@@ -16,6 +16,11 @@ function main(
     return true
   }
 
+  if (type === 'super') {
+    content.push('super')
+    return true
+  }
+
   return false
 }
 

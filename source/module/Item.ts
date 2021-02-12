@@ -30,6 +30,7 @@ const listType = [
   'sign', // , ... : =
   'statement', // break continue extends new return throw
   'string',
+  'super',
   'this',
   'try', // catch finally try
   'void',
