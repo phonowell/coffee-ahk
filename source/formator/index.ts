@@ -13,6 +13,7 @@ import $indent from './indent'
 import $indentifier from './identifier'
 import $module from './module'
 import $newLine from './new-line'
+import $nil from './nil'
 import $number from './number'
 import $object from './object'
 import $operator from './operator'
@@ -47,6 +48,7 @@ const map = {
   indentifier: $indentifier,
   module: $module,
   'new-line': $newLine,
+  nil: $nil,
   number: $number,
   object: $object,
   operator: $operator,

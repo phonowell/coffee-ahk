@@ -18,6 +18,14 @@ function main(
     return true
   }
 
+  if (type === 'until') {
+    scope.next = 'while'
+    content
+      .push('while', 'until')
+      .push('edge', 'expression-start')
+    return true
+  }
+
   return false
 }
 

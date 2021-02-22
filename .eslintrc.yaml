@@ -76,7 +76,7 @@ rules:
   prefer-promise-reject-errors: 2
   radix: 2
   require-await: 0
-  require-unicode-regexp: 2
+  require-unicode-regexp: 0
   vars-on-top: 0
   wrap-iife: 2
   yoda: 2

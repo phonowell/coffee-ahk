@@ -84,12 +84,51 @@ function deconstruct(
   content.load(listContent)
 }
 
+function deconstruct2(
+  ctx: Context
+): void {
+
+  const { content } = ctx
+
+  const listContent: Item[] = []
+
+  // each
+  content.list.forEach((item, i) => {
+
+    listContent.push(item)
+
+    if (!Item.equal(item, 'identifier')) return
+    if (item.scope[item.scope.length - 1] !== 'object') return
+
+    const prev = content.eq(i - 1)
+    if (!(
+      Item.equal(prev, 'bracket', '{')
+      || Item.equal(prev, 'sign', ',')
+    )) return
+
+    const next = content.eq(i + 1)
+    if (!(
+      Item.equal(next, 'bracket', '}')
+      || Item.equal(next, 'sign', ',')
+    )) return
+
+    listContent.push(
+      new Item('sign', ':', [...item.scope]),
+      new Item('identifier', item.value, [...item.scope]),
+    )
+  })
+
+  // reload
+  content.load(listContent)
+}
+
 function main(
   ctx: Context
 ): void {
 
   // deconstruction
   deconstruct(ctx)
+  deconstruct2(ctx)
 }
 
 // export

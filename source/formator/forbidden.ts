@@ -14,8 +14,7 @@ const listForbidden = [
   'from',
   'func_exist',
   'import',
-  'null',
-  'undefined',
+  'until',
 ] as const
 
 // function
