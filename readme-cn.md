@@ -2,7 +2,7 @@
 
 将`coffeescript`翻译到`ahk`。
 
-[Documentation](./doc.md)
+[文档](./doc-cn.md)
 
 ## Usage
 
