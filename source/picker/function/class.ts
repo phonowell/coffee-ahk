@@ -17,10 +17,8 @@ function appendBind(
     if (item.scope[item.scope.length - 1] !== 'function') return
     if (item.scope[item.scope.length - 2] !== 'class') return
 
-    const index = findEdge(ctx, i)
-    const prev = content.eq(index - 1)
-    if (prev.scope[prev.scope.length - 1] !== 'class') return
-    if (Item.equal(prev, 'property', 'constructor')) return
+    const index = findEdge(ctx, i, item)
+    if (Item.equal(content.eq(index - 1), 'property', 'constructor')) return
 
     const _scope = [[...item.scope]]
     _scope[1] = [..._scope[0], 'call']
@@ -36,15 +34,21 @@ function appendBind(
 
 function findEdge(
   ctx: Context,
-  i: number
+  i: number,
+  item: Item,
 ): number {
 
   const { content } = ctx
 
   const it = content.eq(i)
   if (!it) return 0
-  if (Item.equal(it, 'edge', 'parameter-start')) return i
-  return findEdge(ctx, i - 1)
+  if (
+    Item.equal(it, 'edge', 'parameter-start')
+    && [
+      ...it.scope.slice(0, it.scope.length - 1), 'function',
+    ].join('|') === item.scope.join('|')
+  ) return i
+  return findEdge(ctx, i - 1, item)
 }
 
 function formatSuper(

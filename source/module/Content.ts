@@ -41,7 +41,7 @@ class Content {
       n >= 0
         ? this.list[n]
         : this.list[this.list.length + n]
-    ) || Item.new('void')
+    )
   }
 
   pop(): Item {

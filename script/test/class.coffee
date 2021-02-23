@@ -13,5 +13,6 @@ class A extends B
 
   d: -> return 1
   e: (n) -> @a + n
+  f: -> do => @a
 
 b = new A()

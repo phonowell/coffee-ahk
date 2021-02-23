@@ -2,7 +2,7 @@
 
 You can think of `Coffee-AHK` as a dialect of `CoffeeScript`. It is compatible with the existing `AHK` code and adds new features to `AHK` such as `anonymous functions`, `destructuring assignment` and even `package management support`. It is also a subset of `CoffeeScript`, which compiles into `JavaScript` code correctly for execution on all platforms.
 
-Latest Version: **0.0.32**
+Latest Version: **0.0.33**
 
 ## Overview
 
