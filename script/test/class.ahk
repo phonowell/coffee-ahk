@@ -5,6 +5,7 @@
   __New() {
     base.__New()
     base.a.Call()
+    Func("ahk_3").Bind(this).Call()
     return 1
   }
   d := Func("ahk_2").Bind(this)
@@ -16,4 +17,7 @@ ahk_1(this, n) {
 }
 ahk_2(this) {
   return 1
+}
+ahk_3(this) {
+  return this.a
 }

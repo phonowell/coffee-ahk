@@ -18,7 +18,9 @@ function appendBind(
     if (item.scope[item.scope.length - 2] !== 'class') return
 
     const index = findEdge(ctx, i)
-    if (Item.equal(content.eq(index - 1), 'property', 'constructor')) return
+    const prev = content.eq(index - 1)
+    if (prev.scope[prev.scope.length - 1] !== 'class') return
+    if (Item.equal(prev, 'property', 'constructor')) return
 
     const _scope = [[...item.scope]]
     _scope[1] = [..._scope[0], 'call']

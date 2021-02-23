@@ -8,6 +8,7 @@ class A extends B
   constructor: ->
     super()
     super.a()
+    do => return @a
     return 1
 
   d: -> return 1
