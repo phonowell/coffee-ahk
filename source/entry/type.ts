@@ -30,5 +30,6 @@ export type Token = {
   origin?: unknown[] & {
     [key: string]: unknown
   }
+  quote?: string
   spaced?: boolean
 }

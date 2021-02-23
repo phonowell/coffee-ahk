@@ -1,6 +1,5 @@
-// interface
-
 import { Context } from '../entry/type'
+import _ from 'lodash'
 
 // function
 
@@ -8,10 +7,10 @@ function main(
   ctx: Context
 ): boolean {
 
-  const { content, type, value } = ctx
+  const { content, raw, type, value } = ctx
 
   if (type === 'string') {
-    content.push('string', transAlias(value))
+    content.push('string', transAlias(value, raw[1].quote))
     return true
   }
 
@@ -31,16 +30,25 @@ function main(
 }
 
 function transAlias(
-  input: string
+  input: string,
+  wrapper: string,
 ): string {
 
-  return input
+  let result = input
     .replace(/%/gu, '`%')
     .replace(/\\b/gu, '`b')
     .replace(/\\n/gu, '`n')
     .replace(/\\r/gu, '`r')
     .replace(/\\t/gu, '`t')
-    .replace(/\n/gu, ' ')
+
+  if (wrapper.length === 3)
+    result = result
+      .replace(/\s*\n\s*/gu, '')
+  else
+    result = result
+      .replace(/\s*\n\s*/gu, ' ')
+
+  return result
 }
 
 // export

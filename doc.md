@@ -2,12 +2,7 @@
 
 You can think of `Coffee-AHK` as a dialect of `CoffeeScript`. It is compatible with the existing `AHK` code and adds new features to `AHK` such as `anonymous functions`, `destructuring assignment` and even `package management support`. It is also a subset of `CoffeeScript`, which compiles `JavaScript` code correctly for execution on all platforms.
 
-Latest Version：**0.0.30**
-
-```shell
-# install locally for a project:
-npm install coffee-ahk
-```
+Latest Version：**0.0.31**
 
 ## Overview
 
@@ -57,6 +52,13 @@ ahk_2(x) {
 ahk_3(x) {
   return x * x
 }
+```
+
+## Installation
+
+```shell
+# install locally for a project:
+npm install coffee-ahk
 ```
 
 ## Language Reference
@@ -123,15 +125,27 @@ Multiline strings are allowed in `Coffee-AHK`. Lines are joined by a single spac
 
 ```coffeescript
 mobyDick = 'Call me Ishmael. Some years ago --
-never mind how long precisely -- having little
-or no money in my purse, and nothing particular
-to interest me on shore, I thought I would sail
-about a little and see the watery part of the
-world...'
+  never mind how long precisely -- having little
+  or no money in my purse, and nothing particular
+  to interest me on shore, I thought I would sail
+  about a little and see the watery part of the
+  world...'
 ```
 
 ```ahk
 global mobyDick := "Call me Ishmael. Some years ago -- never mind how long precisely -- having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world..."
+```
+
+```coffeescript
+html = '''
+<strong>
+  cup of coffee-ahk
+</strong>
+'''
+```
+
+```ahk
+global html := "<strong>cup of coffee-ahk</strong>"
 ```
 
 Double-quoted block strings, like other double-quoted strings, allow interpolation.
@@ -345,6 +359,8 @@ The only low-level loop that `Coffee-AHK` provides is the `while` loop.
 if @studyingEconomics
   while supply > demand
     buy()
+  until supply > demand
+    sell()
 
 # Nursery Rhyme
 num = 6
@@ -359,6 +375,9 @@ if (this.studyingEconomics) {
   while (supply > demand) {
     buy.Call()
   }
+  while !(supply > demand) {
+    sell.Call()
+  }
 }
 global num := 6
 global lyrics := []
@@ -367,6 +386,8 @@ while (num) {
   lyrics.Push("" . (num) . " little monkeys, jumping on the bed. One fell out and bumped his head.")
 }
 ```
+
+For readability, the `until` keyword is equivalent to `while not`, and the `loop` keyword is equivalent to `while true`.
 
 ## Operators and Aliases
 
@@ -383,6 +404,23 @@ As in `YAML`, `on` and `yes` are the same as boolean `true`, while `off` and `no
 `unless` can be used as the inverse of `if`.
 
 As a shortcut for `this.property`, you can use `@property`.
+
+To simplify math expressions, `**` can be used for exponentiation and `//` performs floor division.
+
+All together now:
+
+| `Coffee-AHK` | `AHK` |
+| :---: | :---: |
+| `is` | `==` |
+| `isnt` | `!=` |
+| `not` | `!` |
+| `and` | `&&` |
+| `or` | `\|\|` |
+| `true`, `yes`, `on` | `true` |
+| `false`, `no`, `off` | `false` |
+| `@`, `this` | `this` |
+| `a ** b` | `a ** b` |
+| `a // b` | `a // b` |
 
 ```coffeescript
 if ignition is on then launch()
