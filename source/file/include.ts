@@ -1,9 +1,13 @@
+import cson from 'cson'
 import getDirname from 'fire-keeper/getDirname'
 import iconv from 'iconv-lite'
 import last from 'lodash/last'
+import parseJson from 'fire-keeper/parseJson'
+import parseString from 'fire-keeper/parseString'
 import read_ from 'fire-keeper/read_'
 import source_ from 'fire-keeper/source_'
 import trim from 'lodash/trim'
+import type from 'fire-keeper/type'
 
 // function
 
@@ -15,6 +19,13 @@ function decode({
   source: string
 }): string {
 
+  if (source.endsWith('.ahk')) {
+    const cont = iconv.decode(content as Buffer, 'utf8', {
+      addBOM: true,
+    })
+    return `\`\`\`${cont}\`\`\``
+  }
+
   if (source.endsWith('.coffee')) {
     if (!entry) return content as string
     // closure
@@ -25,11 +36,13 @@ function decode({
     return list.join('\n')
   }
 
-  if (source.endsWith('.ahk')) {
-    const cont = iconv.decode(content as Buffer, 'utf8', {
-      addBOM: true,
-    })
-    return `\`\`\`${cont}\`\`\``
+  if (source.endsWith('.json') || source.endsWith('.yaml')) {
+    if (!entry) return `\`\`\`${content}\`\`\``
+    const result = cson.stringify(parseJson(content))
+    return `${entry} = ${result.includes('\n')
+      ? `\n${result}`
+      : result
+      }`
   }
 
   throw new Error(`invalid source '${source}'`)
@@ -41,7 +54,12 @@ async function getListSource_(
 
   let list: string[] = []
 
-  if (input.endsWith('.ahk') || input.endsWith('.coffee'))
+  if (
+    input.endsWith('.ahk')
+    || input.endsWith('.coffee')
+    || input.endsWith('.json')
+    || input.endsWith('.yaml')
+  )
     list = await source_(input)
   else list = await source_(`${input}.coffee`)
 
@@ -89,7 +107,9 @@ async function load_({
   for (const src of listSource) {
 
     // eslint-disable-next-line no-await-in-loop
-    const content = await read_(src) as string
+    let content = await read_(src) as string
+    if (type(content) === 'object')
+      content = parseString(content)
 
     listResult.push(
       content.includes('import ')

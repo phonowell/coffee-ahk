@@ -33,6 +33,7 @@ function main(
     listContent.push(item)
 
     if (!Item.equal(item, 'edge', 'parameter-start')) return
+    if (Item.equal(content.eq(i - 1), 'property', '__New')) return
 
     const iStart = findFunctionStart(ctx, i)
 
@@ -77,7 +78,6 @@ function pickContext(
 ) {
 
   const { content } = ctx
-  // if (i >= content.list.length) return
   const it = content.eq(i)
 
   if (
@@ -98,6 +98,7 @@ function pickContext(
       Item.equal(prev, 'for', 'for')
       || Item.equal(next, 'sign', '=')
       || Item.equal(next, 'for-in')
+      // || it.scope[it.scope.length - 1] === 'parameter'
     ))
   }
 
@@ -111,7 +112,6 @@ function pickParameter(
 ) {
 
   const { content } = ctx
-  // if (i >= content.list.length) return
   const it = content.eq(i)
 
   if (

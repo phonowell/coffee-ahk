@@ -17,7 +17,7 @@ function main(
       throw new Error("ahk/forbidden: 'BigInt' is not allowed")
 
     if (value.includes('_'))
-      _value = _value.replace(/_/ug, '')
+      _value = _value.replace(/_/gu, '')
 
     if (value.includes('e')) {
       const [pre, sub] = _value.split('e')
