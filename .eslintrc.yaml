@@ -128,7 +128,7 @@ rules:
   keyword-spacing: 1
   line-comment-position: 0
   linebreak-style: 0
-  lines-around-comment: 2
+  lines-around-comment: 0
   lines-between-class-members: 0
   max-depth: 0
   max-len: 0
