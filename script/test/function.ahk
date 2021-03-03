@@ -6,7 +6,7 @@ fn.Call(1, 2)
 fn.Call(fn.Call(fn))
 fn := Func("ahk_9")
 fn := Func("ahk_8").Bind(fn1, fn2, fn3)
-Func("ahk_4").Bind(a, b).Call()
+(Func("ahk_4").Bind(a, b)).Call()
 ahk_1(a, b) {
   return a + b
 }

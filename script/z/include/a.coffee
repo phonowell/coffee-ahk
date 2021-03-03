@@ -1,4 +1,6 @@
-fn1 = -> return 1
-fn2 = -> return 2
+module = {}
 
-export default {fn1, fn2}
+module.fn1 = -> return 1
+module.fn2 = -> return 2
+
+export default module

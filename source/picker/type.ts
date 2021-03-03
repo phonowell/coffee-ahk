@@ -50,10 +50,21 @@ function getType(
 
   if (item.type === 'boolean') return 'boolean'
   if (item.type === 'number') return 'number'
-  if (item.type === 'string') return item.value !== '""' ? 'string' : 'unknown'
-  if (item.type === 'edge' && item.value === 'array-start') return 'array'
-  if (item.type === 'bracket' && item.value === '{') return 'object'
-  if (item.type === 'identifier' && item.value === 'Func') return 'function'
+
+  if (item.type === 'string')
+    return item.value !== '""'
+      ? 'string'
+      : 'unknown'
+
+  if (item.type === 'edge' && item.value === 'array-start')
+    return 'array'
+
+  if (item.type === 'bracket' && item.value === '{')
+    return 'object'
+
+  if (item.type === 'identifier' && item.value === 'Func')
+    return 'function'
+
   return 'unknown'
 }
 
@@ -79,7 +90,9 @@ function main(
 
   // each
   content.list.forEach((item, i) => {
-    if (!['function', 'identifier'].includes(item.type)) return
+
+    if (!['function', 'identifier'].includes(item.type))
+      return
 
     if (item.type === 'function') {
       catchFunction(item)
@@ -88,8 +101,6 @@ function main(
 
     catchIdentifier(ctx, item, i)
   })
-
-  // console.log(mapVariable)
 }
 
 // export

@@ -17,9 +17,13 @@ function main(
     if (flag && Item.equal(item, 'new-line')) {
       flag = false
       const _scope: Item['scope'] = [...item.scope, 'call']
-      listContent.push(Item.new('edge', 'call-start', _scope))
-      listContent.push(Item.new('edge', 'call-end', _scope))
-      listContent.push(item)
+      listContent.push(
+        // add `()` for type-checking
+        Item.new('bracket', ')', item.scope),
+        Item.new('edge', 'call-start', _scope),
+        Item.new('edge', 'call-end', _scope),
+        item,
+      )
       return
     }
 
@@ -29,6 +33,9 @@ function main(
     }
 
     flag = true
+
+    // add `()` for type-checking
+    listContent.push(Item.new('bracket', '(', item.scope))
   })
 
   content.load(listContent)

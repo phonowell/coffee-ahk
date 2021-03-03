@@ -40,5 +40,5 @@
     "test": "npm run alice test"
   },
   "url": "https://github.com/phonowell/coffee-ahk",
-  "version": "0.0.34"
+  "version": "0.0.35"
 }

@@ -1,2 +1,2 @@
-import a from 'include/a.yaml'
-import b from 'include/a.json'
+a = do -> return 1
+a = 2
