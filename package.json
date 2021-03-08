@@ -8,13 +8,13 @@
     "fire-keeper": "^0.0.188",
     "iconv-lite": "^0.6.2",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.2"
+    "typescript": "^4.2.3"
   },
   "description": "coffeescript -> ahk",
   "devDependencies": {
     "@types/cson": "^0.0.31",
     "@types/lodash": "^4.14.168",
-    "@types/node": "^14.14.31",
+    "@types/node": "^14.14.32",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
     "eslint": "^7.21.0"
@@ -40,5 +40,5 @@
     "test": "npm run alice test"
   },
   "url": "https://github.com/phonowell/coffee-ahk",
-  "version": "0.0.35"
+  "version": "0.0.36"
 }

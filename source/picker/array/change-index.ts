@@ -82,12 +82,12 @@ function main(
 
     const [iEnd, listItem] = pickItem(item, i)
     const listUnwrap: Item[] = listItem.slice(1, listItem.length - 1)
-    let type: 'identifier' | 'number' | 'string' = 'number'
+    let type: 'identifier' | 'number' | 'string' = 'identifier'
 
     for (const it of listUnwrap) {
 
-      if (it.type === 'identifier') {
-        type = 'identifier'
+      if (it.type === 'number') {
+        type = 'number'
         break
       }
 
