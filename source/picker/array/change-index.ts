@@ -7,9 +7,9 @@ type Range = [number, number]
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
   const token = `__ci_${ctx.option.salt}__`
@@ -17,11 +17,11 @@ function main(
 
   // function
 
-  function pickItem(
+  const pickItem = (
     item: Item,
     i: number,
-    listResult: Item[] = []
-  ): [number, Item[]] {
+    listResult: Item[] = [],
+  ): [number, Item[]] => {
 
     const it = content.eq(i)
     if (!it) {
@@ -52,15 +52,15 @@ function main(
     return pickItem(item, i + 1, listResult)
   }
 
-  function update(
+  const update = (
     range: Range,
-    list: Item[]
-  ): void {
+    list: Item[],
+  ): void => {
 
     const listContent: Item[] = [...content.list]
     listContent.splice(
       range[0], range[1] - range[0] + 1,
-      ...list
+      ...list,
     )
     content.load(listContent)
   }
@@ -82,12 +82,12 @@ function main(
 
     const [iEnd, listItem] = pickItem(item, i)
     const listUnwrap: Item[] = listItem.slice(1, listItem.length - 1)
-    let type: 'identifier' | 'number' | 'string' = 'identifier'
+    let type: 'identifier' | 'number' | 'string' = 'number'
 
     for (const it of listUnwrap) {
 
-      if (it.type === 'number') {
-        type = 'number'
+      if (['.', 'identifier', 'property', 'this'].includes(it.type)) {
+        type = 'identifier'
         break
       }
 
@@ -111,7 +111,7 @@ function main(
           Item.new(
             'identifier',
             token,
-            _scope
+            _scope,
           ),
           Item.new('edge', 'call-start', _scopeCall),
           ...list,
@@ -124,24 +124,28 @@ function main(
 
     if (type === 'number') {
 
-      const _scope = listUnwrap[0].scope
+      const first = listUnwrap[0]
       let list: Item[] = []
 
       if (listUnwrap.length === 1) {
-        const it = listUnwrap[0]
-        it.value = (parseInt(it.value, 10) + 1).toString()
-        list = [it]
+        list = [
+          Item.new(
+            first.type,
+            (parseFloat(first.value) + 1).toString(),
+            first.scope,
+          ),
+        ]
       } else {
         list = [
           listUnwrap[listUnwrap.length - 1],
-          Item.new('math', '+', _scope),
-          Item.new('number', '1', _scope),
+          Item.new('math', '+', first.scope),
+          Item.new('number', '1', first.scope),
         ]
       }
 
       update(
-        [i + 1, i + 1],
-        list
+        [i + listUnwrap.length, i + listUnwrap.length],
+        list,
       )
 
       continue
