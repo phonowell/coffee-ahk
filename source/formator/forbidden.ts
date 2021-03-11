@@ -18,9 +18,9 @@ const listForbidden = [
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): boolean {
+): boolean => {
 
   const { type } = ctx
 

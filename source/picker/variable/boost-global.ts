@@ -3,9 +3,9 @@ import Item from '../../module/Item'
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
   const cache: Set<string> = new Set()

@@ -1,13 +1,13 @@
-import $ from 'fire-keeper'
-import transpile from '../source'
+import $source_ from 'fire-keeper/source_'
+import c2a from '../source'
 
 // function
 
-async function main_(): Promise<void> {
+const main_ = async (): Promise<void> => {
 
   await Promise.all(
-    (await $.source_('./script/segment/*.coffee')).map(
-      source => transpile(source, {
+    (await $source_('./script/segment/*.coffee')).map(
+      source => c2a(source, {
         ast: true,
         insertTranspilerInformation: false,
         pickAnonymous: false,

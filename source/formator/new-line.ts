@@ -3,9 +3,9 @@ import Item from '../module/Item'
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): boolean {
+): boolean => {
 
   const { content, scope, type, value } = ctx
 

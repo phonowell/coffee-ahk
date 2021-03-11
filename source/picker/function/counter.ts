@@ -4,9 +4,9 @@ import { Context } from '../../entry/type'
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): Set<string> {
+): Set<string> => {
 
   const { content } = ctx
   const listFn: Set<string> = new Set()

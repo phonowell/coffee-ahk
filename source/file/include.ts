@@ -11,13 +11,13 @@ import type from 'fire-keeper/type'
 
 // function
 
-function decode({
+const decode = ({
   content, entry, source,
 }: {
   content: Buffer | string
   entry: string
   source: string
-}): string {
+}): string => {
 
   if (source.endsWith('.ahk')) {
     const cont = iconv.decode(content as Buffer, 'utf8', {
@@ -48,9 +48,9 @@ function decode({
   throw new Error(`invalid source '${source}'`)
 }
 
-async function getListSource_(
+const getListSource_ = async (
   input: string
-): Promise<string[]> {
+): Promise<string[]> => {
 
   let list: string[] = []
 
@@ -76,13 +76,13 @@ async function getListSource_(
   return list
 }
 
-async function load_({
+const load_ = async ({
   entry, path, source,
 }: {
   entry: string
   path: string
   source: string
-}): Promise<string> {
+}): Promise<string> => {
 
   // import xxx from 'xxx/*'
   if (entry && path.includes('*'))
@@ -122,10 +122,10 @@ async function load_({
   return listResult.join('\n')
 }
 
-async function main_(
+const main_ = async (
   content: string,
   source: string,
-): Promise<string> {
+): Promise<string> => {
 
   const listContent = content.split('\n')
 

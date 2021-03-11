@@ -8,10 +8,10 @@ const cacheParameter: Set<string> = new Set()
 
 // function
 
-function findFunctionStart(
+const findFunctionStart = (
   ctx: Context,
   i: number,
-): number {
+): number => {
 
   const { content } = ctx
   const it = content.eq(i)
@@ -21,9 +21,9 @@ function findFunctionStart(
   return findFunctionStart(ctx, i + 1)
 }
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
 
@@ -71,11 +71,11 @@ function main(
   removeTrailingComma(ctx)
 }
 
-function pickContext(
+const pickContext = (
   ctx: Context,
   i: number,
   item: Item,
-) {
+) => {
 
   const { content } = ctx
   const it = content.eq(i)
@@ -105,11 +105,11 @@ function pickContext(
   pickContext(ctx, i + 1, item)
 }
 
-function pickParameter(
+const pickParameter = (
   ctx: Context,
   i: number,
   item: Item,
-) {
+) => {
 
   const { content } = ctx
   const it = content.eq(i)
@@ -132,9 +132,9 @@ function pickParameter(
   pickParameter(ctx, i + 1, item)
 }
 
-function removeTrailingComma(
+const removeTrailingComma = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
 

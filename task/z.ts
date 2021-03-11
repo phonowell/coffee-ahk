@@ -3,7 +3,7 @@ import transpile from '../source'
 
 // function
 
-async function main_(): Promise<void> {
+const main_ = async (): Promise<void> => {
 
   await transpile('./script/z', {
     displayCoffeescriptAst: true,

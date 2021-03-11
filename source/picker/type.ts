@@ -7,9 +7,9 @@ const mapVariable: Map<string, string> = new Map()
 
 // function
 
-function catchFunction(
+const catchFunction = (
   item: Item
-): void {
+): void => {
 
   const name = item.value
 
@@ -20,11 +20,11 @@ function catchFunction(
     throw new Error(`type error: '${name}' should be a 'function', but is incorrectly set to '${lastType}'`)
 }
 
-function catchIdentifier(
+const catchIdentifier = (
   ctx: Context,
   item: Item,
   i: number
-): void {
+): void => {
 
   const { content } = ctx
   const name = item.value
@@ -44,9 +44,9 @@ function catchIdentifier(
     throw new Error(`type error: '${name}' should be a(n) '${lastType}', but is incorrectly set to '${type}'`)
 }
 
-function getType(
+const getType = (
   item: Item
-): string {
+): string => {
 
   if (item.type === 'boolean') return 'boolean'
   if (item.type === 'number') return 'number'
@@ -68,10 +68,10 @@ function getType(
   return 'unknown'
 }
 
-function getLastType(
+const getLastType = (
   name: string,
   type: string
-): string {
+): string => {
 
   const lastType = mapVariable.get(name)
   if (lastType) return lastType
@@ -80,9 +80,9 @@ function getLastType(
   return ''
 }
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
 

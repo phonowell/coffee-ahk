@@ -3,9 +3,9 @@ import Item from '../module/Item'
 
 // function
 
-function deconstruct(
+const deconstruct = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
 
@@ -13,18 +13,18 @@ function deconstruct(
   const token = '__object__'
   let listContent: typeof content.list = []
 
-  function pickIndent(
+  const pickIndent = (
     i: number
-  ): number {
+  ): number => {
     const it = content.eq(i)
     if (!it) return 0
     if (it.type === 'new-line') return parseInt(it.value, 10)
     return pickIndent(i - 1)
   }
 
-  function pickPre(
+  const pickPre = (
     i: number
-  ): void {
+  ): void => {
     const it = content.eq(i)
     if (Item.equal(it, 'bracket', '{')) return
     if (it.type === 'identifier') listPre.push(it.value)
@@ -84,9 +84,9 @@ function deconstruct(
   content.load(listContent)
 }
 
-function deconstruct2(
+const deconstruct2 = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
 
@@ -122,9 +122,9 @@ function deconstruct2(
   content.load(listContent)
 }
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   // deconstruction
   deconstruct(ctx)

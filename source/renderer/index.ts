@@ -28,33 +28,13 @@ const mapEdge = {
   'parameter-start': '(',
 } as const
 
-
-const mapMethod = {
-  class: 'class ',
-  compare: ' ~ ',
-  'edge': $edge,
-  for: 'for ',
-  'for-in': ' in ',
-  if: $if,
-  'logical-operator': $logicalOperator,
-  'math': ' ~ ',
-  negative: $negative,
-  'new-line': $newLine,
-  sign: $sign,
-  statement: $statement,
-  super: 'base',
-  try: $try,
-  void: '',
-  while: 'while ',
-} as const
-
 let cacheComment: string[] = []
 
 // function
 
-function $commaLike(
+const $commaLike = (
   ctx: Context
-): string {
+): string => {
 
   const { i, it } = ctx
   const _next = ctx.content.eq(i + 1)
@@ -63,9 +43,9 @@ function $commaLike(
   return it.value
 }
 
-function $edge(
+const $edge = (
   ctx: Context
-): string {
+): string => {
 
   const { content, i, it } = ctx
   const { value } = it
@@ -92,9 +72,9 @@ function $edge(
   return mapEdge[value] || value
 }
 
-function $if(
+const $if = (
   ctx: Context
-): string {
+): string => {
 
   const { content, i, it } = ctx
   const { value } = it
@@ -114,9 +94,9 @@ function $if(
   return ''
 }
 
-function $logicalOperator(
+const $logicalOperator = (
   ctx: Context
-): string {
+): string => {
 
   const { value } = ctx.it
   return ['&&', '||'].includes(value)
@@ -124,9 +104,9 @@ function $logicalOperator(
     : value
 }
 
-function $negative(
+const $negative = (
   ctx: Context
-): string {
+): string => {
 
   const { value } = ctx.it
   return value === '-'
@@ -134,18 +114,18 @@ function $negative(
     : ''
 }
 
-function $newLine(
+const $newLine = (
   ctx: Context
-): string {
+): string => {
 
   let n = parseInt(ctx.it.value, 10)
   if (!(n >= 0)) n = 0
   return `\n${_.repeat(' ', n * 2)}`
 }
 
-function $sign(
+const $sign = (
   ctx: Context
-): string {
+): string => {
 
   const { value } = ctx.it
   if ([',', ':'].includes(value)) return $commaLike(ctx)
@@ -154,9 +134,9 @@ function $sign(
   return value
 }
 
-function $statement(
+const $statement = (
   ctx: Context
-): string {
+): string => {
 
   const { value } = ctx.it
   if (value === 'export') return 'return '
@@ -165,9 +145,9 @@ function $statement(
   return ctx.it.value
 }
 
-function $try(
+const $try = (
   ctx: Context
-): string {
+): string => {
 
   const { content, i, it } = ctx
   const { value } = it
@@ -184,10 +164,10 @@ function $try(
   return ''
 }
 
-function injectComment(
+const injectComment = (
   input: string,
   ctx: Context
-): string {
+): string => {
 
   if (ctx.option.ignoreComment) return input
 
@@ -207,9 +187,9 @@ function injectComment(
   return output
 }
 
-function main(
+const main = (
   ctx: _Context
-): string {
+): string => {
 
   let content = ctx.content.list
     .map((it, i) => {
@@ -249,6 +229,25 @@ function main(
 
   return content
 }
+
+const mapMethod = {
+  class: 'class ',
+  compare: ' ~ ',
+  'edge': $edge,
+  for: 'for ',
+  'for-in': ' in ',
+  if: $if,
+  'logical-operator': $logicalOperator,
+  'math': ' ~ ',
+  negative: $negative,
+  'new-line': $newLine,
+  sign: $sign,
+  statement: $statement,
+  super: 'base',
+  try: $try,
+  void: '',
+  while: 'while ',
+} as const
 
 // export
 export default main

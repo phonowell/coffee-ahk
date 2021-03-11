@@ -4,9 +4,9 @@ import deconstruct from './deconstruct'
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   // list[0] -> list[1]
   changeIndex(ctx)

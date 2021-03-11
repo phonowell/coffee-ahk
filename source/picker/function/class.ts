@@ -3,9 +3,9 @@ import Item from '../../module/Item'
 
 // function
 
-function appendBind(
+const appendBind = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
 
@@ -32,11 +32,11 @@ function appendBind(
   content.load(listContent)
 }
 
-function findEdge(
+const findEdge = (
   ctx: Context,
   i: number,
   item: Item,
-): number {
+): number => {
 
   const { content } = ctx
 
@@ -51,9 +51,9 @@ function findEdge(
   return findEdge(ctx, i - 1, item)
 }
 
-function formatSuper(
+const formatSuper = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
 
@@ -77,9 +77,9 @@ function formatSuper(
   content.load(listContent)
 }
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   prependThis(ctx)
   appendBind(ctx)
@@ -87,9 +87,9 @@ function main(
   formatSuper(ctx)
 }
 
-function prependThis(
+const prependThis = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
 
@@ -126,9 +126,9 @@ function prependThis(
   content.load(listContent)
 }
 
-function renameConstructor(
+const renameConstructor = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
   content.list.forEach(it => {

@@ -25,14 +25,14 @@ declare global {
 
 // function
 
-function main(
+const main = (
   cont: string,
   option: Context['option']
 ): {
   ast: Context['content']['list']
   content: string,
   raw: Context['raw'][]
-} {
+} => {
 
   const ast = coffee.compile(cont, {
     ast: true,

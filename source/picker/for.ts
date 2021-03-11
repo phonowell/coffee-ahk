@@ -3,15 +3,15 @@ import Item from '../module/Item'
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
 
-  function findIndex(
+  const findIndex = (
     i: number
-  ): number {
+  ): number => {
 
     const it = content.eq(i)
     if (!it) return 0
@@ -24,9 +24,9 @@ function main(
     return findIndex(i + 1)
   }
 
-  function findName(
+  const findName = (
     i: number
-  ): string {
+  ): string => {
 
     const it = content.eq(i)
     if (!it) return ''

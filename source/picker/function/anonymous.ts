@@ -6,18 +6,18 @@ import isEqual from 'lodash/isEqual'
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   next(ctx)
   transFunc(ctx)
 }
 
-function next(
+const next = (
   ctx: Context,
   count = 1
-): void {
+): void => {
 
   const { content } = ctx
 
@@ -41,13 +41,13 @@ function next(
   next(ctx, count + 1)
 }
 
-function pickItem(
+const pickItem = (
   ctx: Context,
   count: number,
   i: number,
   scope: Item['scope'],
   listResult: Item[] = []
-): Item[] {
+): Item[] => {
 
   const { content } = ctx
 
@@ -95,9 +95,9 @@ function pickItem(
   return listResult
 }
 
-function transFunc(
+const transFunc = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
 

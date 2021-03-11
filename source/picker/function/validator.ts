@@ -9,9 +9,9 @@ const listForbidden = [
 
 // function
 
-function main(
+const main = (
   listFn: Set<string>
-): void {
+): void => {
 
   listFn.forEach(item => {
     if (!listForbidden.includes(item.toLowerCase())) return

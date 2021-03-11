@@ -3,9 +3,9 @@ import read_ from 'fire-keeper/read_'
 
 // function
 
-async function main_(
+const main_ = async (
   source: string
-): Promise<string> {
+): Promise<string> => {
 
   let src = source
 

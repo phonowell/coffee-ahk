@@ -11,11 +11,11 @@ const executeIfExists: Item[] = [{ "type": "origin", "value": "global ", "scope"
 
 // function
 
-function insert(
+const insert = (
   ctx: Context,
   flag: string,
   fn: Item[],
-) {
+) => {
 
   const { content } = ctx
 
@@ -37,9 +37,9 @@ function insert(
   }
 }
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   insert(ctx, 'isChangeIndexUsed', changeIndex)
   insert(ctx, 'isExecuteIfExistsUsed', executeIfExists)

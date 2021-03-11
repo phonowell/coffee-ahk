@@ -21,9 +21,9 @@ const map = {
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   for (const key of Object.keys(map))
     map[key](ctx)

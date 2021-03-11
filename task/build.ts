@@ -1,10 +1,11 @@
-import $ from 'fire-keeper'
+import $compile_ from 'fire-keeper/compile_'
+import $remove_ from 'fire-keeper/remove_'
 
 // function
 
-async function compile_(): Promise<void> {
+const compile_ = async (): Promise<void> => {
 
-  await $.compile_(
+  await $compile_(
     './source/**/*.ts',
     './dist',
     {
@@ -14,13 +15,13 @@ async function compile_(): Promise<void> {
   )
 }
 
-async function main_(): Promise<void> {
+const main_ = async (): Promise<void> => {
   await prepare_()
   await compile_()
 }
 
-async function prepare_(): Promise<void> {
-  await $.remove_('./dist')
+const prepare_ = async (): Promise<void> => {
+  await $remove_('./dist')
 }
 
 // export

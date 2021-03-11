@@ -3,20 +3,20 @@ import Item from '../../module/Item'
 
 // function
 
-function main(
+const main = (
   ctx: Context,
   listFn: Set<string>
-): void {
+): void => {
 
-  // replace function as parameter
+  // replace const as parameter =
   // from `fn(callback)` to `fn(Func('callback'))`
   replaceFn(ctx, listFn)
 }
 
-function replaceFn(
+const replaceFn = (
   ctx: Context,
   listFn: Set<string>
-): void {
+): void => {
 
   const { content } = ctx
 

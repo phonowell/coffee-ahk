@@ -11,11 +11,11 @@ let countIgnore = 0
 
 // function
 
-function cache(
+const cache = (
   ctx: Context,
   item: Item,
   i: number
-): void {
+): void => {
 
   const _scope = [item.scope.slice(0, item.scope.length - 1)]
   _scope[1] = [..._scope[0], 'call']
@@ -46,11 +46,11 @@ function cache(
   ])
 }
 
-function findIndex(
+const findIndex = (
   ctx: Context,
   item: Item,
   i: number
-): number {
+): number => {
 
   const { content } = ctx
 
@@ -63,9 +63,9 @@ function findIndex(
   return findIndex(ctx, item, i + 1)
 }
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
 
@@ -106,11 +106,11 @@ function main(
   content.load(listContent)
 }
 
-function pick(
+const pick = (
   ctx: Context,
   item: Item,
   i: number
-): boolean {
+): boolean => {
 
   const { content } = ctx
 
@@ -129,12 +129,12 @@ function pick(
   return true
 }
 
-function pickItem(
+const pickItem = (
   ctx: Context,
   item: Item,
   i: number,
   listItem: Item[] = []
-): Item[] {
+): Item[] => {
 
   const { content } = ctx
 

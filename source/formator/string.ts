@@ -1,11 +1,10 @@
 import { Context } from '../entry/type'
-import _ from 'lodash'
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): boolean {
+): boolean => {
 
   const { content, raw, type, value } = ctx
 
@@ -29,10 +28,10 @@ function main(
   return false
 }
 
-function transAlias(
+const transAlias = (
   input: string,
   wrapper: string,
-): string {
+): string => {
 
   let result = input
     .replace(/%/gu, '`%')

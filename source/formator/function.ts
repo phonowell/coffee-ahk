@@ -4,10 +4,10 @@ import scope from '../module/Scope'
 
 // function
 
-function $arrow(
+const $arrow = (
   ctx: Context,
   type: string
-): boolean {
+): boolean => {
 
   const { content, scope: _scope } = ctx
 
@@ -46,9 +46,9 @@ function $arrow(
   return true
 }
 
-function $start(
+const $start = (
   ctx: Context
-): boolean {
+): boolean => {
 
   const { scope: cache, content } = ctx
 
@@ -62,10 +62,10 @@ function $start(
   return true
 }
 
-function findEdge(
+const findEdge = (
   ctx: Context,
   i: number = ctx.content.list.length - 1
-): number {
+): number => {
 
   const { content } = ctx
 
@@ -76,9 +76,9 @@ function findEdge(
   return findEdge(ctx, i - 1)
 }
 
-function main(
+const main = (
   ctx: Context
-): boolean {
+): boolean => {
 
   const { content, type } = ctx
 

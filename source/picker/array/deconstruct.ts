@@ -3,9 +3,9 @@ import Item from '../../module/Item'
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   const { content } = ctx
 
@@ -13,9 +13,9 @@ function main(
   const token = '__array__'
   let listContent: typeof content.list = []
 
-  function pickIndent(
+  const pickIndent = (
     i: number
-  ): number {
+  ): number => {
 
     const it = content.eq(i)
     if (!it) return 0
@@ -23,10 +23,10 @@ function main(
     return pickIndent(i - 1)
   }
 
-  function pickPre(
+  const pickPre = (
     i: number,
     listResult: Item[][] = [[]]
-  ): Item[][] {
+  ): Item[][] => {
 
     const it = content.eq(i)
     const last = listResult[listResult.length - 1]

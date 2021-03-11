@@ -1,32 +1,36 @@
-import $ from 'fire-keeper'
-import transpile from '../source'
+import $argv from 'fire-keeper/argv'
+import $i from 'fire-keeper/i'
+import $info from 'fire-keeper/info'
+import $read_ from 'fire-keeper/read_'
+import $source_ from 'fire-keeper/source_'
+import c2a from '../source'
 
 // function
 
-async function checkVersion_(): Promise<void> {
+const checkVersion_ = async (): Promise<void> => {
 
-  const { version } = await $.read_('./package.json') as { version: string }
-  const content = await $.read_('./source/renderer/index.ts') as string
+  const { version } = await $read_('./package.json') as { version: string }
+  const content = await $read_('./source/renderer/index.ts') as string
 
   if (!content.includes(version))
     throw new Error('found different version')
 }
 
-async function main_(): Promise<void> {
+const main_ = async (): Promise<void> => {
 
   const target = pickTarget()
 
   await Promise.all(
-    (await $.source_(`./script/test/**/${target || '*'}.coffee`)).map(
+    (await $source_(`./script/test/**/${target || '*'}.coffee`)).map(
       source => (async () => {
 
         const _target = source.replace('.coffee', '.ahk')
-        const contentTarget = ((await $.read_(_target) as Buffer) || '')
+        const contentTarget = ((await $read_(_target) as Buffer) || '')
           .toString()
           .replace(/\r/gu, '')
           .trim()
 
-        const content = (await transpile(source, {
+        const content = (await c2a(source, {
           ignoreComment: false,
           insertTranspilerInformation: false,
           salt: 'ahk',
@@ -36,21 +40,21 @@ async function main_(): Promise<void> {
           .trim()
 
         if (content !== contentTarget) {
-          $.i(content)
-          $.i('---')
-          $.i(contentTarget)
+          $i(content)
+          $i('---')
+          $i(contentTarget)
           throw new Error(source)
         }
       })()
     )
   )
-  $.info('all test(s) passed!')
+  $info('all test(s) passed!')
 
   await checkVersion_()
 }
 
-function pickTarget(): string {
-  const argv = $.argv()
+const pickTarget = (): string => {
+  const argv = $argv()
   return argv._[1] || argv.target || ''
 }
 

@@ -3,9 +3,9 @@ import _ from 'lodash'
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): boolean {
+): boolean => {
 
   const { content, type, value } = ctx
 

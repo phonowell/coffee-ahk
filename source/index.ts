@@ -22,7 +22,7 @@ const optionDefault = {
 
 // function
 
-function generatedSalt(): string {
+const generatedSalt = (): string => {
 
   return Math.random()
     .toString(32)
@@ -30,10 +30,10 @@ function generatedSalt(): string {
     .padStart(11, '0')
 }
 
-async function main_(
+const main_ = async (
   source: string,
   option: Option = {}
-): Promise<string> {
+): Promise<string> => {
 
   const _option = {
     ...optionDefault,
@@ -47,10 +47,10 @@ async function main_(
   return transpileAsFile(source, _option)
 }
 
-async function transpileAsFile(
+const transpileAsFile = async (
   source: string,
   option: Option
-): Promise<string> {
+): Promise<string> => {
 
   const source_ = (await import('fire-keeper/source_')).default
 
@@ -82,10 +82,10 @@ async function transpileAsFile(
   return result.content
 }
 
-function transpileAsText(
+const transpileAsText = (
   content: string,
   option: Option
-): string {
+): string => {
 
   const result = start(content, option)
 

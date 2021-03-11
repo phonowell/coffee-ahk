@@ -11,9 +11,9 @@ import validate from './validator'
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): void {
+): void => {
 
   // from `fn: identifier(...)`
   // to `fn: function(...)`

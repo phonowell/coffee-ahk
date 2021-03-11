@@ -4,9 +4,9 @@ import { Context } from '../entry/type'
 
 // function
 
-function main(
+const main = (
   ctx: Context
-): boolean {
+): boolean => {
 
   const { content, type } = ctx
 

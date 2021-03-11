@@ -1,14 +1,14 @@
-import $ from 'fire-keeper'
-import transpile from '../source'
+import $watch from 'fire-keeper/watch'
+import c2a from '../source'
 
 // function
 
-async function main(): Promise<void> {
+const main = (): void => {
 
   process.on('uncaughtException', console.error)
 
-  $.watch('./script/**/*.coffee', async (e: { path: string }) =>
-    transpile(e.path, {
+  $watch('./script/**/*.coffee', async (e: { path: string }) =>
+    c2a(e.path, {
       displayCoffeescriptAst: true,
       salt: 'ahk',
       verbose: true,
