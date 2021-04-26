@@ -6,7 +6,7 @@ import scope from '../module/Scope'
 
 const $arrow = (
   ctx: Context,
-  type: string
+  type: string,
 ): boolean => {
 
   const { content, scope: _scope } = ctx
@@ -47,7 +47,7 @@ const $arrow = (
 }
 
 const $start = (
-  ctx: Context
+  ctx: Context,
 ): boolean => {
 
   const { scope: cache, content } = ctx
@@ -64,7 +64,7 @@ const $start = (
 
 const findEdge = (
   ctx: Context,
-  i: number = ctx.content.list.length - 1
+  i: number = ctx.content.list.length - 1,
 ): number => {
 
   const { content } = ctx
@@ -77,7 +77,7 @@ const findEdge = (
 }
 
 const main = (
-  ctx: Context
+  ctx: Context,
 ): boolean => {
 
   const { content, type } = ctx

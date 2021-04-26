@@ -22,7 +22,7 @@ const findFunctionStart = (
 }
 
 const main = (
-  ctx: Context
+  ctx: Context,
 ): void => {
 
   const { content } = ctx
@@ -133,7 +133,7 @@ const pickParameter = (
 }
 
 const removeTrailingComma = (
-  ctx: Context
+  ctx: Context,
 ): void => {
 
   const { content } = ctx

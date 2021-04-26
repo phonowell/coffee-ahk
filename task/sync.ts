@@ -18,7 +18,7 @@ type Option = {
 
 // function
 
-const ask_ = async (
+const ask = async (
   source: string,
   target: string
 ): Promise<string> => {
@@ -87,13 +87,13 @@ const ask_ = async (
   })
 }
 
-const load_ = async (): Promise<string[]> => {
+const load = async (): Promise<string[]> => {
 
   $info().pause()
-  const listData = await Promise.all(
+  const listData = await Promise.all<string[]>(
     (await $source_('./data/sync/**/*.yaml'))
-      .map(source => $read_(source))
-  ) as string[][]
+      .map(source => $read_(source)),
+  )
   $info().resume()
 
   let result: string[] = []
@@ -107,9 +107,9 @@ const load_ = async (): Promise<string[]> => {
   return _uniq(result)
 }
 
-const main_ = async (): Promise<void> => {
+const main = async (): Promise<void> => {
 
-  const data = await load_()
+  const data = await load()
 
   // diff
   for (const line of data) {
@@ -134,18 +134,18 @@ const main_ = async (): Promise<void> => {
     $info(`'${source}' is different from '${target}'`)
 
     // eslint-disable-next-line no-await-in-loop
-    const value = await ask_(source, target)
+    const value = await ask(source, target)
     if (!value) break
 
     // eslint-disable-next-line no-await-in-loop
-    await overwrite_(value, source, target)
+    await overwrite(value, source, target)
   }
 }
 
-const overwrite_ = async (
+const overwrite = async (
   value: string,
   source: string,
-  target: string
+  target: string,
 ): Promise<void> => {
 
   if (value === 'export') {
@@ -160,4 +160,4 @@ const overwrite_ = async (
 }
 
 // export
-export default main_
+export default main

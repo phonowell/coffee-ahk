@@ -3,9 +3,9 @@ import read_ from 'fire-keeper/read_'
 
 // function
 
-const main_ = async (
-  source: string
-): Promise<string> => {
+const main = async (
+  source: string,
+) => {
 
   let src = source
 
@@ -13,7 +13,7 @@ const main_ = async (
   if (!src.endsWith(extname)) src += extname
 
   const content = await include_(
-    await read_(src) as string,
+    await read_<string>(src),
     src
   )
 
@@ -24,4 +24,4 @@ const main_ = async (
 }
 
 // export
-export default main_
+export default main

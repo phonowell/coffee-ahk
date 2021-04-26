@@ -3,7 +3,7 @@ import c2a from '../source'
 
 // function
 
-const main = (): void => {
+const main = () => {
 
   process.on('uncaughtException', console.error)
 

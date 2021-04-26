@@ -6,14 +6,14 @@ import write_ from 'fire-keeper/write_'
 
 // function
 
-const main_ = async (
+const main = async (
   source: string,
   data: {
     ast: Item[]
     content: string
   },
-  option: Option
-): Promise<void> => {
+  option: Option,
+) => {
 
   const { basename, dirname } = getName(source)
 
@@ -26,4 +26,4 @@ const main_ = async (
 }
 
 // export
-export default main_
+export default main

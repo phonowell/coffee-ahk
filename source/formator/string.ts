@@ -3,7 +3,7 @@ import { Context } from '../entry/type'
 // function
 
 const main = (
-  ctx: Context
+  ctx: Context,
 ): boolean => {
 
   const { content, raw, type, value } = ctx

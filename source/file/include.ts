@@ -9,27 +9,37 @@ import source_ from 'fire-keeper/source_'
 import trim from 'lodash/trim'
 import type from 'fire-keeper/type'
 
+// interface
+
+type OptionDecode = {
+  content: Buffer | string
+  entry: string
+  source: string
+}
+
+type OptionLoad = {
+  entry: string
+  path: string
+  source: string
+}
+
 // function
 
 const decode = ({
   content, entry, source,
-}: {
-  content: Buffer | string
-  entry: string
-  source: string
-}): string => {
+}: OptionDecode) => {
 
-  if (source.endsWith('.ahk')) {
-    const cont = iconv.decode(content as Buffer, 'utf8', {
+  if (source.endsWith('.ahk') && typeof content !== 'string') {
+    const cont = iconv.decode(content, 'utf8', {
       addBOM: true,
     })
     return `\`\`\`${cont}\`\`\``
   }
 
-  if (source.endsWith('.coffee')) {
-    if (!entry) return content as string
+  if (source.endsWith('.coffee') && typeof content === 'string') {
+    if (!entry) return content
     // closure
-    const list = (content as string)
+    const list = content
       .split(/\n/u)
       .map(line => `  ${line}`)
     list.unshift(`${entry} = do ->`)
@@ -48,9 +58,9 @@ const decode = ({
   throw new Error(`invalid source '${source}'`)
 }
 
-const getListSource_ = async (
-  input: string
-): Promise<string[]> => {
+const getListSource = async (
+  input: string,
+) => {
 
   let list: string[] = []
 
@@ -66,9 +76,7 @@ const getListSource_ = async (
   if (!list.length) list = await source_(`${input}/index.coffee`)
   if (!list.length) {
     const name = last(input.split('/'))
-    const pkg = await read_(`./node_modules/${name}/package.json`) as {
-      main: string
-    }
+    const pkg = await read_<{ main: string }>(`./node_modules/${name}/package.json`)
     if (pkg && pkg.main)
       list = await source_(`./node_modules/${name}/${pkg.main}`)
   }
@@ -76,13 +84,9 @@ const getListSource_ = async (
   return list
 }
 
-const load_ = async ({
+const load = async ({
   entry, path, source,
-}: {
-  entry: string
-  path: string
-  source: string
-}): Promise<string> => {
+}: OptionLoad) => {
 
   // import xxx from 'xxx/*'
   if (entry && path.includes('*'))
@@ -99,7 +103,7 @@ const load_ = async ({
     _path,
   ].join('/')
 
-  const listSource = await getListSource_(filepath)
+  const listSource = await getListSource(filepath)
   if (!listSource.length) throw new Error(`invalid source ${path}`)
 
   const listResult: string[] = []
@@ -107,14 +111,14 @@ const load_ = async ({
   for (const src of listSource) {
 
     // eslint-disable-next-line no-await-in-loop
-    let content = await read_(src) as string
+    let content = await read_<string>(src)
     if (type(content) === 'object')
       content = parseString(content)
 
     listResult.push(
       content.includes('import ')
         // eslint-disable-next-line no-await-in-loop
-        ? await main_(content, src)
+        ? await main(content, src)
         : decode({ content, entry, source: src })
     )
   }
@@ -122,10 +126,10 @@ const load_ = async ({
   return listResult.join('\n')
 }
 
-const main_ = async (
+const main = async (
   content: string,
   source: string,
-): Promise<string> => {
+) => {
 
   const listContent = content.split('\n')
 
@@ -152,11 +156,11 @@ const main_ = async (
       ]
 
     // eslint-disable-next-line no-await-in-loop
-    listResult.push(await load_({ entry, path, source }))
+    listResult.push(await load({ entry, path, source }))
   }
 
   return listResult.join('\n')
 }
 
 // export
-export default main_
+export default main

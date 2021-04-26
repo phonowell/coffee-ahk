@@ -4,7 +4,7 @@ import _ from 'lodash'
 // function
 
 const main = (
-  ctx: Context
+  ctx: Context,
 ): boolean => {
 
   const { content, raw } = ctx

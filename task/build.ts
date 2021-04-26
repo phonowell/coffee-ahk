@@ -3,7 +3,7 @@ import $remove_ from 'fire-keeper/remove_'
 
 // function
 
-const compile_ = async (): Promise<void> => {
+const compile = async () => {
 
   await $compile_(
     './source/**/*.ts',
@@ -15,14 +15,14 @@ const compile_ = async (): Promise<void> => {
   )
 }
 
-const main_ = async (): Promise<void> => {
-  await prepare_()
-  await compile_()
+const main = async () => {
+  await prepare()
+  await compile()
 }
 
-const prepare_ = async (): Promise<void> => {
+const prepare = async () => {
   await $remove_('./dist')
 }
 
 // export
-export default main_
+export default main

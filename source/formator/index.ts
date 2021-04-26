@@ -65,7 +65,7 @@ const map = {
 // function
 
 const main = (
-  ctx: Context
+  ctx: Context,
 ): void => {
 
   for (const key of Object.keys(map)) {

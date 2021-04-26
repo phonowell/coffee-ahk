@@ -5,19 +5,28 @@
   },
   "dependencies": {
     "cson": "^7.20.0",
-    "fire-keeper": "^0.0.188",
+    "fire-keeper": "^0.0.189",
     "iconv-lite": "^0.6.2",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.4"
   },
   "description": "coffeescript -> ahk",
   "devDependencies": {
     "@types/cson": "^0.0.31",
     "@types/lodash": "^4.14.168",
-    "@types/node": "^14.14.32",
-    "@typescript-eslint/eslint-plugin": "^4.16.1",
-    "@typescript-eslint/parser": "^4.16.1",
-    "eslint": "^7.21.0"
+    "@types/node": "^14.14.41",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.2.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "homepage": "https://github.com/phonowell/coffee-ahk",
   "keywords": [

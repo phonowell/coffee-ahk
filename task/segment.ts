@@ -3,7 +3,7 @@ import c2a from '../source'
 
 // function
 
-const main_ = async (): Promise<void> => {
+const main = async () => {
 
   await Promise.all(
     (await $source_('./script/segment/*.coffee')).map(
@@ -19,4 +19,4 @@ const main_ = async (): Promise<void> => {
 }
 
 // export
-export default main_
+export default main

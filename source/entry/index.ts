@@ -18,6 +18,12 @@ type Coffee = {
   ) => unknown
 }
 
+type Result = {
+  ast: Context['content']['list']
+  content: string,
+  raw: Context['raw'][]
+}
+
 declare global {
   // eslint-disable-next-line init-declarations, no-shadow
   const coffee: Coffee
@@ -28,11 +34,7 @@ declare global {
 const main = (
   cont: string,
   option: Context['option']
-): {
-  ast: Context['content']['list']
-  content: string,
-  raw: Context['raw'][]
-} => {
+): Result => {
 
   const ast = coffee.compile(cont, {
     ast: true,

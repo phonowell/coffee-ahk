@@ -1,0 +1,6 @@
+semi: false
+singleQuote: true
+jsxSingleQuote: true
+TrailingComma: all
+bracketSpacing: true
+arrowParens: avoid

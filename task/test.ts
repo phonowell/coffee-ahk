@@ -7,16 +7,16 @@ import c2a from '../source'
 
 // function
 
-const checkVersion_ = async (): Promise<void> => {
+const checkVersion = async () => {
 
-  const { version } = await $read_('./package.json') as { version: string }
-  const content = await $read_('./source/renderer/index.ts') as string
+  const { version } = await $read_<{ version: string }>('./package.json')
+  const content = await $read_<string>('./source/renderer/index.ts')
 
   if (!content.includes(version))
     throw new Error('found different version')
 }
 
-const main_ = async (): Promise<void> => {
+const main = async () => {
 
   const target = pickTarget()
 
@@ -25,7 +25,7 @@ const main_ = async (): Promise<void> => {
       source => (async () => {
 
         const _target = source.replace('.coffee', '.ahk')
-        const contentTarget = ((await $read_(_target) as Buffer) || '')
+        const contentTarget = ((await $read_<Buffer>(_target)) || '')
           .toString()
           .replace(/\r/gu, '')
           .trim()
@@ -50,13 +50,13 @@ const main_ = async (): Promise<void> => {
   )
   $info('all test(s) passed!')
 
-  await checkVersion_()
+  await checkVersion()
 }
 
-const pickTarget = (): string => {
+const pickTarget = () => {
   const argv = $argv()
-  return argv._[1] || argv.target || ''
+  return argv._[1] as string || argv.target as string || ''
 }
 
 // export
-export default main_
+export default main

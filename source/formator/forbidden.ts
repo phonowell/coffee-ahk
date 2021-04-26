@@ -19,12 +19,12 @@ const listForbidden = [
 // function
 
 const main = (
-  ctx: Context
+  ctx: Context,
 ): boolean => {
 
   const { type } = ctx
 
-  if (listForbidden.includes(type as typeof listForbidden[number]))
+  if (type in listForbidden)
     throw new Error(`ahk/forbidden: '${type}' is not allowed`)
 
   if (type === 'post_if')

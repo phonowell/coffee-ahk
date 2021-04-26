@@ -21,7 +21,7 @@ const insert = (
 
   if (ctx.flag[flag]) {
 
-    const listItem: Item[] = (fn as Item[]).map(it => Item.new(
+    const listItem: Item[] = fn.map(it => Item.new(
       it.type,
       it.value,
       it.scope

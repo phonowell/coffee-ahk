@@ -2,6 +2,7 @@
 - .eslintrc.yaml
 - .gitignore
 - .npmignore
+- .prettierrc.yaml
 - .stylintrc
 - coffeelint.json
 - license.md

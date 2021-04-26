@@ -4,7 +4,7 @@ import Item from '../../module/Item'
 // function
 
 const main = (
-  ctx: Context
+  ctx: Context,
 ): void => {
 
   const { content } = ctx
