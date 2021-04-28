@@ -33,7 +33,7 @@ const load = async (): Promise<string[]> => {
     '!*.d.ts',
   ])
 
-  const listResult = listSource.map((source) => {
+  const listResult = listSource.map(source => {
     const basename = $getBasename(source)
     return basename === 'alice'
       ? ''
@@ -47,7 +47,7 @@ const main = async (): Promise<void> => {
 
   const task = $argv()._[0]
     ? $argv()._[0].toString()
-    : await (async () => ask(await load()))()
+    : await ask(await load())
 
   if (!task) return
   await run(task)

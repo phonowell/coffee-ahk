@@ -20,7 +20,7 @@ type Option = {
 
 const ask = async (
   source: string,
-  target: string
+  target: string,
 ): Promise<string> => {
 
   const isExisted = [
@@ -91,8 +91,9 @@ const load = async (): Promise<string[]> => {
 
   $info().pause()
   const listData = await Promise.all<string[]>(
-    (await $source_('./data/sync/**/*.yaml'))
-      .map(source => $read_(source)),
+    (await $source_('./data/sync/**/*.yaml')).map(
+      source => $read_(source),
+    ),
   )
   $info().resume()
 
