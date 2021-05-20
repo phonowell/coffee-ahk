@@ -13,14 +13,14 @@
   "description": "coffeescript -> ahk",
   "devDependencies": {
     "@types/cson": "^0.0.31",
-    "@types/lodash": "^4.14.168",
-    "@types/node": "^15.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.22.0",
-    "@typescript-eslint/parser": "^4.22.0",
-    "eslint": "^7.25.0",
+    "@types/lodash": "^4.14.169",
+    "@types/node": "^15.3.1",
+    "@typescript-eslint/eslint-plugin": "^4.24.0",
+    "@typescript-eslint/parser": "^4.24.0",
+    "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.3.0"
   },
   "eslintConfig": {
     "extends": [

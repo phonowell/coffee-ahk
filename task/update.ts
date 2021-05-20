@@ -18,7 +18,7 @@ type Package = {
 const main = async (): Promise<void> => {
 
   const source = './package.json'
-  const pkg: Package = await $read_<Package>(source)
+  const pkg = await $read_<Package>(source)
   const listCmd: string[] = []
 
   if (pkg.dependencies)
