@@ -4,23 +4,25 @@
     "url": "https://github.com/phonowell/coffee-ahk/issues"
   },
   "dependencies": {
+    "coffeescript": "^2.5.1",
     "cson": "^7.20.0",
-    "fire-keeper": "^0.0.190",
-    "iconv-lite": "^0.6.2",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.2.4"
+    "fire-keeper": "^0.0.191",
+    "iconv-lite": "^0.6.3",
+    "kleur": "^4.1.4",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
   },
   "description": "coffeescript -> ahk",
   "devDependencies": {
-    "@types/cson": "^0.0.31",
-    "@types/lodash": "^4.14.169",
-    "@types/node": "^15.3.1",
-    "@typescript-eslint/eslint-plugin": "^4.24.0",
-    "@typescript-eslint/parser": "^4.24.0",
-    "eslint": "^7.26.0",
+    "@types/cson": "^7.20.0",
+    "@types/lodash": "^4.14.171",
+    "@types/node": "^16.4.2",
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^4.28.4",
+    "eslint": "^7.31.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "prettier": "^2.3.0"
+    "prettier": "^2.3.2"
   },
   "eslintConfig": {
     "extends": [
@@ -46,8 +48,9 @@
   "scripts": {
     "alice": "ts-node task/alice",
     "build": "npm run alice build",
-    "test": "npm run alice test"
+    "test": "npm run alice test",
+    "watch": "npm run alice watch"
   },
   "url": "https://github.com/phonowell/coffee-ahk",
-  "version": "0.0.37"
+  "version": "0.0.38"
 }

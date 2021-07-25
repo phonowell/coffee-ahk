@@ -93,10 +93,7 @@ const main = (
       return
     }
 
-    // find `fn(x = x)`
-    //            ^
-    if (!pick(ctx, item, i))
-      listContent.push(item)
+    if (!pick(ctx, item, i)) listContent.push(item)
   })
 
   // insert
@@ -114,6 +111,8 @@ const pick = (
 
   const { content } = ctx
 
+  // find `fn(x = x)`
+  //            ^
   if (!Item.equal(item, 'sign', '=')) return false
   if (item.scope[item.scope.length - 1] !== 'parameter') return false
 

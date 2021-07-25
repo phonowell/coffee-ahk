@@ -98,7 +98,7 @@ const pickContext = (
       Item.equal(prev, 'for', 'for')
       || Item.equal(next, 'sign', '=')
       || Item.equal(next, 'for-in')
-      // || it.scope[it.scope.length - 1] === 'parameter'
+      || it.scope[it.scope.length - 1] === 'parameter'
     ))
   }
 
