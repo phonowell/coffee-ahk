@@ -1,11 +1,11 @@
+import $read from 'fire-keeper/read'
+import $source from 'fire-keeper/source'
 import cson from 'cson'
 import getDirname from 'fire-keeper/getDirname'
 import iconv from 'iconv-lite'
 import last from 'lodash/last'
 import parseJson from 'fire-keeper/parseJson'
 import parseString from 'fire-keeper/parseString'
-import read_ from 'fire-keeper/read_'
-import source_ from 'fire-keeper/source_'
 import trim from 'lodash/trim'
 import type from 'fire-keeper/type'
 
@@ -70,15 +70,15 @@ const getListSource = async (
     || input.endsWith('.json')
     || input.endsWith('.yaml')
   )
-    list = await source_(input)
-  else list = await source_(`${input}.coffee`)
+    list = await $source(input)
+  else list = await $source(`${input}.coffee`)
 
-  if (!list.length) list = await source_(`${input}/index.coffee`)
+  if (!list.length) list = await $source(`${input}/index.coffee`)
   if (!list.length) {
     const name = last(input.split('/'))
-    const pkg = await read_<{ main: string }>(`./node_modules/${name}/package.json`)
+    const pkg = await $read<{ main: string }>(`./node_modules/${name}/package.json`)
     if (pkg && pkg.main)
-      list = await source_(`./node_modules/${name}/${pkg.main}`)
+      list = await $source(`./node_modules/${name}/${pkg.main}`)
   }
 
   return list
@@ -111,7 +111,7 @@ const load = async ({
   for (const src of listSource) {
 
     // eslint-disable-next-line no-await-in-loop
-    let content = await read_<string>(src)
+    let content = await $read<string>(src)
     if (type(content) === 'object')
       content = parseString(content)
 

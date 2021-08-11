@@ -1,4 +1,4 @@
-import $source_ from 'fire-keeper/source_'
+import $source from 'fire-keeper/source'
 import c2a from '../source'
 
 // function
@@ -6,7 +6,7 @@ import c2a from '../source'
 const main = async () => {
 
   await Promise.all(
-    (await $source_('./script/segment/*.coffee')).map(
+    (await $source('./script/segment/*.coffee')).map(
       source => c2a(source, {
         ast: true,
         insertTranspilerInformation: false,

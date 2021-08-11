@@ -1,11 +1,11 @@
-import $compile_ from 'fire-keeper/compile_'
-import $remove_ from 'fire-keeper/remove_'
+import $compile from 'fire-keeper/compile'
+import $remove from 'fire-keeper/remove'
 
 // function
 
 const compile = async () => {
 
-  await $compile_(
+  await $compile(
     './source/**/*.ts',
     './dist',
     {
@@ -21,7 +21,7 @@ const main = async () => {
 }
 
 const prepare = async () => {
-  await $remove_('./dist')
+  await $remove('./dist')
 }
 
 // export

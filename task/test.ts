@@ -1,16 +1,16 @@
 import $argv from 'fire-keeper/argv'
 import $i from 'fire-keeper/i'
 import $info from 'fire-keeper/info'
-import $read_ from 'fire-keeper/read_'
-import $source_ from 'fire-keeper/source_'
+import $read from 'fire-keeper/read'
+import $source from 'fire-keeper/source'
 import c2a from '../source'
 
 // function
 
 const checkVersion = async () => {
 
-  const { version } = await $read_<{ version: string }>('./package.json')
-  const content = await $read_<string>('./source/renderer/index.ts')
+  const { version } = await $read<{ version: string }>('./package.json')
+  const content = await $read<string>('./source/renderer/index.ts')
 
   if (!content.includes(version))
     throw new Error('found different version')
@@ -21,11 +21,11 @@ const main = async () => {
   const target = pickTarget()
 
   await Promise.all(
-    (await $source_(`./script/test/**/${target || '*'}.coffee`)).map(
+    (await $source(`./script/test/**/${target || '*'}.coffee`)).map(
       source => (async () => {
 
         const _target = source.replace('.coffee', '.ahk')
-        const contentTarget = ((await $read_<Buffer>(_target)) || '')
+        const contentTarget = ((await $read<Buffer>(_target)) || '')
           .toString()
           .replace(/\r/gu, '')
           .trim()
