@@ -6,22 +6,22 @@
   "dependencies": {
     "coffeescript": "^2.5.1",
     "cson": "^7.20.0",
-    "fire-keeper": "^0.0.192",
+    "fire-keeper": "^0.0.193",
     "iconv-lite": "^0.6.3",
     "kleur": "^4.1.4",
-    "ts-node": "^10.2.0",
+    "ts-node": "^10.2.1",
     "typescript": "^4.3.5"
   },
   "description": "coffeescript -> ahk",
   "devDependencies": {
     "@types/cson": "^7.20.0",
     "@types/lodash": "^4.14.172",
-    "@types/node": "^16.4.13",
-    "@typescript-eslint/eslint-plugin": "^4.29.1",
-    "@typescript-eslint/parser": "^4.29.1",
+    "@types/node": "^16.7.2",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-prettier": "^3.4.1",
     "prettier": "^2.3.2"
   },
   "eslintConfig": {
@@ -52,5 +52,5 @@
     "watch": "npm run alice watch"
   },
   "url": "https://github.com/phonowell/coffee-ahk",
-  "version": "0.0.38"
+  "version": "0.0.39"
 }

@@ -1,13 +1,13 @@
+import $getDirname from 'fire-keeper/getDirname'
+import $parseJson from 'fire-keeper/parseJson'
+import $parseString from 'fire-keeper/parseString'
 import $read from 'fire-keeper/read'
 import $source from 'fire-keeper/source'
+import $type from 'fire-keeper/type'
 import cson from 'cson'
-import getDirname from 'fire-keeper/getDirname'
 import iconv from 'iconv-lite'
 import last from 'lodash/last'
-import parseJson from 'fire-keeper/parseJson'
-import parseString from 'fire-keeper/parseString'
 import trim from 'lodash/trim'
-import type from 'fire-keeper/type'
 
 // interface
 
@@ -29,10 +29,11 @@ const decode = ({
   content, entry, source,
 }: OptionDecode) => {
 
-  if (source.endsWith('.ahk') && typeof content !== 'string') {
-    const cont = iconv.decode(content, 'utf8', {
-      addBOM: true,
-    })
+  if (
+    source.endsWith('.ahk')
+    && typeof content !== 'string'
+  ) {
+    const cont = iconv.decode(content, 'utf8', { addBOM: true })
     return `\`\`\`${cont}\`\`\``
   }
 
@@ -46,13 +47,32 @@ const decode = ({
     return list.join('\n')
   }
 
-  if (source.endsWith('.json') || source.endsWith('.yaml')) {
+  if (
+    source.endsWith('.json')
+    || source.endsWith('.yaml')
+  ) {
     if (!entry) return `\`\`\`${content}\`\`\``
-    const result = cson.stringify(parseJson(content))
+    const result = cson.stringify($parseJson(content))
     return `${entry} = ${result.includes('\n')
       ? `\n${result}`
       : result
       }`
+  }
+
+  if (
+    source.endsWith('.css')
+    || source.endsWith('.html')
+    || source.endsWith('.js')
+    || source.endsWith('.txt')
+  ) {
+    if (!entry) throw new Error(`invalid source '${source}'`)
+    return [
+      `${entry} = ''`,
+      `\`\`\`${entry} =`,
+      '(',
+      content,
+      ')```',
+    ].join('\n')
   }
 
   throw new Error(`invalid source '${source}'`)
@@ -65,12 +85,15 @@ const getListSource = async (
   let list: string[] = []
 
   if (
-    input.endsWith('.ahk')
+    !input.endsWith('.ahk')
     || input.endsWith('.coffee')
+    || input.endsWith('.css')
+    || input.endsWith('.html')
+    || input.endsWith('.js')
     || input.endsWith('.json')
+    || input.endsWith('.txt')
     || input.endsWith('.yaml')
-  )
-    list = await $source(input)
+  ) list = await $source(input)
   else list = await $source(`${input}.coffee`)
 
   if (!list.length) list = await $source(`${input}/index.coffee`)
@@ -99,7 +122,7 @@ const load = async ({
   const _path = trim(path, '\'" ')
 
   const filepath = [
-    getDirname(source),
+    $getDirname(source),
     _path,
   ].join('/')
 
@@ -110,14 +133,12 @@ const load = async ({
 
   for (const src of listSource) {
 
-    // eslint-disable-next-line no-await-in-loop
     let content = await $read<string>(src)
-    if (type(content) === 'object')
-      content = parseString(content)
+    if ($type(content) === 'object')
+      content = $parseString(content)
 
     listResult.push(
       content.includes('import ')
-        // eslint-disable-next-line no-await-in-loop
         ? await main(content, src)
         : decode({ content, entry, source: src })
     )
@@ -155,7 +176,6 @@ const main = async (
           .trim(),
       ]
 
-    // eslint-disable-next-line no-await-in-loop
     listResult.push(await load({ entry, path, source }))
   }
 

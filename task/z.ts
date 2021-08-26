@@ -1,11 +1,10 @@
-// import $ from 'fire-keeper'
-import transpile from '../source'
+import c2a from '../source'
 
 // function
 
 const main = async () => {
 
-  await transpile('./script/z', {
+  await c2a('./script/z', {
     displayCoffeescriptAst: true,
     salt: 'ahk',
     verbose: true,
