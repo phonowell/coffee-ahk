@@ -6,7 +6,7 @@
   "dependencies": {
     "coffeescript": "^2.5.1",
     "cson": "^7.20.0",
-    "fire-keeper": "^0.0.193",
+    "fire-keeper": "^0.0.194-fixed.1",
     "iconv-lite": "^0.6.3",
     "kleur": "^4.1.4",
     "ts-node": "^10.2.1",
@@ -52,5 +52,5 @@
     "watch": "npm run alice watch"
   },
   "url": "https://github.com/phonowell/coffee-ahk",
-  "version": "0.0.39"
+  "version": "0.0.39-fixed"
 }

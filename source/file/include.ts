@@ -65,7 +65,7 @@ const decode = ({
     || source.endsWith('.js')
     || source.endsWith('.txt')
   ) {
-    if (!entry) throw new Error(`invalid source '${source}'`)
+    if (!entry) throw new Error(`invalid source '${source}': 1`)
     return [
       `${entry} = ''`,
       `\`\`\`${entry} =`,
@@ -75,7 +75,7 @@ const decode = ({
     ].join('\n')
   }
 
-  throw new Error(`invalid source '${source}'`)
+  throw new Error(`invalid source '${source}': 2`)
 }
 
 const getListSource = async (
@@ -85,7 +85,7 @@ const getListSource = async (
   let list: string[] = []
 
   if (
-    !input.endsWith('.ahk')
+    input.endsWith('.ahk')
     || input.endsWith('.coffee')
     || input.endsWith('.css')
     || input.endsWith('.html')
@@ -127,7 +127,7 @@ const load = async ({
   ].join('/')
 
   const listSource = await getListSource(filepath)
-  if (!listSource.length) throw new Error(`invalid source ${path}`)
+  if (!listSource.length) throw new Error(`invalid source '${path}': 3`)
 
   const listResult: string[] = []
 

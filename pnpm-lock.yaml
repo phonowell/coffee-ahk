@@ -11,7 +11,7 @@ specifiers:
   eslint: ^7.32.0
   eslint-config-prettier: ^8.3.0
   eslint-plugin-prettier: ^3.4.1
-  fire-keeper: ^0.0.193
+  fire-keeper: ^0.0.194-fixed.1
   iconv-lite: ^0.6.3
   kleur: ^4.1.4
   prettier: ^2.3.2
@@ -21,7 +21,7 @@ specifiers:
 dependencies:
   coffeescript: 2.5.1
   cson: 7.20.0
-  fire-keeper: 0.0.193_typescript@4.3.5
+  fire-keeper: 0.0.194-fixed.1_typescript@4.3.5
   iconv-lite: 0.6.3
   kleur: 4.1.4
   ts-node: 10.2.1_d4454e6645704c22c739fde21b9a24fe
@@ -1965,8 +1965,8 @@ packages:
       parse-filepath: 1.0.2
     dev: false
 
-  /fire-keeper/0.0.193_typescript@4.3.5:
-    resolution: {integrity: sha512-/noyqdxsmB18Nlp/r6JLgfhtN5+DPowNPyZfI1Zb6axeyPmkWjU5mR/cLscmQV7NimczkOhm7VkhMgOEtzqzBw==}
+  /fire-keeper/0.0.194-fixed.1_typescript@4.3.5:
+    resolution: {integrity: sha512-L62IHZJJLF5g1EV7mFPQARqvcRU6unWH5IGX9s9bc07TKLaqtujg40aw1ub24405Jaaip6gn4vPLhI8rTjObug==}
     dependencies:
       archiver: 5.3.0
       download: 8.0.0
