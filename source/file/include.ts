@@ -67,11 +67,10 @@ const decode = ({
   ) {
     if (!entry) throw new Error(`invalid source '${source}': 1`)
     return [
-      `${entry} = ''`,
-      `\`\`\`${entry} =`,
+      `${entry} = \`\`\`"`,
       '(',
       content,
-      ')```',
+      ')"\`\`\`',
     ].join('\n')
   }
 
