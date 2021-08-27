@@ -69,7 +69,7 @@ const decode = ({
     return [
       `${entry} = \`\`\`"`,
       '(',
-      content,
+      content.toString().replace(/"/g, '""'),
       ')"\`\`\`',
     ].join('\n')
   }

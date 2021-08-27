@@ -52,5 +52,5 @@
     "watch": "npm run alice watch"
   },
   "url": "https://github.com/phonowell/coffee-ahk",
-  "version": "0.0.39-fixed.2"
+  "version": "0.0.39-fixed.3"
 }
