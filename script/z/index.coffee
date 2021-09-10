@@ -1,3 +1,5 @@
-import js from 'include/a.js'
+alert = (msg) -> `msgbox, % msg`
 
-`msgbox, % js`
+a = 1
+a += 1
+alert a

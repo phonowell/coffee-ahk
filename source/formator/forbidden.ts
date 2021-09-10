@@ -9,12 +9,11 @@ const listForbidden = [
   '?',
   '?.',
   'bin?',
-  'compound_assign',
   // 'export',
   'from',
   'func_exist',
   'import',
-] as const
+]
 
 // function
 
@@ -24,7 +23,7 @@ const main = (
 
   const { type } = ctx
 
-  if (type in listForbidden)
+  if (listForbidden.includes(type))
     throw new Error(`ahk/forbidden: '${type}' is not allowed`)
 
   if (type === 'post_if')

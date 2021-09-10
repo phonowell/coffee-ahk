@@ -14,6 +14,7 @@ specifiers:
   fire-keeper: ^0.0.194-fixed.1
   iconv-lite: ^0.6.3
   kleur: ^4.1.4
+  lodash: ^4.17.21
   prettier: ^2.3.2
   ts-node: ^10.2.1
   typescript: ^4.3.5
@@ -24,6 +25,7 @@ dependencies:
   fire-keeper: 0.0.194-fixed.1_typescript@4.3.5
   iconv-lite: 0.6.3
   kleur: 4.1.4
+  lodash: 4.17.21
   ts-node: 10.2.1_d4454e6645704c22c739fde21b9a24fe
   typescript: 4.3.5
 
