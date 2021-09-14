@@ -29,14 +29,13 @@ const decode = ({
   content, entry, source,
 }: OptionDecode) => {
 
-  if (
-    source.endsWith('.ahk')
-    && typeof content !== 'string'
-  ) {
+  // .ahk
+  if (source.endsWith('.ahk') && content instanceof Buffer) {
     const cont = iconv.decode(content, 'utf8', { addBOM: true })
     return `\`\`\`${cont}\`\`\``
   }
 
+  // .coffee
   if (source.endsWith('.coffee') && typeof content === 'string') {
     if (!entry) return content
     // closure
@@ -47,10 +46,8 @@ const decode = ({
     return list.join('\n')
   }
 
-  if (
-    source.endsWith('.json')
-    || source.endsWith('.yaml')
-  ) {
+  // .json .yaml
+  if (source.endsWith('.json') || source.endsWith('.yaml')) {
     if (!entry) return `\`\`\`${content}\`\`\``
     const result = cson.stringify($parseJson(content))
     return `${entry} = ${result.includes('\n')
@@ -59,6 +56,7 @@ const decode = ({
       }`
   }
 
+  // .css .html .js .txt
   if (
     source.endsWith('.css')
     || source.endsWith('.html')
@@ -81,9 +79,7 @@ const getListSource = async (
   input: string,
 ) => {
 
-  let list: string[] = []
-
-  if (
+  let list: string[] = (
     input.endsWith('.ahk')
     || input.endsWith('.coffee')
     || input.endsWith('.css')
@@ -92,8 +88,9 @@ const getListSource = async (
     || input.endsWith('.json')
     || input.endsWith('.txt')
     || input.endsWith('.yaml')
-  ) list = await $source(input)
-  else list = await $source(`${input}.coffee`)
+  )
+    ? await $source(input)
+    : await $source(`${input}.coffee`)
 
   if (!list.length) list = await $source(`${input}/index.coffee`)
   if (!list.length) {
@@ -112,11 +109,11 @@ const load = async ({
 
   // import xxx from 'xxx/*'
   if (entry && path.includes('*'))
-    throw new Error(`unable to set entry for batch import: import ${entry} from ${path}`)
+    throw new Error(`unable to set entry for batch import: import ${entry} from '${path}'`)
 
   // import {xxx} from 'xxx'
   if (entry.includes('{'))
-    throw new Error(`cannot use deconstructed import: import ${entry} from ${path}`)
+    throw new Error(`cannot use deconstructed import: import ${entry} from '${path}'`)
 
   const _path = trim(path, '\'" ')
 
