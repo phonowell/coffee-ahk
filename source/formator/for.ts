@@ -28,15 +28,13 @@ const main = (
       list.unshift(content.pop().value)
     }
 
-    if (type === 'forin')
-      list.reverse()
+    if (type === 'forin') list.reverse()
 
-    if (list.length === 1)
-      list.unshift(
-        type === 'forin'
-          ? '__index_for__'
-          : '__key_for__'
-      )
+    if (list.length === 1) list.unshift(
+      type === 'forin'
+        ? '__index_for__'
+        : '__key_for__'
+    )
 
     content
       .push('identifier', list[0])

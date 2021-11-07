@@ -27,8 +27,7 @@ const main = (
   }
 
   if (type === 'property') {
-    if (['prototype', 'this'].includes(content.last.type))
-      content.push('.')
+    if (['prototype', 'this'].includes(content.last.type)) content.push('.')
     content.push('property', value)
     return true
   }

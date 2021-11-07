@@ -68,8 +68,7 @@ class Content {
   ): this {
 
     const it = Item.new(...args)
-    if (!it.scope.length)
-      it.scope = [...scope.list]
+    if (!it.scope.length) it.scope = [...scope.list]
     this.list.unshift(it)
     return this
   }

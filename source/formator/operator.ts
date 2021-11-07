@@ -17,8 +17,7 @@ const main = (
       const { last } = content
 
       if (last.type === 'math' || last.type === 'negative') {
-        if (last.type === 'negative')
-          last.type = 'math'
+        if (last.type === 'negative') last.type = 'math'
         content.push('negative', '+')
         return true
       }
@@ -35,8 +34,7 @@ const main = (
       const { last } = content
 
       if (!['identifier', 'math'].includes(last.type)) {
-        if (last.type === 'negative')
-          last.type = 'math'
+        if (last.type === 'negative') last.type = 'math'
         content.push('negative', '-')
         return true
       }

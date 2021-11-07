@@ -48,25 +48,23 @@ const main = (
 
       const indent = pickIndent(i - 1)
 
-      for (let j = 0; j < listPre.length; j++) {
-        listContent = [
-          ...listContent,
-          // \n xxx = token[n]
-          ...[
-            ['new-line', indent.toString()],
-            ...listPre[listPre.length - j - 1].map(it => [it.type, it.value]),
-            ['sign', '='],
-            ['identifier', token],
-            ['edge', 'index-start'],
-            ['number', (j + 1).toString()],
-            ['edge', 'index-end'],
-          ].map(args => Item.new(
-            args[0] as Item['type'],
-            args[1],
-            item.scope,
-          )),
-        ]
-      }
+      listPre.forEach((_, j) => listContent = [
+        ...listContent,
+        // \n xxx = token[n]
+        ...[
+          ['new-line', indent.toString()],
+          ...listPre[listPre.length - j - 1].map(it => [it.type, it.value]),
+          ['sign', '='],
+          ['identifier', token],
+          ['edge', 'index-start'],
+          ['number', (j + 1).toString()],
+          ['edge', 'index-end'],
+        ].map(args => Item.new(
+          args[0] as Item['type'],
+          args[1],
+          item.scope,
+        )),
+      ])
 
       listPre.length = 0
       listContent.push(item)

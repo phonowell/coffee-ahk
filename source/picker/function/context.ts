@@ -97,8 +97,7 @@ const main = (
   })
 
   // insert
-  for (const [index, listItem] of sortBy(listCache, item => item[0]).reverse())
-    listContent.splice(index, 0, ...listItem)
+  for (const [index, listItem] of sortBy(listCache, item => item[0]).reverse()) listContent.splice(index, 0, ...listItem)
 
   content.load(listContent)
 }

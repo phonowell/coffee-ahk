@@ -13,8 +13,7 @@ const main = (
 
     if (value === '\n') {
 
-      if (Item.equal(content.last, 'bracket', '}-'))
-        content.last.value = '}'
+      if (Item.equal(content.last, 'bracket', '}-')) content.last.value = '}'
 
       if (['array', 'call', 'object', 'parameter'].includes(scope.last)) {
         if (!Item.equal(content.last, 'sign', ',')) {
@@ -30,8 +29,7 @@ const main = (
 
     if (value === ';') {
 
-      if (Item.equal(content.last, 'bracket', '}-'))
-        content.last.value = '}'
+      if (Item.equal(content.last, 'bracket', '}-')) content.last.value = '}'
 
       content.push('new-line', ctx.indent.toString())
       return true

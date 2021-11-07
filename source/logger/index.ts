@@ -26,8 +26,7 @@ const main = (
   for (let i = 0; i < ast.length; i++) {
     const item = ast[i]
     console.log(i, item)
-    if (item.type === 'new-line')
-      log(++line)
+    if (item.type === 'new-line') log(++line)
   }
 
   log('eof')

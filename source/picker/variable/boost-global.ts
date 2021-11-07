@@ -36,9 +36,7 @@ const main = (
       Item.equal(content.eq(i + 1), 'identifier', prev.value)
       && content.eq(i + 2).type === 'new-line'
     ) {
-      listContent.splice(
-        listContent.length - 2, 2
-      )
+      listContent.splice(listContent.length - 2, 2)
       flagIgnore = 2
       return
     }

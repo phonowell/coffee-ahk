@@ -69,8 +69,7 @@ const main = (
 
   if (listCache.length) {
     const listContent: Item[] = [...content.list]
-    for (const it of listCache)
-      listContent.splice(it[0], 0, ...it[1])
+    for (const it of listCache) listContent.splice(it[0], 0, ...it[1])
     content.load(listContent)
   }
 }

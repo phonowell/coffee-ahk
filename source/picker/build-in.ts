@@ -28,7 +28,7 @@ const insert = (
     ))
 
     listItem[1].value = listItem[1].value
-      .replace(/_salt_/gu, `_${ctx.option.salt}_`)
+      .replace(/_salt_/g, `_${ctx.option.salt}_`)
 
     content.load([
       ...listItem,

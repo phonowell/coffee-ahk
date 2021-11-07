@@ -125,23 +125,19 @@ const main = (
     if (type === 'number') {
 
       const first = listUnwrap[0]
-      let list: Item[] = []
-
-      if (listUnwrap.length === 1) {
-        list = [
+      const list = listUnwrap.length === 1
+        ? [
           Item.new(
             first.type,
             (parseFloat(first.value) + 1).toString(),
             first.scope,
           ),
         ]
-      } else {
-        list = [
+        : [
           listUnwrap[listUnwrap.length - 1],
           Item.new('math', '+', first.scope),
           Item.new('number', '1', first.scope),
         ]
-      }
 
       update(
         [i + listUnwrap.length, i + listUnwrap.length],

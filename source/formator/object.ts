@@ -16,8 +16,7 @@ const main = (
       && !Item.equal(content.last, 'sign', '=')
     ) return true
 
-    if (content.last.type === 'new-line' && raw.generated)
-      content.pop()
+    if (content.last.type === 'new-line' && raw.generated) content.pop()
 
     scope.push('object')
     content.push('bracket', '{')
@@ -32,8 +31,7 @@ const main = (
       raw.generated
       && raw.origin
       && typeof raw.origin.indentSize === 'number'
-    )
-      content.push('bracket', '}-')
+    ) content.push('bracket', '}-')
     else content.push('bracket', '}')
     scope.pop()
     return true

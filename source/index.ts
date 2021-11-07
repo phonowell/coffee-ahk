@@ -30,7 +30,7 @@ const generatedSalt = (): string => {
     .padStart(11, '0')
 }
 
-const main_ = async (
+const main = async (
   source: string,
   option: Option = {}
 ): Promise<string> => {
@@ -62,22 +62,19 @@ const transpileAsFile = async (
 
   const [_source] = (await $source(_listSource))
     .filter(item => item.endsWith('.coffee'))
-  if (!_source)
-    throw new Error(`invalid source '${source}'`)
+  if (!_source) throw new Error(`invalid source '${source}'`)
 
-  const { read_, write_ } = await import('./file')
-  const content = await read_(_source)
+  const { read, write } = await import('./file')
+  const content = await read(_source)
 
   const result = start(content, option)
 
   if (option.verbose) {
-    if (option.displayCoffeescriptAst)
-      console.log(result.raw)
+    if (option.displayCoffeescriptAst) console.log(result.raw)
     log(result.ast)
   }
 
-  if (option.save)
-    await write_(_source, result, option)
+  if (option.save) await write(_source, result, option)
 
   return result.content
 }
@@ -90,8 +87,7 @@ const transpileAsText = (
   const result = start(content, option)
 
   if (option.verbose) {
-    if (option.displayCoffeescriptAst)
-      console.log(result.raw)
+    if (option.displayCoffeescriptAst) console.log(result.raw)
     log(result.ast)
   }
 
@@ -99,4 +95,4 @@ const transpileAsText = (
 }
 
 // export
-export default main_
+export default main

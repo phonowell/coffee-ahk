@@ -99,8 +99,7 @@ const getListSource = async (
   if (!list.length) {
     const name = last(input.split('/'))
     const pkg = await $read<{ main: string }>(`./node_modules/${name}/package.json`)
-    if (pkg && pkg.main)
-      list = await $source(`./node_modules/${name}/${pkg.main}`)
+    if (pkg && pkg.main) list = await $source(`./node_modules/${name}/${pkg.main}`)
   }
 
   return list
@@ -111,12 +110,10 @@ const load = async ({
 }: OptionLoad) => {
 
   // import xxx from 'xxx/*'
-  if (entry && path.includes('*'))
-    throw new Error(`unable to set entry for batch import: import ${entry} from ${path}`)
+  if (entry && path.includes('*')) throw new Error(`unable to set entry for batch import: import ${entry} from ${path}`)
 
   // import {xxx} from 'xxx'
-  if (entry.includes('{'))
-    throw new Error(`cannot use deconstructed import: import ${entry} from ${path}`)
+  if (entry.includes('{')) throw new Error(`cannot use deconstructed import: import ${entry} from ${path}`)
 
   const _path = trim(path, '\'" ')
 

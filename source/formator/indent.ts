@@ -14,16 +14,13 @@ const main = (
     // indent after '='
     if (Item.equal(content.last, 'sign', '=')) return true
 
-    if ([
-      'array', 'call', 'object', 'parameter',
-    ].includes(scope.last)) return true
+    if (['array', 'call', 'object', 'parameter'].includes(scope.last)) return true
     ctx.indent++
 
     const last = scope.last
     if (['case', 'for', 'function', 'switch'].includes(last)) {
       if (!['catch', 'class', 'else', 'if', 'while'].includes(scope.next)) {
-        if (last === 'case')
-          content.push('sign', ':')
+        if (last === 'case') content.push('sign', ':')
         content.push('edge', 'block-start')
       }
     }
