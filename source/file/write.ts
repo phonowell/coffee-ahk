@@ -13,7 +13,7 @@ const main = async (
     content: string
   },
   option: Option,
-) => {
+): Promise<void> => {
 
   const { basename, dirname } = getName(source)
 

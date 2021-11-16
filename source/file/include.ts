@@ -27,7 +27,7 @@ type OptionLoad = {
 
 const decode = ({
   content, entry, source,
-}: OptionDecode) => {
+}: OptionDecode): string => {
 
   if (
     source.endsWith('.ahk')
@@ -79,7 +79,7 @@ const decode = ({
 
 const getListSource = async (
   input: string,
-) => {
+): Promise<string[]> => {
 
   let list: string[] = []
 
@@ -107,7 +107,7 @@ const getListSource = async (
 
 const load = async ({
   entry, path, source,
-}: OptionLoad) => {
+}: OptionLoad): Promise<string> => {
 
   // import xxx from 'xxx/*'
   if (entry && path.includes('*')) throw new Error(`unable to set entry for batch import: import ${entry} from ${path}`)
@@ -146,7 +146,7 @@ const load = async ({
 const main = async (
   content: string,
   source: string,
-) => {
+): Promise<string> => {
 
   const listContent = content.split('\n')
 

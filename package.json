@@ -16,10 +16,10 @@
   "description": "coffeescript -> ahk",
   "devDependencies": {
     "@types/cson": "^7.20.1",
-    "@types/lodash": "^4.14.176",
-    "@types/node": "^16.11.6",
-    "@typescript-eslint/eslint-plugin": "^5.3.0",
-    "@typescript-eslint/parser": "^5.3.0",
+    "@types/lodash": "^4.14.177",
+    "@types/node": "^16.11.7",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.4.1"

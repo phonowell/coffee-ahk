@@ -5,7 +5,7 @@ import include from './include'
 
 const main = async (
   source: string,
-) => {
+): Promise<string> => {
 
   let src = source
 
