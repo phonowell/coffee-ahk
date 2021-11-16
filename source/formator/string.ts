@@ -33,12 +33,16 @@ const transAlias = (
   wrapper: string,
 ): string => {
 
-  let result = input
+  let result = input.substr(1, input.length - 2)
+
+  result = result
     .replace(/%/g, '`%')
     .replace(/\\b/g, '`b')
     .replace(/\\n/g, '`n')
     .replace(/\\r/g, '`r')
     .replace(/\\t/g, '`t')
+
+  result = `"${result.replace(/"/g, '""')}"`
 
   result = wrapper.length === 3
     ? result.replace(/\s*\n\s*/g, '')

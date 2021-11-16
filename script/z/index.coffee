@@ -1,5 +1,3 @@
-alert = (msg) -> `msgbox, % msg`
-
-a = 1
-a += 1
-alert a
+runjs """
+call("http#{"1"}")
+"""
