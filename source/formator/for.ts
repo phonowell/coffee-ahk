@@ -23,7 +23,7 @@ const main = (
     list.push(last.value)
 
     const _last = content.last
-    if (Item.equal(_last, 'sign', ',')) {
+    if (Item.is(_last, 'sign', ',')) {
       content.pop()
       list.unshift(content.pop().value)
     }

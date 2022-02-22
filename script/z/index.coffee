@@ -1,63 +1,12 @@
-class Promise
-
-  constructor: (executor) ->
-
-    @status = 'pending'
-    @value = ''
-    @reason = ''
-    @listCallbackResolved = []
-    @listCallbackRejected = []
-
-    resolve = (value) =>
-      unless @status == 'pending' then return
-      @status = 'fulfilled'
-      @value = value
-      for callback in @listCallbackResolved
-        callback value
-
-    reject = (reason) =>
-      unless @status == 'pending' then return
-      @status = 'rejected'
-      @reason = reason
-      for callback in @listCallbackRejected
-        callback reason
-
-    executor resolve, reject
-
-  then: (onFulfilled, onRejected) -> return new Promise (resolve, reject) ->
-
-    resolveFn = (value) ->
-      try
-        x = onFulfilled value
-        if x.__class == 'Promise'
-          x.then resolve, reject
-        else resolve x
-      catch error
-        reject error
-
-    rejectFn = (reason) ->
-      try
-        x = onRejected reason
-        if x.__class == 'Promise'
-          x.then resolve, reject
-        else resolve x
-      catch error
-        reject error
-
-    switch @status
-      when 'pending'
-        @listCallbackResolved.Push resolveFn
-        @listCallbackRejected.Push rejectFn
-      when 'fulfilled'
-        resolveFn @value
-      when 'rejected'
-        rejectFn @reason
-
-  catch: (rejectFn) -> return @then '', rejectFn
+do ->
+  a = [
+    await fn 1
+    await fn 2
+    await fn 3
+  ]
 
 do ->
-
-  new Promise (resolve) ->
-    fn = -> resolve 'hello'
-    `SetTimer, % fn, -1000`
-  .then (value) -> `MsgBox, % value`
+  (fn 1).then (v1) ->
+    (fn 2).then (v2) ->
+      (fn 3).then (v3) ->
+        a = [v1, v2, v3]

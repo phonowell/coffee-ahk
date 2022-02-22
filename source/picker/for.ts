@@ -17,7 +17,7 @@ const main = (
     if (!it) return 0
 
     if (
-      Item.equal(it, 'edge', 'block-start')
+      Item.is(it, 'edge', 'block-start')
       && it.scope[it.scope.length - 1] === 'for'
     ) return i
 
@@ -31,7 +31,7 @@ const main = (
     const it = content.eq(i)
     if (!it) return ''
 
-    if (Item.equal(it, 'for', 'for')) return content.eq(i + 1).value
+    if (Item.is(it, 'for', 'for')) return content.eq(i + 1).value
 
     return findName(i - 1)
   }
@@ -40,7 +40,7 @@ const main = (
   const listCache: [number, Item[]][] = []
   content.list.forEach((item, i) => {
 
-    if (!Item.equal(item, 'for-in', 'in')) return
+    if (!Item.is(item, 'for-in', 'in')) return
 
     const name = findName(i)
     if (

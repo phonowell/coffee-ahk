@@ -31,9 +31,9 @@ const main = (
     const it = content.eq(i)
     const last = listResult[listResult.length - 1]
 
-    if (Item.equal(it, 'edge', 'array-start')) return listResult
+    if (Item.is(it, 'edge', 'array-start')) return listResult
 
-    if (Item.equal(it, 'sign', ',')) listResult.push([])
+    if (Item.is(it, 'sign', ',')) listResult.push([])
     else last.unshift(it)
 
     listContent.pop()
@@ -72,11 +72,11 @@ const main = (
     }
 
     // find
-    if (!Item.equal(item, 'sign', '=')) {
+    if (!Item.is(item, 'sign', '=')) {
       listContent.push(item)
       return
     }
-    if (!Item.equal(content.eq(i - 1), 'edge', 'array-end')) {
+    if (!Item.is(content.eq(i - 1), 'edge', 'array-end')) {
       listContent.push(item)
       return
     }

@@ -12,7 +12,7 @@ const main = (
   if (type === 'indent') {
 
     // indent after '='
-    if (Item.equal(content.last, 'sign', '=')) return true
+    if (Item.is(content.last, 'sign', '=')) return true
 
     if (['array', 'call', 'object', 'parameter'].includes(scope.last)) return true
     ctx.indent++
@@ -46,7 +46,7 @@ const main = (
 
   if (type === 'outdent') {
 
-    if (Item.equal(content.last, 'bracket', '}-')) {
+    if (Item.is(content.last, 'bracket', '}-')) {
       content.last.value = '}'
       return true
     }

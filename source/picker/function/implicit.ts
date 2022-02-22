@@ -16,7 +16,7 @@ const findFunctionStart = (
   const { content } = ctx
   const it = content.eq(i)
 
-  if (Item.equal(it, 'edge', 'block-start')) return i
+  if (Item.is(it, 'edge', 'block-start')) return i
 
   return findFunctionStart(ctx, i + 1)
 }
@@ -32,8 +32,8 @@ const main = (
 
     listContent.push(item)
 
-    if (!Item.equal(item, 'edge', 'parameter-start')) return
-    if (Item.equal(content.eq(i - 1), 'property', '__New')) return
+    if (!Item.is(item, 'edge', 'parameter-start')) return
+    if (Item.is(content.eq(i - 1), 'property', '__New')) return
 
     const iStart = findFunctionStart(ctx, i)
 
@@ -81,7 +81,7 @@ const pickContext = (
   const it = content.eq(i)
 
   if (
-    Item.equal(it, 'edge', 'block-end')
+    Item.is(it, 'edge', 'block-end')
     && it.scope.join('|') === [
       ...item.scope.slice(0, item.scope.length - 1),
       'function',
@@ -95,9 +95,9 @@ const pickContext = (
     const prev = content.eq(i - 1)
     const next = content.eq(i + 1)
     cacheContext.set(it.value, (
-      Item.equal(prev, 'for', 'for')
-      || Item.equal(next, 'sign', '=')
-      || Item.equal(next, 'for-in')
+      Item.is(prev, 'for', 'for')
+      || Item.is(next, 'sign', '=')
+      || Item.is(next, 'for-in')
       || it.scope[it.scope.length - 1] === 'parameter'
     ))
   }
@@ -115,17 +115,17 @@ const pickParameter = (
   const it = content.eq(i)
 
   if (
-    Item.equal(it, 'edge', 'parameter-end')
+    Item.is(it, 'edge', 'parameter-end')
     && it.scope.join('|') === item.scope.join('|')
   ) return
 
   if (it.type === 'identifier') {
     const next = content.eq(i + 1)
     if (
-      Item.equal(next, 'sign', '=')
-      || Item.equal(next, 'sign', ',')
-      || Item.equal(next, 'sign', '...')
-      || Item.equal(next, 'edge', 'parameter-end')
+      Item.is(next, 'sign', '=')
+      || Item.is(next, 'sign', ',')
+      || Item.is(next, 'sign', '...')
+      || Item.is(next, 'edge', 'parameter-end')
     ) cacheParameter.add(it.value)
   }
 
@@ -142,8 +142,8 @@ const removeTrailingComma = (
   content.list.forEach((item, i) => {
 
     if (
-      Item.equal(item, 'sign', ',')
-      && Item.equal(content.eq(i + 1), 'edge', 'parameter-end')
+      Item.is(item, 'sign', ',')
+      && Item.is(content.eq(i + 1), 'edge', 'parameter-end')
     ) return
 
     listContent.push(item)

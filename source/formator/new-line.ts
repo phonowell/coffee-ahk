@@ -13,10 +13,10 @@ const main = (
 
     if (value === '\n') {
 
-      if (Item.equal(content.last, 'bracket', '}-')) content.last.value = '}'
+      if (Item.is(content.last, 'bracket', '}-')) content.last.value = '}'
 
       if (['array', 'call', 'object', 'parameter'].includes(scope.last)) {
-        if (!Item.equal(content.last, 'sign', ',')) {
+        if (!Item.is(content.last, 'sign', ',')) {
           if (content.last.type === 'new-line') content.pop()
           content.push('sign', ',')
         }
@@ -29,7 +29,7 @@ const main = (
 
     if (value === ';') {
 
-      if (Item.equal(content.last, 'bracket', '}-')) content.last.value = '}'
+      if (Item.is(content.last, 'bracket', '}-')) content.last.value = '}'
 
       content.push('new-line', ctx.indent.toString())
       return true

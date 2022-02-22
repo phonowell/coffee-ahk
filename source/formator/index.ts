@@ -1,5 +1,6 @@
 import $alias from './alias'
 import $array from './array'
+import $await from './await'
 import $boolean from './boolean'
 import $bracket from './bracket'
 import $class from './class'
@@ -33,8 +34,10 @@ import { Context } from '../entry/type'
 // variable
 
 const map = {
+  'new-line': $newLine,
   alias: $alias,
   array: $array,
+  await: $await,
   boolean: $boolean,
   bracket: $bracket,
   class: $class,
@@ -47,7 +50,6 @@ const map = {
   indent: $indent,
   indentifier: $indentifier,
   module: $module,
-  'new-line': $newLine,
   nil: $nil,
   number: $number,
   object: $object,

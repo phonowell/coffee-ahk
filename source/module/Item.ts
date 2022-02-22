@@ -8,6 +8,7 @@ const listType = [
   '++',
   '--',
   '.',
+  'await',
   'boolean',
   'bracket', // (){}
   'class',
@@ -42,11 +43,8 @@ const listType = [
 class Item {
 
   comment?: string[]
-
   scope: Scope[]
-
   type: typeof listType[number]
-
   value: string
 
   constructor(
@@ -69,7 +67,7 @@ class Item {
     return new Item(item.type, item.value, item.scope)
   }
 
-  static equal(
+  static is(
     item: Item,
     type: string,
     value?: string

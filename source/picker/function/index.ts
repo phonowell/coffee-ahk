@@ -1,6 +1,7 @@
+import { Context } from '../../entry/type'
+import $await from './await'
 import $class from './class'
 import $do from './do'
-import { Context } from '../../entry/type'
 import count from './counter'
 import injectContext from './context'
 import injectImplicitParamter from './implicit'
@@ -15,11 +16,14 @@ const main = (
   ctx: Context
 ): void => {
 
-  // from `fn: identifier(...)`
+  $await(ctx)
+
+  // mark function
+  // change its type from `fn: identifier(...)`
   // to `fn: function(...)`
   mark(ctx)
 
-  // list
+  // list all functions
   let listFn = count(ctx)
   validate(listFn)
 

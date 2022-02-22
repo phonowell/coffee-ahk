@@ -29,7 +29,7 @@ const catchIdentifier = (
   const name = item.value
 
   const next = content.eq(i + 1)
-  if (!Item.equal(next, 'sign', '=')) return
+  if (!Item.is(next, 'sign', '=')) return
 
   const next2 = content.eq(i + 2)
   const type = getType(next2)

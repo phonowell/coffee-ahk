@@ -13,7 +13,7 @@ const main = (
 
     if (
       scope.last === 'class'
-      && !Item.equal(content.last, 'sign', '=')
+      && !Item.is(content.last, 'sign', '=')
     ) return true
 
     if (content.last.type === 'new-line' && raw.generated) content.pop()

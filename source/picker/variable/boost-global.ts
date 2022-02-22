@@ -22,7 +22,7 @@ const main = (
 
     listContent.push(item)
 
-    if (!Item.equal(item, 'sign', '=')) return
+    if (!Item.is(item, 'sign', '=')) return
 
     const prev = content.eq(i - 1)
     if (prev.type !== 'identifier') return
@@ -33,7 +33,7 @@ const main = (
     cache.add(prev.value)
 
     if (
-      Item.equal(content.eq(i + 1), 'identifier', prev.value)
+      Item.is(content.eq(i + 1), 'identifier', prev.value)
       && content.eq(i + 2).type === 'new-line'
     ) {
       listContent.splice(listContent.length - 2, 2)

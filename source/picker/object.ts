@@ -26,7 +26,7 @@ const deconstruct = (
     i: number
   ): void => {
     const it = content.eq(i)
-    if (Item.equal(it, 'bracket', '{')) return
+    if (Item.is(it, 'bracket', '{')) return
     if (it.type === 'identifier') listPre.push(it.value)
     listContent.pop()
     pickPre(i - 1)
@@ -61,11 +61,11 @@ const deconstruct = (
     }
 
     // find
-    if (!Item.equal(item, 'sign', '=')) {
+    if (!Item.is(item, 'sign', '=')) {
       listContent.push(item)
       return
     }
-    if (!Item.equal(content.eq(i - 1), 'bracket', '}')) {
+    if (!Item.is(content.eq(i - 1), 'bracket', '}')) {
       listContent.push(item)
       return
     }
@@ -97,19 +97,19 @@ const deconstruct2 = (
 
     listContent.push(item)
 
-    if (!Item.equal(item, 'identifier')) return
+    if (!Item.is(item, 'identifier')) return
     if (item.scope[item.scope.length - 1] !== 'object') return
 
     const prev = content.eq(i - 1)
     if (!(
-      Item.equal(prev, 'bracket', '{')
-      || Item.equal(prev, 'sign', ',')
+      Item.is(prev, 'bracket', '{')
+      || Item.is(prev, 'sign', ',')
     )) return
 
     const next = content.eq(i + 1)
     if (!(
-      Item.equal(next, 'bracket', '}')
-      || Item.equal(next, 'sign', ',')
+      Item.is(next, 'bracket', '}')
+      || Item.is(next, 'sign', ',')
     )) return
 
     listContent.push(

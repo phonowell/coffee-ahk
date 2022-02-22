@@ -25,7 +25,7 @@ const replaceFn = (
     if (it.type !== 'identifier') return
     if (it.scope[it.scope.length - 1] !== 'call') return
     if (!listFn.has(it.value)) return
-    if (Item.equal(content.eq(i + 1), 'edge', 'call-start')) return
+    if (Item.is(content.eq(i + 1), 'edge', 'call-start')) return
 
     it.type = 'origin'
     it.value = `Func("${it.value}")`

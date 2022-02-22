@@ -62,7 +62,7 @@ const pickItem = (
   listResult.push(it)
 
   if (
-    !Item.equal(item, 'edge', 'block-end')
+    !Item.is(item, 'edge', 'block-end')
     || !isEqual(item.scope, scope)
   ) {
     item.type = 'void'
