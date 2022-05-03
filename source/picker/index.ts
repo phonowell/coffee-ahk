@@ -25,14 +25,12 @@ const main = (
   ctx: Context
 ): void => {
 
-  for (const key of Object.keys(map))
-    map[key](ctx)
+  for (const key of Object.keys(map)) map[key](ctx)
 
   $buildIn(ctx)
   $function(ctx)
 
-  if (ctx.option.checkType)
-    $type(ctx)
+  if (ctx.option.checkType) $type(ctx)
 }
 
 // export

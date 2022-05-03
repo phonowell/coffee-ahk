@@ -13,12 +13,12 @@ const appendBind = (
   content.list.forEach((item, i) => {
 
     listContent.push(item)
-    if (!Item.equal(item, 'edge', 'block-end')) return
+    if (!Item.is(item, 'edge', 'block-end')) return
     if (item.scope[item.scope.length - 1] !== 'function') return
     if (item.scope[item.scope.length - 2] !== 'class') return
 
     const index = findEdge(ctx, i, item)
-    if (Item.equal(content.eq(index - 1), 'property', 'constructor')) return
+    if (Item.is(content.eq(index - 1), 'property', 'constructor')) return
 
     const _scope = [[...item.scope]]
     _scope[1] = [..._scope[0], 'call']
@@ -43,7 +43,7 @@ const findEdge = (
   const it = content.eq(i)
   if (!it) return 0
   if (
-    Item.equal(it, 'edge', 'parameter-start')
+    Item.is(it, 'edge', 'parameter-start')
     && [
       ...it.scope.slice(0, it.scope.length - 1), 'function',
     ].join('|') === item.scope.join('|')
@@ -61,10 +61,10 @@ const formatSuper = (
   content.list.forEach((item, i) => {
 
     listContent.push(item)
-    if (!Item.equal(item, 'super')) return
+    if (!Item.is(item, 'super')) return
 
     const next = content.eq(i + 1)
-    if (!Item.equal(next, 'edge', 'call-start')) return
+    if (!Item.is(next, 'edge', 'call-start')) return
 
     const _scope = [...next.scope]
 
@@ -97,9 +97,9 @@ const prependThis = (
   content.list.forEach((item, i) => {
 
     listContent.push(item)
-    if (!Item.equal(item, 'edge', 'parameter-start')) return
+    if (!Item.is(item, 'edge', 'parameter-start')) return
 
-    if (Item.equal(
+    if (Item.is(
       listContent[listContent.length - 3],
       'property', 'constructor'
     )) {
@@ -119,7 +119,7 @@ const prependThis = (
     listContent.push(Item.new('this', 'this', _scope))
 
     const it = content.eq(i + 1)
-    if (Item.equal(it, 'edge', 'parameter-end')) return
+    if (Item.is(it, 'edge', 'parameter-end')) return
     listContent.push(Item.new('sign', ',', _scope))
   })
 
@@ -132,7 +132,7 @@ const renameConstructor = (
 
   const { content } = ctx
   content.list.forEach(it => {
-    if (!Item.equal(it, 'property', 'constructor')) return
+    if (!Item.is(it, 'property', 'constructor')) return
     it.value = '__New'
   })
 }

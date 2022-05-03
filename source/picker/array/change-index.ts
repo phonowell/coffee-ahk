@@ -32,7 +32,7 @@ const main = (
     listResult.push(it)
 
     if (
-      Item.equal(it, 'edge', 'index-start')
+      Item.is(it, 'edge', 'index-start')
       && it.scope.join('|') === item.scope.join('|')
     ) {
       countIgnore++
@@ -40,7 +40,7 @@ const main = (
     }
 
     if (
-      Item.equal(it, 'edge', 'index-end')
+      Item.is(it, 'edge', 'index-end')
       && it.scope.join('|') === item.scope.join('|')
     ) {
       countIgnore--
@@ -74,11 +74,11 @@ const main = (
     len = content.list.length
     const item = content.eq(i)
 
-    if (!Item.equal(item, 'edge', 'index-start')) continue
+    if (!Item.is(item, 'edge', 'index-start')) continue
 
     const next = content.eq(i + 1)
-    if (Item.equal(next, 'identifier', token)) continue
-    if (Item.equal(next, 'edge', 'index-end')) continue
+    if (Item.is(next, 'identifier', token)) continue
+    if (Item.is(next, 'edge', 'index-end')) continue
 
     const [iEnd, listItem] = pickItem(item, i)
     const listUnwrap: Item[] = listItem.slice(1, listItem.length - 1)
@@ -125,23 +125,19 @@ const main = (
     if (type === 'number') {
 
       const first = listUnwrap[0]
-      let list: Item[] = []
-
-      if (listUnwrap.length === 1) {
-        list = [
+      const list = listUnwrap.length === 1
+        ? [
           Item.new(
             first.type,
             (parseFloat(first.value) + 1).toString(),
             first.scope,
           ),
         ]
-      } else {
-        list = [
+        : [
           listUnwrap[listUnwrap.length - 1],
           Item.new('math', '+', first.scope),
           Item.new('number', '1', first.scope),
         ]
-      }
 
       update(
         [i + listUnwrap.length, i + listUnwrap.length],

@@ -1,5 +1,5 @@
+import $trim from 'lodash/trim'
 import { Context } from '../entry/type'
-import _ from 'lodash'
 
 // function
 
@@ -12,13 +12,9 @@ const main = (
   if (raw.comments) {
 
     const listComment: string[] = []
-    for (const comment of raw.comments) {
-      _.trim(
-        comment.content, '\n '
-      )
-        .split('\n')
-        .forEach(comm => listComment.push(comm))
-    }
+    raw.comments.forEach(comment => $trim(comment.content, '\n ')
+      .split('\n')
+      .forEach(comm => listComment.push(comm)))
 
     content.last.comment = listComment
     return true

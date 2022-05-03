@@ -1,8 +1,8 @@
-import read_ from './read'
-import write_ from './write'
+import read from './read'
+import write from './write'
 
 // export
 export {
-  read_,
-  write_,
+  read,
+  write,
 }

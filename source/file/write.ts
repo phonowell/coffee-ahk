@@ -13,7 +13,7 @@ const main = async (
     content: string
   },
   option: Option,
-) => {
+): Promise<void> => {
 
   const { basename, dirname } = getName(source)
 
@@ -21,8 +21,7 @@ const main = async (
     addBOM: true,
   }).toString())
 
-  if (option.ast)
-    await $write(`${dirname}/${basename}.ast.json`, data.ast)
+  if (option.ast) await $write(`${dirname}/${basename}.ast.json`, data.ast)
 }
 
 // export

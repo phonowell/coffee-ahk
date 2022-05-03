@@ -16,8 +16,7 @@ const catchFunction = (
   const lastType = getLastType(name, 'function')
   if (!lastType) return
 
-  if (lastType !== 'function')
-    throw new Error(`type error: '${name}' should be a 'function', but is incorrectly set to '${lastType}'`)
+  if (lastType !== 'function') throw new Error(`type error: '${name}' should be a 'function', but is incorrectly set to '${lastType}'`)
 }
 
 const catchIdentifier = (
@@ -30,7 +29,7 @@ const catchIdentifier = (
   const name = item.value
 
   const next = content.eq(i + 1)
-  if (!Item.equal(next, 'sign', '=')) return
+  if (!Item.is(next, 'sign', '=')) return
 
   const next2 = content.eq(i + 2)
   const type = getType(next2)
@@ -40,8 +39,7 @@ const catchIdentifier = (
   const lastType = getLastType(name, type)
   if (!lastType) return
 
-  if (type !== lastType)
-    throw new Error(`type error: '${name}' should be a(n) '${lastType}', but is incorrectly set to '${type}'`)
+  if (type !== lastType) throw new Error(`type error: '${name}' should be a(n) '${lastType}', but is incorrectly set to '${type}'`)
 }
 
 const getType = (
@@ -51,19 +49,15 @@ const getType = (
   if (item.type === 'boolean') return 'boolean'
   if (item.type === 'number') return 'number'
 
-  if (item.type === 'string')
-    return item.value !== '""'
-      ? 'string'
-      : 'unknown'
+  if (item.type === 'string') return item.value !== '""'
+    ? 'string'
+    : 'unknown'
 
-  if (item.type === 'edge' && item.value === 'array-start')
-    return 'array'
+  if (item.type === 'edge' && item.value === 'array-start') return 'array'
 
-  if (item.type === 'bracket' && item.value === '{')
-    return 'object'
+  if (item.type === 'bracket' && item.value === '{') return 'object'
 
-  if (item.type === 'identifier' && item.value === 'Func')
-    return 'function'
+  if (item.type === 'identifier' && item.value === 'Func') return 'function'
 
   return 'unknown'
 }
@@ -91,8 +85,7 @@ const main = (
   // each
   content.list.forEach((item, i) => {
 
-    if (!['function', 'identifier'].includes(item.type))
-      return
+    if (!['function', 'identifier'].includes(item.type)) return
 
     if (item.type === 'function') {
       catchFunction(item)

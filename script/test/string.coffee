@@ -23,3 +23,7 @@ a = """
   cup of #{name}
 </strong>
 """
+
+a = """
+call("http#{"s"}")
+"""

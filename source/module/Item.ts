@@ -8,6 +8,7 @@ const listType = [
   '++',
   '--',
   '.',
+  'await',
   'boolean',
   'bracket', // (){}
   'class',
@@ -42,11 +43,8 @@ const listType = [
 class Item {
 
   comment?: string[]
-
   scope: Scope[]
-
   type: typeof listType[number]
-
   value: string
 
   constructor(
@@ -65,41 +63,31 @@ class Item {
   static clone(
     item: Item
   ): Item {
-
-    if (!(item instanceof Item))
-      throw new Error('item must be an instance of Item')
-
+    if (!(item instanceof Item)) throw new Error('item must be an instance of Item')
     return new Item(item.type, item.value, item.scope)
   }
 
-  static equal(
+  static is(
     item: Item,
     type: string,
     value?: string
   ): boolean {
     if (!(item instanceof Item)) return false
-    if (typeof value === 'undefined')
-      return item.type === type
+    if (typeof value === 'undefined') return item.type === type
     return item.type === type && item.value === value
   }
 
   static isItem(
     input: unknown
   ): boolean {
-
     return input instanceof Item
   }
 
   static new(
     ...args: ConstructorParameters<typeof Item> | Parameters<typeof Item['clone']>
   ): Item {
-
-    if (args[0] instanceof Item)
-      return Item.clone(args[0])
-
-    if (typeof args[0] === 'string')
-      return new Item(...args as ConstructorParameters<typeof Item>)
-
+    if (args[0] instanceof Item) return Item.clone(args[0])
+    if (typeof args[0] === 'string') return new Item(...args as ConstructorParameters<typeof Item>)
     throw new Error(`invalid item: ${JSON.stringify(args)}`)
   }
 }

@@ -12,18 +12,15 @@ const main = (
   if (type === 'indent') {
 
     // indent after '='
-    if (Item.equal(content.last, 'sign', '=')) return true
+    if (Item.is(content.last, 'sign', '=')) return true
 
-    if ([
-      'array', 'call', 'object', 'parameter',
-    ].includes(scope.last)) return true
+    if (['array', 'call', 'object', 'parameter'].includes(scope.last)) return true
     ctx.indent++
 
     const last = scope.last
     if (['case', 'for', 'function', 'switch'].includes(last)) {
       if (!['catch', 'class', 'else', 'if', 'while'].includes(scope.next)) {
-        if (last === 'case')
-          content.push('sign', ':')
+        if (last === 'case') content.push('sign', ':')
         content.push('edge', 'block-start')
       }
     }
@@ -49,7 +46,7 @@ const main = (
 
   if (type === 'outdent') {
 
-    if (Item.equal(content.last, 'bracket', '}-')) {
+    if (Item.is(content.last, 'bracket', '}-')) {
       content.last.value = '}'
       return true
     }

@@ -12,13 +12,13 @@ const main = (
 
   content.list.forEach((item, i) => {
 
-    if (!Item.equal(item, 'statement', 'new')) {
+    if (!Item.is(item, 'statement', 'new')) {
       listContent.push(item)
       return
     }
 
     const it = content.eq(i + 1)
-    if (!Item.equal(it, 'identifier', 'Error')) {
+    if (!Item.is(it, 'identifier', 'Error')) {
       listContent.push(item)
       return
     }

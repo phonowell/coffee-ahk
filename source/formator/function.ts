@@ -12,9 +12,9 @@ const $arrow = (
   const { content, scope: _scope } = ctx
 
   // fn = -> xxx
-  if (!Item.equal(content.last, 'edge', 'parameter-end')) {
+  if (!Item.is(content.last, 'edge', 'parameter-end')) {
 
-    if (!Item.equal(
+    if (!Item.is(
       content.list[content.list.length - 2],
       'property', 'constructor'
     )) content.push('identifier', 'anonymous')
@@ -52,7 +52,7 @@ const $start = (
 
   const { scope: cache, content } = ctx
 
-  if (!Item.equal(
+  if (!Item.is(
     content.list[content.list.length - 2],
     'property', 'constructor'
   )) content.push('identifier', 'anonymous')
@@ -72,7 +72,7 @@ const findEdge = (
   const it = content.eq(i)
   if (!it) return 0
 
-  if (Item.equal(it, 'edge', 'parameter-start')) return i
+  if (Item.is(it, 'edge', 'parameter-start')) return i
   return findEdge(ctx, i - 1)
 }
 

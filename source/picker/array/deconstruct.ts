@@ -31,9 +31,9 @@ const main = (
     const it = content.eq(i)
     const last = listResult[listResult.length - 1]
 
-    if (Item.equal(it, 'edge', 'array-start')) return listResult
+    if (Item.is(it, 'edge', 'array-start')) return listResult
 
-    if (Item.equal(it, 'sign', ',')) listResult.push([])
+    if (Item.is(it, 'sign', ',')) listResult.push([])
     else last.unshift(it)
 
     listContent.pop()
@@ -48,25 +48,23 @@ const main = (
 
       const indent = pickIndent(i - 1)
 
-      for (let j = 0; j < listPre.length; j++) {
-        listContent = [
-          ...listContent,
-          // \n xxx = token[n]
-          ...[
-            ['new-line', indent.toString()],
-            ...listPre[listPre.length - j - 1].map(it => [it.type, it.value]),
-            ['sign', '='],
-            ['identifier', token],
-            ['edge', 'index-start'],
-            ['number', (j + 1).toString()],
-            ['edge', 'index-end'],
-          ].map(args => Item.new(
-            args[0] as Item['type'],
-            args[1],
-            item.scope,
-          )),
-        ]
-      }
+      listPre.forEach((_, j) => listContent = [
+        ...listContent,
+        // \n xxx = token[n]
+        ...[
+          ['new-line', indent.toString()],
+          ...listPre[listPre.length - j - 1].map(it => [it.type, it.value]),
+          ['sign', '='],
+          ['identifier', token],
+          ['edge', 'index-start'],
+          ['number', (j + 1).toString()],
+          ['edge', 'index-end'],
+        ].map(args => Item.new(
+          args[0] as Item['type'],
+          args[1],
+          item.scope,
+        )),
+      ])
 
       listPre.length = 0
       listContent.push(item)
@@ -74,11 +72,11 @@ const main = (
     }
 
     // find
-    if (!Item.equal(item, 'sign', '=')) {
+    if (!Item.is(item, 'sign', '=')) {
       listContent.push(item)
       return
     }
-    if (!Item.equal(content.eq(i - 1), 'edge', 'array-end')) {
+    if (!Item.is(content.eq(i - 1), 'edge', 'array-end')) {
       listContent.push(item)
       return
     }

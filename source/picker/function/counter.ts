@@ -9,7 +9,7 @@ const main = (
 ): Set<string> => {
 
   const { content } = ctx
-  const listFn: Set<string> = new Set()
+  const listFn = new Set<string>()
 
   content.list.forEach(item => {
     if (item.type !== 'function') return

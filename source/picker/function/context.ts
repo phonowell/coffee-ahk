@@ -57,7 +57,7 @@ const findIndex = (
   const it = content.eq(i)
   if (!it) return 0
   if (
-    Item.equal(it, 'edge', 'block-end')
+    Item.is(it, 'edge', 'block-end')
     && it.scope.join('|') === item.scope.join('|')
   ) return i
   return findIndex(ctx, item, i + 1)
@@ -86,7 +86,7 @@ const main = (
     }
 
     // cache
-    if (listParam.length && Item.equal(item, 'edge', 'block-start')) {
+    if (listParam.length && Item.is(item, 'edge', 'block-start')) {
       listContent.push(item)
       cache(ctx, item, i)
       listParam.length = 0
@@ -97,8 +97,7 @@ const main = (
   })
 
   // insert
-  for (const [index, listItem] of sortBy(listCache, item => item[0]).reverse())
-    listContent.splice(index, 0, ...listItem)
+  for (const [index, listItem] of sortBy(listCache, item => item[0]).reverse()) listContent.splice(index, 0, ...listItem)
 
   content.load(listContent)
 }
@@ -113,7 +112,7 @@ const pick = (
 
   // find `fn(x = x)`
   //            ^
-  if (!Item.equal(item, 'sign', '=')) return false
+  if (!Item.is(item, 'sign', '=')) return false
   if (item.scope[item.scope.length - 1] !== 'parameter') return false
 
   const itNext = content.eq(i + 1)
@@ -142,7 +141,7 @@ const pickItem = (
 
   if (
     it.scope.join('') === item.scope.join('')
-    && (Item.equal(it, 'sign', ',') || Item.equal(it, 'edge', 'parameter-end'))
+    && (Item.is(it, 'sign', ',') || Item.is(it, 'edge', 'parameter-end'))
   ) return listItem
 
   listItem.push(it)

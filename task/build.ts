@@ -20,9 +20,7 @@ const main = async () => {
   await compile()
 }
 
-const prepare = async () => {
-  await $remove('./dist')
-}
+const prepare = async () => await $remove('./dist')
 
 // export
 export default main

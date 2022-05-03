@@ -23,11 +23,9 @@ const main = (
 
   const { type } = ctx
 
-  if (listForbidden.includes(type))
-    throw new Error(`ahk/forbidden: '${type}' is not allowed`)
+  if (listForbidden.includes(type)) throw new Error(`ahk/forbidden: '${type}' is not allowed`)
 
-  if (type === 'post_if')
-    throw new Error("ahk/forbidden: 'post-if' is not allowed")
+  if (type === 'post_if') throw new Error("ahk/forbidden: 'post-if' is not allowed")
 
   return false
 }

@@ -57,13 +57,12 @@ const pickItem = (
   const it = Item.new(item)
 
   // reset scope
-  for (let j = 0; j < scope.length - 1; j++)
-    it.scope.shift()
+  for (let j = 0; j < scope.length - 1; j++) it.scope.shift()
 
   listResult.push(it)
 
   if (
-    !Item.equal(item, 'edge', 'block-end')
+    !Item.is(item, 'edge', 'block-end')
     || !isEqual(item.scope, scope)
   ) {
     item.type = 'void'
@@ -83,14 +82,12 @@ const pickItem = (
       })
     ].value, 10
   ) - 1
-  if (diff > 0) {
-    listResult.forEach(_it => {
-      if (_it.type !== 'new-line') return
-      let value = parseInt(_it.value, 10) - diff
-      if (!(value >= 0)) value = 0
-      _it.value = value.toString()
-    })
-  }
+  if (diff > 0) listResult.forEach(_it => {
+    if (_it.type !== 'new-line') return
+    let value = parseInt(_it.value, 10) - diff
+    if (!(value >= 0)) value = 0
+    _it.value = value.toString()
+  })
 
   return listResult
 }

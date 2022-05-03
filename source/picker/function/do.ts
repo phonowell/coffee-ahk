@@ -14,7 +14,7 @@ const main = (
   const listContent: Item[] = []
   content.list.forEach(item => {
 
-    if (flag && Item.equal(item, 'new-line')) {
+    if (flag && Item.is(item, 'new-line')) {
       flag = false
       const _scope: Item['scope'] = [...item.scope, 'call']
       listContent.push(
@@ -27,7 +27,7 @@ const main = (
       return
     }
 
-    if (!Item.equal(item, 'origin', '__mark:do__')) {
+    if (!Item.is(item, 'origin', '__mark:do__')) {
       listContent.push(item)
       return
     }
