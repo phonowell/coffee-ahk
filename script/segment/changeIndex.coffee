@@ -1,5 +1,5 @@
-__ci_salt__ = (input) ->
+__ci_salt__ = (__ipt__) ->
 
-  `if input is Number`
-  `  return input + 1`
-  return input
+  `if __ipt__ is Number`
+  `  return __ipt__ + 1`
+  return __ipt__

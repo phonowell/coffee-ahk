@@ -1,4 +1,4 @@
-__eie_salt__ = (callback) ->
-  unless IsFunc callback
+__eie_salt__ = (__callback__) ->
+  unless IsFunc __callback__
     return ''
-  return callback()
+  return __callback__()

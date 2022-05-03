@@ -1,6 +1,6 @@
-﻿global __eie_salt__ := anonymous(callback) {
-  if !(IsFunc(callback)) {
+﻿global __eie_salt__ := anonymous(__callback__) {
+  if !(IsFunc(__callback__)) {
     return ""
   }
-  return callback.Call()
+  return __callback__.Call()
 }

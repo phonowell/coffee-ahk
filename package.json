@@ -4,26 +4,26 @@
     "url": "https://github.com/phonowell/coffee-ahk/issues"
   },
   "dependencies": {
-    "coffeescript": "^2.5.1",
+    "coffeescript": "^2.7.0",
     "cson": "^7.20.0",
-    "fire-keeper": "^0.0.195-fixed.2",
+    "fire-keeper": "^0.0.199",
     "iconv-lite": "^0.6.3",
     "kleur": "^4.1.4",
     "lodash": "^4.17.21",
-    "ts-node": "^10.2.1",
-    "typescript": "^4.4.3"
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
   },
   "description": "coffeescript -> ahk",
   "devDependencies": {
-    "@types/cson": "^7.20.0",
-    "@types/lodash": "^4.14.172",
-    "@types/node": "^16.9.1",
-    "@typescript-eslint/eslint-plugin": "^4.31.1",
-    "@typescript-eslint/parser": "^4.31.1",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^3.4.1",
-    "prettier": "^2.4.0"
+    "@types/cson": "^7.20.1",
+    "@types/lodash": "^4.14.182",
+    "@types/node": "^17.0.31",
+    "@typescript-eslint/eslint-plugin": "^5.22.0",
+    "@typescript-eslint/parser": "^5.22.0",
+    "eslint": "^8.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.6.2"
   },
   "eslintConfig": {
     "extends": [
@@ -53,5 +53,5 @@
     "watch": "npm run alice watch"
   },
   "url": "https://github.com/phonowell/coffee-ahk",
-  "version": "0.0.40-fixed.1"
+  "version": "0.0.42"
 }
