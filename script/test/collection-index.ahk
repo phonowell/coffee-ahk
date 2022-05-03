@@ -12,8 +12,8 @@ a[__ci_ahk__.Call(1 - this.b)]
 a["string" . (b) . ""]
 a[__ci_ahk__.Call(fn.Call())]
 a[__ci_ahk__.Call(this.fn.Call())]
-ahk_1(input) {
-  if input is Number
-    return input + 1
-  return input
+ahk_1(__ipt__) {
+  if __ipt__ is Number
+    return __ipt__ + 1
+  return __ipt__
 }

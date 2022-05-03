@@ -20,8 +20,8 @@ a.b := __array__[2]
 a.c := __array__[3]
 global d := [1, 2, 3][1]
 a[__ci_ahk__.Call(b[__ci_ahk__.Call(c[__ci_ahk__.Call(d)])])]
-ahk_1(input) {
-  if input is Number
-    return input + 1
-  return input
+ahk_1(__ipt__) {
+  if __ipt__ is Number
+    return __ipt__ + 1
+  return __ipt__
 }
