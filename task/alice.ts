@@ -1,8 +1,8 @@
-import $argv from 'fire-keeper/argv'
-import $compact from 'lodash/compact'
-import $getBasename from 'fire-keeper/getBasename'
-import $prompt from 'fire-keeper/prompt'
-import $source from 'fire-keeper/source'
+import argv from 'fire-keeper/dist/argv'
+import compact from 'lodash/compact'
+import getBasename from 'fire-keeper/dist/getBasename'
+import glob from 'fire-keeper/dist/glob'
+import prompt from 'fire-keeper/dist/prompt'
 
 // interface
 
@@ -14,7 +14,7 @@ const ask = async (
   list: string[],
 ): Promise<string> => {
 
-  const answer = await $prompt({
+  const answer = await prompt({
     id: 'default-task',
     list,
     message: 'select a task',
@@ -25,28 +25,28 @@ const ask = async (
   return answer
 }
 
-const load = async (): Promise<string[]> => {
+const load = async () => {
 
-  const listSource = await $source([
+  const listSource = await glob([
     './task/*.js',
     './task/*.ts',
     '!*.d.ts',
   ])
 
   const listResult = listSource.map(source => {
-    const basename = $getBasename(source)
+    const basename = getBasename(source)
     return basename === 'alice'
       ? ''
       : basename
   })
 
-  return $compact(listResult)
+  return compact(listResult)
 }
 
-const main = async (): Promise<void> => {
+const main = async () => {
 
-  const task = $argv()._[0]
-    ? $argv()._[0].toString()
+  const task = argv()._[0]
+    ? argv()._[0].toString()
     : await ask(await load())
 
   if (!task) return
@@ -57,7 +57,7 @@ const run = async (
   task: string,
 ): Promise<void> => {
 
-  const [source] = await $source([
+  const [source] = await glob([
     `./task/${task}.js`,
     `./task/${task}.ts`,
   ])

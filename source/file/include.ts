@@ -1,12 +1,12 @@
-import $getDirname from 'fire-keeper/getDirname'
-import $parseJson from 'fire-keeper/parseJson'
-import $parseString from 'fire-keeper/parseString'
-import $read from 'fire-keeper/read'
-import $source from 'fire-keeper/source'
-import $type from 'fire-keeper/type'
+import $type from 'fire-keeper/dist/type'
 import cson from 'cson'
+import getDirname from 'fire-keeper/dist/getDirname'
+import glob from 'fire-keeper/dist/glob'
 import iconv from 'iconv-lite'
 import last from 'lodash/last'
+import read from 'fire-keeper/dist/read'
+import toJson from 'fire-keeper/dist/toJson'
+import toString from 'fire-keeper/dist/toString'
 import trim from 'lodash/trim'
 
 // interface
@@ -49,7 +49,7 @@ const decode = ({
   // .json .yaml
   if (source.endsWith('.json') || source.endsWith('.yaml')) {
     if (!entry) return `\`\`\`${content}\`\`\``
-    const result = cson.stringify($parseJson(content))
+    const result = cson.stringify(toJson(content))
     return `${entry} = ${result.includes('\n')
       ? `\n${result}`
       : result
@@ -89,15 +89,15 @@ const getListSource = async (
     || input.endsWith('.txt')
     || input.endsWith('.yaml')
   )
-    ? await $source(input)
-    : await $source(`${input}.coffee`)
+    ? await glob(input)
+    : await glob(`${input}.coffee`)
 
-  if (!list.length) list = await $source(`${input}/index.coffee`)
+  if (!list.length) list = await glob(`${input}/index.coffee`)
   if (!list.length) {
     const name = last(input.split('/'))
-    const pkg = await $read<{ main: string }>(`./node_modules/${name}/package.json`)
+    const pkg = await read<{ main: string }>(`./node_modules/${name}/package.json`)
     if (pkg && pkg.main)
-      list = await $source(`./node_modules/${name}/${pkg.main}`)
+      list = await glob(`./node_modules/${name}/${pkg.main}`)
   }
 
   return list
@@ -118,7 +118,7 @@ const load = async ({
   const _path = trim(path, '\'" ')
 
   const filepath = [
-    $getDirname(source),
+    getDirname(source),
     _path,
   ].join('/')
 
@@ -129,9 +129,9 @@ const load = async ({
 
   for (const src of listSource) {
 
-    let content = await $read<string>(src)
+    let content = await read<string>(src)
     if ($type(content) === 'object')
-      content = $parseString(content)
+      content = toString(content)
 
     listResult.push(
       content.includes('import ')

@@ -52,7 +52,7 @@ const transpileAsFile = async (
   option: Option
 ): Promise<string> => {
 
-  const $source = (await import('fire-keeper/source')).default
+  const glob = (await import('fire-keeper/dist/glob')).default
 
   const _listSource = [
     source,
@@ -60,7 +60,7 @@ const transpileAsFile = async (
     `${source}/index.coffee`,
   ]
 
-  const [_source] = (await $source(_listSource))
+  const [_source] = (await glob(_listSource))
     .filter(item => item.endsWith('.coffee'))
   if (!_source) throw new Error(`invalid source '${source}'`)
 
