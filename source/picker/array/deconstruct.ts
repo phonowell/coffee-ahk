@@ -3,31 +3,21 @@ import Item from '../../module/Item'
 
 // function
 
-const main = (
-  ctx: Context
-): void => {
-
+const main = (ctx: Context): void => {
   const { content } = ctx
 
   let listPre: Item[][] = []
   const token = '__array__'
   let listContent: typeof content.list = []
 
-  const pickIndent = (
-    i: number
-  ): number => {
-
+  const pickIndent = (i: number): number => {
     const it = content.eq(i)
     if (!it) return 0
     if (it.type === 'new-line') return parseInt(it.value, 10)
     return pickIndent(i - 1)
   }
 
-  const pickPre = (
-    i: number,
-    listResult: Item[][] = [[]]
-  ): Item[][] => {
-
+  const pickPre = (i: number, listResult: Item[][] = [[]]): Item[][] => {
     const it = content.eq(i)
     const last = listResult[listResult.length - 1]
 
@@ -42,29 +32,28 @@ const main = (
 
   // each
   content.list.forEach((item, i) => {
-
     // output
     if (listPre.length && item.type === 'new-line') {
-
       const indent = pickIndent(i - 1)
 
-      listPre.forEach((_, j) => listContent = [
-        ...listContent,
-        // \n xxx = token[n]
-        ...[
-          ['new-line', indent.toString()],
-          ...listPre[listPre.length - j - 1].map(it => [it.type, it.value]),
-          ['sign', '='],
-          ['identifier', token],
-          ['edge', 'index-start'],
-          ['number', (j + 1).toString()],
-          ['edge', 'index-end'],
-        ].map(args => Item.new(
-          args[0] as Item['type'],
-          args[1],
-          item.scope,
-        )),
-      ])
+      listPre.forEach(
+        (_, j) =>
+          (listContent = [
+            ...listContent,
+            // \n xxx = token[n]
+            ...[
+              ['new-line', indent.toString()],
+              ...listPre[listPre.length - j - 1].map(it => [it.type, it.value]),
+              ['sign', '='],
+              ['identifier', token],
+              ['edge', 'index-start'],
+              ['number', (j + 1).toString()],
+              ['edge', 'index-end'],
+            ].map(args =>
+              Item.new(args[0] as Item['type'], args[1], item.scope)
+            ),
+          ])
+      )
 
       listPre.length = 0
       listContent.push(item)

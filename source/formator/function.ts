@@ -4,29 +4,20 @@ import scope from '../module/Scope'
 
 // function
 
-const $arrow = (
-  ctx: Context,
-  type: string,
-): boolean => {
-
+const $arrow = (ctx: Context, type: string): boolean => {
   const { content, scope: _scope } = ctx
 
   // fn = -> xxx
   if (!Item.is(content.last, 'edge', 'parameter-end')) {
-
-    if (!Item.is(
-      content.list[content.list.length - 2],
-      'property', 'constructor'
-    )) content.push('identifier', 'anonymous')
+    if (
+      !Item.is(content.list[content.list.length - 2], 'property', 'constructor')
+    )
+      content.push('identifier', 'anonymous')
 
     _scope.push('parameter')
     content.push('edge', 'parameter-start')
 
-    if (type === '=>')
-      content
-        .push('this')
-        .push('sign', '=')
-        .push('this')
+    if (type === '=>') content.push('this').push('sign', '=').push('this')
 
     content.push('edge', 'parameter-end')
     _scope.pop()
@@ -46,16 +37,13 @@ const $arrow = (
   return true
 }
 
-const $start = (
-  ctx: Context,
-): boolean => {
-
+const $start = (ctx: Context): boolean => {
   const { scope: cache, content } = ctx
 
-  if (!Item.is(
-    content.list[content.list.length - 2],
-    'property', 'constructor'
-  )) content.push('identifier', 'anonymous')
+  if (
+    !Item.is(content.list[content.list.length - 2], 'property', 'constructor')
+  )
+    content.push('identifier', 'anonymous')
 
   cache.push('parameter')
   content.push('edge', 'parameter-start')
@@ -64,9 +52,8 @@ const $start = (
 
 const findEdge = (
   ctx: Context,
-  i: number = ctx.content.list.length - 1,
+  i: number = ctx.content.list.length - 1
 ): number => {
-
   const { content } = ctx
 
   const it = content.eq(i)
@@ -76,10 +63,7 @@ const findEdge = (
   return findEdge(ctx, i - 1)
 }
 
-const main = (
-  ctx: Context,
-): boolean => {
-
+const main = (ctx: Context): boolean => {
   const { content, type } = ctx
 
   if (['->', '=>'].includes(type)) return $arrow(ctx, type)

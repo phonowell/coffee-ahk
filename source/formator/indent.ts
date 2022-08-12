@@ -3,18 +3,15 @@ import Item from '../module/Item'
 
 // function
 
-const main = (
-  ctx: Context,
-): boolean => {
-
+const main = (ctx: Context): boolean => {
   const { content, scope, type } = ctx
 
   if (type === 'indent') {
-
     // indent after '='
     if (Item.is(content.last, 'sign', '=')) return true
 
-    if (['array', 'call', 'object', 'parameter'].includes(scope.last)) return true
+    if (['array', 'call', 'object', 'parameter'].includes(scope.last))
+      return true
     ctx.indent++
 
     const last = scope.last
@@ -45,22 +42,18 @@ const main = (
   }
 
   if (type === 'outdent') {
-
     if (Item.is(content.last, 'bracket', '}-')) {
       content.last.value = '}'
       return true
     }
 
-    if ([
-      'array', 'call', 'object', 'parameter',
-    ].includes(scope.last)) return true
+    if (['array', 'call', 'object', 'parameter'].includes(scope.last))
+      return true
     ctx.indent--
 
     if (!scope.length) return true
 
-    content
-      .push('new-line', ctx.indent.toString())
-      .push('edge', 'block-end')
+    content.push('new-line', ctx.indent.toString()).push('edge', 'block-end')
 
     scope.pop()
     return true

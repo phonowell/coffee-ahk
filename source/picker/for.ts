@@ -3,31 +3,23 @@ import Item from '../module/Item'
 
 // function
 
-const main = (
-  ctx: Context
-): void => {
-
+const main = (ctx: Context): void => {
   const { content } = ctx
 
-  const findIndex = (
-    i: number
-  ): number => {
-
+  const findIndex = (i: number): number => {
     const it = content.eq(i)
     if (!it) return 0
 
     if (
-      Item.is(it, 'edge', 'block-start')
-      && it.scope[it.scope.length - 1] === 'for'
-    ) return i
+      Item.is(it, 'edge', 'block-start') &&
+      it.scope[it.scope.length - 1] === 'for'
+    )
+      return i
 
     return findIndex(i + 1)
   }
 
-  const findName = (
-    i: number
-  ): string => {
-
+  const findName = (i: number): string => {
     const it = content.eq(i)
     if (!it) return ''
 
@@ -39,14 +31,10 @@ const main = (
   // each
   const listCache: [number, Item[]][] = []
   content.list.forEach((item, i) => {
-
     if (!Item.is(item, 'for-in', 'in')) return
 
     const name = findName(i)
-    if (
-      name.startsWith('__')
-      && name.endsWith('__')
-    ) return
+    if (name.startsWith('__') && name.endsWith('__')) return
 
     const index = findIndex(i)
 

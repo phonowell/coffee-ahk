@@ -23,18 +23,10 @@ const optionDefault = {
 // function
 
 const generatedSalt = (): string => {
-
-  return Math.random()
-    .toString(32)
-    .split('.')[1]
-    .padStart(11, '0')
+  return Math.random().toString(32).split('.')[1].padStart(11, '0')
 }
 
-const main = async (
-  source: string,
-  option: Option = {}
-): Promise<string> => {
-
+const main = async (source: string, option: Option = {}): Promise<string> => {
   const _option = {
     ...optionDefault,
     ...option,
@@ -51,17 +43,13 @@ const transpileAsFile = async (
   source: string,
   option: Option
 ): Promise<string> => {
-
   const glob = (await import('fire-keeper/dist/glob')).default
 
-  const _listSource = [
-    source,
-    `${source}.coffee`,
-    `${source}/index.coffee`,
-  ]
+  const _listSource = [source, `${source}.coffee`, `${source}/index.coffee`]
 
-  const [_source] = (await glob(_listSource))
-    .filter(item => item.endsWith('.coffee'))
+  const [_source] = (await glob(_listSource)).filter(item =>
+    item.endsWith('.coffee')
+  )
   if (!_source) throw new Error(`invalid source '${source}'`)
 
   const { read, write } = await import('./file')
@@ -79,11 +67,7 @@ const transpileAsFile = async (
   return result.content
 }
 
-const transpileAsText = (
-  content: string,
-  option: Option
-): string => {
-
+const transpileAsText = (content: string, option: Option): string => {
   const result = start(content, option)
 
   if (option.verbose) {

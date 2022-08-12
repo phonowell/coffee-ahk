@@ -26,7 +26,6 @@ const listRule = [
 // function
 
 class Scope {
-
   private _list: Item[] = []
 
   next: Item = ''
@@ -52,22 +51,15 @@ class Scope {
     return [...this._list]
   }
 
-  eq(
-    n: number
-  ): Item {
-    return n >= 0
-      ? this._list[n]
-      : this._list[this.length + n]
+  eq(n: number): Item {
+    return n >= 0 ? this._list[n] : this._list[this.length + n]
   }
 
   pop(): Item {
     return this._list.pop() || ''
   }
 
-  push(
-    name: Item
-  ): void {
-
+  push(name: Item): void {
     if (!name) throw new Error('scope.push: name is empty')
     // if (this.next)
     //   throw new Error(`scope.push: clear scope.next '${this.next}' at first`)

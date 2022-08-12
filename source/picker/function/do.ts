@@ -3,17 +3,13 @@ import Item from '../../module/Item'
 
 // function
 
-const main = (
-  ctx: Context,
-): void => {
-
+const main = (ctx: Context): void => {
   const { content } = ctx
 
   let flag = false
 
   const listContent: Item[] = []
   content.list.forEach(item => {
-
     if (flag && Item.is(item, 'new-line')) {
       flag = false
       const _scope: Item['scope'] = [...item.scope, 'call']
@@ -22,7 +18,7 @@ const main = (
         Item.new('bracket', ')', item.scope),
         Item.new('edge', 'call-start', _scope),
         Item.new('edge', 'call-end', _scope),
-        item,
+        item
       )
       return
     }

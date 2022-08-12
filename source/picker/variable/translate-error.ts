@@ -3,15 +3,11 @@ import Item from '../../module/Item'
 
 // function
 
-const main = (
-  ctx: Context
-): void => {
-
+const main = (ctx: Context): void => {
   const { content } = ctx
   const listContent: Item[] = []
 
   content.list.forEach((item, i) => {
-
     if (!Item.is(item, 'statement', 'new')) {
       listContent.push(item)
       return

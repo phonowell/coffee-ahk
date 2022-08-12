@@ -15,8 +15,7 @@ const main = async () => {
   const listCmd = [
     ...Object.keys(pkg.devDependencies || {}),
     ...Object.keys(pkg.dependencies || {}),
-  ]
-    .map((name) => `pnpm i ${name}@latest`)
+  ].map(name => `pnpm i ${name}@latest`)
 
   await $.exec(listCmd)
 }

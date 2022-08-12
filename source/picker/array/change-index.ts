@@ -7,10 +7,7 @@ type Range = [number, number]
 
 // function
 
-const main = (
-  ctx: Context
-): void => {
-
+const main = (ctx: Context): void => {
   const { content } = ctx
   const token = `__ci_${ctx.option.salt}__`
   let countIgnore = 0
@@ -20,9 +17,8 @@ const main = (
   const pickItem = (
     item: Item,
     i: number,
-    listResult: Item[] = [],
+    listResult: Item[] = []
   ): [number, Item[]] => {
-
     const it = content.eq(i)
     if (!it) {
       countIgnore = 0
@@ -32,36 +28,28 @@ const main = (
     listResult.push(it)
 
     if (
-      Item.is(it, 'edge', 'index-start')
-      && it.scope.join('|') === item.scope.join('|')
+      Item.is(it, 'edge', 'index-start') &&
+      it.scope.join('|') === item.scope.join('|')
     ) {
       countIgnore++
       return pickItem(item, i + 1, listResult)
     }
 
     if (
-      Item.is(it, 'edge', 'index-end')
-      && it.scope.join('|') === item.scope.join('|')
+      Item.is(it, 'edge', 'index-end') &&
+      it.scope.join('|') === item.scope.join('|')
     ) {
       countIgnore--
-      if (countIgnore === 0)
-        return [i, listResult]
+      if (countIgnore === 0) return [i, listResult]
       return pickItem(item, i + 1, listResult)
     }
 
     return pickItem(item, i + 1, listResult)
   }
 
-  const update = (
-    range: Range,
-    list: Item[],
-  ): void => {
-
+  const update = (range: Range, list: Item[]): void => {
     const listContent: Item[] = [...content.list]
-    listContent.splice(
-      range[0], range[1] - range[0] + 1,
-      ...list,
-    )
+    listContent.splice(range[0], range[1] - range[0] + 1, ...list)
     content.load(listContent)
   }
 
@@ -69,7 +57,6 @@ const main = (
   let i = -1
   let len = content.list.length
   while (i < len) {
-
     i++
     len = content.list.length
     const item = content.eq(i)
@@ -85,7 +72,6 @@ const main = (
     let type: 'identifier' | 'number' | 'string' = 'number'
 
     for (const it of listUnwrap) {
-
       if (['.', 'identifier', 'property', 'this'].includes(it.type)) {
         type = 'identifier'
         break
@@ -98,7 +84,6 @@ const main = (
     }
 
     if (type === 'identifier') {
-
       ctx.flag.isChangeIndexUsed = true // set flag
 
       const list = [...listUnwrap]
@@ -108,11 +93,7 @@ const main = (
       update(
         [i + 1, iEnd - 1],
         [
-          Item.new(
-            'identifier',
-            token,
-            _scope,
-          ),
+          Item.new('identifier', token, _scope),
           Item.new('edge', 'call-start', _scopeCall),
           ...list,
           Item.new('edge', 'call-end', _scopeCall),
@@ -123,26 +104,23 @@ const main = (
     }
 
     if (type === 'number') {
-
       const first = listUnwrap[0]
-      const list = listUnwrap.length === 1
-        ? [
-          Item.new(
-            first.type,
-            (parseFloat(first.value) + 1).toString(),
-            first.scope,
-          ),
-        ]
-        : [
-          listUnwrap[listUnwrap.length - 1],
-          Item.new('math', '+', first.scope),
-          Item.new('number', '1', first.scope),
-        ]
+      const list =
+        listUnwrap.length === 1
+          ? [
+              Item.new(
+                first.type,
+                (parseFloat(first.value) + 1).toString(),
+                first.scope
+              ),
+            ]
+          : [
+              listUnwrap[listUnwrap.length - 1],
+              Item.new('math', '+', first.scope),
+              Item.new('number', '1', first.scope),
+            ]
 
-      update(
-        [i + listUnwrap.length, i + listUnwrap.length],
-        list,
-      )
+      update([i + listUnwrap.length, i + listUnwrap.length], list)
 
       continue
     }

@@ -21,10 +21,7 @@ const map = {
 
 // function
 
-const main = (
-  ctx: Context
-): void => {
-
+const main = (ctx: Context): void => {
   for (const key of Object.keys(map)) map[key](ctx)
 
   $buildIn(ctx)

@@ -3,14 +3,10 @@ import Item from '../../module/Item'
 
 // function
 
-const main = (
-  ctx: Context,
-): void => {
-
+const main = (ctx: Context): void => {
   const { content } = ctx
 
   content.list.forEach((item, i) => {
-
     if (!Item.is(item, 'edge', 'parameter-start')) return
 
     const it = content.eq(i - 1)

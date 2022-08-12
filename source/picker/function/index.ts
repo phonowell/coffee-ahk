@@ -12,10 +12,7 @@ import validate from './validator'
 
 // function
 
-const main = (
-  ctx: Context
-): void => {
-
+const main = (ctx: Context): void => {
   $await(ctx)
 
   // mark function

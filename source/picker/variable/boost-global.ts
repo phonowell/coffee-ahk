@@ -3,10 +3,7 @@ import Item from '../../module/Item'
 
 // function
 
-const main = (
-  ctx: Context
-): void => {
-
+const main = (ctx: Context): void => {
   const { content } = ctx
   const cache: Set<string> = new Set()
   let flagIgnore = 0
@@ -14,7 +11,6 @@ const main = (
   const listContent: Item[] = []
 
   content.list.forEach((item, i) => {
-
     if (flagIgnore) {
       flagIgnore--
       return
@@ -33,8 +29,8 @@ const main = (
     cache.add(prev.value)
 
     if (
-      Item.is(content.eq(i + 1), 'identifier', prev.value)
-      && content.eq(i + 2).type === 'new-line'
+      Item.is(content.eq(i + 1), 'identifier', prev.value) &&
+      content.eq(i + 2).type === 'new-line'
     ) {
       listContent.splice(listContent.length - 2, 2)
       flagIgnore = 2
@@ -42,8 +38,9 @@ const main = (
     }
 
     listContent.splice(
-      listContent.length - 2, 0,
-      Item.new('origin', 'global ', item.scope),
+      listContent.length - 2,
+      0,
+      Item.new('origin', 'global ', item.scope)
     )
   })
 

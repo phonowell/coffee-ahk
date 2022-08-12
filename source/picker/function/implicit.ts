@@ -8,11 +8,7 @@ const cacheParameter: Set<string> = new Set()
 
 // function
 
-const findFunctionStart = (
-  ctx: Context,
-  i: number,
-): number => {
-
+const findFunctionStart = (ctx: Context, i: number): number => {
   const { content } = ctx
   const it = content.eq(i)
 
@@ -21,15 +17,11 @@ const findFunctionStart = (
   return findFunctionStart(ctx, i + 1)
 }
 
-const main = (
-  ctx: Context,
-): void => {
-
+const main = (ctx: Context): void => {
   const { content } = ctx
 
   const listContent: Item[] = []
   content.list.forEach((item, i) => {
-
     listContent.push(item)
 
     if (!Item.is(item, 'edge', 'parameter-start')) return
@@ -43,7 +35,6 @@ const main = (
     pickContext(ctx, iStart, item)
 
     cacheContext.forEach((isDefined, name) => {
-
       if (isDefined) return
       if (cacheParameter.has(name)) return
       if (ctx.cache.global.has(name)) return
@@ -56,11 +47,7 @@ const main = (
           ['sign', '='],
           ['identifier', name],
           ['sign', ','],
-        ].map(args => Item.new(
-          args[0] as Item['type'],
-          args[1],
-          item.scope,
-        ))
+        ].map(args => Item.new(args[0] as Item['type'], args[1], item.scope))
       )
     })
   })
@@ -71,80 +58,66 @@ const main = (
   removeTrailingComma(ctx)
 }
 
-const pickContext = (
-  ctx: Context,
-  i: number,
-  item: Item,
-) => {
-
+const pickContext = (ctx: Context, i: number, item: Item) => {
   const { content } = ctx
   const it = content.eq(i)
 
   if (
-    Item.is(it, 'edge', 'block-end')
-    && it.scope.join('|') === [
-      ...item.scope.slice(0, item.scope.length - 1),
-      'function',
-    ].join('|')
-  ) return
+    Item.is(it, 'edge', 'block-end') &&
+    it.scope.join('|') ===
+      [...item.scope.slice(0, item.scope.length - 1), 'function'].join('|')
+  )
+    return
 
-  if (
-    it.type === 'identifier'
-    && !cacheContext.get(it.value)
-  ) {
+  if (it.type === 'identifier' && !cacheContext.get(it.value)) {
     const prev = content.eq(i - 1)
     const next = content.eq(i + 1)
-    cacheContext.set(it.value, (
-      Item.is(prev, 'for', 'for')
-      || Item.is(next, 'sign', '=')
-      || Item.is(next, 'for-in')
-      || it.scope[it.scope.length - 1] === 'parameter'
-    ))
+    cacheContext.set(
+      it.value,
+      Item.is(prev, 'for', 'for') ||
+        Item.is(next, 'sign', '=') ||
+        Item.is(next, 'for-in') ||
+        it.scope[it.scope.length - 1] === 'parameter'
+    )
   }
 
   pickContext(ctx, i + 1, item)
 }
 
-const pickParameter = (
-  ctx: Context,
-  i: number,
-  item: Item,
-) => {
-
+const pickParameter = (ctx: Context, i: number, item: Item) => {
   const { content } = ctx
   const it = content.eq(i)
 
   if (
-    Item.is(it, 'edge', 'parameter-end')
-    && it.scope.join('|') === item.scope.join('|')
-  ) return
+    Item.is(it, 'edge', 'parameter-end') &&
+    it.scope.join('|') === item.scope.join('|')
+  )
+    return
 
   if (it.type === 'identifier') {
     const next = content.eq(i + 1)
     if (
-      Item.is(next, 'sign', '=')
-      || Item.is(next, 'sign', ',')
-      || Item.is(next, 'sign', '...')
-      || Item.is(next, 'edge', 'parameter-end')
-    ) cacheParameter.add(it.value)
+      Item.is(next, 'sign', '=') ||
+      Item.is(next, 'sign', ',') ||
+      Item.is(next, 'sign', '...') ||
+      Item.is(next, 'edge', 'parameter-end')
+    )
+      cacheParameter.add(it.value)
   }
 
   pickParameter(ctx, i + 1, item)
 }
 
-const removeTrailingComma = (
-  ctx: Context,
-): void => {
-
+const removeTrailingComma = (ctx: Context): void => {
   const { content } = ctx
 
   const listContent: Item[] = []
   content.list.forEach((item, i) => {
-
     if (
-      Item.is(item, 'sign', ',')
-      && Item.is(content.eq(i + 1), 'edge', 'parameter-end')
-    ) return
+      Item.is(item, 'sign', ',') &&
+      Item.is(content.eq(i + 1), 'edge', 'parameter-end')
+    )
+      return
 
     listContent.push(item)
   })

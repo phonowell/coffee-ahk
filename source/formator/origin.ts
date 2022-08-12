@@ -4,10 +4,7 @@ import { Context } from '../entry/type'
 
 // function
 
-const main = (
-  ctx: Context,
-): boolean => {
-
+const main = (ctx: Context): boolean => {
   const { content, type, value } = ctx
 
   if (type === 'js') {

@@ -4,14 +4,12 @@ import { Context } from '../entry/type'
 
 // function
 
-const main = (
-  ctx: Context,
-): boolean => {
-
+const main = (ctx: Context): boolean => {
   const { content, scope, type } = ctx
 
   if (type === '...') {
-    if (!['call', 'parameter'].includes(scope.last)) throw new Error(`ahk/forbidden: '...' is not allowed`)
+    if (!['call', 'parameter'].includes(scope.last))
+      throw new Error(`ahk/forbidden: '...' is not allowed`)
     content.push('sign', '...')
   }
 

@@ -3,17 +3,14 @@ import { Context } from '../entry/type'
 
 // function
 
-const main = (
-  ctx: Context,
-): boolean => {
-
+const main = (ctx: Context): boolean => {
   const { content, type, value } = ctx
 
   if (type === 'number') {
-
     let _value = value
 
-    if (value.includes('n')) throw new Error("ahk/forbidden: 'BigInt' is not allowed")
+    if (value.includes('n'))
+      throw new Error("ahk/forbidden: 'BigInt' is not allowed")
 
     if (value.includes('_')) _value = _value.replace(/_/g, '')
 

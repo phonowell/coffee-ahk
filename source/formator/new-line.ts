@@ -3,16 +3,11 @@ import Item from '../module/Item'
 
 // function
 
-const main = (
-  ctx: Context,
-): boolean => {
-
+const main = (ctx: Context): boolean => {
   const { content, scope, type, value } = ctx
 
   if (type === 'terminator') {
-
     if (value === '\n') {
-
       if (Item.is(content.last, 'bracket', '}-')) content.last.value = '}'
 
       if (['array', 'call', 'object', 'parameter'].includes(scope.last)) {
@@ -28,7 +23,6 @@ const main = (
     }
 
     if (value === ';') {
-
       if (Item.is(content.last, 'bracket', '}-')) content.last.value = '}'
 
       content.push('new-line', ctx.indent.toString())

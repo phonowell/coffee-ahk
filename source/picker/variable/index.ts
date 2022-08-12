@@ -4,10 +4,7 @@ import translateError from './translate-error'
 
 // function
 
-const main = (
-  ctx: Context
-): void => {
-
+const main = (ctx: Context): void => {
   // global
   boostGlobal(ctx)
 

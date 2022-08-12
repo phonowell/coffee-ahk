@@ -2,10 +2,7 @@ import { Context } from '../entry/type'
 
 // function
 
-const main = (
-  ctx: Context,
-): boolean => {
-
+const main = (ctx: Context): boolean => {
   const { content, raw, type, value } = ctx
 
   if (type === 'string') {
@@ -28,11 +25,7 @@ const main = (
   return false
 }
 
-const transAlias = (
-  input: string,
-  wrapper: string,
-): string => {
-
+const transAlias = (input: string, wrapper: string): string => {
   let result = input.substr(1, input.length - 2)
 
   result = result
@@ -44,9 +37,10 @@ const transAlias = (
 
   result = `"${result.replace(/"/g, '""')}"`
 
-  result = wrapper.length === 3
-    ? result.replace(/\s*\n\s*/g, '')
-    : result.replace(/\s*\n\s*/g, ' ')
+  result =
+    wrapper.length === 3
+      ? result.replace(/\s*\n\s*/g, '')
+      : result.replace(/\s*\n\s*/g, ' ')
 
   return result
 }

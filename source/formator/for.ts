@@ -3,10 +3,7 @@ import Item from '../module/Item'
 
 // function
 
-const main = (
-  ctx: Context,
-): boolean => {
-
+const main = (ctx: Context): boolean => {
   const { content, scope, type, value } = ctx
 
   if (type === 'for') {
@@ -16,7 +13,6 @@ const main = (
   }
 
   if (['forin', 'forof'].includes(type)) {
-
     const list: string[] = []
 
     const last = content.pop()
@@ -30,11 +26,8 @@ const main = (
 
     if (type === 'forin') list.reverse()
 
-    if (list.length === 1) list.unshift(
-      type === 'forin'
-        ? '__index_for__'
-        : '__key_for__'
-    )
+    if (list.length === 1)
+      list.unshift(type === 'forin' ? '__index_for__' : '__key_for__')
 
     content
       .push('identifier', list[0])

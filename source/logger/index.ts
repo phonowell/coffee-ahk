@@ -4,22 +4,14 @@ import pad from 'lodash/pad'
 
 // function
 
-const log = (
-  message: string | number
-): void => {
-
-  const msg = typeof message !== 'string'
-    ? message.toString()
-    : message
+const log = (message: string | number): void => {
+  const msg = typeof message !== 'string' ? message.toString() : message
 
   console.log()
   console.log(kleur.blue(pad(msg, 80, '-')))
 }
 
-const main = (
-  ast: Item[]
-): void => {
-
+const main = (ast: Item[]): void => {
   let line = 0
   log(++line)
 

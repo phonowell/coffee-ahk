@@ -20,7 +20,7 @@ type Coffee = {
 
 type Result = {
   ast: Context['content']['list']
-  content: string,
+  content: string
   raw: Context['raw'][]
 }
 
@@ -31,11 +31,7 @@ declare global {
 
 // function
 
-const main = (
-  cont: string,
-  option: Context['option']
-): Result => {
-
+const main = (cont: string, option: Context['option']): Result => {
   const ast = coffee.compile(cont, {
     ast: true,
   })
@@ -57,7 +53,6 @@ const main = (
   }
 
   for (const token of ast.tokens) {
-
     ctx.raw = token
     ctx.raw[2] = {}
     ctx.type = token[0].toLowerCase()

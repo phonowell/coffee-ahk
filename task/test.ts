@@ -5,33 +5,37 @@ import c2a2 from '../dist'
 // function
 
 const checkVersion = async () => {
-
   const { version } = await $.read<{ version: string }>('./package.json')
   const content = await $.read('./source/renderer/index.ts')
 
   if (!content?.includes(version)) throw new Error('found different version')
 }
 
-const compile = async (source: string) => (await c2a(source, {
-  ignoreComment: false,
-  insertTranspilerInformation: false,
-  salt: 'ahk',
-  save: false,
-}))
-  .replace(/\r/g, '')
-  .trim()
+const compile = async (source: string) =>
+  (
+    await c2a(source, {
+      ignoreComment: false,
+      insertTranspilerInformation: false,
+      salt: 'ahk',
+      save: false,
+    })
+  )
+    .replace(/\r/g, '')
+    .trim()
 
-const compile2 = async (source: string) => (await c2a2(source, {
-  ignoreComment: false,
-  insertTranspilerInformation: false,
-  salt: 'ahk',
-  save: false,
-}))
-  .replace(/\r/g, '')
-  .trim()
+const compile2 = async (source: string) =>
+  (
+    await c2a2(source, {
+      ignoreComment: false,
+      insertTranspilerInformation: false,
+      salt: 'ahk',
+      save: false,
+    })
+  )
+    .replace(/\r/g, '')
+    .trim()
 
 const main = async () => {
-
   await $.exec('npm run build')
 
   const target = pickTarget()
@@ -67,7 +71,7 @@ const main = async () => {
 
 const pickTarget = () => {
   const argv = $.argv()
-  return argv._[1] as string || argv.target as string || ''
+  return (argv._[1] as string) || (argv.target as string) || ''
 }
 
 // export

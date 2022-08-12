@@ -3,15 +3,11 @@ import Item from '../../module/Item'
 
 // function
 
-const appendBind = (
-  ctx: Context
-): void => {
-
+const appendBind = (ctx: Context): void => {
   const { content } = ctx
 
   const listContent: Item[] = []
   content.list.forEach((item, i) => {
-
     listContent.push(item)
     if (!Item.is(item, 'edge', 'block-end')) return
     if (item.scope[item.scope.length - 1] !== 'function') return
@@ -32,34 +28,25 @@ const appendBind = (
   content.load(listContent)
 }
 
-const findEdge = (
-  ctx: Context,
-  i: number,
-  item: Item,
-): number => {
-
+const findEdge = (ctx: Context, i: number, item: Item): number => {
   const { content } = ctx
 
   const it = content.eq(i)
   if (!it) return 0
   if (
-    Item.is(it, 'edge', 'parameter-start')
-    && [
-      ...it.scope.slice(0, it.scope.length - 1), 'function',
-    ].join('|') === item.scope.join('|')
-  ) return i
+    Item.is(it, 'edge', 'parameter-start') &&
+    [...it.scope.slice(0, it.scope.length - 1), 'function'].join('|') ===
+      item.scope.join('|')
+  )
+    return i
   return findEdge(ctx, i - 1, item)
 }
 
-const formatSuper = (
-  ctx: Context
-): void => {
-
+const formatSuper = (ctx: Context): void => {
   const { content } = ctx
 
   const listContent: Item[] = []
   content.list.forEach((item, i) => {
-
     listContent.push(item)
     if (!Item.is(item, 'super')) return
 
@@ -70,50 +57,43 @@ const formatSuper = (
 
     listContent.push(
       new Item('.', '.', _scope),
-      new Item('property', '__New', _scope),
+      new Item('property', '__New', _scope)
     )
   })
 
   content.load(listContent)
 }
 
-const main = (
-  ctx: Context
-): void => {
-
+const main = (ctx: Context): void => {
   prependThis(ctx)
   appendBind(ctx)
   renameConstructor(ctx)
   formatSuper(ctx)
 }
 
-const prependThis = (
-  ctx: Context
-): void => {
-
+const prependThis = (ctx: Context): void => {
   const { content } = ctx
 
   const listContent: Item[] = []
   content.list.forEach((item, i) => {
-
     listContent.push(item)
     if (!Item.is(item, 'edge', 'parameter-start')) return
 
-    if (Item.is(
-      listContent[listContent.length - 3],
-      'property', 'constructor'
-    )) {
+    if (
+      Item.is(listContent[listContent.length - 3], 'property', 'constructor')
+    ) {
       listContent[listContent.length - 2].type = 'void'
       return
     }
 
-    if (!(
-      item.scope[item.scope.length - 1] === 'class'
-      || (
-        item.scope[item.scope.length - 1] === 'parameter'
-        && item.scope[item.scope.length - 2] === 'class'
+    if (
+      !(
+        item.scope[item.scope.length - 1] === 'class' ||
+        (item.scope[item.scope.length - 1] === 'parameter' &&
+          item.scope[item.scope.length - 2] === 'class')
       )
-    )) return
+    )
+      return
 
     const _scope = [...item.scope]
     listContent.push(Item.new('this', 'this', _scope))
@@ -126,10 +106,7 @@ const prependThis = (
   content.load(listContent)
 }
 
-const renameConstructor = (
-  ctx: Context
-): void => {
-
+const renameConstructor = (ctx: Context): void => {
   const { content } = ctx
   content.list.forEach(it => {
     if (!Item.is(it, 'property', 'constructor')) return

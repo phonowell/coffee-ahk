@@ -4,10 +4,7 @@ import { Context } from '../entry/type'
 
 // function
 
-const main = (
-  ctx: Context,
-): boolean => {
-
+const main = (ctx: Context): boolean => {
   const { content, scope, type } = ctx
 
   if (type === 'loop') {
@@ -21,9 +18,7 @@ const main = (
 
   if (type === 'while') {
     scope.next = 'while'
-    content
-      .push('while')
-      .push('edge', 'expression-start')
+    content.push('while').push('edge', 'expression-start')
     return true
   }
 

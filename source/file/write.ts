@@ -12,14 +12,18 @@ const main = async (
     ast: Item[]
     content: string
   },
-  option: Option,
+  option: Option
 ): Promise<void> => {
-
   const { basename, dirname } = getName(source)
 
-  await write(`${dirname}/${basename}.ahk`, iconv.encode(data.content, 'utf8', {
-    addBOM: true,
-  }).toString())
+  await write(
+    `${dirname}/${basename}.ahk`,
+    iconv
+      .encode(data.content, 'utf8', {
+        addBOM: true,
+      })
+      .toString()
+  )
 
   if (option.ast) await write(`${dirname}/${basename}.ast.json`, data.ast)
 }

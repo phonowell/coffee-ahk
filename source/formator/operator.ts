@@ -4,16 +4,11 @@ import { Context } from '../entry/type'
 
 // function
 
-const main = (
-  ctx: Context,
-): boolean => {
-
+const main = (ctx: Context): boolean => {
   const { content, raw, type, value } = ctx
 
   if (type === '+') {
-
     if (!raw.spaced) {
-
       const { last } = content
 
       if (last.type === 'math' || last.type === 'negative') {
@@ -28,9 +23,7 @@ const main = (
   }
 
   if (type === '-') {
-
     if (!raw.spaced) {
-
       const { last } = content
 
       if (!['identifier', 'math'].includes(last.type)) {

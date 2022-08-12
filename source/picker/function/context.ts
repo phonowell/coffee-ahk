@@ -11,19 +11,15 @@ let countIgnore = 0
 
 // function
 
-const cache = (
-  ctx: Context,
-  item: Item,
-  i: number
-): void => {
-
+const cache = (ctx: Context, item: Item, i: number): void => {
   const _scope = [item.scope.slice(0, item.scope.length - 1)]
   _scope[1] = [..._scope[0], 'call']
 
   let listItem: Item[] = []
   for (const listIt of listParam) {
     for (const it of listIt) {
-      it.scope = it.scope.join(',')
+      it.scope = it.scope
+        .join(',')
         .replace(/^.*?parameter/u, _scope[1].join(','))
         .split(',') as Item['scope']
       listItem.push(it)
@@ -40,33 +36,23 @@ const cache = (
     Item.new('edge', 'call-end', _scope[1]),
   ]
 
-  listCache.push([
-    findIndex(ctx, item, i) + 1,
-    listItem,
-  ])
+  listCache.push([findIndex(ctx, item, i) + 1, listItem])
 }
 
-const findIndex = (
-  ctx: Context,
-  item: Item,
-  i: number
-): number => {
-
+const findIndex = (ctx: Context, item: Item, i: number): number => {
   const { content } = ctx
 
   const it = content.eq(i)
   if (!it) return 0
   if (
-    Item.is(it, 'edge', 'block-end')
-    && it.scope.join('|') === item.scope.join('|')
-  ) return i
+    Item.is(it, 'edge', 'block-end') &&
+    it.scope.join('|') === item.scope.join('|')
+  )
+    return i
   return findIndex(ctx, item, i + 1)
 }
 
-const main = (
-  ctx: Context
-): void => {
-
+const main = (ctx: Context): void => {
   const { content } = ctx
 
   // reset
@@ -77,7 +63,6 @@ const main = (
 
   // each
   content.list.forEach((item, i) => {
-
     // ignore
     if (countIgnore) {
       countIgnore--
@@ -97,17 +82,13 @@ const main = (
   })
 
   // insert
-  for (const [index, listItem] of sortBy(listCache, item => item[0]).reverse()) listContent.splice(index, 0, ...listItem)
+  for (const [index, listItem] of sortBy(listCache, item => item[0]).reverse())
+    listContent.splice(index, 0, ...listItem)
 
   content.load(listContent)
 }
 
-const pick = (
-  ctx: Context,
-  item: Item,
-  i: number
-): boolean => {
-
+const pick = (ctx: Context, item: Item, i: number): boolean => {
   const { content } = ctx
 
   // find `fn(x = x)`
@@ -133,16 +114,16 @@ const pickItem = (
   i: number,
   listItem: Item[] = []
 ): Item[] => {
-
   const { content } = ctx
 
   const it = content.eq(i)
   if (!it) return listItem
 
   if (
-    it.scope.join('') === item.scope.join('')
-    && (Item.is(it, 'sign', ',') || Item.is(it, 'edge', 'parameter-end'))
-  ) return listItem
+    it.scope.join('') === item.scope.join('') &&
+    (Item.is(it, 'sign', ',') || Item.is(it, 'edge', 'parameter-end'))
+  )
+    return listItem
 
   listItem.push(it)
   return pickItem(ctx, item, i + 1, listItem)

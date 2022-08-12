@@ -4,10 +4,7 @@ import { Context } from '../../entry/type'
 
 // function
 
-const main = (
-  ctx: Context
-): Set<string> => {
-
+const main = (ctx: Context): Set<string> => {
   const { content } = ctx
   const listFn = new Set<string>()
 

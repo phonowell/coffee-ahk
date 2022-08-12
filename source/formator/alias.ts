@@ -4,10 +4,7 @@ import { Context } from '../entry/type'
 
 // function
 
-const main = (
-  ctx: Context,
-): boolean => {
-
+const main = (ctx: Context): boolean => {
   const { content, type } = ctx
 
   if (type === '@') {
@@ -17,9 +14,7 @@ const main = (
 
   if (type === '::') {
     if (content.last.type === '.') content.pop()
-    content
-      .push('.')
-      .push('prototype')
+    content.push('.').push('prototype')
     return true
   }
 

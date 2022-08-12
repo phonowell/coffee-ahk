@@ -5,7 +5,7 @@ import c2a from '../source'
 
 const main = async () => {
   const listSource = await $.glob('./script/segment/*.coffee')
-  for(const source of listSource) {
+  for (const source of listSource) {
     await c2a(source, {
       ast: true,
       insertTranspilerInformation: false,
