@@ -1,4 +1,4 @@
-import $repeat from 'lodash/repeat'
+import repeat from 'lodash/repeat'
 import { Context } from '../entry/type'
 
 // function
@@ -16,7 +16,7 @@ const main = (ctx: Context): boolean => {
 
     if (value.includes('e')) {
       const [pre, sub] = _value.split('e')
-      _value = `${pre}${$repeat('0', parseInt(sub, 10))}`
+      _value = `${pre}${repeat('0', parseInt(sub, 10))}`
     }
 
     content.push('number', _value)

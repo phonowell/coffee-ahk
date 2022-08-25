@@ -1,19 +1,19 @@
-import { Context } from '../../entry/type'
-import $await from './await'
-import $class from './class'
-import $do from './do'
 import count from './counter'
 import injectContext from './context'
 import injectImplicitParamter from './implicit'
 import mark from './mark'
+import partAwait from './await'
+import partClass from './class'
+import partDo from './do'
 import pickAnonymous from './anonymous'
 import transParam from './parameter'
 import validate from './validator'
+import { Context } from '../../entry/type'
 
 // function
 
 const main = (ctx: Context): void => {
-  $await(ctx)
+  partAwait(ctx)
 
   // mark function
   // change its type from `fn: identifier(...)`
@@ -24,7 +24,7 @@ const main = (ctx: Context): void => {
   let listFn = count(ctx)
   validate(listFn)
 
-  $class(ctx)
+  partClass(ctx)
 
   injectImplicitParamter(ctx)
 
@@ -40,7 +40,7 @@ const main = (ctx: Context): void => {
 
   transParam(ctx, listFn)
 
-  $do(ctx)
+  partDo(ctx)
 }
 
 // export

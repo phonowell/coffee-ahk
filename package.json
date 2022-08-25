@@ -4,35 +4,35 @@
     "url": "https://github.com/phonowell/coffee-ahk/issues"
   },
   "dependencies": {
-    "@swc/core": "^1.2.224",
     "coffeescript": "^2.7.0",
     "cson": "^7.20.0",
-    "fire-keeper": "^0.0.202",
+    "fire-keeper": "^0.0.204",
     "iconv-lite": "^0.6.3",
     "kleur": "^4.1.5",
-    "lodash": "^4.17.21",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.7.4"
+    "lodash": "^4.17.21"
   },
   "description": "coffeescript -> ahk",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-node-resolve": "^13.3.0",
+    "@swc/core": "^1.2.242",
     "@types/cson": "^7.20.1",
-    "@types/lodash": "^4.14.182",
-    "@types/node": "^18.7.1",
+    "@types/lodash": "^4.14.184",
+    "@types/node": "^18.7.13",
     "@types/prettier": "^2.7.0",
-    "@typescript-eslint/eslint-plugin": "^5.33.0",
-    "@typescript-eslint/parser": "^5.33.0",
+    "@typescript-eslint/eslint-plugin": "^5.35.1",
+    "@typescript-eslint/parser": "^5.35.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
-    "rollup": "^2.77.3",
+    "rollup": "^2.78.1",
     "rollup-plugin-auto-external": "^2.0.0",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-filesize": "^9.1.2",
-    "rollup-plugin-typescript2": "^0.32.1",
-    "tslib": "^2.4.0"
+    "rollup-plugin-typescript2": "^0.33.0",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.4"
   },
   "files": [
     "dist/**"

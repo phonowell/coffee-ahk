@@ -1,6 +1,6 @@
-import $type from 'fire-keeper/dist/type'
 import cson from 'cson'
 import getDirname from 'fire-keeper/dist/getDirname'
+import getType from 'fire-keeper/dist/getType'
 import glob from 'fire-keeper/dist/glob'
 import iconv from 'iconv-lite'
 import last from 'lodash/last'
@@ -116,7 +116,7 @@ const load = async ({ entry, path, source }: OptionLoad) => {
 
   for (const src of listSource) {
     let content = await read<string>(src)
-    if ($type(content) === 'object') content = toString(content)
+    if (getType(content) === 'object') content = toString(content)
 
     listResult.push(
       content.includes('import ')

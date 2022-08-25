@@ -1,6 +1,6 @@
 import $ from 'fire-keeper'
-import c2a from '../source'
-import c2a2 from '../dist'
+import c2aViaTs from '../source'
+import c2aViaJs from '../dist'
 
 // function
 
@@ -13,7 +13,7 @@ const checkVersion = async () => {
 
 const compile = async (source: string) =>
   (
-    await c2a(source, {
+    await c2aViaTs(source, {
       ignoreComment: false,
       insertTranspilerInformation: false,
       salt: 'ahk',
@@ -25,7 +25,7 @@ const compile = async (source: string) =>
 
 const compile2 = async (source: string) =>
   (
-    await c2a2(source, {
+    await c2aViaJs(source, {
       ignoreComment: false,
       insertTranspilerInformation: false,
       salt: 'ahk',

@@ -1,10 +1,10 @@
-import $array from './array'
-import $buildIn from './build-in'
-import $for from './for'
-import $function from './function'
-import $object from './object'
-import $type from './type'
-import $variable from './variable'
+import partArray from './array'
+import partBuildIn from './build-in'
+import partFor from './for'
+import partFunction from './function'
+import partObject from './object'
+import partType from './type'
+import partVariable from './variable'
 
 // interface
 
@@ -13,10 +13,10 @@ import { Context } from '../entry/type'
 // variable
 
 const map = {
-  array: $array,
-  for: $for,
-  object: $object,
-  variable: $variable,
+  array: partArray,
+  for: partFor,
+  object: partObject,
+  variable: partVariable,
 } as const
 
 // function
@@ -24,10 +24,10 @@ const map = {
 const main = (ctx: Context): void => {
   for (const key of Object.keys(map)) map[key](ctx)
 
-  $buildIn(ctx)
-  $function(ctx)
+  partBuildIn(ctx)
+  partFunction(ctx)
 
-  if (ctx.option.checkType) $type(ctx)
+  if (ctx.option.checkType) partType(ctx)
 }
 
 // export

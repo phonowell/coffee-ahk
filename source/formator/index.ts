@@ -1,31 +1,31 @@
-import $alias from './alias'
-import $array from './array'
-import $await from './await'
-import $boolean from './boolean'
-import $bracket from './bracket'
-import $class from './class'
-import $comment from './comment'
-import $do from './do'
-import $for from './for'
-import $forbidden from './forbidden'
-import $function from './function'
-import $if from './if'
-import $indent from './indent'
-import $indentifier from './identifier'
-import $module from './module'
-import $newLine from './new-line'
-import $nil from './nil'
-import $number from './number'
-import $object from './object'
-import $operator from './operator'
-import $origin from './origin'
-import $property from './property'
-import $sign from './sign'
-import $statement from './statement'
-import $string from './string'
-import $switch from './switch'
-import $try from './try'
-import $while from './while'
+import partAlias from './alias'
+import partArray from './array'
+import partAwait from './await'
+import partBoolean from './boolean'
+import partBracket from './bracket'
+import partClass from './class'
+import partComment from './comment'
+import partDo from './do'
+import partFor from './for'
+import partForbidden from './forbidden'
+import partFunction from './function'
+import partIf from './if'
+import partIndent from './indent'
+import partIndentifier from './identifier'
+import partModule from './module'
+import partNewLine from './new-line'
+import partNil from './nil'
+import partNumber from './number'
+import partObject from './object'
+import partOperator from './operator'
+import partOrigin from './origin'
+import partProperty from './property'
+import partSign from './sign'
+import partStatement from './statement'
+import partString from './string'
+import partSwitch from './switch'
+import partTry from './try'
+import partWhile from './while'
 
 // interface
 
@@ -34,34 +34,34 @@ import { Context } from '../entry/type'
 // variable
 
 const map = {
-  'new-line': $newLine,
-  alias: $alias,
-  array: $array,
-  await: $await,
-  boolean: $boolean,
-  bracket: $bracket,
-  class: $class,
-  comment: $comment,
-  do: $do,
-  for: $for,
-  forbidden: $forbidden,
-  function: $function,
-  if: $if,
-  indent: $indent,
-  indentifier: $indentifier,
-  module: $module,
-  nil: $nil,
-  number: $number,
-  object: $object,
-  operator: $operator,
-  origin: $origin,
-  property: $property,
-  sign: $sign,
-  statement: $statement,
-  string: $string,
-  switch: $switch,
-  try: $try,
-  while: $while,
+  'new-line': partNewLine,
+  alias: partAlias,
+  array: partArray,
+  await: partAwait,
+  boolean: partBoolean,
+  bracket: partBracket,
+  class: partClass,
+  comment: partComment,
+  do: partDo,
+  for: partFor,
+  forbidden: partForbidden,
+  function: partFunction,
+  if: partIf,
+  indent: partIndent,
+  indentifier: partIndentifier,
+  module: partModule,
+  nil: partNil,
+  number: partNumber,
+  object: partObject,
+  operator: partOperator,
+  origin: partOrigin,
+  property: partProperty,
+  sign: partSign,
+  statement: partStatement,
+  string: partString,
+  switch: partSwitch,
+  try: partTry,
+  while: partWhile,
 } as const
 
 // function

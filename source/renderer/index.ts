@@ -1,6 +1,6 @@
-import $repeat from 'lodash/repeat'
-import $trim from 'lodash/trim'
 import Item from '../module/Item'
+import repeat from 'lodash/repeat'
+import trim from 'lodash/trim'
 import { Context as _Context } from '../entry/type'
 
 // interface
@@ -55,7 +55,7 @@ const $edge = (ctx: Context): string => {
   }
 
   if (value === 'call-start') {
-    const _value = $trim(content.eq(i - 1).value, '_')
+    const _value = trim(content.eq(i - 1).value, '_')
     return _value[0] === _value[0].toLowerCase() ? '.Call(' : '('
   }
 
@@ -93,7 +93,7 @@ const $negative = (ctx: Context): string => {
 const $newLine = (ctx: Context): string => {
   let n = parseInt(ctx.it.value, 10)
   if (!(n >= 0)) n = 0
-  return `\n${$repeat(' ', n * 2)}`
+  return `\n${repeat(' ', n * 2)}`
 }
 
 const $sign = (ctx: Context): string => {
