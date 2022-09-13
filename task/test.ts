@@ -5,7 +5,9 @@ import c2aViaJs from '../dist'
 // function
 
 const checkVersion = async () => {
-  const { version } = await $.read<{ version: string }>('./package.json')
+  const pkg = await $.read<{ version: string }>('./package.json')
+  if (!pkg) throw new Error('package.json not found')
+  const { version } = pkg
   const content = await $.read('./source/renderer/index.ts')
 
   if (!content?.includes(version)) throw new Error('found different version')
@@ -64,7 +66,7 @@ const main = async () => {
     }
   }
 
-  $.log('all test(s) passed!')
+  $.echo('all test(s) passed!')
 
   await checkVersion()
 }

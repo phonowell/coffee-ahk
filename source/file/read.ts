@@ -9,7 +9,9 @@ const main = async (source: string): Promise<string> => {
   const extname = '.coffee'
   if (!src.endsWith(extname)) src += extname
 
-  const content = await include(await read<string>(src), src)
+  const raw = await read<string>(src)
+  if (!raw) throw new Error(`invalid source '${src}'`)
+  const content = await include(raw, src)
 
   if (!content) throw new Error(`invalid source '${src}'`)
 

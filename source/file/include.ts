@@ -116,6 +116,7 @@ const load = async ({ entry, path, source }: OptionLoad) => {
 
   for (const src of listSource) {
     let content = await read<string>(src)
+    if (!content) throw new Error(`invalid source '${path}': 4`)
     if (getType(content) === 'object') content = toString(content)
 
     listResult.push(
