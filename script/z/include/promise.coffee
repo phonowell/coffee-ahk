@@ -59,5 +59,5 @@ do ->
 
   new Promise (resolve) ->
     fn = -> resolve 'hello'
-    `SetTimer, % fn, -1000`
-  .then (value) -> `MsgBox, % value`
+    Native 'SetTimer, % fn, -1000'
+  .then (value) -> Native 'MsgBox, % value'

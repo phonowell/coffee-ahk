@@ -39,12 +39,13 @@ const compile2 = async (source: string) =>
 
 const main = async () => {
   await $.exec('npm run build')
+  await $.sleep(1e3)
 
   const target = pickTarget()
   const listSource = await $.glob(`./script/test/**/${target || '*'}.coffee`)
   for (const source of listSource) {
-    const _target = source.replace('.coffee', '.ahk')
-    const contentTarget = ((await $.read(_target)) || '')
+    const target2 = source.replace('.coffee', '.ahk')
+    const contentTarget = ((await $.read(target2)) || '')
       .toString()
       .replace(/\r/g, '')
       .trim()

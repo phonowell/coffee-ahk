@@ -1,8 +1,6 @@
-alert = (msg) -> `msgbox, % msg`
+# @ts-check
+import m from './include/m'
 
-a = 1
-a += 1
-alert a
-
-b = 'xxx'
-c[b] = 2
+do ->
+  {n, s} = m
+  if s.value == 1 then s.value++

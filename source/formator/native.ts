@@ -8,7 +8,7 @@ const main = (ctx: Context): boolean => {
   const { content, type, value } = ctx
 
   if (type === 'js') {
-    content.push('origin', value)
+    content.push('native', value)
     return true
   }
 

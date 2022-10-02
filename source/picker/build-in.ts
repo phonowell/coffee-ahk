@@ -5,7 +5,7 @@ import Item from '../module/Item'
 
 // eslint-disable-next-line sort-keys
 const changeIndex: Item[] = [
-  { type: 'origin', value: 'global ', scope: [] },
+  { type: 'native', value: 'global ', scope: [] },
   { type: 'identifier', value: '__ci_salt__', scope: [] },
   { type: 'sign', value: '=', scope: [] },
   { type: 'function', value: 'anonymous', scope: [] },
@@ -14,9 +14,9 @@ const changeIndex: Item[] = [
   { type: 'edge', value: 'parameter-end', scope: ['parameter'] },
   { type: 'edge', value: 'block-start', scope: ['function'] },
   { type: 'new-line', value: '1', scope: ['function'] },
-  { type: 'origin', value: 'if __ipt__ is Number', scope: ['function'] },
+  { type: 'native', value: 'if __ipt__ is Number', scope: ['function'] },
   { type: 'new-line', value: '1', scope: ['function'] },
-  { type: 'origin', value: '  return __ipt__ + 1', scope: ['function'] },
+  { type: 'native', value: '  return __ipt__ + 1', scope: ['function'] },
   { type: 'new-line', value: '1', scope: ['function'] },
   { type: 'statement', value: 'return', scope: ['function'] },
   { type: 'identifier', value: '__ipt__', scope: ['function'] },
@@ -27,7 +27,7 @@ const changeIndex: Item[] = [
 
 // eslint-disable-next-line sort-keys
 const executeIfExists: Item[] = [
-  { type: 'origin', value: 'global ', scope: [] },
+  { type: 'native', value: 'global ', scope: [] },
   { type: 'identifier', value: '__eie_salt__', scope: [] },
   { type: 'sign', value: '=', scope: [] },
   { type: 'function', value: 'anonymous', scope: [] },

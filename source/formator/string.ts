@@ -26,7 +26,7 @@ const main = (ctx: Context): boolean => {
 }
 
 const transAlias = (input: string, wrapper: string): string => {
-  let result = input.substr(1, input.length - 2)
+  let result = input.substring(1, input.length - 1)
 
   result = result
     .replace(/%/g, '`%')

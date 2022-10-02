@@ -3,7 +3,6 @@ import partBuildIn from './build-in'
 import partFor from './for'
 import partFunction from './function'
 import partObject from './object'
-import partType from './type'
 import partVariable from './variable'
 
 // interface
@@ -26,8 +25,6 @@ const main = (ctx: Context): void => {
 
   partBuildIn(ctx)
   partFunction(ctx)
-
-  if (ctx.option.checkType) partType(ctx)
 }
 
 // export

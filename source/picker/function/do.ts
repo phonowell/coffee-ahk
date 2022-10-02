@@ -23,7 +23,7 @@ const main = (ctx: Context): void => {
       return
     }
 
-    if (!Item.is(item, 'origin', '__mark:do__')) {
+    if (!Item.is(item, 'native', '__mark:do__')) {
       listContent.push(item)
       return
     }

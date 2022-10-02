@@ -105,9 +105,9 @@ const load = async ({ entry, path, source }: OptionLoad) => {
       `cannot use deconstructed import: import ${entry} from '${path}'`
     )
 
-  const _path = trim(path, '\'" ')
+  const path2 = trim(path, '\'" ')
 
-  const filepath = [getDirname(source), _path].join('/')
+  const filepath = [getDirname(source), path2].join('/')
 
   const listSource = await getListSource(filepath)
   if (!listSource.length) throw new Error(`invalid source '${path}': 3`)

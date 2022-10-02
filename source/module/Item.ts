@@ -22,10 +22,10 @@ const listType = [
   'if', // case default else if switch
   'logical-operator', // ! && ||
   'math',
+  'native',
   'negative', // + -
   'new-line',
   'number',
-  'origin',
   'property',
   'prototype',
   'sign', // , ... : =

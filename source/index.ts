@@ -10,7 +10,6 @@ export type Option = Partial<typeof optionDefault>
 const optionDefault = {
   asText: false,
   ast: false,
-  checkType: true,
   displayCoffeescriptAst: false,
   ignoreComment: true,
   insertTranspilerInformation: true,
@@ -22,21 +21,20 @@ const optionDefault = {
 
 // function
 
-const generatedSalt = (): string => {
-  return Math.random().toString(32).split('.')[1].padStart(11, '0')
-}
+const generatedSalt = (): string =>
+  Math.random().toString(32).split('.')[1].padStart(11, '0')
 
 const main = async (source: string, option: Option = {}): Promise<string> => {
-  const _option = {
+  const option2 = {
     ...optionDefault,
     ...option,
   }
 
   // salt
-  if (!_option.salt) _option.salt = generatedSalt()
+  if (!option2.salt) option2.salt = generatedSalt()
 
-  if (_option.asText) return transpileAsText(source, _option)
-  return transpileAsFile(source, _option)
+  if (option2.asText) return transpileAsText(source, option2)
+  return transpileAsFile(source, option2)
 }
 
 const transpileAsFile = async (
@@ -45,15 +43,15 @@ const transpileAsFile = async (
 ): Promise<string> => {
   const glob = (await import('fire-keeper/dist/glob')).default
 
-  const _listSource = [source, `${source}.coffee`, `${source}/index.coffee`]
+  const listSource = [source, `${source}.coffee`, `${source}/index.coffee`]
 
-  const [_source] = (await glob(_listSource)).filter(item =>
+  const [source2] = (await glob(listSource)).filter(item =>
     item.endsWith('.coffee')
   )
-  if (!_source) throw new Error(`invalid source '${source}'`)
+  if (!source2) throw new Error(`invalid source '${source}'`)
 
   const { read, write } = await import('./file')
-  const content = await read(_source)
+  const content = await read(source2)
 
   const result = start(content, option)
 
@@ -62,7 +60,7 @@ const transpileAsFile = async (
     log(result.ast)
   }
 
-  if (option.save) await write(_source, result, option)
+  if (option.save) await write(source2, result, option)
 
   return result.content
 }

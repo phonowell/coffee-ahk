@@ -13,12 +13,12 @@ import partIf from './if'
 import partIndent from './indent'
 import partIndentifier from './identifier'
 import partModule from './module'
+import partNative from './native'
 import partNewLine from './new-line'
 import partNil from './nil'
 import partNumber from './number'
 import partObject from './object'
 import partOperator from './operator'
-import partOrigin from './origin'
 import partProperty from './property'
 import partSign from './sign'
 import partStatement from './statement'
@@ -50,11 +50,11 @@ const map = {
   indent: partIndent,
   indentifier: partIndentifier,
   module: partModule,
+  native: partNative,
   nil: partNil,
   number: partNumber,
   object: partObject,
   operator: partOperator,
-  origin: partOrigin,
   property: partProperty,
   sign: partSign,
   statement: partStatement,

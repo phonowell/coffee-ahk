@@ -24,10 +24,10 @@ const next = (ctx: Context, count = 1): void => {
   const it = content.eq(i)
   it.value = `${ctx.option.salt}_${count}`
 
-  pickItem(ctx, count, i, [...it.scope, 'function']).forEach(_it => {
-    if (!_it.type) return
-    if (_it.type === 'void') return
-    content.push(_it)
+  pickItem(ctx, count, i, [...it.scope, 'function']).forEach(item => {
+    if (!item.type) return
+    if (item.type === 'void') return
+    content.push(item)
   })
 
   next(ctx, count + 1)
@@ -58,7 +58,7 @@ const pickItem = (
   }
 
   // last one
-  item.type = 'origin'
+  item.type = 'native'
   item.value = `Func("${ctx.option.salt}_${count}")`
   listResult.push(Item.new('new-line', '0', scope))
 
@@ -90,7 +90,7 @@ const transFunc = (ctx: Context): void => {
   content.list.forEach(item => {
     if (
       !(
-        item.type === 'origin' &&
+        item.type === 'native' &&
         item.value.startsWith('Func(') &&
         item.value.endsWith(')')
       )
