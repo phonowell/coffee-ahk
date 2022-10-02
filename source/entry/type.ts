@@ -1,4 +1,4 @@
-import { Option } from '../index'
+import { OptionPartial } from '../index'
 import content from '../module/Content'
 import scope from '../module/Scope'
 
@@ -11,7 +11,7 @@ export type Context = {
   content: typeof content
   flag: Flag
   indent: number
-  option: Option
+  option: OptionPartial
   raw: Token
   scope: typeof scope
   type: string

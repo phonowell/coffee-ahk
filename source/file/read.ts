@@ -1,18 +1,14 @@
 import include from './include'
-import read from 'fire-keeper/dist/read'
 
 // function
 
-const main = async (source: string): Promise<string> => {
+const main = async (source: string, salt: string): Promise<string> => {
   let src = source
 
   const extname = '.coffee'
   if (!src.endsWith(extname)) src += extname
 
-  const raw = await read<string>(src)
-  if (!raw) throw new Error(`invalid source '${src}'`)
-  const content = await include(raw, src)
-
+  const content = await include(src, salt)
   if (!content) throw new Error(`invalid source '${src}'`)
 
   return content

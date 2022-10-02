@@ -11,74 +11,84 @@ import trim from 'lodash/trim'
 
 // interface
 
-type OptionDecode = {
-  content: Buffer | string
-  entry: string
-  source: string
-}
-
-type OptionLoad = {
+type OptDecode = {
   entry: string
   path: string
   source: string
 }
 
+type OptLoad = {
+  entry: string
+  path: string
+  root: string
+}
+
+// variable
+
+const listExt = ['.ahk', '.coffee', '.json', '.yaml'] as const
+const mapCacheDecode = new Map<string, number>()
+const mapCacheRead = new Map<string, string | Buffer>()
+let cacheSalt = ''
+let idModule = 0
+
 // function
 
-const decode = ({ content, entry, source }: OptionDecode) => {
+const decode = (option: OptDecode) => {
+  const { entry, path, source } = option
+
+  if (mapCacheDecode.has(path)) {
+    if (!entry) return ''
+    return `${entry} = __${cacheSalt}_module_${mapCacheDecode.get(path)}__`
+  }
+
+  const content = mapCacheRead.get(path) || ''
+
   // .ahk
   if (source.endsWith('.ahk') && content instanceof Buffer) {
+    mapCacheDecode.set(path, 0)
     const cont = iconv.decode(content, 'utf8', { addBOM: true })
     return `\`\`\`${cont}\`\`\``
   }
 
   // .coffee
   if (source.endsWith('.coffee') && typeof content === 'string') {
-    if (!entry) return content
+    if (!entry) {
+      mapCacheDecode.set(path, 0)
+      return content
+    }
     // closure
+    const id = ++idModule
+    mapCacheDecode.set(path, id)
     const list = content.split(/\n/u).map(line => `  ${line}`)
-    list.unshift(`${entry} = do ->`)
+    list.unshift(`__${cacheSalt}_module_${id}__ = do ->`)
+    list.push(`${entry} = __${cacheSalt}_module_${id}__`)
     return list.join('\n')
   }
 
   // .json .yaml
   if (source.endsWith('.json') || source.endsWith('.yaml')) {
-    if (!entry) return `\`\`\`${content}\`\`\``
+    if (!entry) {
+      mapCacheDecode.set(path, 0)
+      return ''
+    }
+    // closure
+    const id = ++idModule
+    mapCacheDecode.set(path, id)
     const result = cson.stringify(toJson(content))
-    return `${entry} = ${result.includes('\n') ? `\n${result}` : result}`
-  }
-
-  // .css .html .js .txt
-  if (
-    source.endsWith('.css') ||
-    source.endsWith('.html') ||
-    source.endsWith('.js') ||
-    source.endsWith('.txt')
-  ) {
-    if (!entry) throw new Error(`invalid source '${source}': 1`)
     return [
-      `${entry} = \`\`\`"`,
-      '(',
-      content.toString().replace(/"/g, '""'),
-      ')"```',
+      `__${cacheSalt}_module_${id}__ = ${
+        result.includes('\n') ? `\n${result}` : result
+      }`,
+      `${entry} = __${cacheSalt}_module_${id}__`,
     ].join('\n')
   }
 
-  throw new Error(`invalid source '${source}': 2`)
+  throw new Error(`invalid source '${source}'`)
 }
 
-const getListSource = async (input: string) => {
-  let list: string[] =
-    input.endsWith('.ahk') ||
-    input.endsWith('.coffee') ||
-    input.endsWith('.css') ||
-    input.endsWith('.html') ||
-    input.endsWith('.js') ||
-    input.endsWith('.json') ||
-    input.endsWith('.txt') ||
-    input.endsWith('.yaml')
-      ? await glob(input)
-      : await glob(`${input}.coffee`)
+const getSource = async (input: string) => {
+  const isInListExt = listExt.some(ext => input.endsWith(ext))
+  let list = isInListExt ? await glob(input) : await glob(`${input}.coffee`)
 
   if (!list.length) list = await glob(`${input}/index.coffee`)
   if (!list.length) {
@@ -89,47 +99,45 @@ const getListSource = async (input: string) => {
     if (pkg && pkg.main) list = await glob(`./node_modules/${name}/${pkg.main}`)
   }
 
-  return list
+  return list[0]
 }
 
-const load = async ({ entry, path, source }: OptionLoad) => {
-  // import xxx from 'xxx/*'
-  if (entry && path.includes('*'))
-    throw new Error(
-      `unable to set entry for batch import: import ${entry} from '${path}'`
-    )
+const load = async (option: OptLoad) => {
+  const { entry, path, root } = option
 
-  // import {xxx} from 'xxx'
-  if (entry.includes('{'))
-    throw new Error(
-      `cannot use deconstructed import: import ${entry} from '${path}'`
-    )
+  if (path.includes('*')) throw new Error(`cannot use '*' in '${path}'`)
 
-  const path2 = trim(path, '\'" ')
+  const filepath = [getDirname(root), trim(path, '\'" ')].join('/')
 
-  const filepath = [getDirname(source), path2].join('/')
-
-  const listSource = await getListSource(filepath)
-  if (!listSource.length) throw new Error(`invalid source '${path}': 3`)
+  const source = await getSource(filepath)
+  if (!source) throw new Error(`invalid source '${filepath}'`)
 
   const listResult: string[] = []
 
-  for (const src of listSource) {
-    let content = await read<string>(src)
-    if (!content) throw new Error(`invalid source '${path}': 4`)
-    if (getType(content) === 'object') content = toString(content)
-
-    listResult.push(
-      content.includes('import ')
-        ? await main(content, src)
-        : decode({ content, entry, source: src })
+  if (!mapCacheRead.has(path)) {
+    const content = await read<string>(source)
+    if (!content) throw new Error(`invalid source '${source}'`)
+    mapCacheRead.set(
+      path,
+      getType(content) === 'object' ? toString(content) : content
     )
   }
+  const content = mapCacheRead.get(path) || ''
+
+  listResult.push(
+    typeof content == 'string' && content.includes('import ')
+      ? await main(content, cacheSalt)
+      : decode({ entry, path, source })
+  )
 
   return listResult.join('\n')
 }
 
-const main = async (content: string, source: string) => {
+const main = async (source: string, salt: string) => {
+  const content = await read<string>(source)
+  if (!content) throw new Error(`invalid source '${source}'`)
+
+  cacheSalt = salt
   const listContent = content.split('\n')
 
   const listResult: string[] = []
@@ -148,7 +156,7 @@ const main = async (content: string, source: string) => {
       : // import path
         ['', line.replace('import ', '').trim()]
 
-    listResult.push(await load({ entry, path, source }))
+    listResult.push(await load({ entry, path, root: source }))
   }
 
   return listResult.join('\n')

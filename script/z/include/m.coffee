@@ -4,7 +4,7 @@ class N
 class S
   value: 'string'
 
-export default {
-  n: new N()
-  s: new S()
-}
+n = new N()
+s = new S()
+
+export {n, s}

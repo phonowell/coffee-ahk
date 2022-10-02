@@ -26,8 +26,7 @@ const listRule = [
 // function
 
 class Scope {
-  private _list: Item[] = []
-
+  #list: Item[] = []
   next: Item = ''
 
   get last(): Item {
@@ -35,35 +34,32 @@ class Scope {
   }
 
   get length(): number {
-    return this._list.length
+    return this.#list.length
   }
 
   get list(): Item[] {
-    return [...this._list]
+    return [...this.#list]
   }
 
-  clear(): this {
-    this._list = []
-    return this
+  clear(): void {
+    this.#list = []
   }
 
   clone(): Item[] {
-    return [...this._list]
+    return [...this.#list]
   }
 
   eq(n: number): Item {
-    return n >= 0 ? this._list[n] : this._list[this.length + n]
+    return n >= 0 ? this.#list[n] : this.#list[this.length + n]
   }
 
   pop(): Item {
-    return this._list.pop() || ''
+    return this.#list.pop() || ''
   }
 
   push(name: Item): void {
     if (!name) throw new Error('scope.push: name is empty')
-    // if (this.next)
-    //   throw new Error(`scope.push: clear scope.next '${this.next}' at first`)
-    this._list.push(name)
+    this.#list.push(name)
   }
 }
 

@@ -87,6 +87,7 @@ const main = (ctx: Context): boolean => {
     ) {
       listItem[0].type = 'void'
       listItem[1].type = 'void'
+      listItem[2].scope.pop()
       listItem[2].type = 'native'
       const value = listItem[2].value
       listItem[2].value = value

@@ -33,7 +33,7 @@
     "strictBindCallApply": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
-    "target": "es5",
+    "target": "esnext",
     "types": [
       "node"
     ]

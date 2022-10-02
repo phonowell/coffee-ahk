@@ -2,7 +2,7 @@ import Item from '../module/Item'
 import getName from 'fire-keeper/dist/getName'
 import iconv from 'iconv-lite'
 import write from 'fire-keeper/dist/write'
-import { Option } from '..'
+import { OptionPartial } from '..'
 
 // function
 
@@ -12,7 +12,7 @@ const main = async (
     ast: Item[]
     content: string
   },
-  option: Option
+  option: OptionPartial
 ): Promise<void> => {
   const { basename, dirname } = getName(source)
 

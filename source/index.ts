@@ -3,7 +3,8 @@ import start from './entry'
 
 // interface
 
-export type Option = Partial<typeof optionDefault>
+type Option = typeof optionDefault
+export type OptionPartial = Partial<Option>
 
 // variable
 
@@ -24,7 +25,10 @@ const optionDefault = {
 const generatedSalt = (): string =>
   Math.random().toString(32).split('.')[1].padStart(11, '0')
 
-const main = async (source: string, option: Option = {}): Promise<string> => {
+const main = async (
+  source: string,
+  option: OptionPartial = {}
+): Promise<string> => {
   const option2 = {
     ...optionDefault,
     ...option,
@@ -51,7 +55,7 @@ const transpileAsFile = async (
   if (!source2) throw new Error(`invalid source '${source}'`)
 
   const { read, write } = await import('./file')
-  const content = await read(source2)
+  const content = await read(source2, option.salt)
 
   const result = start(content, option)
 

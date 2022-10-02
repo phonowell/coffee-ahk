@@ -24,7 +24,7 @@ const config = [
         tsconfigOverride: {
           compilerOptions: {
             module: 'esnext',
-            target: 'es5',
+            target: 'esnext',
           },
         },
       }),
