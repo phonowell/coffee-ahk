@@ -1,4 +1,4 @@
-import count from './counter'
+import count from './count'
 import injectContext from './context'
 import injectImplicitParamter from './implicit'
 import mark from './mark'
@@ -7,7 +7,7 @@ import partClass from './class'
 import partDo from './do'
 import pickAnonymous from './anonymous'
 import transParam from './parameter'
-import validate from './validator'
+import validate from './validate'
 import { Context } from '../../entry/type'
 
 // function
@@ -21,8 +21,8 @@ const main = (ctx: Context): void => {
   mark(ctx)
 
   // list all functions
-  let listFn = count(ctx)
-  validate(listFn)
+  let setFn = count(ctx)
+  validate(setFn)
 
   partClass(ctx)
 
@@ -33,12 +33,12 @@ const main = (ctx: Context): void => {
   injectContext(ctx)
 
   // anonymous
-  if (ctx.option.pickAnonymous && listFn.has('anonymous')) {
+  if (ctx.option.pickAnonymous && setFn.has('anonymous')) {
     pickAnonymous(ctx)
-    listFn = count(ctx) // re-count
+    setFn = count(ctx) // re-count
   }
 
-  transParam(ctx, listFn)
+  transParam(ctx, setFn)
 
   partDo(ctx)
 }

@@ -73,11 +73,11 @@ const pickItem = (
       10
     ) - 1
   if (diff > 0)
-    listResult.forEach(_it => {
-      if (_it.type !== 'new-line') return
-      let value = parseInt(_it.value, 10) - diff
+    listResult.forEach(it2 => {
+      if (it2.type !== 'new-line') return
+      let value = parseInt(it2.value, 10) - diff
       if (!(value >= 0)) value = 0
-      _it.value = value.toString()
+      it2.value = value.toString()
     })
 
   return listResult
@@ -99,18 +99,18 @@ const transFunc = (ctx: Context): void => {
       return
     }
 
-    const _scope = [...item.scope]
-    _scope.pop()
+    const scope2 = [...item.scope]
+    scope2.pop()
 
-    listContent.push(Item.new('identifier', 'Func', _scope))
-    listContent.push(Item.new('edge', 'call-start', [..._scope, 'call']))
+    listContent.push(Item.new('identifier', 'Func', scope2))
+    listContent.push(Item.new('edge', 'call-start', [...scope2, 'call']))
     listContent.push(
       Item.new('string', item.value.slice(5, item.value.length - 1), [
-        ..._scope,
+        ...scope2,
         'call',
       ])
     )
-    listContent.push(Item.new('edge', 'call-end', [..._scope, 'call']))
+    listContent.push(Item.new('edge', 'call-end', [...scope2, 'call']))
   })
 
   content.load(listContent)

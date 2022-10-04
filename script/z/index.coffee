@@ -1,6 +1,7 @@
 # @ts-check
-import {n, s} from './include/m'
+import './include/m'
 
-do ->
-  n.value = 1
-  s.value = 2
+N = M
+
+n = new N()
+n.alert n.value

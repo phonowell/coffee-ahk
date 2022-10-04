@@ -126,7 +126,7 @@ const load = async (option: OptLoad) => {
 
   listResult.push(
     typeof content == 'string' && content.includes('import ')
-      ? await main(content, cacheSalt)
+      ? await main(source, cacheSalt)
       : decode({ entry, path, source })
   )
 

@@ -4,8 +4,8 @@ const listForbidden = ['exception', 'off', 'on', 'toggle']
 
 // function
 
-const main = (listFn: Set<string>): void => {
-  listFn.forEach(item => {
+const main = (setFn: Set<string>) => {
+  setFn.forEach(item => {
     if (!listForbidden.includes(item.toLowerCase())) return
     throw new Error(`ahk/forbidden: function name '${item}' is not allowed`)
   })

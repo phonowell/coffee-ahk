@@ -1,0 +1,1 @@
+export default (msg) -> Native 'msgbox, % msg'

@@ -1,5 +1,6 @@
 import partArray from './array'
 import partBuildIn from './build-in'
+import partClass from './class'
 import partFor from './for'
 import partFunction from './function'
 import partObject from './object'
@@ -24,6 +25,7 @@ const main = (ctx: Context): void => {
   for (const key of Object.keys(map)) map[key](ctx)
 
   partBuildIn(ctx)
+  partClass(ctx)
   partFunction(ctx)
 }
 

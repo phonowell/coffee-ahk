@@ -16,13 +16,13 @@ const appendBind = (ctx: Context): void => {
     const index = findEdge(ctx, i, item)
     if (Item.is(content.eq(index - 1), 'property', 'constructor')) return
 
-    const _scope = [[...item.scope]]
-    _scope[1] = [..._scope[0], 'call']
-    listContent.push(Item.new('.', '.', _scope[0]))
-    listContent.push(Item.new('identifier', 'Bind', _scope[0]))
-    listContent.push(Item.new('edge', 'call-start', _scope[1]))
-    listContent.push(Item.new('this', 'this', _scope[1]))
-    listContent.push(Item.new('edge', 'call-end', _scope[1]))
+    const scope2 = [[...item.scope]]
+    scope2[1] = [...scope2[0], 'call']
+    listContent.push(Item.new('.', '.', scope2[0]))
+    listContent.push(Item.new('identifier', 'Bind', scope2[0]))
+    listContent.push(Item.new('edge', 'call-start', scope2[1]))
+    listContent.push(Item.new('this', 'this', scope2[1]))
+    listContent.push(Item.new('edge', 'call-end', scope2[1]))
   })
 
   content.load(listContent)
@@ -53,11 +53,11 @@ const formatSuper = (ctx: Context): void => {
     const next = content.eq(i + 1)
     if (!Item.is(next, 'edge', 'call-start')) return
 
-    const _scope = [...next.scope]
+    const scope2 = [...next.scope]
 
     listContent.push(
-      new Item('.', '.', _scope),
-      new Item('property', '__New', _scope)
+      new Item('.', '.', scope2),
+      new Item('property', '__New', scope2)
     )
   })
 
@@ -95,12 +95,12 @@ const prependThis = (ctx: Context): void => {
     )
       return
 
-    const _scope = [...item.scope]
-    listContent.push(Item.new('this', 'this', _scope))
+    const scope2 = [...item.scope]
+    listContent.push(Item.new('this', 'this', scope2))
 
     const it = content.eq(i + 1)
     if (Item.is(it, 'edge', 'parameter-end')) return
-    listContent.push(Item.new('sign', ',', _scope))
+    listContent.push(Item.new('sign', ',', scope2))
   })
 
   content.load(listContent)

@@ -12,28 +12,28 @@ let countIgnore = 0
 // function
 
 const cache = (ctx: Context, item: Item, i: number): void => {
-  const _scope = [item.scope.slice(0, item.scope.length - 1)]
-  _scope[1] = [..._scope[0], 'call']
+  const scope2 = [item.scope.slice(0, item.scope.length - 1)]
+  scope2[1] = [...scope2[0], 'call']
 
   let listItem: Item[] = []
   for (const listIt of listParam) {
     for (const it of listIt) {
       it.scope = it.scope
         .join(',')
-        .replace(/^.*?parameter/u, _scope[1].join(','))
+        .replace(/^.*?parameter/u, scope2[1].join(','))
         .split(',') as Item['scope']
       listItem.push(it)
     }
-    listItem.push(Item.new('sign', ',', _scope[1]))
+    listItem.push(Item.new('sign', ',', scope2[1]))
   }
   listItem.pop()
 
   listItem = [
-    Item.new('.', '.', _scope[0]),
-    Item.new('identifier', 'Bind', _scope[0]),
-    Item.new('edge', 'call-start', _scope[1]),
+    Item.new('.', '.', scope2[0]),
+    Item.new('identifier', 'Bind', scope2[0]),
+    Item.new('edge', 'call-start', scope2[1]),
     ...listItem,
-    Item.new('edge', 'call-end', _scope[1]),
+    Item.new('edge', 'call-end', scope2[1]),
   ]
 
   listCache.push([findIndex(ctx, item, i) + 1, listItem])
