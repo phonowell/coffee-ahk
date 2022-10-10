@@ -11,7 +11,7 @@ const main = async (source: string, salt: string): Promise<string> => {
   const content = await include(src, salt)
   if (!content) throw new Error(`invalid source '${src}'`)
 
-  return content
+  return content.replace(/\r/g, '')
 }
 
 // export

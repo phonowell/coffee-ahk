@@ -1,5 +1,9 @@
-import alert from './alert'
+# @ts-check
 
-class M
-  value: 1
-  alert: alert
+import alert from './alert'
+import b from './b.json'
+
+export default {
+  alert
+  data: b
+}
