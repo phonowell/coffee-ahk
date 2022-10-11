@@ -4,10 +4,11 @@ import c2a from '../source'
 
 const main = async () => {
   await c2a('./script/z', {
-    // displayCoffeescriptAst: true,
+    displayCoffeescriptAst: true,
+    insertTranspilerInformation: false,
     // pickAnonymous: false,
     salt: 'ahk',
-    // verbose: true,
+    verbose: true,
   })
 }
 

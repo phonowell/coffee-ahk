@@ -6,7 +6,6 @@
     base.__New()
     base.a.Call()
     (Func("ahk_5").Bind(this)).Call()
-    return 1
   }
   d := Func("ahk_4").Bind(this)
   e := Func("ahk_3").Bind(this)
@@ -14,13 +13,13 @@
 }
 global b := new A()
 ahk_1(this) {
-  this.a
+  return this.a
 }
 ahk_2(this) {
   (Func("ahk_1").Bind(this)).Call()
 }
 ahk_3(this, n) {
-  this.a + n
+  return this.a + n
 }
 ahk_4(this) {
   return 1

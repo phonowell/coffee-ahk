@@ -16,7 +16,6 @@ const checkVersion = async () => {
 const compile = async (source: string) =>
   (
     await c2aViaTs(source, {
-      ignoreComment: false,
       insertTranspilerInformation: false,
       salt: 'ahk',
       save: false,
@@ -28,7 +27,6 @@ const compile = async (source: string) =>
 const compile2 = async (source: string) =>
   (
     await c2aViaJs(source, {
-      ignoreComment: false,
       insertTranspilerInformation: false,
       salt: 'ahk',
       save: false,
@@ -38,8 +36,8 @@ const compile2 = async (source: string) =>
     .trim()
 
 const main = async () => {
-  await $.exec('npm run build')
-  await $.sleep(1e3)
+  // await $.exec('npm run build')
+  // await $.sleep(1e3)
 
   const target = pickTarget()
   const listSource = await $.glob(`./script/test/**/${target || '*'}.coffee`)
@@ -53,7 +51,7 @@ const main = async () => {
     const content = await compile(source)
     if (content !== contentTarget) {
       console.log(content)
-      console.log('---')
+      console.log('---TURN 1---')
       console.log(contentTarget)
       throw new Error(source)
     }
@@ -61,7 +59,7 @@ const main = async () => {
     const content2 = await compile2(source)
     if (content2 !== contentTarget) {
       console.log(content2)
-      console.log('---')
+      console.log('---TURN 2---')
       console.log(contentTarget)
       throw new Error(source)
     }

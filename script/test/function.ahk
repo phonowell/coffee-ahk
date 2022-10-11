@@ -51,5 +51,5 @@ ahk_12(a := 1) {
   return a
 }
 ahk_13() {
-  1
+  return 1
 }

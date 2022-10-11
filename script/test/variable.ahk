@@ -23,7 +23,7 @@ ahk_1() {
   c := __array__[3]
 }
 ahk_2() {
-  c := 3
+  return c := 3
 }
 ahk_3() {
   b := 1

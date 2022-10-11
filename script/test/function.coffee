@@ -1,10 +1,10 @@
 fn = -> 1
-fn = (a = 1) -> return a
-fn = (a, b...) -> return b[1]
+fn = (a = 1) -> a
+fn = (a, b...) -> b[1]
 fn = (
   a = 1
   b = 2
-) -> return a + b
+) ->  a + b
 fn(
   1
   2
@@ -21,8 +21,8 @@ fn = ->
     return fn2 (a = a, b = b) ->
       c = 3
       return fn3 (a = a, b = b, c = c) ->
-        return a + b + c
+        a + b + c
 do ->
-  fn1 = -> return a + b
-  fn2 = (a) -> return a + b
-  fn3 = (a, b) -> return a + b
+  fn1 = -> a + b
+  fn2 = (a) -> a + b
+  fn3 = (a, b) -> a + b

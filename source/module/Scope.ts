@@ -1,6 +1,6 @@
 // interface
 
-export type Item = typeof listRule[number]
+export type TScope = typeof listRule[number]
 
 // variable
 
@@ -26,10 +26,10 @@ const listRule = [
 // function
 
 class Scope {
-  #list: Item[] = []
-  next: Item = ''
+  #list: TScope[] = []
+  next: TScope = ''
 
-  get last(): Item {
+  get last(): TScope {
     return this.eq(-1)
   }
 
@@ -37,7 +37,7 @@ class Scope {
     return this.#list.length
   }
 
-  get list(): Item[] {
+  get list(): TScope[] {
     return [...this.#list]
   }
 
@@ -45,19 +45,19 @@ class Scope {
     this.#list = []
   }
 
-  clone(): Item[] {
+  clone(): TScope[] {
     return [...this.#list]
   }
 
-  eq(n: number): Item {
+  eq(n: number): TScope {
     return n >= 0 ? this.#list[n] : this.#list[this.length + n]
   }
 
-  pop(): Item {
+  pop(): TScope {
     return this.#list.pop() || ''
   }
 
-  push(name: Item): void {
+  push(name: TScope): void {
     if (!name) throw new Error('scope.push: name is empty')
     this.#list.push(name)
   }

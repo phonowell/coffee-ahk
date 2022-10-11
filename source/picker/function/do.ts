@@ -1,5 +1,5 @@
 import { Context } from '../../entry/type'
-import Item from '../../module/Item'
+import Item, { Scope } from '../../module/Item'
 
 // function
 
@@ -10,9 +10,12 @@ const main = (ctx: Context): void => {
 
   const listContent: Item[] = []
   content.list.forEach(item => {
-    if (flag && Item.is(item, 'new-line')) {
+    if (
+      flag &&
+      (Item.is(item, 'new-line') || Item.is(item, 'bracket', '}'))
+    ) {
       flag = false
-      const scope2: Item['scope'] = [...item.scope, 'call']
+      const scope2: Scope[] = [...item.scope, 'call']
       listContent.push(
         // add `()` for type-checking
         Item.new('bracket', ')', item.scope),

@@ -1,13 +1,13 @@
 import count from './count'
 import injectContext from './context'
-import injectImplicitParamter from './implicit'
+import injectImplicitParameter from './implicit-parameter'
+import injectImplicitReturn from './implicit-return'
 import mark from './mark'
 import partAwait from './await'
 import partClass from './class'
 import partDo from './do'
 import pickAnonymous from './anonymous'
 import transParam from './parameter'
-import validate from './validate'
 import { Context } from '../../entry/type'
 
 // function
@@ -22,11 +22,11 @@ const main = (ctx: Context): void => {
 
   // list all functions
   let setFn = count(ctx)
-  validate(setFn)
 
   partClass(ctx)
 
-  injectImplicitParamter(ctx)
+  injectImplicitParameter(ctx)
+  injectImplicitReturn(ctx)
 
   // replace ctx in parameter
   // from `fn(a = a)` to `fn(a)`

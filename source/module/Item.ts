@@ -1,6 +1,6 @@
 // interface
 
-import { Item as Scope } from './Scope'
+import { TScope as Scope } from './Scope'
 
 // variable
 
@@ -72,6 +72,10 @@ class Item {
     return input instanceof Item
   }
 
+  static isScopeEqual(a: Scope[], b: Scope[]): boolean {
+    return a.join('|') === b.join('|')
+  }
+
   static new(
     ...args:
       | ConstructorParameters<typeof Item>
@@ -86,3 +90,4 @@ class Item {
 
 // export
 export default Item
+export type { Scope }
