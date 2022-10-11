@@ -1,5 +1,5 @@
 # @ts-check
 
-import alert from './include/alert'
+import m from './include/m'
 
-(do -> alert) 'hello world'
+m.alert 1

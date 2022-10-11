@@ -15,8 +15,8 @@ const cache = new Map<
   string,
   {
     id: number
-    before: string
-    after: string
+    content: string
+    dependencies: string[]
   }
 >()
 
@@ -64,7 +64,24 @@ const main = async (source: string, salt: string) => {
 
   const result = await replaceAnchor(source, content)
   await transform()
-  return [...[...cache].map(item => item[1].after), result].join('\n')
+  return [...sortModules(), result].join('\n')
+  // return [...[...cache].map(item => item[1].content), result].join('\n')
+}
+
+const pickImport = async (source: string, line: string) => {
+  const [entry, path] = line.includes(' from ')
+    ? // import entry from path
+      line
+        .replace('import ', '')
+        .split(' from ')
+        .map(it => it.trim())
+    : // import path
+      ['', line.replace('import ', '').trim()]
+
+  const src = await getSource(
+    normalizePath([getDirname(source), trim(path, '\'" ')].join('/'))
+  )
+  return [entry, src]
 }
 
 const replaceAnchor = async (source: string, content: string) => {
@@ -76,27 +93,16 @@ const replaceAnchor = async (source: string, content: string) => {
       continue
     }
 
-    const [entry, path] = line.includes(' from ')
-      ? // import entry from path
-        line
-          .replace('import ', '')
-          .split(' from ')
-          .map(it => it.trim())
-      : // import path
-        ['', line.replace('import ', '').trim()]
+    const [entry, path] = await pickImport(source, line)
 
-    const src = await getSource(
-      normalizePath([getDirname(source), trim(path, '\'" ')].join('/'))
-    )
-
-    if (!cache.has(src))
-      cache.set(src, {
-        after: '',
-        before: '',
+    if (!cache.has(path))
+      cache.set(path, {
+        content: '',
+        dependencies: [],
         id: entry ? ++idModule : 0,
       })
 
-    const id = cache.get(src)?.id ?? 0
+    const id = cache.get(path)?.id ?? 0
     if (!id) continue
 
     const anchor = entry ? `${entry} = __${cacheSalt}_module_${id}__` : ''
@@ -106,10 +112,32 @@ const replaceAnchor = async (source: string, content: string) => {
   return listResult.join('\n')
 }
 
+const sortModules = (
+  listContent: string[] = [],
+  listReady: string[] = []
+): string[] => {
+  ;[...cache].forEach(item => {
+    const [source, { content, dependencies }] = item
+    if (dependencies.length) return
+    listContent.push(content)
+    listReady.push(source)
+    cache.delete(source)
+  })
+  if (!cache.size) return listContent
+  ;[...cache].forEach(item => {
+    const [source, { dependencies }] = item
+    cache.set(source, {
+      ...item[1],
+      dependencies: dependencies.filter(it => !listReady.includes(it)),
+    })
+  })
+  return sortModules(listContent, listReady)
+}
+
 const transform = async () => {
   for (const item of [...cache]) {
     const [source, data] = item
-    if (data.before) continue
+    if (data.content) continue
 
     const content = await read<Buffer | string | object>(source)
     if (!content) {
@@ -123,6 +151,20 @@ const transform = async () => {
       if (typeof content === 'string') return content
       return toString(content)
     })()
+
+    const dependencies = await (async () => {
+      if (source.endsWith('.coffee')) {
+        const list: string[] = []
+        for (const line of before2.split('\n')) {
+          if (!line.startsWith('import ')) continue
+          const [, path] = await pickImport(source, line)
+          list.push(path)
+        }
+        return list
+      }
+      return []
+    })()
+
     const before = source.endsWith('.coffee')
       ? await replaceAnchor(source, before2)
       : before2
@@ -152,11 +194,11 @@ const transform = async () => {
 
     cache.set(source, {
       ...data,
-      after,
-      before,
+      content: after,
+      dependencies,
     })
   }
-  if ([...cache].filter(item => !item[1].before).length) {
+  if ([...cache].filter(item => !item[1].content).length) {
     await transform()
   }
 }
