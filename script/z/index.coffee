@@ -1,3 +1,5 @@
 # @ts-check
 
-onMessage(1)
+import alert from './include/alert'
+
+(do -> alert) 'hello world'

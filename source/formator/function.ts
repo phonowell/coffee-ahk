@@ -93,6 +93,7 @@ const main = (ctx: Context): boolean => {
       listItem[2].value = value
         .substring(1, value.length - 1)
         .replace(/`%/g, '%')
+        .replace(/"{2,}/g, '"')
       content.push('void', 'call-end')
       scope.pop()
       return true

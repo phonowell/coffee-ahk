@@ -22,7 +22,7 @@ const ignore = (item: Item) => {
   if (Item.is(item, 'for')) return true
   if (Item.is(item, 'if')) return true
   if (Item.is(item, 'native')) return true
-  if (Item.is(item, 'statement', 'return')) return true
+  if (Item.is(item, 'statement')) return true
   if (Item.is(item, 'switch')) return true
   if (Item.is(item, 'throw')) return true
   if (Item.is(item, 'try')) return true

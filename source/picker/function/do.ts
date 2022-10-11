@@ -12,7 +12,9 @@ const main = (ctx: Context): void => {
   content.list.forEach(item => {
     if (
       flag &&
-      (Item.is(item, 'new-line') || Item.is(item, 'bracket', '}'))
+      (Item.is(item, 'new-line') ||
+        Item.is(item, 'bracket', '}') ||
+        Item.is(item, 'bracket', ')'))
     ) {
       flag = false
       const scope2: Scope[] = [...item.scope, 'call']
