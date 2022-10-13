@@ -2,7 +2,6 @@ import cson from 'cson'
 import getDirname from 'fire-keeper/dist/getDirname'
 import glob from 'fire-keeper/dist/glob'
 import iconv from 'iconv-lite'
-import normalizePath from 'fire-keeper/dist/normalizePath'
 import read from 'fire-keeper/dist/read'
 import toJson from 'fire-keeper/dist/toJson'
 import toString from 'fire-keeper/dist/toString'
@@ -39,28 +38,29 @@ const contentIncludes = (content: string, target: string) => {
   return false
 }
 
-const getSource = async (input: string) => {
-  const isInListExt = listExt.some(ext => input.endsWith(ext))
-  let list = isInListExt ? await glob(input) : await glob(`${input}.coffee`)
+const getSource = async (source: string, path: string) => {
+  const isFile = path.startsWith('.')
+  const isInListExt = listExt.some(ext => path.endsWith(ext))
 
-  if (!list.length) list = await glob(`${input}/index.coffee`)
-  if (!list.length) {
-    const isProject = input.includes('/')
+  const group = isInListExt
+    ? [path]
+    : [`${path}.coffee`, `${path}/index.coffee`]
 
-    if (isProject) {
-      const pkg = await read<{ main: string }>(
-        `./node_modules/${input}/package.json`
-      )
-      if (pkg && pkg.main)
-        list = await glob(`./node_modules/${input}/${pkg.main}`)
-    } else {
-      const target = `./node_modules/${input}`
-      list = await glob(`${target}.coffee`)
-      if (!list.length) list = await glob(`${target}/index.coffee`)
-    }
-  }
+  group.filter(
+    (it, i) => (group[i] = isFile ? `${source}/${it}` : `./node_modules/${it}`)
+  )
+  const listResult = await glob(group)
+  if (listResult.length) return listResult[0]
 
-  return list[0]
+  const pkg = await read<{ main: string }>(
+    `./node_modules/${path}/package.json`
+  )
+  if (!(pkg && pkg.main)) throw new Error(`invalid package '${source}'`)
+
+  const listResult2 = await glob(`./node_modules/${path}/${pkg.main}`)
+  if (!listResult2.length) throw new Error(`invalid package '${source}'`)
+
+  return listResult2[0]
 }
 
 const main = async (source: string, salt: string) => {
@@ -85,9 +85,7 @@ const pickImport = async (source: string, line: string) => {
     : // import path
       ['', line.replace('import ', '').trim()]
 
-  const src = await getSource(
-    normalizePath([getDirname(source), trim(path, '\'" ')].join('/'))
-  )
+  const src = await getSource(getDirname(source), trim(path, ' /\'"'))
   return [entry, src]
 }
 

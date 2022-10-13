@@ -62,5 +62,5 @@
   "sideEffects": false,
   "types": "./dist/index.d.ts",
   "url": "https://github.com/phonowell/coffee-ahk",
-  "version": "0.0.48-fixed.5"
+  "version": "0.0.48-fixed.8"
 }
