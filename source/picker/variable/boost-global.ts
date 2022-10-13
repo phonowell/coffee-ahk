@@ -23,7 +23,7 @@ const main = (ctx: Context): void => {
     const prev = content.eq(i - 1)
     if (prev.type !== 'identifier') return
     if (prev.scope.length) return
-    if (content.eq(i - 2).type !== 'new-line') return
+    if (i - 2 >= 0 && content.eq(i - 2).type !== 'new-line') return
 
     if (cache.has(prev.value)) return
     cache.add(prev.value)

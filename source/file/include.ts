@@ -2,7 +2,6 @@ import cson from 'cson'
 import getDirname from 'fire-keeper/dist/getDirname'
 import glob from 'fire-keeper/dist/glob'
 import iconv from 'iconv-lite'
-import last from 'lodash/last'
 import normalizePath from 'fire-keeper/dist/normalizePath'
 import read from 'fire-keeper/dist/read'
 import toJson from 'fire-keeper/dist/toJson'
@@ -46,11 +45,19 @@ const getSource = async (input: string) => {
 
   if (!list.length) list = await glob(`${input}/index.coffee`)
   if (!list.length) {
-    const name = last(input.split('/'))
-    const pkg = await read<{ main: string }>(
-      `./node_modules/${name}/package.json`
-    )
-    if (pkg && pkg.main) list = await glob(`./node_modules/${name}/${pkg.main}`)
+    const isProject = input.includes('/')
+
+    if (isProject) {
+      const pkg = await read<{ main: string }>(
+        `./node_modules/${input}/package.json`
+      )
+      if (pkg && pkg.main)
+        list = await glob(`./node_modules/${input}/${pkg.main}`)
+    } else {
+      const target = `./node_modules/${input}`
+      list = await glob(`${target}.coffee`)
+      if (!list.length) list = await glob(`${target}/index.coffee`)
+    }
   }
 
   return list[0]
