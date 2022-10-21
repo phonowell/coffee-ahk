@@ -1,4 +1,5 @@
-﻿if (a > 1) {
+﻿global __rf_ahk__ := Func("ahk_2")
+if (a > 1) {
   1
 }
 if (a > 1) {
@@ -28,7 +29,7 @@ if (a > 1) {
   3
 }
 global fn := Func("ahk_1")
-if !(fn.Call(1)) {
+if !(__rf_ahk__.Call(fn).Call(1)) {
   1
 } else {
   2
@@ -39,4 +40,10 @@ ahk_1() {
   } else {
     2
   }
+}
+ahk_2(__fn__) {
+  if (IsFunc(__fn__)) {
+    return __fn__
+  }
+  throw Exception("invalid function")
 }

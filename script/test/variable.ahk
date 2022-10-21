@@ -1,4 +1,5 @@
-﻿global a := 1
+﻿global __rf_ahk__ := Func("ahk_4")
+global a := 1
 a := 2
 global fn := Func("ahk_3")
 global c := 1
@@ -12,7 +13,7 @@ a := __array__[1]
 __array__ := list
 a := __array__[1]
 b := __array__[2]
-__array__ := fn.Call()
+__array__ := __rf_ahk__.Call(fn).Call()
 a := __array__[1]
 b := __array__[2]
 fn := Func("ahk_1")
@@ -28,4 +29,10 @@ ahk_2() {
 ahk_3() {
   b := 1
   b := 2
+}
+ahk_4(__fn__) {
+  if (IsFunc(__fn__)) {
+    return __fn__
+  }
+  throw Exception("invalid function")
 }

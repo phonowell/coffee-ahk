@@ -69,6 +69,7 @@ const main = (ctx: Context): boolean => {
   if (['->', '=>'].includes(type)) return arrow(ctx, type)
 
   if (type === 'call_start') {
+    ctx.flag.isFunctionIncluded = true
     const next2 = scope.next
     scope.next = ''
     scope.push('call')

@@ -43,7 +43,10 @@ const main = (cont: string, option: Context['option']): Result => {
       global: new Set(),
     },
     content,
-    flag: {},
+    flag: {
+      isChangeIndexUsed: false,
+      isFunctionIncluded: false,
+    },
     indent: 0,
     option,
     raw: {},

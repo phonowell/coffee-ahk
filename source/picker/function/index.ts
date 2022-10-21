@@ -7,6 +7,7 @@ import partAwait from './await'
 import partClass from './class'
 import partDo from './do'
 import pickAnonymous from './anonymous'
+import returnFunction from './return-function'
 import transParam from './parameter'
 import { Context } from '../../entry/type'
 
@@ -41,6 +42,8 @@ const main = (ctx: Context): void => {
   transParam(ctx, setFn)
 
   partDo(ctx)
+
+  returnFunction(ctx)
 }
 
 // export

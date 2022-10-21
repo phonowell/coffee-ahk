@@ -55,12 +55,12 @@
   },
   "scripts": {
     "alice": "ts-node --swc task/alice",
-    "build": "npm run alice forbid && npm run alice segment && rollup -c",
+    "build": "npm run alice forbid && rollup -c",
     "test": "npm run alice test",
     "watch": "npm run alice watch"
   },
   "sideEffects": false,
   "types": "./dist/index.d.ts",
   "url": "https://github.com/phonowell/coffee-ahk",
-  "version": "0.0.48-fixed.8"
+  "version": "0.0.49"
 }

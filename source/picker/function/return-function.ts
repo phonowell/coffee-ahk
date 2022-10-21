@@ -1,0 +1,102 @@
+import Item, { Scope } from '../../module/Item'
+import { Context } from '../../entry/type'
+
+// interface
+
+type Option = {
+  countBracket: number
+  hasIdentifier: boolean
+  i: number
+  list: Item[]
+  result: Item[]
+  scope: Scope[]
+}
+
+// function
+
+const isUpper = (ipt: string) => ipt[0] !== ipt[0].toLowerCase()
+
+const main = (ctx: Context) => {
+  const { content } = ctx
+  const token = `__rf_${ctx.option.salt}__`
+
+  const listStart: number[] = []
+  const listEnd: number[] = []
+
+  content.list.forEach((item, i) => {
+    if (!Item.is(item, 'edge', 'call-start')) return
+    const prev = content.eq(i - 1)
+    if (Item.is(prev, 'function')) return
+    if (Item.is(prev, 'super')) return
+
+    const [i2, listIt] = pickIt({
+      countBracket: 0,
+      hasIdentifier: false,
+      i: i - 1,
+      list: content.list,
+      result: [],
+      scope: prev.scope,
+    })
+    const list = listIt.filter(
+      it => Item.is(it, 'identifier') || Item.is(it, 'property')
+    )
+    const last = list[list.length - 1]
+    if (last.value.startsWith('__')) return
+    if (isUpper(last.value)) return
+
+    // console.log(listIt)
+    listStart.push(i2)
+    listEnd.push(i - 1)
+  })
+
+  const listContent: Item[] = []
+  content.list.forEach((item, i) => {
+    if (listStart.includes(i))
+      listContent.push(
+        Item.new('identifier', token, item.scope),
+        Item.new('edge', 'call-start', [...item.scope, 'call'])
+      )
+    listContent.push(item)
+    if (listEnd.includes(i))
+      listContent.push(Item.new('edge', 'call-end', [...item.scope, 'call']))
+  })
+
+  content.load(listContent)
+}
+
+const pickIt = (option: Option): [number, Item[]] => {
+  const { countBracket, hasIdentifier, i, list, result, scope } = option
+
+  const item = list[i]
+  if (!item) return [i, result]
+
+  result.unshift(item)
+
+  const countBracket2 = !Item.is(item, 'bracket')
+    ? countBracket
+    : item.value === '('
+    ? countBracket - 1
+    : countBracket + 1
+
+  const hasIdentifier2 =
+    ['identifier', 'super', 'this'].includes(item.type) || hasIdentifier
+
+  if (
+    countBracket2 === 0 &&
+    hasIdentifier2 &&
+    Item.isScopeEqual(item.scope, scope)
+  )
+    return [i, result]
+
+  return pickIt({
+    countBracket: countBracket2,
+    hasIdentifier: hasIdentifier2,
+    i: i - 1,
+    list,
+    result,
+    scope,
+  })
+}
+
+// export
+export default main

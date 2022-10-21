@@ -19,7 +19,8 @@ export type Context = {
 }
 
 export type Flag = {
-  isChangeIndexUsed?: boolean
+  isChangeIndexUsed: boolean
+  isFunctionIncluded: boolean
 }
 
 export type Token = {

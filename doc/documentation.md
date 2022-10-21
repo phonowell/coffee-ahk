@@ -14,8 +14,6 @@ Latest version: **0.0.44**
 
 `Coffee-AHK` on the top, compiled `AHK` output on the bottom.
 
-```coffee
-
 ```coffeescript
 # assignment:
 number = 42
@@ -460,18 +458,18 @@ To simplify math expressions, `**` can be used for exponentiation and `//` perfo
 
 All together now:
 
-| `Coffee-AHK` | `AHK` |
-| :---: | :---: |
-| `is` | `==` |
-| `isnt` | `!=` |
-| `not` | `!` |
-| `and` | `&&` |
-| `or` | `\|\|` |
-| `true`, `yes`, `on` | `true` |
-| `false`, `no`, `off` | `false` |
-| `@`, `this` | `this` |
-| `a ** b` | `a ** b` |
-| `a // b` | `a // b` |
+|     `Coffee-AHK`     |  `AHK`   |
+| :------------------: | :------: |
+|         `is`         |   `==`   |
+|        `isnt`        |   `!=`   |
+|        `not`         |   `!`    |
+|        `and`         |   `&&`   |
+|         `or`         |  `\|\|`  |
+| `true`, `yes`, `on`  |  `true`  |
+| `false`, `no`, `off` | `false`  |
+|     `@`, `this`      |  `this`  |
+|       `a ** b`       | `a ** b` |
+|       `a // b`       | `a // b` |
 
 ```coffeescript
 if ignition is on then launch()
@@ -703,7 +701,7 @@ import data from './data.json'
 import data2 from './data.yaml
 ```
 
-## 原生AHK
+## 原生 AHK Native AHK
 
 如果你需要在代码中穿插一些原生`AHK`片段，你可以这么做：
 

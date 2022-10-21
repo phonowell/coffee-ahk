@@ -8,7 +8,7 @@ const main = async () => {
     insertTranspilerInformation: false,
     // pickAnonymous: false,
     salt: 'ahk',
-    // verbose: true,
+    verbose: false,
   })
 }
 
