@@ -25,7 +25,7 @@ for __index_for__, a in [1, 2, 3] {
   }
 }
 ahk_1(__fn__) {
-  if (IsFunc(__fn__)) {
+  if (__fn__) {
     return __fn__
   }
   throw Exception("invalid function")

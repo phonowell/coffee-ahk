@@ -55,7 +55,7 @@ ahk_13() {
   return 1
 }
 ahk_14(__fn__) {
-  if (IsFunc(__fn__)) {
+  if (__fn__) {
     return __fn__
   }
   throw Exception("invalid function")

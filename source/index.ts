@@ -17,6 +17,7 @@ const optionDefault = {
   pickAnonymous: true,
   salt: '',
   save: true,
+  useBuiltIns: true,
   verbose: false,
 }
 

@@ -29,7 +29,7 @@ ahk_5(this) {
   return this.a
 }
 ahk_6(__fn__) {
-  if (IsFunc(__fn__)) {
+  if (__fn__) {
     return __fn__
   }
   throw Exception("invalid function")

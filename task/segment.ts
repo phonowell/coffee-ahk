@@ -11,7 +11,7 @@ const main = async () => {
       insertTranspilerInformation: false,
       pickAnonymous: false,
       salt: 'salt',
-      verbose: true,
+      useBuiltIns: false,
     })
   }
 }

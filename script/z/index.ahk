@@ -1,7 +1,22 @@
-﻿global __rf_ahk__ := Func("ahk_1")
-__rf_ahk__.Call(this.a).Call()
-ahk_1(__fn__) {
-  if (IsFunc(__fn__)) {
+﻿global __rf_ahk__ := Func("ahk_5")
+global __ahk_module_1__ := (Func("ahk_4")).Call()
+global alert := __ahk_module_1__
+global act := Func("ahk_2")
+(Func("ahk_1")).Call()
+ahk_1() {
+  return __rf_ahk__.Call(act).Call(alert, "hello world")
+}
+ahk_2(callback, args*) {
+  return __rf_ahk__.Call(callback).Call(args*)
+}
+ahk_3(msg) {
+  MsgBox, % msg
+}
+ahk_4() {
+  return Func("ahk_3")
+}
+ahk_5(__fn__) {
+  if (__fn__) {
     return __fn__
   }
   throw Exception("invalid function")

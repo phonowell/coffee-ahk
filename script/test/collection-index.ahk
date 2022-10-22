@@ -19,7 +19,7 @@ ahk_1(__ipt__) {
   return __ipt__
 }
 ahk_2(__fn__) {
-  if (IsFunc(__fn__)) {
+  if (__fn__) {
     return __fn__
   }
   throw Exception("invalid function")

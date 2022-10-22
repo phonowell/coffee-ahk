@@ -42,7 +42,7 @@ ahk_1() {
   }
 }
 ahk_2(__fn__) {
-  if (IsFunc(__fn__)) {
+  if (__fn__) {
     return __fn__
   }
   throw Exception("invalid function")

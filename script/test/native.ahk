@@ -8,7 +8,7 @@ ahk_2() {
   msgbox, % msg
 }
 ahk_3(__fn__) {
-  if (IsFunc(__fn__)) {
+  if (__fn__) {
     return __fn__
   }
   throw Exception("invalid function")

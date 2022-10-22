@@ -36,10 +36,7 @@ const returnFunction: Item[] = [
   { type: 'new-line', value: '1', scope: ['function'] },
   { type: 'if', value: 'if', scope: ['function'] },
   { type: 'edge', value: 'expression-start', scope: ['function'] },
-  { type: 'identifier', value: 'IsFunc', scope: ['function'] },
-  { type: 'edge', value: 'call-start', scope: ['function', 'call'] },
-  { type: 'identifier', value: '__fn__', scope: ['function', 'call'] },
-  { type: 'edge', value: 'call-end', scope: ['function', 'call'] },
+  { type: 'identifier', value: '__fn__', scope: ['function'] },
   { type: 'edge', value: 'expression-end', scope: ['function'] },
   { type: 'edge', value: 'block-start', scope: ['function', 'if'] },
   { type: 'new-line', value: '2', scope: ['function', 'if'] },
@@ -77,6 +74,7 @@ const insert = (ctx: Context, flag: string, fn: Item[]) => {
 }
 
 const main = (ctx: Context): void => {
+  if (!ctx.option.useBuiltIns) return
   insert(ctx, 'isChangeIndexUsed', changeIndex)
   insert(ctx, 'isFunctionIncluded', returnFunction)
 }

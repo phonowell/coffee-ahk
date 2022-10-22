@@ -31,7 +31,7 @@ ahk_3() {
   b := 2
 }
 ahk_4(__fn__) {
-  if (IsFunc(__fn__)) {
+  if (__fn__) {
     return __fn__
   }
   throw Exception("invalid function")

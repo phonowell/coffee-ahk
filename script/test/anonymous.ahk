@@ -13,7 +13,7 @@ ahk_4(setTimeout) {
   return __rf_ahk__.Call(setTimeout).Call(Func("ahk_3").Bind(setTimeout), 3000)
 }
 ahk_5(__fn__) {
-  if (IsFunc(__fn__)) {
+  if (__fn__) {
     return __fn__
   }
   throw Exception("invalid function")
