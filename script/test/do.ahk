@@ -1,6 +1,6 @@
-﻿(Func("ahk_11")).Call()
+(Func("ahk_11")).Call()
 global fn := Func("ahk_10")
-__rf_ahk__.Call((fn)).Call()
+__rf_ahk__.Call((fn), "#rf/ahk/1").Call()
 global a := (Func("ahk_9")).Call()
 global b := {c: (Func("ahk_8")).Call()}
 global d := (Func("ahk_7")).Call()

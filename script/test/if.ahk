@@ -1,4 +1,4 @@
-﻿global __rf_ahk__ := Func("ahk_2")
+global __rf_ahk__ := Func("ahk_2")
 if (a > 1) {
   1
 }
@@ -29,7 +29,7 @@ if (a > 1) {
   3
 }
 global fn := Func("ahk_1")
-if !(__rf_ahk__.Call(fn).Call(1)) {
+if !(__rf_ahk__.Call(fn, "#rf/ahk/1").Call(1)) {
   1
 } else {
   2
@@ -41,9 +41,9 @@ ahk_1() {
     2
   }
 }
-ahk_2(__fn__) {
+ahk_2(__fn__, __token__) {
   if (__fn__) {
     return __fn__
   }
-  throw Exception("invalid function")
+  throw Exception("invalid function: " . (__token__) . "")
 }

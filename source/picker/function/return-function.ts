@@ -50,6 +50,8 @@ const main = (ctx: Context) => {
   })
 
   const listContent: Item[] = []
+  let count = 0
+
   content.list.forEach((item, i) => {
     if (listStart.includes(i))
       listContent.push(
@@ -58,7 +60,11 @@ const main = (ctx: Context) => {
       )
     listContent.push(item)
     if (listEnd.includes(i))
-      listContent.push(Item.new('edge', 'call-end', [...item.scope, 'call']))
+      listContent.push(
+        Item.new('sign', ',', item.scope),
+        Item.new('string', `"#rf/${ctx.option.salt}/${++count}"`, item.scope),
+        Item.new('edge', 'call-end', [...item.scope, 'call'])
+      )
   })
 
   content.load(listContent)

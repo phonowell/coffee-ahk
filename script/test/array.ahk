@@ -1,4 +1,4 @@
-﻿global __ci_ahk__ := Func("ahk_1")
+global __ci_ahk__ := Func("ahk_1")
 global a := []
 a := [1]
 a := [1, 2, 3]

@@ -36,19 +36,25 @@ const compile2 = async (source: string) =>
     .trim()
 
 const main = async () => {
-  // await $.exec('npm run build')
-  // await $.sleep(1e3)
-
   const target = pickTarget()
-  const listSource = await $.glob(`./script/test/**/${target || '*'}.coffee`)
+  const listSource = await $.glob(
+    `./script/test/**/${target && target !== 'overwrite' ? target : '*'}.coffee`
+  )
+
   for (const source of listSource) {
     const target2 = source.replace('.coffee', '.ahk')
+
+    const content = await compile(source)
+    if (target === 'overwrite') {
+      await $.write(target2, content)
+      continue
+    }
+
     const contentTarget = ((await $.read(target2)) || '')
       .toString()
       .replace(/\r/g, '')
       .trim()
 
-    const content = await compile(source)
     if (content !== contentTarget) {
       console.log(content)
       console.log('---TURN 1---')

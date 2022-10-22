@@ -1,4 +1,4 @@
-﻿global __rf_ahk__ := Func("ahk_4")
+global __rf_ahk__ := Func("ahk_4")
 global a := 1
 a := 2
 global fn := Func("ahk_3")
@@ -13,7 +13,7 @@ a := __array__[1]
 __array__ := list
 a := __array__[1]
 b := __array__[2]
-__array__ := __rf_ahk__.Call(fn).Call()
+__array__ := __rf_ahk__.Call(fn, "#rf/ahk/1").Call()
 a := __array__[1]
 b := __array__[2]
 fn := Func("ahk_1")
@@ -30,9 +30,9 @@ ahk_3() {
   b := 1
   b := 2
 }
-ahk_4(__fn__) {
+ahk_4(__fn__, __token__) {
   if (__fn__) {
     return __fn__
   }
-  throw Exception("invalid function")
+  throw Exception("invalid function: " . (__token__) . "")
 }

@@ -7,9 +7,9 @@ ahk_1() {
 ahk_2() {
   msgbox, % msg
 }
-ahk_3(__fn__) {
+ahk_3(__fn__, __token__) {
   if (__fn__) {
     return __fn__
   }
-  throw Exception("invalid function")
+  throw Exception("invalid function: " . (__token__) . "")
 }

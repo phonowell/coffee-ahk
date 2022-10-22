@@ -1,11 +1,11 @@
-﻿global __rf_ahk__ := Func("ahk_6")
+global __rf_ahk__ := Func("ahk_6")
 class A extends B {
   a := 0
   b := {}
   c := {a: 1}
   __New() {
     base.__New()
-    __rf_ahk__.Call(base.a).Call()
+    __rf_ahk__.Call(base.a, "#rf/ahk/1").Call()
     (Func("ahk_5").Bind(this)).Call()
   }
   d := Func("ahk_4").Bind(this)
@@ -28,9 +28,9 @@ ahk_4(this) {
 ahk_5(this) {
   return this.a
 }
-ahk_6(__fn__) {
+ahk_6(__fn__, __token__) {
   if (__fn__) {
     return __fn__
   }
-  throw Exception("invalid function")
+  throw Exception("invalid function: " . (__token__) . "")
 }
