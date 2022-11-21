@@ -7,19 +7,19 @@ const main = (ctx: Context): boolean => {
   const { content, type, value } = ctx
 
   if (type === 'number') {
-    let _value = value
+    let value2 = value
 
     if (value.includes('n'))
       throw new Error("ahk/forbidden: 'BigInt' is not allowed")
 
-    if (value.includes('_')) _value = _value.replace(/_/g, '')
+    if (value.includes('_')) value2 = value2.replace(/_/g, '')
 
     if (value.includes('e')) {
-      const [pre, sub] = _value.split('e')
-      _value = `${pre}${repeat('0', parseInt(sub, 10))}`
+      const [pre, sub] = value2.split('e')
+      value2 = `${pre}${repeat('0', parseInt(sub, 10))}`
     }
 
-    content.push('number', _value)
+    content.push('number', value2)
     return true
   }
 
