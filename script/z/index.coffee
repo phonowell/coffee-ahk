@@ -1,6 +1,15 @@
-import alert from './include/alert'
+# @ts-check
 
-act = (callback, args...) -> callback args...
+fn = (
 
-do ->
-  act alert, 'hello world'
+
+
+  -> 1
+)
+
+
+a = (
+
+
+  1
+)

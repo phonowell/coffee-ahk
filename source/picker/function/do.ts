@@ -23,7 +23,7 @@ const main = (ctx: Context): void => {
         Item.new('bracket', ')', item.scope),
         Item.new('edge', 'call-start', scope2),
         Item.new('edge', 'call-end', scope2),
-        item
+        item,
       )
       return
     }

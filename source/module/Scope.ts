@@ -1,6 +1,6 @@
 // interface
 
-export type TScope = typeof listRule[number]
+export type TScope = (typeof listRule)[number]
 
 // variable
 
@@ -64,4 +64,5 @@ class Scope {
 }
 
 // export
-export default new Scope()
+const scope = new Scope()
+export default scope

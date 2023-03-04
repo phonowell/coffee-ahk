@@ -1,6 +1,7 @@
+import sortBy from 'lodash/sortBy'
+
 import { Context } from '../../entry/type'
 import Item from '../../module/Item'
-import sortBy from 'lodash/sortBy'
 
 // variable
 
@@ -112,7 +113,7 @@ const pickItem = (
   ctx: Context,
   item: Item,
   i: number,
-  listItem: Item[] = []
+  listItem: Item[] = [],
 ): Item[] => {
   const { content } = ctx
 

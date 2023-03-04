@@ -37,7 +37,7 @@ class Content {
     return this.list.pop() || Item.new()
   }
 
-  push(...args: Parameters<typeof Item['new']>): this {
+  push(...args: Parameters<(typeof Item)['new']>): this {
     const it = Item.new(...args)
     if (!it.scope.length) it.scope = scope.clone()
     this.list.push(it)
@@ -48,7 +48,7 @@ class Content {
     return this.list.shift() || Item.new()
   }
 
-  unshift(...args: Parameters<typeof Item['new']>): this {
+  unshift(...args: Parameters<(typeof Item)['new']>): this {
     const it = Item.new(...args)
     if (!it.scope.length) it.scope = [...scope.list]
     this.list.unshift(it)
@@ -57,4 +57,5 @@ class Content {
 }
 
 // export
-export default new Content()
+const content = new Content()
+export default content

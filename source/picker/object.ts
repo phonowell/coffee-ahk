@@ -8,7 +8,7 @@ const deconstruct = (ctx: Context): void => {
 
   const listPre: string[] = []
   const token = '__object__'
-  let listContent: typeof content.list = []
+  let listContent: Item[] = []
 
   const pickIndent = (i: number): number => {
     const it = content.eq(i)
@@ -95,7 +95,7 @@ const deconstruct2 = (ctx: Context): void => {
 
     listContent.push(
       new Item('sign', ':', [...item.scope]),
-      new Item('identifier', item.value, [...item.scope])
+      new Item('identifier', item.value, [...item.scope]),
     )
   })
 

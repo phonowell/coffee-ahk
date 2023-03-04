@@ -17,7 +17,7 @@ const main = (ctx: Context): void => {
   const pickItem = (
     item: Item,
     i: number,
-    listResult: Item[] = []
+    listResult: Item[] = [],
   ): [number, Item[]] => {
     const it = content.eq(i)
     if (!it) {
@@ -97,7 +97,7 @@ const main = (ctx: Context): void => {
           Item.new('edge', 'call-start', _scopeCall),
           ...list,
           Item.new('edge', 'call-end', _scopeCall),
-        ]
+        ],
       )
 
       continue
@@ -111,7 +111,7 @@ const main = (ctx: Context): void => {
               Item.new(
                 first.type,
                 (parseFloat(first.value) + 1).toString(),
-                first.scope
+                first.scope,
               ),
             ]
           : [

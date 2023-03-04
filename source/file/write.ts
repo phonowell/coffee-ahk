@@ -1,8 +1,9 @@
-import Item from '../module/Item'
 import getName from 'fire-keeper/dist/getName'
-import iconv from 'iconv-lite'
 import write from 'fire-keeper/dist/write'
+import iconv from 'iconv-lite'
+
 import { OptionPartial } from '..'
+import Item from '../module/Item'
 
 // function
 
@@ -12,7 +13,7 @@ const main = async (
     ast: Item[]
     content: string
   },
-  option: OptionPartial
+  option: OptionPartial,
 ): Promise<void> => {
   const { basename, dirname } = getName(source)
 
@@ -22,7 +23,7 @@ const main = async (
       .encode(data.content, 'utf8', {
         addBOM: true,
       })
-      .toString()
+      .toString(),
   )
 
   if (option.ast) await write(`${dirname}/${basename}.ast.json`, data.ast)

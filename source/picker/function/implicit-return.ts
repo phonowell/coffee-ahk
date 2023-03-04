@@ -1,5 +1,5 @@
-import Item, { Scope } from '../../module/Item'
 import { Context } from '../../entry/type'
+import Item, { Scope } from '../../module/Item'
 
 // function
 
@@ -42,7 +42,7 @@ const main = (ctx: Context) => {
     if (i === flag[0]) {
       if (flag[2])
         listContent.push(
-          Item.new('new-line', flag[1].length.toString(), flag[1])
+          Item.new('new-line', flag[1].length.toString(), flag[1]),
         )
       listContent.push(Item.new('statement', 'return', flag[1]))
       return
@@ -61,7 +61,7 @@ const main = (ctx: Context) => {
     const isObjectWithoutBrackets = Item.is(list[1], 'bracket', '{')
     if (
       list.filter(
-        it => Item.is(it, 'new-line') && Item.isScopeEqual(it.scope, sStart)
+        it => Item.is(it, 'new-line') && Item.isScopeEqual(it.scope, sStart),
       ).length > (isObjectWithoutBrackets ? 1 : 2)
     )
       return
@@ -80,7 +80,7 @@ const pickItems = (
     i: number
     list: Item[]
     scope: Scope[]
-  }
+  },
 ): Item[] => {
   const { content } = ctx
   const { i, list, scope } = options

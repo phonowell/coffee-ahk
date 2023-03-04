@@ -1,5 +1,5 @@
-import log from './logger'
 import start from './entry'
+import log from './logger'
 
 // interface
 
@@ -28,7 +28,7 @@ const generatedSalt = (): string =>
 
 const main = async (
   source: string,
-  option: OptionPartial = {}
+  option: OptionPartial = {},
 ): Promise<string> => {
   const option2 = {
     ...optionDefault,
@@ -44,14 +44,14 @@ const main = async (
 
 const transpileAsFile = async (
   source: string,
-  option: Option
+  option: Option,
 ): Promise<string> => {
   const glob = (await import('fire-keeper/dist/glob')).default
 
   const listSource = [source, `${source}.coffee`, `${source}/index.coffee`]
 
   const [source2] = (await glob(listSource)).filter(item =>
-    item.endsWith('.coffee')
+    item.endsWith('.coffee'),
   )
   if (!source2) throw new Error(`invalid source '${source}'`)
 

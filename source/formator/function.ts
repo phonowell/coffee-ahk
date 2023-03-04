@@ -29,7 +29,7 @@ const arrow = (ctx: Context, type: string): boolean => {
       Item.new('this', 'this', _scope2),
       Item.new('sign', '=', _scope2),
       Item.new('this', 'this', _scope2),
-      Item.new('sign', ',', _scope2)
+      Item.new('sign', ',', _scope2),
     )
   }
 
@@ -52,7 +52,7 @@ const start = (ctx: Context): boolean => {
 
 const findEdge = (
   ctx: Context,
-  i: number = ctx.content.list.length - 1
+  i: number = ctx.content.list.length - 1,
 ): number => {
   const { content } = ctx
 

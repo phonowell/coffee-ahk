@@ -1,6 +1,6 @@
-import Item from '../../module/Item'
 import data from '../../../data/forbidden.json'
 import { Context } from '../../entry/type'
+import Item from '../../module/Item'
 
 // variable
 
@@ -18,7 +18,7 @@ const main = (ctx: Context) => {
     const v = item.value.toLowerCase()
     if (v.startsWith('a_') || listForbidden.includes(v))
       throw new Error(
-        `ahk/forbidden: variable name '${item.value}' is not allowed`
+        `ahk/forbidden: variable name '${item.value}' is not allowed`,
       )
   })
 }

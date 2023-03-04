@@ -1,6 +1,7 @@
-import Item from '../module/Item'
 import kleur from 'kleur'
 import pad from 'lodash/pad'
+
+import Item from '../module/Item'
 
 // function
 

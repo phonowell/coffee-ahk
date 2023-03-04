@@ -40,7 +40,7 @@ const main = (ctx: Context): void => {
     listContent.splice(
       listContent.length - 2,
       0,
-      Item.new('native', 'global ', item.scope)
+      Item.new('native', 'global ', item.scope),
     )
   })
 

@@ -1,4 +1,7 @@
+import { Context } from '../entry/type'
+
 import partArray from './array'
+import partBracket from './bracket'
 import partBuildIn from './build-in'
 import partClass from './class'
 import partFor from './for'
@@ -8,12 +11,11 @@ import partVariable from './variable'
 
 // interface
 
-import { Context } from '../entry/type'
-
 // variable
 
 const map = {
   array: partArray,
+  bracket: partBracket,
   for: partFor,
   object: partObject,
   variable: partVariable,

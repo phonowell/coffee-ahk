@@ -57,7 +57,7 @@ const formatSuper = (ctx: Context): void => {
 
     listContent.push(
       new Item('.', '.', scope2),
-      new Item('property', '__New', scope2)
+      new Item('property', '__New', scope2),
     )
   })
 

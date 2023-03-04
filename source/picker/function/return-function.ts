@@ -1,5 +1,5 @@
-import Item, { Scope } from '../../module/Item'
 import { Context } from '../../entry/type'
+import Item, { Scope } from '../../module/Item'
 
 // interface
 
@@ -38,7 +38,7 @@ const main = (ctx: Context) => {
       scope: prev.scope,
     })
     const list = listIt.filter(
-      it => Item.is(it, 'identifier') || Item.is(it, 'property')
+      it => Item.is(it, 'identifier') || Item.is(it, 'property'),
     )
     const last = list[list.length - 1]
     if (last.value.startsWith('__')) return
@@ -56,14 +56,14 @@ const main = (ctx: Context) => {
     if (listStart.includes(i))
       listContent.push(
         Item.new('identifier', token, item.scope),
-        Item.new('edge', 'call-start', [...item.scope, 'call'])
+        Item.new('edge', 'call-start', [...item.scope, 'call']),
       )
     listContent.push(item)
     if (listEnd.includes(i))
       listContent.push(
         Item.new('sign', ',', item.scope),
         Item.new('string', `"#rf/${ctx.option.salt}/${++count}"`, item.scope),
-        Item.new('edge', 'call-end', [...item.scope, 'call'])
+        Item.new('edge', 'call-end', [...item.scope, 'call']),
       )
   })
 

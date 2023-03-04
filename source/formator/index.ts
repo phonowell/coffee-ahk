@@ -1,3 +1,5 @@
+import { Context } from '../entry/type'
+
 import partAlias from './alias'
 import partArray from './array'
 import partAwait from './await'
@@ -9,9 +11,9 @@ import partDo from './do'
 import partFor from './for'
 import partForbidden from './forbidden'
 import partFunction from './function'
+import partIndentifier from './identifier'
 import partIf from './if'
 import partIndent from './indent'
-import partIndentifier from './identifier'
 import partModule from './module'
 import partNative from './native'
 import partNewLine from './new-line'
@@ -28,8 +30,6 @@ import partTry from './try'
 import partWhile from './while'
 
 // interface
-
-import { Context } from '../entry/type'
 
 // variable
 
