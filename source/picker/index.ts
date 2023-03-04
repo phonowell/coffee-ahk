@@ -1,11 +1,11 @@
 import { Context } from '../entry/type'
 
 import partArray from './array'
-import partBracket from './bracket'
 import partBuildIn from './build-in'
 import partClass from './class'
 import partFor from './for'
 import partFunction from './function'
+import partNewLine from './new-line'
 import partObject from './object'
 import partVariable from './variable'
 
@@ -15,8 +15,8 @@ import partVariable from './variable'
 
 const map = {
   array: partArray,
-  bracket: partBracket,
   for: partFor,
+  newLine: partNewLine,
   object: partObject,
   variable: partVariable,
 } as const

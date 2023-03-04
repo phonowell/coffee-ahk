@@ -1,10 +1,12 @@
-import { Context } from './type'
-import coffee from 'coffeescript'
+import { compile } from 'coffeescript'
+
+import transpile from '../formator'
 import content from '../module/Content'
+import scope from '../module/Scope'
 import pick from '../picker'
 import render from '../renderer'
-import scope from '../module/Scope'
-import transpile from '../formator'
+
+import { Context } from './type'
 
 // interface
 
@@ -14,7 +16,7 @@ type Coffee = {
     content: string,
     option?: {
       ast?: boolean
-    }
+    },
   ) => unknown
 }
 
@@ -32,7 +34,7 @@ declare global {
 // function
 
 const main = (cont: string, option: Context['option']): Result => {
-  const ast = coffee.compile(cont, {
+  const ast = compile(cont, {
     ast: true,
   })
 

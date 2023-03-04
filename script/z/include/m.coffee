@@ -1,13 +1,7 @@
 # @ts-check
 
-import $abs from './abs'
-# import $alert from './alert'
-# import $noop from './noop'
+main = (
+  -> 0
+)
 
-# class M
-#   list: [1, 2, 3]
-
-#   abs: $abs
-#   alert: $alert
-
-# $noop M
+export default main

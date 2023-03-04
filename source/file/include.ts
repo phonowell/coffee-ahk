@@ -55,7 +55,7 @@ const getSource = async (source: string, path: string) => {
   const pkg = await read<{ main: string }>(
     `./node_modules/${path}/package.json`,
   )
-  if (!(pkg && pkg.main)) throw new Error(`invalid package '${source}'`)
+  if (!pkg?.main) throw new Error(`invalid package '${source}'`)
 
   const listResult2 = await glob(`./node_modules/${path}/${pkg.main}`)
   if (!listResult2.length) throw new Error(`invalid package '${source}'`)
@@ -174,6 +174,7 @@ const transform = async () => {
       ? await replaceAnchor(source, before2)
       : before2
 
+    // eslint-disable-next-line no-loop-func
     const after = (() => {
       if (source.endsWith('.ahk')) {
         return ['```', before, '```'].join('\n')
