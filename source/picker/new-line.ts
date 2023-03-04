@@ -16,9 +16,10 @@ const main = (ctx: Context): void => {
       if (!(i > 0)) return false
 
       const prev = content.eq(i - 1)
-      if (!Item.is(prev, 'bracket', '(')) return false
+      if (Item.is(prev, 'bracket', '(')) return true
+      if (Item.is(prev, 'sign', '=')) return true
 
-      return true
+      return false
     })()
 
     if (!flag) {
