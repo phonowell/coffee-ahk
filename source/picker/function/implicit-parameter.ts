@@ -47,7 +47,7 @@ const main = (ctx: Context): void => {
           ['sign', '='],
           ['identifier', name],
           ['sign', ','],
-        ].map(args => Item.new(args[0] as Item['type'], args[1], item.scope))
+        ].map(args => Item.new(args[0] as Item['type'], args[1], item.scope)),
       )
     })
   })
@@ -77,7 +77,7 @@ const pickContext = (ctx: Context, i: number, item: Item) => {
       Item.is(prev, 'for', 'for') ||
         Item.is(next, 'sign', '=') ||
         Item.is(next, 'for-in') ||
-        it.scope[it.scope.length - 1] === 'parameter'
+        it.scope[it.scope.length - 1] === 'parameter',
     )
   }
 

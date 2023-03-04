@@ -1,8 +1,9 @@
-import { Context } from '../../entry/type'
-import Item from '../../module/Item'
 import findIndex from 'lodash/findIndex'
 import findLastIndex from 'lodash/findLastIndex'
 import isEqual from 'lodash/isEqual'
+
+import { Context } from '../../entry/type'
+import Item from '../../module/Item'
 
 // function
 
@@ -38,7 +39,7 @@ const pickItem = (
   count: number,
   i: number,
   scope: Item['scope'],
-  listResult: Item[] = []
+  listResult: Item[] = [],
 ): Item[] => {
   const { content } = ctx
 
@@ -70,7 +71,7 @@ const pickItem = (
           type: 'new-line',
         })
       ].value,
-      10
+      10,
     ) - 1
   if (diff > 0)
     listResult.forEach(it2 => {
@@ -108,7 +109,7 @@ const transFunc = (ctx: Context): void => {
       Item.new('string', item.value.slice(5, item.value.length - 1), [
         ...scope2,
         'call',
-      ])
+      ]),
     )
     listContent.push(Item.new('edge', 'call-end', [...scope2, 'call']))
   })

@@ -1,10 +1,10 @@
 import cson from 'cson'
 import getDirname from 'fire-keeper/dist/getDirname'
 import glob from 'fire-keeper/dist/glob'
-import iconv from 'iconv-lite'
 import read from 'fire-keeper/dist/read'
 import toJson from 'fire-keeper/dist/toJson'
 import toString from 'fire-keeper/dist/toString'
+import iconv from 'iconv-lite'
 import trim from 'lodash/trim'
 
 // variable
@@ -47,13 +47,13 @@ const getSource = async (source: string, path: string) => {
     : [`${path}.coffee`, `${path}/index.coffee`]
 
   group.filter(
-    (it, i) => (group[i] = isFile ? `${source}/${it}` : `./node_modules/${it}`)
+    (it, i) => (group[i] = isFile ? `${source}/${it}` : `./node_modules/${it}`),
   )
   const listResult = await glob(group)
   if (listResult.length) return listResult[0]
 
   const pkg = await read<{ main: string }>(
-    `./node_modules/${path}/package.json`
+    `./node_modules/${path}/package.json`,
   )
   if (!(pkg && pkg.main)) throw new Error(`invalid package '${source}'`)
 
@@ -119,7 +119,7 @@ const replaceAnchor = async (source: string, content: string) => {
 
 const sortModules = (
   listContent: string[] = [],
-  listReady: string[] = []
+  listReady: string[] = [],
 ): string[] => {
   ;[...cache].forEach(item => {
     const [source, { content, dependencies }] = item

@@ -1,5 +1,6 @@
-import c2a from '../source'
 import watch from 'fire-keeper/dist/watch'
+
+import c2a from '../source'
 
 // function
 
@@ -11,7 +12,7 @@ const main = () => {
       displayCoffeescriptAst: true,
       salt: 'ahk',
       verbose: true,
-    })
+    }),
   )
 }
 

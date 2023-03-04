@@ -50,9 +50,9 @@ const main = (ctx: Context): void => {
               ['number', (j + 1).toString()],
               ['edge', 'index-end'],
             ].map(args =>
-              Item.new(args[0] as Item['type'], args[1], item.scope)
+              Item.new(args[0] as Item['type'], args[1], item.scope),
             ),
-          ])
+          ]),
       )
 
       listPre.length = 0

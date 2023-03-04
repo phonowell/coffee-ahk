@@ -76,7 +76,7 @@ const insert = (ctx: Context, flag: string, fn: Item[]) => {
 
     listItem[1].value = listItem[1].value.replace(
       /_salt_/g,
-      `_${ctx.option.salt}_`
+      `_${ctx.option.salt}_`,
     )
 
     content.load([...listItem, ...content.list])

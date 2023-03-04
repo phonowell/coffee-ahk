@@ -1,15 +1,16 @@
-import count from './count'
+import { Context } from '../../entry/type'
+
+import pickAnonymous from './anonymous'
+import partAwait from './await'
+import partClass from './class'
 import injectContext from './context'
+import count from './count'
+import partDo from './do'
 import injectImplicitParameter from './implicit-parameter'
 import injectImplicitReturn from './implicit-return'
 import mark from './mark'
-import partAwait from './await'
-import partClass from './class'
-import partDo from './do'
-import pickAnonymous from './anonymous'
-import returnFunction from './return-function'
 import transParam from './parameter'
-import { Context } from '../../entry/type'
+import returnFunction from './return-function'
 
 // function
 

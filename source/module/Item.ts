@@ -43,13 +43,13 @@ const listType = [
 class Item {
   comment?: string[]
   scope: Scope[]
-  type: typeof listType[number]
+  type: (typeof listType)[number]
   value: string
 
   constructor(
     type: Item['type'] = 'void',
     value?: Item['value'],
-    scope: Item['scope'] = []
+    scope: Item['scope'] = [],
   ) {
     this.type = type
     this.value = typeof value === 'undefined' ? type : value || ''
@@ -79,7 +79,7 @@ class Item {
   static new(
     ...args:
       | ConstructorParameters<typeof Item>
-      | Parameters<typeof Item['clone']>
+      | Parameters<(typeof Item)['clone']>
   ): Item {
     if (args[0] instanceof Item) return Item.clone(args[0])
     if (typeof args[0] === 'string')

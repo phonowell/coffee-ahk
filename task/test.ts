@@ -1,6 +1,7 @@
 import $ from 'fire-keeper'
-import c2aViaTs from '../source'
+
 import c2aViaJs from '../dist'
+import c2aViaTs from '../source'
 
 // function
 
@@ -38,7 +39,9 @@ const compile2 = async (source: string) =>
 const main = async () => {
   const target = pickTarget()
   const listSource = await $.glob(
-    `./script/test/**/${target && target !== 'overwrite' ? target : '*'}.coffee`
+    `./script/test/**/${
+      target && target !== 'overwrite' ? target : '*'
+    }.coffee`,
   )
 
   for (const source of listSource) {
