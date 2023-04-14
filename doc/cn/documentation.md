@@ -1,12 +1,12 @@
-# Documentation
+# 文档
 
-You can think of `Coffee-AHK` as a dialect of `CoffeeScript`. It is compatible with existing `AHK` code and adds new features like `anonymous functions`, `destructuring assignment`, and even `package management support`. It is also a subset of `CoffeeScript` that correctly compiles to `JavaScript` code and runs on all platforms.
+你可以把`Coffee-AHK`看作是`CoffeeScript`的一种方言。它与现有的`AHK`代码兼容，并为其增加了诸如`匿名函数`、`赋值解构`乃至`包管理支持`等新功能。它同时也是`CoffeeScript`的子集，可以正确编译成`JavaScript`代码，并在全平台上运行。
 
-Latest version: **0.0.52**
+最新版本：**0.0.52**
 
-## Overview
+## 概览
 
-`Coffee-AHK` at the top, compiled `AHK` output at the bottom.
+上方为`Coffee-AHK`代码，下方为翻译后的`AHK`代码。
 
 ```coffeescript
 # assignment:
@@ -54,26 +54,26 @@ ahk_3(x) {
 }
 ```
 
-## Installation
+## 安装
 
 ```shell
 # install locally for a project:
 pnpm install coffee-ahk
 ```
 
-## Language Reference
+## 语言参考
 
-First, the basics: `Coffee-AHK` uses significant whitespace to delimit blocks of code. You don't need to use semicolons `;` to terminate expressions, terminating the line will do just as well (although semicolons can still be used to fit multiple expressions on a single line). Instead of using curly braces `{}` to enclose blocks of code in functions, if-statements, switches, and try/catch, use indentation.
+首先，`Coffee-AHK`使用有语义的空格和换行。你可以直接通过换行来终止表达式，而不需要显式书写`;`（除非你需要将多个表达式写在同一行）。而在函数、`if`语句、`switch`语句或`try`/`catch`中，你需要使用缩进替代包围代码块的`{}`来划分代码块。
 
-You don't need to use parentheses to call a function when passing arguments. The implicit call wraps forward to the end of the line or block expression.
+在执行函数时，你不需要显式使用`()`来包裹参数。隐式调用会自动帮你处理好这些。
 
 `console.log sys.inspect object` → `console.log(sys.inspect(object));`
 
-## Functions
+## 函数
 
-Functions are defined by an optional list of parameters in parentheses, an arrow, and the function body. The empty function looks like this: `->`.
+函数由括号中的参数、箭头和函数体三部分构成。一个最简单的空函数长这样：`->`。
 
-Note that all functions starting with an uppercase letter are treated as built-in functions.
+注意，所有以大写字母开头的函数都被视作内置函数。
 
 ```coffeescript
 square = (x) -> x * x
@@ -91,7 +91,7 @@ ahk_2(x) {
 }
 ```
 
-Functions may also have default values for arguments, which are used if the incoming argument is missing (`undefined`).
+函数参数可以设置默认值，当参数不传时（即为`undefined`时），其将被置为该值。
 
 ```coffeescript
 fill = (container, liquid = 'coffee') ->
@@ -105,9 +105,9 @@ ahk_1(container, liquid := "coffee") {
 }
 ```
 
-## Strings
+## 字符串
 
-Like JavaScript and many other languages, `Coffee-AHK` supports strings delimited by the `"` or `'` characters. Coffee-AHK also supports string interpolation within `"`-quoted strings using `#{ ... }`. Single quoted strings are literal. You can even use interpolation in object keys.
+如同`JavaScript`和其他许多语言一样，`Coffee-AHK`同时支持`'`和`"`。`Coffee-AHK`也支持使用`#{ ... }`的形式，在`"`包裹的字符串中进行字符串插值，甚至在对象的键名中你也可以这么做。
 
 ```coffeescript
 author = 'Wittgenstein'
@@ -122,7 +122,7 @@ global quote := "A picture is a fact. -- " . (author) . ""
 global sentence := "" . (22 / 7) . " is a decent approximation of π"
 ```
 
-Multiline strings are allowed in `Coffee-AHK`. Lines are separated by a single space unless they end with a backslash. Indentation is ignored.
+`Coffee-AHK`中可以使用多行字符串。换行会被转为一个空格，而缩进则被忽略。
 
 ```coffeescript
 mobyDick = 'Call me Ishmael. Some years ago --
@@ -149,11 +149,11 @@ html = '''
 global html := "<strong>cup of coffee-ahk</strong>"
 ```
 
-Double-quoted block strings, like other double-quoted strings, allow interpolation.
+双引号包括的块状字符串也可以进行插值。
 
-## Objects and Arrays
+## 对象与数组
 
-The `Coffee-AHK` literals for objects and arrays look a lot like their JavaScript cousins. If each property is listed on a separate line, the commas are optional. Objects can be created using indentation instead of explicit curly braces, similar to `YAML`.
+`Coffee-AHK`中的对象与数组看起来同`JavaScript`非常相似。当每个属性都单独成行时，句末的`,`是可以省略的。你也可以使用缩进代替`{}`来创建对象，就像在`YAML`中那样。
 
 ```coffeescript
 song = ['do', 're', 'mi', 'fa', 'so']
@@ -182,7 +182,7 @@ global bitlist := [1, 0, 1, 0, 0, 1, 1, 1, 0]
 global kids := {brother: {name: "Max", age: 11}, sister: {name: "Ida", age: 9}}
 ```
 
-`Coffee-AHK` has a shortcut for creating objects when you want the key to be set with a variable of the same name. Note that the `{` and `}` are required for this shortcut.
+在用同名变量来设置键时，你可以使用如下简便写法。注意，此时必须显式写下`{`和`}`。
 
 ```coffeescript
 name = 'Michelangelo'
@@ -200,13 +200,13 @@ global turtle := {name: name, mask: mask, weapon: weapon}
 global output := "" . (turtle.name) . " wears an " . (turtle.mask) . " mask. Watch out for his " . (turtle.weapon) . "!"
 ```
 
-## Comments
+## 注释
 
-In `Coffee-AHK` comments are indicated by the character `#` to the end of the line, or from `###` to the next occurrence of `###`.
+`Coffee-AHK`中使用`#`来表示行注释，使用`###`来表示块注释。
 
 ## If, Else, Unless, and Conditional Assignment
 
-`if`/`else` statements can be written without parentheses or braces. As with functions and other block expressions, multiline conditionals are delimited by indentation.
+`if`/`else`可以不使用`{}`包裹。你可以同其他块状表达式一样，使用缩进来划分它们。
 
 ```coffeescript
 if singing then mood = greatlyImproved
@@ -288,7 +288,7 @@ ahk_1(first, second, others*) {
 }
 ```
 
-## Loops
+## 循环
 
 ```coffeescript
 # Eat lunch.
@@ -333,7 +333,7 @@ ahk_2(food) {
 }
 ```
 
-Use `of` to signal comprehension over the properties of an object instead of the values in an array.
+当循环对象时，使用`of`来替代`in`。
 
 ```coffeescript
 yearsOld = max: 10, ida: 9, tim: 11
@@ -384,27 +384,27 @@ while (num) {
 }
 ```
 
-For readability, the `until` keyword is equivalent to `while not`, and the `loop` keyword is equivalent to `while true`.
+`until`相当于`while not`，`loop`相当于`while true`。
 
-## Operators and Aliases
+## 操作符与别名
 
-`Coffee-AHK` compiles `is` to `==` and `isnt` to `!=`.
+在`Coffee-AHK`中`is`相当于`==`，`isnt`相当于`！=`。
 
-You can use `not` as an alias for `!`.
+`not`相当于`！`的别名。
 
-For logic, `and` compiles to `&&`, and `or` compiles to `||`.
+`and`相当于`&&`，`or`相当于`||`。
 
-Instead of a newline or semicolon, `then` can be used to separate conditions from expressions in `while`, `if`/`else`, and `switch`/`when` statements.
+在`while`、`if`/`else`和`switch`/`when`语句中，`then`可以代替换行或分号，用于分隔表达式中的条件。
 
-As in `YAML`, `on` and `yes` are the same as boolean `true`, while `off` and `no` are boolean `false`.
+如同在`YAML`中那样，`on`和`yes`相当于`true`，`off`和`no`则相当于`false`。
 
-`unless` can be used as the inverse of if.
+`unless`可以视作`if not`。
 
-As a shortcut for `this.property` you can use `@property`.
+你可以使用`@property`作为`this.property`的缩写。
 
-To simplify mathematical expressions, `**` can be used for exponentiation, and `//` does the division of floors.
+为了简化数学表达式，你也可以使用`**`和`//`。
 
-All together now:
+总而言之：
 
 |     `Coffee-AHK`     |  `AHK`   |
 | :------------------: | :------: |
@@ -447,9 +447,9 @@ if (car.speed < limit) {
 print.Call(inspect.Call("My name is " . (this.name) . ""))
 ```
 
-## Chained Calls
+## 链式调用
 
-Leading `.` closes all open calls, allowing for simpler chaining syntax.
+使用行首`.`来更简单地使用链式调用。
 
 ```coffeescript
 $ 'body'
@@ -467,9 +467,9 @@ ahk_1($, e) {
 }
 ```
 
-## Destructuring Assignment
+## 赋值解构
 
-Just like `JavaScript`, `Coffee-AHK` has destructuring assignment syntax. When you assign an array or object literal to a value, `Coffee-AHK` breaks it up and matches both sides against each other, assigning the values on the right to the variables on the left. In the simplest case, it can be used for parallel assignment:
+同`JavaScript`一样，`Coffee-AHK`支持赋值解构。当你将一个数组或对象文字赋值时，`Coffee-AHK`会将两边的值打散并相互匹配，将右边的值赋给左边的变量。这可以用于最简单的交换变量：
 
 ```coffeescript
 theBait = 1e3
@@ -486,7 +486,7 @@ theBait := __array__[1]
 theSwitch := __array__[2]
 ```
 
-But it's also useful for dealing with functions that return multiple values.
+或是实现非常实用的多返回函数：
 
 ```coffeescript
 weatherReport = (location) ->
@@ -507,9 +507,9 @@ ahk_1(location) {
 }
 ```
 
-## Class
+## 类
 
-Since `AHK` is not case-sensitive, please do not use this way: `item = new Item()`. Instead, it should be written like this: `item2 = new Item()`.
+由于`AHK`不区分大小写，请不要使用`item = new Item()`这种写法。而应该这么写：`item2 = new Item()`。
 
 ```coffeescript
 class Animal
@@ -629,7 +629,7 @@ try {
 }
 ```
 
-## Modules
+## 模块
 
 ```coffeescript
 import './local-file.coffee'
@@ -641,9 +641,9 @@ import data from './data.json'
 import data2 from './data.yaml
 ```
 
-## Native AHK
+## 原生代码
 
-If you ever need to insert snippets of `AHK` into your `Coffee-AHK`, you can use backticks to pass it straight through.
+如果你需要在代码中穿插一些原生`AHK`片段，你可以这么做：
 
 ```coffeescript
 hi = ->
