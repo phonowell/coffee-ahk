@@ -1,4 +1,4 @@
-import { Context } from '../../entry/type'
+import { Context } from '../../types'
 
 import changeIndex from './change-index'
 import deconstruct from './deconstruct'

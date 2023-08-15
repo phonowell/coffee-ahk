@@ -5,30 +5,14 @@ import content from '../module/Content'
 import scope from '../module/Scope'
 import pick from '../picker'
 import render from '../renderer'
-
-import { Context } from './type'
+import { Context } from '../types'
 
 // interface
-
-type Coffee = {
-  compile: (
-    // eslint-disable-next-line no-shadow
-    content: string,
-    option?: {
-      ast?: boolean
-    },
-  ) => unknown
-}
 
 type Result = {
   ast: Context['content']['list']
   content: string
   raw: Context['raw'][]
-}
-
-declare global {
-  // eslint-disable-next-line init-declarations, no-shadow
-  const coffee: Coffee
 }
 
 // function

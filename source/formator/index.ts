@@ -1,4 +1,4 @@
-import { Context } from '../entry/type'
+import { Context } from '../types'
 
 import partAlias from './alias'
 import partArray from './array'

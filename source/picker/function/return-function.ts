@@ -1,4 +1,4 @@
-import { Context } from '../../entry/type'
+import { Context } from '../../types'
 import Item, { Scope } from '../../module/Item'
 
 // interface

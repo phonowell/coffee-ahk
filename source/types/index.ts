@@ -12,7 +12,7 @@ export type Context = {
   flag: Flag
   indent: number
   option: OptionPartial
-  raw: Token
+  raw: Raw
   scope: typeof scope
   type: string
   value: string
@@ -23,14 +23,12 @@ export type Flag = {
   isFunctionIncluded: boolean
 }
 
-export type Token = {
+export type Raw = {
   comments?: {
     content: string
   }[]
   generated?: boolean
-  origin?: unknown[] & {
-    [key: string]: unknown
-  }
+  origin?: unknown[] & Record<string, unknown>
   quote?: string
   spaced?: boolean
 }
