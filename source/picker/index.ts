@@ -1,4 +1,4 @@
-import { Context } from '../entry/type'
+import { Context } from '../types'
 
 import partArray from './array'
 import partBuildIn from './build-in'

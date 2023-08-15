@@ -1,4 +1,4 @@
-import { Context } from '../../entry/type'
+import { Context } from '../../types'
 
 import boostGlobal from './boost-global'
 import translateError from './translate-error'

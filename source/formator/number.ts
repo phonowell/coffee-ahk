@@ -1,6 +1,6 @@
 import repeat from 'lodash/repeat'
 
-import { Context } from '../entry/type'
+import { Context } from '../types'
 
 // function
 

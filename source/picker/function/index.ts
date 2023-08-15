@@ -1,4 +1,4 @@
-import { Context } from '../../entry/type'
+import { Context } from '../../types'
 
 import pickAnonymous from './anonymous'
 import partAwait from './await'

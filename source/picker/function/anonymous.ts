@@ -2,7 +2,7 @@ import findIndex from 'lodash/findIndex'
 import findLastIndex from 'lodash/findLastIndex'
 import isEqual from 'lodash/isEqual'
 
-import { Context } from '../../entry/type'
+import { Context } from '../../types'
 import Item from '../../module/Item'
 
 // function
