@@ -3,9 +3,9 @@ import Item from '../../module/Item'
 
 // function
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   const { content } = ctx
-  const cache: Set<string> = new Set()
+  const cache = new Set<string>()
   let flagIgnore = 0
 
   const listContent: Item[] = []
@@ -21,16 +21,16 @@ const main = (ctx: Context): void => {
     if (!Item.is(item, 'sign', '=')) return
 
     const prev = content.eq(i - 1)
-    if (prev.type !== 'identifier') return
+    if (!Item.is(prev, 'identifier')) return
     if (prev.scope.length) return
-    if (i - 2 >= 0 && content.eq(i - 2).type !== 'new-line') return
+    if (i - 2 >= 0 && !Item.is(content.eq(i - 2), 'new-line')) return
 
     if (cache.has(prev.value)) return
     cache.add(prev.value)
 
     if (
       Item.is(content.eq(i + 1), 'identifier', prev.value) &&
-      content.eq(i + 2).type === 'new-line'
+      Item.is(content.eq(i + 2), 'new-line')
     ) {
       listContent.splice(listContent.length - 2, 2)
       flagIgnore = 2

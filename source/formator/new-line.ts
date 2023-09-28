@@ -12,7 +12,7 @@ const main = (ctx: Context): boolean => {
 
       if (['array', 'call', 'object', 'parameter'].includes(scope.last)) {
         if (!Item.is(content.last, 'sign', ',')) {
-          if (content.last.type === 'new-line') content.pop()
+          if (Item.is(content.last, 'new-line')) content.pop()
           content.push('sign', ',')
         }
         return true

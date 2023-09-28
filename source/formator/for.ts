@@ -3,7 +3,7 @@ import Item from '../module/Item'
 
 // function
 
-const main = (ctx: Context): boolean => {
+const main = (ctx: Context) => {
   const { content, scope, type, value } = ctx
 
   if (type === 'for') {
@@ -15,13 +15,16 @@ const main = (ctx: Context): boolean => {
   if (['forin', 'forof'].includes(type)) {
     const list: string[] = []
 
-    const last = content.pop()
+    const last = content.pop() ?? Item.new()
     list.push(last.value)
 
-    const _last = content.last
-    if (Item.is(_last, 'sign', ',')) {
+    const last2 = content.last
+    if (Item.is(last2, 'sign', ',')) {
       content.pop()
-      list.unshift(content.pop().value)
+
+      const last3 = content.pop()
+      if (!last3) throw new Error('Unexpected error: formator/for/1')
+      list.unshift(last3.value)
     }
 
     if (type === 'forin') list.reverse()

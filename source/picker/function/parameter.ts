@@ -3,13 +3,13 @@ import Item from '../../module/Item'
 
 // function
 
-const main = (ctx: Context, listFn: Set<string>): void => {
+const main = (ctx: Context, listFn: Set<string>) => {
   // replace const as parameter =
   // from `fn(callback)` to `fn(Func('callback'))`
   replaceFn(ctx, listFn)
 }
 
-const replaceFn = (ctx: Context, listFn: Set<string>): void => {
+const replaceFn = (ctx: Context, listFn: Set<string>) => {
   const { content } = ctx
 
   content.list.forEach((it, i) => {

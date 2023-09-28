@@ -1,18 +1,16 @@
-import findIndex from 'lodash/findIndex'
-import findLastIndex from 'lodash/findLastIndex'
-import isEqual from 'lodash/isEqual'
+import { findLastIndex, isEqual, findIndex } from 'lodash'
 
 import { Context } from '../../types'
 import Item from '../../module/Item'
 
-// function
+// functions
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   next(ctx)
   transFunc(ctx)
 }
 
-const next = (ctx: Context, count = 1): void => {
+const next = (ctx: Context, count = 1) => {
   const { content } = ctx
 
   content.load()
@@ -23,10 +21,10 @@ const next = (ctx: Context, count = 1): void => {
   if (!~i) return
 
   const it = content.eq(i)
+  if (!it) throw new Error('Unexpected error: picker/function/anonymous/1')
   it.value = `${ctx.option.salt}_${count}`
 
   pickItem(ctx, count, i, [...it.scope, 'function']).forEach(item => {
-    if (!item.type) return
     if (item.type === 'void') return
     content.push(item)
   })
@@ -84,7 +82,7 @@ const pickItem = (
   return listResult
 }
 
-const transFunc = (ctx: Context): void => {
+const transFunc = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []

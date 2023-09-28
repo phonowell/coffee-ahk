@@ -32,7 +32,9 @@ const listType = [
   'statement', // break continue extends new return throw
   'string',
   'super',
+  'switch',
   'this',
+  'throw',
   'try', // catch finally try
   'void',
   'while',
@@ -56,23 +58,27 @@ class Item {
     this.scope = [...scope]
   }
 
-  static clone(item: Item): Item {
+  static clone(item: Item) {
     if (!(item instanceof Item))
       throw new Error('item must be an instance of Item')
     return new Item(item.type, item.value, item.scope)
   }
 
-  static is(item: Item, type: string, value?: string): boolean {
-    if (!(item instanceof Item)) return false
+  static is(
+    item: Item | undefined,
+    type: (typeof listType)[number],
+    value?: string,
+  ): item is Item & boolean {
+    if (!Item.isItem(item)) return false
     if (typeof value === 'undefined') return item.type === type
     return item.type === type && item.value === value
   }
 
-  static isItem(input: unknown): boolean {
+  static isItem(input: unknown): input is Item {
     return input instanceof Item
   }
 
-  static isScopeEqual(a: Scope[], b: Scope[]): boolean {
+  static isScopeEqual(a: Scope[], b: Scope[]) {
     return a.join('|') === b.join('|')
   }
 
@@ -80,7 +86,7 @@ class Item {
     ...args:
       | ConstructorParameters<typeof Item>
       | Parameters<(typeof Item)['clone']>
-  ): Item {
+  ) {
     if (args[0] instanceof Item) return Item.clone(args[0])
     if (typeof args[0] === 'string')
       return new Item(...(args as ConstructorParameters<typeof Item>))

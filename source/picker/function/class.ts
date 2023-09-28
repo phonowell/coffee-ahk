@@ -1,9 +1,9 @@
 import { Context } from '../../types'
 import Item from '../../module/Item'
 
-// function
+// functions
 
-const appendBind = (ctx: Context): void => {
+const appendBind = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
@@ -42,7 +42,7 @@ const findEdge = (ctx: Context, i: number, item: Item): number => {
   return findEdge(ctx, i - 1, item)
 }
 
-const formatSuper = (ctx: Context): void => {
+const formatSuper = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
@@ -64,14 +64,14 @@ const formatSuper = (ctx: Context): void => {
   content.load(listContent)
 }
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   prependThis(ctx)
   appendBind(ctx)
   renameConstructor(ctx)
   formatSuper(ctx)
 }
 
-const prependThis = (ctx: Context): void => {
+const prependThis = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
@@ -106,7 +106,7 @@ const prependThis = (ctx: Context): void => {
   content.load(listContent)
 }
 
-const renameConstructor = (ctx: Context): void => {
+const renameConstructor = (ctx: Context) => {
   const { content } = ctx
   content.list.forEach(it => {
     if (!Item.is(it, 'property', 'constructor')) return

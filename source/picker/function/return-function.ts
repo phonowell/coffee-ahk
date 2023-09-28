@@ -1,5 +1,6 @@
 import { Context } from '../../types'
 import Item, { Scope } from '../../module/Item'
+import at from '../../utils/at'
 
 // interface
 
@@ -14,7 +15,7 @@ type Option = {
 
 // function
 
-const isUpper = (ipt: string) => ipt[0] !== ipt[0].toLowerCase()
+const isUpper = (ipt: string) => !ipt.startsWith(ipt[0].toLowerCase())
 
 const main = (ctx: Context) => {
   const { content } = ctx
@@ -25,7 +26,10 @@ const main = (ctx: Context) => {
 
   content.list.forEach((item, i) => {
     if (!Item.is(item, 'edge', 'call-start')) return
+
     const prev = content.eq(i - 1)
+    if (!prev) throw new Error('Unexpected error: picker/return-function/1')
+
     if (Item.is(prev, 'function')) return
     if (Item.is(prev, 'super')) return
 
@@ -73,7 +77,7 @@ const main = (ctx: Context) => {
 const pickIt = (option: Option): [number, Item[]] => {
   const { countBracket, hasIdentifier, i, list, result, scope } = option
 
-  const item = list[i]
+  const item = at(list, i)
   if (!item) return [i, result]
 
   result.unshift(item)

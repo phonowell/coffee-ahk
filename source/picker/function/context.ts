@@ -1,9 +1,9 @@
-import sortBy from 'lodash/sortBy'
+import { sortBy } from 'lodash'
 
 import { Context } from '../../types'
 import Item from '../../module/Item'
 
-// variable
+// variables
 
 const listCache: [number, Item[]][] = []
 const listContent: Item[] = []
@@ -12,7 +12,7 @@ let countIgnore = 0
 
 // function
 
-const cache = (ctx: Context, item: Item, i: number): void => {
+const cache = (ctx: Context, item: Item, i: number) => {
   const scope2 = [item.scope.slice(0, item.scope.length - 1)]
   scope2[1] = [...scope2[0], 'call']
 
@@ -53,7 +53,7 @@ const findIndex = (ctx: Context, item: Item, i: number): number => {
   return findIndex(ctx, item, i + 1)
 }
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   const { content } = ctx
 
   // reset
@@ -98,8 +98,10 @@ const pick = (ctx: Context, item: Item, i: number): boolean => {
   if (item.scope[item.scope.length - 1] !== 'parameter') return false
 
   const itNext = content.eq(i + 1)
+  if (!itNext) throw new Error('Unexpected error: picker/function/context/1')
   if (!['identifier', 'this'].includes(itNext.type)) return false
   const itPrev = content.eq(i - 1)
+  if (!itPrev) throw new Error('Unexpected error: picker/function/context/2')
   if (!['identifier', 'this'].includes(itPrev.type)) return false
 
   // pick

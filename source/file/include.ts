@@ -1,9 +1,5 @@
 import cson from 'cson'
-import getDirname from 'fire-keeper/dist/getDirname'
-import glob from 'fire-keeper/dist/glob'
-import read from 'fire-keeper/dist/read'
-import toJson from 'fire-keeper/dist/toJson'
-import toString from 'fire-keeper/dist/toString'
+import { glob, read, getDirname, toJson, toString } from 'fire-keeper'
 import iconv from 'iconv-lite'
 import trim from 'lodash/trim'
 
@@ -121,7 +117,8 @@ const sortModules = (
   listContent: string[] = [],
   listReady: string[] = [],
 ): string[] => {
-  ;[...cache].forEach(item => {
+  const cache2 = [...cache]
+  cache2.forEach(item => {
     const [source, { content, dependencies }] = item
     if (dependencies.length) return
     listContent.push(content)

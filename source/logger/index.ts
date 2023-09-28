@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import kleur from 'kleur'
 import pad from 'lodash/pad'
 
@@ -5,14 +6,14 @@ import Item from '../module/Item'
 
 // function
 
-const log = (message: string | number): void => {
+const log = (message: string | number) => {
   const msg = typeof message !== 'string' ? message.toString() : message
 
   console.log()
   console.log(kleur.blue(pad(msg, 80, '-')))
 }
 
-const main = (ast: Item[]): void => {
+const main = (ast: Item[]) => {
   let line = 0
   log(++line)
 

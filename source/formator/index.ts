@@ -33,7 +33,7 @@ import partWhile from './while'
 
 // variable
 
-const map = {
+const map: Record<string, (ctx: Context) => boolean> = {
   'new-line': partNewLine,
   alias: partAlias,
   array: partArray,
@@ -66,7 +66,7 @@ const map = {
 
 // function
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   for (const key of Object.keys(map)) {
     if (key === 'comment') continue
     if (map[key](ctx)) break

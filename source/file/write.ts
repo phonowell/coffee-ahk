@@ -1,6 +1,5 @@
-import getName from 'fire-keeper/dist/getName'
-import write from 'fire-keeper/dist/write'
 import iconv from 'iconv-lite'
+import { getName, write } from 'fire-keeper'
 
 import { OptionPartial } from '..'
 import Item from '../module/Item'

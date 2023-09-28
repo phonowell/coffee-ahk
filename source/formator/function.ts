@@ -4,7 +4,7 @@ import scope from '../module/Scope'
 
 // function
 
-const arrow = (ctx: Context, type: string): boolean => {
+const arrow = (ctx: Context, type: string) => {
   const { content, scope: scope2 } = ctx
 
   // fn = -> xxx
@@ -37,7 +37,7 @@ const arrow = (ctx: Context, type: string): boolean => {
   return true
 }
 
-const start = (ctx: Context): boolean => {
+const start = (ctx: Context) => {
   const { scope: cache, content } = ctx
 
   if (
@@ -63,7 +63,7 @@ const findEdge = (
   return findEdge(ctx, i - 1)
 }
 
-const main = (ctx: Context): boolean => {
+const main = (ctx: Context) => {
   const { content, type } = ctx
 
   if (['->', '=>'].includes(type)) return arrow(ctx, type)
@@ -90,7 +90,7 @@ const main = (ctx: Context): boolean => {
       listItem[1].type = 'void'
       listItem[2].scope.pop()
       listItem[2].type = 'native'
-      const value = listItem[2].value
+      const { value } = listItem[2]
       listItem[2].value = value
         .substring(1, value.length - 1)
         .replace(/`%/g, '%')

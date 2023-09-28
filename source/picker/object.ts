@@ -3,7 +3,7 @@ import Item from '../module/Item'
 
 // function
 
-const deconstruct = (ctx: Context): void => {
+const deconstruct = (ctx: Context) => {
   const { content } = ctx
 
   const listPre: string[] = []
@@ -17,10 +17,10 @@ const deconstruct = (ctx: Context): void => {
     return pickIndent(i - 1)
   }
 
-  const pickPre = (i: number): void => {
+  const pickPre = (i: number) => {
     const it = content.eq(i)
     if (Item.is(it, 'bracket', '{')) return
-    if (it.type === 'identifier') listPre.push(it.value)
+    if (Item.is(it, 'identifier')) listPre.push(it.value)
     listContent.pop()
     pickPre(i - 1)
   }
@@ -75,7 +75,7 @@ const deconstruct = (ctx: Context): void => {
   content.load(listContent)
 }
 
-const deconstruct2 = (ctx: Context): void => {
+const deconstruct2 = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
@@ -103,7 +103,7 @@ const deconstruct2 = (ctx: Context): void => {
   content.load(listContent)
 }
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   // deconstruction
   deconstruct(ctx)
   deconstruct2(ctx)

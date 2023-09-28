@@ -3,7 +3,7 @@ import Item from '../module/Item'
 
 // function
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   const { content } = ctx
 
   const findIndex = (i: number): number => {
@@ -23,7 +23,11 @@ const main = (ctx: Context): void => {
     const it = content.eq(i)
     if (!it) return ''
 
-    if (Item.is(it, 'for', 'for')) return content.eq(i + 1).value
+    if (Item.is(it, 'for', 'for')) {
+      const next = content.eq(i + 1)
+      if (!next) throw new Error('Unexpected error: picker/for/2')
+      return next.value
+    }
 
     return findName(i - 1)
   }
@@ -39,8 +43,10 @@ const main = (ctx: Context): void => {
     const index = findIndex(i)
 
     const next = content.eq(index + 1)
+    if (!next) throw new Error('Unexpected error: picker/for/1')
+
     const indent = next.value
-    const scope = next.scope
+    const { scope } = next
 
     listCache.unshift([
       index + 1,
