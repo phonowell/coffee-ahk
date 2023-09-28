@@ -23,8 +23,6 @@ const ignore = (item: Item) => {
   if (Item.is(item, 'if')) return true
   if (Item.is(item, 'native')) return true
   if (Item.is(item, 'statement') && item.value !== 'new') return true
-  if (Item.is(item, 'switch')) return true
-  if (Item.is(item, 'throw')) return true
   if (Item.is(item, 'try')) return true
   if (Item.is(item, 'while')) return true
   return false

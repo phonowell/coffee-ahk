@@ -32,9 +32,7 @@ const listType = [
   'statement', // break continue extends new return throw
   'string',
   'super',
-  'switch',
   'this',
-  'throw',
   'try', // catch finally try
   'void',
   'while',
