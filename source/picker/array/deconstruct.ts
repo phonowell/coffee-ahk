@@ -1,3 +1,4 @@
+import at from '../../utils/at'
 import { Context } from '../../types'
 import Item from '../../module/Item'
 
@@ -19,7 +20,10 @@ const main = (ctx: Context) => {
 
   const pickPre = (i: number, listResult: Item[][] = [[]]): Item[][] => {
     const it = content.eq(i)
-    const last = listResult[listResult.length - 1]
+    if (!it) throw new Error('Unexpected error: picker/array/deconstruct/1')
+
+    const last = at(listResult, -1)
+    if (!last) throw new Error('Unexpected error: picker/array/deconstruct/2')
 
     if (Item.is(it, 'edge', 'array-start')) return listResult
 

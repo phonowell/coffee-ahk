@@ -10,7 +10,7 @@ const main = (ctx: Context) => {
     if (!Item.is(item, 'edge', 'parameter-start')) return
 
     const it = content.eq(i - 1)
-    if (it.type !== 'identifier') return
+    if (!Item.is(it, 'identifier')) return
 
     it.type = 'function'
   })
