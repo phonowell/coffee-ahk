@@ -17,7 +17,7 @@ const listForbidden = [
 
 // function
 
-const main = (ctx: Context): boolean => {
+const main = (ctx: Context) => {
   const { type } = ctx
 
   if (listForbidden.includes(type))

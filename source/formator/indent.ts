@@ -3,7 +3,7 @@ import Item from '../module/Item'
 
 // function
 
-const main = (ctx: Context): boolean => {
+const main = (ctx: Context) => {
   const { content, scope, type } = ctx
 
   if (type === 'indent') {
@@ -14,7 +14,7 @@ const main = (ctx: Context): boolean => {
       return true
     ctx.indent++
 
-    const last = scope.last
+    const { last } = scope
     if (['case', 'for', 'function', 'switch'].includes(last)) {
       if (!['catch', 'class', 'else', 'if', 'while'].includes(scope.next)) {
         if (last === 'case') content.push('sign', ':')

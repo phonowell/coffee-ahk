@@ -15,7 +15,8 @@ const main = (ctx: Context): boolean => {
         .forEach(comm => listComment.push(comm)),
     )
 
-    content.last.comment = listComment
+    const { last } = content
+    last.comment = listComment
     return true
   }
 

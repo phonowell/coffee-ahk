@@ -1,4 +1,4 @@
-import watch from 'fire-keeper/dist/watch'
+import { watch } from 'fire-keeper'
 
 import c2a from '../source'
 
@@ -7,7 +7,7 @@ import c2a from '../source'
 const main = () => {
   process.on('uncaughtException', console.error)
 
-  watch('./script/**/*.coffee', async path =>
+  watch('./script/**/*.coffee', path =>
     c2a(path, {
       displayCoffeescriptAst: true,
       salt: 'ahk',

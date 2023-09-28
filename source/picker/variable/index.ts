@@ -6,7 +6,7 @@ import validate from './validate'
 
 // function
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   validate(ctx)
 
   // global

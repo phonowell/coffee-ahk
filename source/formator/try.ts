@@ -4,7 +4,7 @@ import { Context } from '../types'
 
 // function
 
-const main = (ctx: Context): boolean => {
+const main = (ctx: Context) => {
   const { content, scope, type } = ctx
 
   if (type === 'catch') {

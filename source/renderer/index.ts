@@ -13,7 +13,7 @@ type Context = Context2 & {
 
 // variable
 
-const mapEdge = {
+const mapEdge: Record<string, string> = {
   'array-end': ']',
   'array-start': '[',
   'block-end': '}',
@@ -34,14 +34,14 @@ let cacheComment: string[] = []
 
 // function
 
-const commaLike2 = (ctx: Context): string => {
+const commaLike2 = (ctx: Context) => {
   const { i, it } = ctx
   const next = ctx.content.eq(i + 1)
-  if (next && next.type !== 'new-line') return `${it.value} `
+  if (!Item.is(next, 'new-line')) return `${it.value} `
   return it.value
 }
 
-const edge2 = (ctx: Context): string => {
+const edge2 = (ctx: Context) => {
   const { content, i, it } = ctx
   const { value } = it
 
@@ -56,8 +56,16 @@ const edge2 = (ctx: Context): string => {
   }
 
   if (value === 'call-start') {
-    const value2 = trim(content.eq(i - 1).value, '_')
-    return value2[0] === value2[0].toLowerCase() ? '.Call(' : '('
+    // function name
+    const prev = content.eq(i - 1)
+    if (!prev) throw new Error('Unexpected error: renderer/index/1')
+
+    const name = trim(prev.value, '_')
+    // if name starts with lower case, it is a user defined function
+    // use [name].Call() to call it
+    // otherwise it is a built-in function
+    // use [name]() to call it
+    return name.startsWith(name[0].toLowerCase()) ? '.Call(' : '('
   }
 
   return mapEdge[value] || value
@@ -174,7 +182,7 @@ const main = (ctx: Context2): string => {
   return content
 }
 
-const mapMethod = {
+const mapMethod: Record<string, string | ((ctx: Context) => string)> = {
   'for-in': ' in ',
   'logical-operator': logicalOperator2,
   'new-line': newLine2,

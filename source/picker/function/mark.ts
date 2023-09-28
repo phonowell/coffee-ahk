@@ -3,7 +3,7 @@ import Item from '../../module/Item'
 
 // function
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   const { content } = ctx
 
   content.list.forEach((item, i) => {

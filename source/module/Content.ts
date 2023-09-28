@@ -1,3 +1,5 @@
+import at from '../utils/at'
+
 import Item from './Item'
 import scope from './Scope'
 
@@ -6,11 +8,11 @@ import scope from './Scope'
 class Content {
   list: Item[] = []
 
-  get last(): Item {
-    return this.eq(-1)
+  get last() {
+    return this.eq(-1) ?? Item.new()
   }
 
-  load(list: Item[] = this.list): this {
+  load(list: Item[] = this.list) {
     const listResult: Item[] = []
     list.forEach(it => {
       if (it.type === 'void') return
@@ -20,35 +22,35 @@ class Content {
     return this
   }
 
-  clear(): this {
+  clear() {
     this.list = []
     return this
   }
 
-  clone(): Item[] {
+  clone() {
     return [...this.list]
   }
 
-  eq(n: number): Item {
-    return n >= 0 ? this.list[n] : this.list[this.list.length + n]
+  eq(n: number) {
+    return at(this.list, n)
   }
 
-  pop(): Item {
-    return this.list.pop() || Item.new()
+  pop() {
+    return this.list.pop()
   }
 
-  push(...args: Parameters<(typeof Item)['new']>): this {
+  push(...args: Parameters<(typeof Item)['new']>) {
     const it = Item.new(...args)
     if (!it.scope.length) it.scope = scope.clone()
     this.list.push(it)
     return this
   }
 
-  shift(): Item {
-    return this.list.shift() || Item.new()
+  shift() {
+    return this.list.shift()
   }
 
-  unshift(...args: Parameters<(typeof Item)['new']>): this {
+  unshift(...args: Parameters<(typeof Item)['new']>) {
     const it = Item.new(...args)
     if (!it.scope.length) it.scope = [...scope.list]
     this.list.unshift(it)

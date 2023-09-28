@@ -41,7 +41,7 @@ class Scope {
     return [...this.#list]
   }
 
-  clear(): void {
+  clear() {
     this.#list = []
   }
 
@@ -54,10 +54,10 @@ class Scope {
   }
 
   pop(): TScope {
-    return this.#list.pop() || ''
+    return this.#list.pop() ?? ''
   }
 
-  push(name: TScope): void {
+  push(name: TScope) {
     if (!name) throw new Error('scope.push: name is empty')
     this.#list.push(name)
   }

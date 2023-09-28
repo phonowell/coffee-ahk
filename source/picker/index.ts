@@ -13,7 +13,7 @@ import partVariable from './variable'
 
 // variable
 
-const map = {
+const map: Record<string, (ctx: Context) => void> = {
   array: partArray,
   for: partFor,
   newLine: partNewLine,
@@ -23,7 +23,7 @@ const map = {
 
 // function
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   for (const key of Object.keys(map)) map[key](ctx)
 
   partBuildIn(ctx)

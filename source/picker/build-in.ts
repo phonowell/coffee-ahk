@@ -83,7 +83,7 @@ const insert = (ctx: Context, flag: string, fn: Item[]) => {
   }
 }
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   if (!ctx.option.useBuiltIns) return
   insert(ctx, 'isChangeIndexUsed', changeIndex)
   insert(ctx, 'isFunctionIncluded', returnFunction)

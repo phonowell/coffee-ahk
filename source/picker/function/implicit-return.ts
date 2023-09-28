@@ -85,6 +85,8 @@ const pickItems = (
   const { content } = ctx
   const { i, list, scope } = options
   const item = content.eq(i)
+  if (!item)
+    throw new Error('Unexpected error: picker/function/implicit-return/1')
 
   list.push(item)
 

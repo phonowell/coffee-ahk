@@ -5,7 +5,7 @@ import validate from './validate'
 
 // function
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   // list all classes
   const setClass = count(ctx)
   validate(setClass)

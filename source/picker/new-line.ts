@@ -3,7 +3,7 @@ import Item from '../module/Item'
 
 // function
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
@@ -22,12 +22,7 @@ const main = (ctx: Context): void => {
       return false
     })()
 
-    if (!flag) {
-      listContent.push(item)
-      return
-    }
-
-    return
+    if (!flag) listContent.push(item)
   })
 
   // reload

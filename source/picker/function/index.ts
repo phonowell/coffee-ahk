@@ -14,7 +14,7 @@ import returnFunction from './return-function'
 
 // function
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   partAwait(ctx)
 
   // mark function

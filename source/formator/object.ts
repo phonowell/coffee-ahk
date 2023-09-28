@@ -10,7 +10,7 @@ const main = (ctx: Context): boolean => {
     if (scope.last === 'class' && !Item.is(content.last, 'sign', '='))
       return true
 
-    if (content.last.type === 'new-line' && raw.generated) content.pop()
+    if (Item.is(content.last, 'new-line') && raw.generated) content.pop()
 
     scope.push('object')
     content.push('bracket', '{')

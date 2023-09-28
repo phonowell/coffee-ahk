@@ -3,8 +3,8 @@ import Item from '../../module/Item'
 
 // variable
 
-const cacheContext: Map<string, boolean> = new Map()
-const cacheParameter: Set<string> = new Set()
+const cacheContext = new Map<string, boolean>()
+const cacheParameter = new Set<string>()
 
 // function
 
@@ -17,7 +17,7 @@ const findFunctionStart = (ctx: Context, i: number): number => {
   return findFunctionStart(ctx, i + 1)
 }
 
-const main = (ctx: Context): void => {
+const main = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
@@ -69,7 +69,7 @@ const pickContext = (ctx: Context, i: number, item: Item) => {
   )
     return
 
-  if (it.type === 'identifier' && !cacheContext.get(it.value)) {
+  if (Item.is(it, 'identifier') && !cacheContext.get(it.value)) {
     const prev = content.eq(i - 1)
     const next = content.eq(i + 1)
     cacheContext.set(
@@ -94,7 +94,7 @@ const pickParameter = (ctx: Context, i: number, item: Item) => {
   )
     return
 
-  if (it.type === 'identifier') {
+  if (Item.is(it, 'identifier')) {
     const next = content.eq(i + 1)
     if (
       Item.is(next, 'sign', '=') ||
@@ -108,7 +108,7 @@ const pickParameter = (ctx: Context, i: number, item: Item) => {
   pickParameter(ctx, i + 1, item)
 }
 
-const removeTrailingComma = (ctx: Context): void => {
+const removeTrailingComma = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []

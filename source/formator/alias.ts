@@ -1,10 +1,9 @@
-// interface
-
+import Item from '../module/Item'
 import { Context } from '../types'
 
 // function
 
-const main = (ctx: Context): boolean => {
+const main = (ctx: Context) => {
   const { content, type } = ctx
 
   if (type === '@') {
@@ -13,7 +12,7 @@ const main = (ctx: Context): boolean => {
   }
 
   if (type === '::') {
-    if (content.last.type === '.') content.pop()
+    if (Item.is(content.last, '.')) content.pop()
     content.push('.').push('prototype')
     return true
   }

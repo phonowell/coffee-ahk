@@ -1,10 +1,15 @@
-// function
+// functions
 
-const main = <T>(list: T[], index: number) => {
-  const i = index < 0 ? list.length + index : index
-  if (i < 0 || i >= list.length) return undefined
-  return list[i]
+const asArray = <T>(input: T[], index: number) =>
+  input[index < 0 ? input.length + index : index] as T | undefined
+
+const asObject = <T>(input: Record<string, T>, key: string) =>
+  input[key] as T | undefined
+
+const at = <T>(input: T[] | Record<string, T>, key: number | string) => {
+  if (Array.isArray(input)) return asArray(input, key as number)
+  return asObject(input, key as string)
 }
 
 // export
-export default main
+export default at

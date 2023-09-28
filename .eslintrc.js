@@ -1,74 +1,95 @@
-const isProd = process.env.NODE_ENV === 'production'
-
 module.exports = {
   env: {
     browser: true,
-    es2020: true
+    es2020: true,
   },
-  extends: ['@llc1123/eslint-config/prettier', '@llc1123', '@llc1123/eslint-config/react'],
+  extends: ['@llc1123/eslint-config/prettier', '@llc1123'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: true
+    project: true,
   },
-  plugins: ['react-refresh'],
   rules: {
-    '@typescript-eslint/ban-ts-comment': ['error', {
-      'ts-ignore': 'allow-with-description'
-    }],
-    '@typescript-eslint/consistent-type-assertions': ['error', {
-      assertionStyle: 'as',
-      objectLiteralTypeAssertions: 'allow-as-parameter'
-    }],
+    '@typescript-eslint/ban-ts-comment': [
+      'error',
+      {
+        'ts-ignore': 'allow-with-description',
+      },
+    ],
+    '@typescript-eslint/consistent-type-assertions': [
+      'error',
+      {
+        assertionStyle: 'as',
+        objectLiteralTypeAssertions: 'allow-as-parameter',
+      },
+    ],
     '@typescript-eslint/consistent-type-definitions': ['warn', 'type'],
     '@typescript-eslint/no-confusing-void-expression': 'off',
-    '@typescript-eslint/no-empty-function': isProd ? 'error' : 'off',
-    '@typescript-eslint/no-explicit-any': ['error', {
-      fixToUnknown: true
-    }],
+    '@typescript-eslint/no-empty-function': 'error',
+    '@typescript-eslint/no-explicit-any': [
+      'error',
+      {
+        fixToUnknown: true,
+      },
+    ],
     '@typescript-eslint/no-unnecessary-condition': 'warn',
     // use [, , , ...rest] for arrays,
     // as [a, b, c, ...rest] will be warned
-    '@typescript-eslint/no-unused-vars': [isProd ? 'error' : 'warn', {
-      caughtErrors: 'all',
-      ignoreRestSiblings: true
-    }],
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        caughtErrors: 'all',
+        ignoreRestSiblings: true,
+      },
+    ],
     '@typescript-eslint/prefer-nullish-coalescing': 'error',
     '@typescript-eslint/prefer-optional-chain': 'error',
     eqeqeq: 'error',
     'func-style': ['warn', 'expression'],
     'import/newline-after-import': 'error',
     'import/no-duplicates': 'error',
-    'import/order': ['warn', {
-      'newlines-between': 'always',
-      pathGroups: [{
-        group: 'builtin',
-        pattern: '{.,@}/**/*.{css,scss,styl}',
-        position: 'before'
-      }, {
-        group: 'builtin',
-        pattern: '{.,@}/**/polyfills.{js,ts}',
-        position: 'before'
-      }],
-      warnOnUnassignedImports: true
-    }],
-    'no-console': isProd ? ['error', {
-      allow: ['warn', 'error']
-    }] : 'warn',
-    'no-constant-condition': isProd ? 'error' : 'warn',
-    'no-debugger': isProd ? 'error' : 'warn',
+    'import/order': [
+      'warn',
+      {
+        'newlines-between': 'always',
+        pathGroups: [
+          {
+            group: 'builtin',
+            pattern: '{.,@}/**/*.{css,scss,styl}',
+            position: 'before',
+          },
+          {
+            group: 'builtin',
+            pattern: '{.,@}/**/polyfills.{js,ts}',
+            position: 'before',
+          },
+        ],
+        warnOnUnassignedImports: true,
+      },
+    ],
+    'no-console': [
+      'error',
+      {
+        allow: ['warn', 'error'],
+      },
+    ],
+    'no-constant-condition': 'error',
+    'no-debugger': 'error',
     'no-dupe-keys': 'error',
     'no-else-return': 'error',
     'no-return-await': 'error',
     'no-throw-literal': 'off',
     'no-unexpected-multiline': 'error',
     'no-unneeded-ternary': 'error',
-    'no-unreachable': isProd ? 'error' : 'warn',
-    'no-unused-expressions': ['error', {
-      allowShortCircuit: true,
-      allowTaggedTemplates: true,
-      allowTernary: true,
-      enforceForJSX: true
-    }],
+    'no-unreachable': 'error',
+    'no-unused-expressions': [
+      'error',
+      {
+        allowShortCircuit: true,
+        allowTaggedTemplates: true,
+        allowTernary: true,
+        enforceForJSX: true,
+      },
+    ],
     'no-useless-backreference': 'error',
     'no-useless-call': 'error',
     'no-useless-catch': 'error',
@@ -81,25 +102,29 @@ module.exports = {
     'object-shorthand': 'error',
     'one-var': ['error', 'never'],
     'prefer-arrow-callback': 'error',
-    'prefer-const': ['error', {
-      destructuring: 'all'
-    }],
-    'prefer-destructuring': ['error', {
-      AssignmentExpression: {
-        array: false,
-        object: false
+    'prefer-const': [
+      'error',
+      {
+        destructuring: 'all',
       },
-      VariableDeclarator: {
-        array: false,
-        object: true
-      }
-    }],
+    ],
+    'prefer-destructuring': [
+      'error',
+      {
+        AssignmentExpression: {
+          array: false,
+          object: false,
+        },
+        VariableDeclarator: {
+          array: false,
+          object: true,
+        },
+      },
+    ],
     'prefer-exponentiation-operator': 'error',
     'prefer-numeric-literals': 'error',
     'prefer-object-spread': 'error',
     'prefer-template': 'error',
-    'react-hooks/exhaustive-deps': isProd ? 'error' : 'warn',
-    'react/self-closing-comp': 'error',
-    'require-await': isProd ? 'error' : 'warn'
-  }
+    'require-await': 'error',
+  },
 }
