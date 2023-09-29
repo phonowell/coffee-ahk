@@ -10,7 +10,7 @@ const listContent: Item[] = []
 const listParam: Item[][] = []
 let countIgnore = 0
 
-// function
+// functions
 
 const cache = (ctx: Context, item: Item, i: number) => {
   const scope2 = [item.scope.slice(0, item.scope.length - 1)]

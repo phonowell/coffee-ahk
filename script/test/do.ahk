@@ -37,7 +37,7 @@ ahk_6() {
   return Func("ahk_5")
 }
 ahk_7() {
-  (Func("ahk_6")).Call()
+  return (Func("ahk_6")).Call()
 }
 ahk_8() {
   return 4

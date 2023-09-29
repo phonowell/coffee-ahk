@@ -2,10 +2,10 @@ import { Context } from '../types'
 import Item from '../module/Item'
 import scope from '../module/Scope'
 
-// function
+// functions
 
 const arrow = (ctx: Context, type: string) => {
-  const { content, scope: scope2 } = ctx
+  const { content, scope: scp } = ctx
 
   // fn = -> xxx
   if (!Item.is(content.last, 'edge', 'parameter-end')) {
@@ -14,26 +14,26 @@ const arrow = (ctx: Context, type: string) => {
     )
       content.push('identifier', 'anonymous')
 
-    scope2.push('parameter')
+    scp.push('parameter')
     content.push('edge', 'parameter-start')
 
     if (type === '=>') content.push('this').push('sign', '=').push('this')
 
     content.push('edge', 'parameter-end')
-    scope2.pop()
+    scp.pop()
   } else if (type === '=>') {
-    const _scope2: Item['scope'] = [...scope2.clone(), 'parameter']
+    const scp2: Item['scope'] = [...scp.clone(), 'parameter']
     content.list.splice(
       findEdge(ctx) + 1,
       0,
-      Item.new('this', 'this', _scope2),
-      Item.new('sign', '=', _scope2),
-      Item.new('this', 'this', _scope2),
-      Item.new('sign', ',', _scope2),
+      Item.new('this', 'this', scp2),
+      Item.new('sign', '=', scp2),
+      Item.new('this', 'this', scp2),
+      Item.new('sign', ',', scp2),
     )
   }
 
-  scope2.push('function')
+  scp.push('function')
   return true
 }
 
@@ -70,10 +70,10 @@ const main = (ctx: Context) => {
 
   if (type === 'call_start') {
     ctx.flag.isFunctionIncluded = true
-    const next2 = scope.next
+    const { next } = scope
     scope.next = ''
     scope.push('call')
-    scope.next = next2
+    scope.next = next
     content.push('edge', 'call-start')
     return true
   }
