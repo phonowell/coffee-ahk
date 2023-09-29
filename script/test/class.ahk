@@ -17,7 +17,7 @@ ahk_1(this) {
   return this.a
 }
 ahk_2(this) {
-  (Func("ahk_1").Bind(this)).Call()
+  return (Func("ahk_1").Bind(this)).Call()
 }
 ahk_3(this, n) {
   return this.a + n

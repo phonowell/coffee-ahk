@@ -16,12 +16,9 @@ fn = (a, b, c) ->
   c a
 fn = ->
   a = 1
-  return fn1 (a = a) ->
-    b = 2
-    return fn2 (a = a, b = b) ->
-      c = 3
-      return fn3 (a = a, b = b, c = c) ->
-        a + b + c
+  return do (b = 2) -> do ->
+    c = 3
+    return do -> a + b + c
 do ->
   fn1 = -> a + b
   fn2 = (a) -> a + b

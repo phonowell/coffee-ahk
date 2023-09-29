@@ -56,12 +56,28 @@ class Item {
     this.scope = [...scope]
   }
 
+  /**
+   * Creates a new instance of Item with the same type, value, and scope as the provided item.
+   * @param item The item to clone.
+   * @returns A new instance of Item with the same type, value, and scope as the provided item.
+   * @throws An error if the provided item is not an instance of Item.
+   */
   static clone(item: Item) {
     if (!(item instanceof Item))
       throw new Error('item must be an instance of Item')
-    return new Item(item.type, item.value, item.scope)
+
+    const { scope, type, value } = item
+    return new Item(type, value, scope)
   }
 
+  /**
+   * Determines whether the provided item is an instance of Item with the specified type and value.
+   * @param item The item to check.
+   * @param type The type of the item to check for.
+   * @param value The value of the item to check for (optional).
+   * @returns True if the provided item is an instance of Item with the specified type and value, false otherwise.
+   * @throws An error if the provided item is not an instance of Item.
+   */
   static is(
     item: Item | undefined,
     type: (typeof listType)[number],
@@ -72,14 +88,33 @@ class Item {
     return item.type === type && item.value === value
   }
 
+  /**
+   * Determines whether the provided input is an instance of Item.
+   * @param input The input to check.
+   * @returns True if the provided input is an instance of Item, false otherwise.
+   */
   static isItem(input: unknown): input is Item {
     return input instanceof Item
   }
 
+  /**
+   * Determines whether two arrays of Scope objects are equal.
+   * @param a The first array of Scope objects to compare.
+   * @param b The second array of Scope objects to compare.
+   * @returns True if the two arrays are equal, false otherwise.
+   */
   static isScopeEqual(a: Scope[], b: Scope[]) {
-    return a.join('|') === b.join('|')
+    return a.length === b.length && a.join('|') === b.join('|')
   }
 
+  /**
+   * Creates a new instance of Item with the provided arguments.
+   * If the first argument is an instance of Item, returns a clone of that item.
+   * If the first argument is a string, creates a new Item instance with the provided arguments.
+   * @param args The arguments to use when creating the new Item instance.
+   * @returns A new instance of Item.
+   * @throws An error if the provided arguments are invalid.
+   */
   static new(
     ...args:
       | ConstructorParameters<typeof Item>
