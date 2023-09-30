@@ -14,7 +14,7 @@ const appendBind = (ctx: Context) => {
     if (item.scope[item.scope.length - 2] !== 'class') return
 
     const index = findEdge(ctx, i, item)
-    if (Item.is(content.eq(index - 1), 'property', 'constructor')) return
+    if (Item.is(content.at(index - 1), 'property', 'constructor')) return
 
     const scope2 = [[...item.scope]]
     scope2[1] = [...scope2[0], 'call']
@@ -31,7 +31,7 @@ const appendBind = (ctx: Context) => {
 const findEdge = (ctx: Context, i: number, item: Item): number => {
   const { content } = ctx
 
-  const it = content.eq(i)
+  const it = content.at(i)
   if (!it) return 0
   if (
     Item.is(it, 'edge', 'parameter-start') &&
@@ -50,7 +50,7 @@ const formatSuper = (ctx: Context) => {
     listContent.push(item)
     if (!Item.is(item, 'super')) return
 
-    const next = content.eq(i + 1)
+    const next = content.at(i + 1)
     if (!Item.is(next, 'edge', 'call-start')) return
 
     const scope2 = [...next.scope]
@@ -98,7 +98,7 @@ const prependThis = (ctx: Context) => {
     const scope2 = [...item.scope]
     listContent.push(Item.new('this', 'this', scope2))
 
-    const it = content.eq(i + 1)
+    const it = content.at(i + 1)
     if (Item.is(it, 'edge', 'parameter-end')) return
     listContent.push(Item.new('sign', ',', scope2))
   })

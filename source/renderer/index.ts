@@ -36,7 +36,7 @@ let cacheComment: string[] = []
 
 const commaLike2 = (ctx: Context) => {
   const { i, it } = ctx
-  const next = ctx.content.eq(i + 1)
+  const next = ctx.content.at(i + 1)
   if (!Item.is(next, 'new-line')) return `${it.value} `
   return it.value
 }
@@ -47,7 +47,7 @@ const edge2 = (ctx: Context) => {
 
   if (value === 'block-start') {
     const value2 = mapEdge[value]
-    const prev = content.eq(i - 1)
+    const prev = content.at(i - 1)
 
     if (!prev) return value2
     if (Item.is(prev, 'sign', ':')) return value2
@@ -57,7 +57,7 @@ const edge2 = (ctx: Context) => {
 
   if (value === 'call-start') {
     // function name
-    const prev = content.eq(i - 1)
+    const prev = content.at(i - 1)
     if (!prev) throw new Error('Unexpected error: renderer/index/1')
 
     const name = trim(prev.value, '_')
@@ -80,7 +80,7 @@ const if2 = (ctx: Context): string => {
   if (value === 'else') return ' else'
 
   if (value === 'if') {
-    const _prev = content.eq(i - 1)
+    const _prev = content.at(i - 1)
     if (Item.is(_prev, 'if', 'else')) return ' if '
     return 'if '
   }
@@ -126,7 +126,7 @@ const try2 = (ctx: Context): string => {
   const { value } = it
 
   if (value === 'catch') {
-    const next = content.eq(i + 1)
+    const next = content.at(i + 1)
     if (Item.is(next, 'edge', 'block-start')) return ' catch'
     return ' catch '
   }
@@ -143,7 +143,7 @@ const injectComment = (input: string, ctx: Context): string => {
   if (!cacheComment.length) return input
   if (it.type !== 'new-line') return input
 
-  const _prev = ctx.content.eq(i - 1)
+  const _prev = ctx.content.at(i - 1)
   const seprator =
     _prev && _prev.type !== 'new-line' && _prev.value ? ' ; ' : '; '
 

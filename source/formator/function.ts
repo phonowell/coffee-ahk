@@ -56,7 +56,7 @@ const findEdge = (
 ): number => {
   const { content } = ctx
 
-  const it = content.eq(i)
+  const it = content.at(i)
   if (!it) return 0
 
   if (Item.is(it, 'edge', 'parameter-start')) return i
@@ -80,7 +80,7 @@ const main = (ctx: Context) => {
 
   if (type === 'call_end') {
     // Native(string)
-    const listItem = [content.eq(-3), content.eq(-2), content.eq(-1)]
+    const listItem = [content.at(-3), content.at(-2), content.at(-1)]
     if (
       Item.is(listItem[0], 'identifier', 'Native') &&
       Item.is(listItem[1], 'edge', 'call-start') &&

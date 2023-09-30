@@ -19,7 +19,7 @@ const main = (ctx: Context) => {
     i: number,
     listResult: Item[] = [],
   ): [number, Item[]] => {
-    const it = content.eq(i)
+    const it = content.at(i)
     if (!it) {
       countIgnore = 0
       return [i, listResult]
@@ -59,11 +59,11 @@ const main = (ctx: Context) => {
   while (i < len) {
     i++
     len = content.list.length
-    const item = content.eq(i)
+    const item = content.at(i)
 
     if (!Item.is(item, 'edge', 'index-start')) continue
 
-    const next = content.eq(i + 1)
+    const next = content.at(i + 1)
     if (Item.is(next, 'identifier', token)) continue
     if (Item.is(next, 'edge', 'index-end')) continue
 

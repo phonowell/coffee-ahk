@@ -13,7 +13,7 @@ const main = (ctx: Context) => {
 
   content.list.forEach((item, i) => {
     if (!Item.is(item, 'identifier')) return
-    const next = content.eq(i + 1)
+    const next = content.at(i + 1)
     if (!Item.is(next, 'sign', '=')) return
     const v = item.value.toLowerCase()
     if (v.startsWith('a_') || listForbidden.includes(v))

@@ -1,9 +1,17 @@
 import { Context } from '../types'
 import Item from '../module/Item'
 
-// variable
+// interface
 
-const changeIndex: Item[] = [
+type ItemLike = {
+  type: Item['type']
+  value: Item['value']
+  scope: Item['scope']
+}
+
+// variables
+
+const changeIndex: ItemLike[] = [
   { type: 'native', value: 'global ', scope: [] },
   { type: 'identifier', value: '__ci_salt__', scope: [] },
   { type: 'sign', value: '=', scope: [] },
@@ -23,8 +31,11 @@ const changeIndex: Item[] = [
   { type: 'edge', value: 'block-end', scope: ['function'] },
   { type: 'new-line', value: '0', scope: [] },
 ]
+const changeIndex2 = changeIndex.map(it =>
+  Item.new(it.type, it.value, it.scope),
+)
 
-const returnFunction: Item[] = [
+const returnFunction: ItemLike[] = [
   { type: 'native', value: 'global ', scope: [] },
   { type: 'identifier', value: '__rf_salt__', scope: [] },
   { type: 'sign', value: '=', scope: [] },
@@ -64,8 +75,11 @@ const returnFunction: Item[] = [
   { type: 'edge', value: 'block-end', scope: ['function'] },
   { type: 'new-line', value: '0', scope: [] },
 ]
+const returnFunction2 = returnFunction.map(it =>
+  Item.new(it.type, it.value, it.scope),
+)
 
-// function
+// functions
 
 const insert = (ctx: Context, flag: string, fn: Item[]) => {
   const { content } = ctx
@@ -85,8 +99,8 @@ const insert = (ctx: Context, flag: string, fn: Item[]) => {
 
 const main = (ctx: Context) => {
   if (!ctx.option.useBuiltIns) return
-  insert(ctx, 'isChangeIndexUsed', changeIndex)
-  insert(ctx, 'isFunctionIncluded', returnFunction)
+  insert(ctx, 'isChangeIndexUsed', changeIndex2)
+  insert(ctx, 'isFunctionIncluded', returnFunction2)
 }
 
 // export

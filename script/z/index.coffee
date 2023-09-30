@@ -1,3 +1,10 @@
 # @ts-check
 
-a = -> do -> 2
+do ->
+
+  a = 1
+
+  do ->
+
+    a = 2
+    return a

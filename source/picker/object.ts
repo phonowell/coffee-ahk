@@ -11,14 +11,14 @@ const deconstruct = (ctx: Context) => {
   let listContent: Item[] = []
 
   const pickIndent = (i: number): number => {
-    const it = content.eq(i)
+    const it = content.at(i)
     if (!it) return 0
     if (it.type === 'new-line') return parseInt(it.value, 10)
     return pickIndent(i - 1)
   }
 
   const pickPre = (i: number) => {
-    const it = content.eq(i)
+    const it = content.at(i)
     if (Item.is(it, 'bracket', '{')) return
     if (Item.is(it, 'identifier')) listPre.push(it.value)
     listContent.pop()
@@ -56,7 +56,7 @@ const deconstruct = (ctx: Context) => {
       listContent.push(item)
       return
     }
-    if (!Item.is(content.eq(i - 1), 'bracket', '}')) {
+    if (!Item.is(content.at(i - 1), 'bracket', '}')) {
       listContent.push(item)
       return
     }
@@ -87,10 +87,10 @@ const deconstruct2 = (ctx: Context) => {
     if (!Item.is(item, 'identifier')) return
     if (item.scope[item.scope.length - 1] !== 'object') return
 
-    const prev = content.eq(i - 1)
+    const prev = content.at(i - 1)
     if (!(Item.is(prev, 'bracket', '{') || Item.is(prev, 'sign', ','))) return
 
-    const next = content.eq(i + 1)
+    const next = content.at(i + 1)
     if (!(Item.is(next, 'bracket', '}') || Item.is(next, 'sign', ','))) return
 
     listContent.push(

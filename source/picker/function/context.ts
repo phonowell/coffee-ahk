@@ -43,7 +43,7 @@ const cache = (ctx: Context, item: Item, i: number) => {
 const findIndex = (ctx: Context, item: Item, i: number): number => {
   const { content } = ctx
 
-  const it = content.eq(i)
+  const it = content.at(i)
   if (!it) return 0
   if (
     Item.is(it, 'edge', 'block-end') &&
@@ -97,10 +97,10 @@ const pick = (ctx: Context, item: Item, i: number): boolean => {
   if (!Item.is(item, 'sign', '=')) return false
   if (item.scope[item.scope.length - 1] !== 'parameter') return false
 
-  const itNext = content.eq(i + 1)
+  const itNext = content.at(i + 1)
   if (!itNext) throw new Error('Unexpected error: picker/function/context/1')
   if (!['identifier', 'this'].includes(itNext.type)) return false
-  const itPrev = content.eq(i - 1)
+  const itPrev = content.at(i - 1)
   if (!itPrev) throw new Error('Unexpected error: picker/function/context/2')
   if (!['identifier', 'this'].includes(itPrev.type)) return false
 
@@ -119,7 +119,7 @@ const pickItem = (
 ): Item[] => {
   const { content } = ctx
 
-  const it = content.eq(i)
+  const it = content.at(i)
   if (!it) return listItem
 
   if (

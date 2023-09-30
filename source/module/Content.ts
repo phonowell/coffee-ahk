@@ -13,23 +13,16 @@ class Content {
    * @returns The last item in the Content, or a new empty Item if the Content is empty.
    */
   get last() {
-    return this.eq(-1) ?? Item.new()
+    return this.at(-1) ?? Item.new()
   }
 
   /**
-   * Removes all void items from the provided list and sets the Content's list to the result.
-   * If no list is provided, defaults to using the Content's current list.
-   * @param list The list of items to filter.
-   * @returns The Content instance with the filtered list.
+   * Returns the item at the specified index in this content list.
+   * @param n The index of the item to retrieve.
+   * @returns The item at the specified index.
    */
-  load(list: Item[] = this.list) {
-    const listResult: Item[] = []
-    list.forEach(it => {
-      if (it.type === 'void') return
-      listResult.push(it)
-    })
-    this.list = listResult
-    return this
+  at(n: number) {
+    return at(this.list, n)
   }
 
   /**
@@ -50,13 +43,19 @@ class Content {
   }
 
   /**
-   * Returns the item at the specified index in the Content's list.
-   * @param n The index of the item to retrieve.
-   * @returns The item at the specified index in the Content's list.
-   * @throws An error if the specified index is out of bounds.
+   * Removes all void items from the provided list and sets the Content's list to the result.
+   * If no list is provided, defaults to using the Content's current list.
+   * @param list The list of items to filter.
+   * @returns The Content instance with the filtered list.
    */
-  eq(n: number) {
-    return at(this.list, n)
+  load(list: Item[] = this.list) {
+    const listResult: Item[] = []
+    list.forEach(it => {
+      if (it.is('void')) return
+      listResult.push(it)
+    })
+    this.list = listResult
+    return this
   }
 
   /**

@@ -20,17 +20,17 @@ const main = (ctx: Context) => {
 
     if (!Item.is(item, 'sign', '=')) return
 
-    const prev = content.eq(i - 1)
+    const prev = content.at(i - 1)
     if (!Item.is(prev, 'identifier')) return
     if (prev.scope.length) return
-    if (i - 2 >= 0 && !Item.is(content.eq(i - 2), 'new-line')) return
+    if (i - 2 >= 0 && !Item.is(content.at(i - 2), 'new-line')) return
 
     if (cache.has(prev.value)) return
     cache.add(prev.value)
 
     if (
-      Item.is(content.eq(i + 1), 'identifier', prev.value) &&
-      Item.is(content.eq(i + 2), 'new-line')
+      Item.is(content.at(i + 1), 'identifier', prev.value) &&
+      Item.is(content.at(i + 2), 'new-line')
     ) {
       listContent.splice(listContent.length - 2, 2)
       flagIgnore = 2

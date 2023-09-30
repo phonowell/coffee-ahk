@@ -1,4 +1,4 @@
-// interface
+import at from '../utils/at'
 
 import { TScope as Scope } from './Scope'
 
@@ -83,7 +83,7 @@ class Item {
     type: (typeof listType)[number],
     value?: string,
   ): item is Item & boolean {
-    if (!Item.isItem(item)) return false
+    if (!this.isItem(item)) return false
     if (typeof value === 'undefined') return item.type === type
     return item.type === type && item.value === value
   }
@@ -98,13 +98,15 @@ class Item {
   }
 
   /**
-   * Determines whether two arrays of Scope objects are equal.
-   * @param a The first array of Scope objects to compare.
-   * @param b The second array of Scope objects to compare.
-   * @returns True if the two arrays are equal, false otherwise.
+   * Determines whether two items or scopes have the same scope.
+   * @param a The first item or scope to compare.
+   * @param b The second item or scope to compare.
+   * @returns True if the scopes are equal, false otherwise.
    */
-  static isScopeEqual(a: Scope[], b: Scope[]) {
-    return a.length === b.length && a.join('|') === b.join('|')
+  static isScopeEqual(a: Item | Scope[], b: Item | Scope[]) {
+    const scpA = this.isItem(a) ? a.scope : a
+    const scpB = this.isItem(b) ? b.scope : b
+    return scpA.length === scpB.length && scpA.join('|') === scpB.join('|')
   }
 
   /**
@@ -120,10 +122,46 @@ class Item {
       | ConstructorParameters<typeof Item>
       | Parameters<(typeof Item)['clone']>
   ) {
-    if (args[0] instanceof Item) return Item.clone(args[0])
+    if (args[0] instanceof Item) return this.clone(args[0])
     if (typeof args[0] === 'string')
       return new Item(...(args as ConstructorParameters<typeof Item>))
     throw new Error(`invalid item: ${JSON.stringify(args)}`)
+  }
+
+  /**
+   * Creates a new item that is a clone of this item.
+   * @returns A new item that is a clone of this item.
+   */
+  clone() {
+    return Item.clone(this)
+  }
+
+  /**
+   * Determines whether this item is of the specified type and, optionally, has the specified value.
+   * @param type The type of item to check for.
+   * @param value Optional. The value to check for.
+   * @returns True if this item is of the specified type and, optionally, has the specified value; false otherwise.
+   */
+  is(type: (typeof listType)[number], value?: string) {
+    return Item.is(this, type, value)
+  }
+
+  /**
+   * Determines whether this item's scope is equal to the scope of the specified item or scope array.
+   * @param item The item or scope array to compare against.
+   * @returns True if the scopes are equal, false otherwise.
+   */
+  isScopeEqual(item: Item | Scope[]) {
+    return Item.isScopeEqual(this, item)
+  }
+
+  /**
+   * Returns the scope at the specified index in this item's scope array.
+   * @param n The index of the scope to retrieve.
+   * @returns The scope at the specified index.
+   */
+  scopeAt(n: number) {
+    return at(this.scope, n)
   }
 }
 

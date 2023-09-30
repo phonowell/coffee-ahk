@@ -7,7 +7,7 @@ const main = (ctx: Context) => {
   const { content } = ctx
 
   const findIndex = (i: number): number => {
-    const it = content.eq(i)
+    const it = content.at(i)
     if (!it) return 0
 
     if (
@@ -20,11 +20,11 @@ const main = (ctx: Context) => {
   }
 
   const findName = (i: number): string => {
-    const it = content.eq(i)
+    const it = content.at(i)
     if (!it) return ''
 
     if (Item.is(it, 'for', 'for')) {
-      const next = content.eq(i + 1)
+      const next = content.at(i + 1)
       if (!next) throw new Error('Unexpected error: picker/for/2')
       return next.value
     }
@@ -42,7 +42,7 @@ const main = (ctx: Context) => {
 
     const index = findIndex(i)
 
-    const next = content.eq(index + 1)
+    const next = content.at(index + 1)
     if (!next) throw new Error('Unexpected error: picker/for/1')
 
     const indent = next.value

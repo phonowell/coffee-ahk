@@ -20,7 +20,7 @@ const next = (ctx: Context, count = 1) => {
   })
   if (!~i) return
 
-  const it = content.eq(i)
+  const it = content.at(i)
   if (!it) throw new Error('Unexpected error: picker/function/anonymous/1')
   it.value = `${ctx.option.salt}_${count}`
 
@@ -41,7 +41,7 @@ const pickItem = (
 ): Item[] => {
   const { content } = ctx
 
-  const item = content.eq(i)
+  const item = content.at(i)
   if (!item) return listResult
 
   const it = Item.new(item)
