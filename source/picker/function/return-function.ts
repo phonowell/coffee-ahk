@@ -27,7 +27,7 @@ const main = (ctx: Context) => {
   content.list.forEach((item, i) => {
     if (!Item.is(item, 'edge', 'call-start')) return
 
-    const prev = content.eq(i - 1)
+    const prev = content.at(i - 1)
     if (!prev) throw new Error('Unexpected error: picker/return-function/1')
 
     if (Item.is(prev, 'function')) return

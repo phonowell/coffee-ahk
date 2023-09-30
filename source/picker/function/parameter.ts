@@ -16,7 +16,7 @@ const replaceFn = (ctx: Context, listFn: Set<string>) => {
     if (it.type !== 'identifier') return
     if (it.scope[it.scope.length - 1] !== 'call') return
     if (!listFn.has(it.value)) return
-    if (Item.is(content.eq(i + 1), 'edge', 'call-start')) return
+    if (Item.is(content.at(i + 1), 'edge', 'call-start')) return
 
     it.type = 'native'
     it.value = `Func("${it.value}")`

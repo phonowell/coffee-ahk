@@ -10,7 +10,7 @@ const cacheParameter = new Set<string>()
 
 const findFunctionStart = (ctx: Context, i: number): number => {
   const { content } = ctx
-  const it = content.eq(i)
+  const it = content.at(i)
 
   if (Item.is(it, 'edge', 'block-start')) return i
 
@@ -25,7 +25,7 @@ const main = (ctx: Context) => {
     listContent.push(item)
 
     if (!Item.is(item, 'edge', 'parameter-start')) return
-    if (Item.is(content.eq(i - 1), 'property', '__New')) return
+    if (Item.is(content.at(i - 1), 'property', '__New')) return
 
     const iStart = findFunctionStart(ctx, i)
 
@@ -60,7 +60,7 @@ const main = (ctx: Context) => {
 
 const pickContext = (ctx: Context, i: number, item: Item) => {
   const { content } = ctx
-  const it = content.eq(i)
+  const it = content.at(i)
 
   if (
     Item.is(it, 'edge', 'block-end') &&
@@ -70,8 +70,8 @@ const pickContext = (ctx: Context, i: number, item: Item) => {
     return
 
   if (Item.is(it, 'identifier') && !cacheContext.get(it.value)) {
-    const prev = content.eq(i - 1)
-    const next = content.eq(i + 1)
+    const prev = content.at(i - 1)
+    const next = content.at(i + 1)
     cacheContext.set(
       it.value,
       Item.is(prev, 'for', 'for') ||
@@ -86,7 +86,7 @@ const pickContext = (ctx: Context, i: number, item: Item) => {
 
 const pickParameter = (ctx: Context, i: number, item: Item) => {
   const { content } = ctx
-  const it = content.eq(i)
+  const it = content.at(i)
 
   if (
     Item.is(it, 'edge', 'parameter-end') &&
@@ -95,7 +95,7 @@ const pickParameter = (ctx: Context, i: number, item: Item) => {
     return
 
   if (Item.is(it, 'identifier')) {
-    const next = content.eq(i + 1)
+    const next = content.at(i + 1)
     if (
       Item.is(next, 'sign', '=') ||
       Item.is(next, 'sign', ',') ||
@@ -115,7 +115,7 @@ const removeTrailingComma = (ctx: Context) => {
   content.list.forEach((item, i) => {
     if (
       Item.is(item, 'sign', ',') &&
-      Item.is(content.eq(i + 1), 'edge', 'parameter-end')
+      Item.is(content.at(i + 1), 'edge', 'parameter-end')
     )
       return
 

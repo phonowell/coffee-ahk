@@ -6,9 +6,9 @@ const main = (ctx: Context) => {
   const { content } = ctx
   const setFn = new Set<string>()
 
-  content.list.forEach(item => {
-    if (item.type !== 'function') return
-    setFn.add(item.value)
+  content.list.forEach(it => {
+    if (!it.is('function')) return
+    setFn.add(it.value)
   })
 
   return setFn

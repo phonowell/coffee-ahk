@@ -13,7 +13,7 @@ type Flag = {
 
 const findFnStart = (ctx: Context, i: number): [number, Scope[]] => {
   const { content } = ctx
-  const item = content.eq(i)
+  const item = content.at(i)
 
   if (
     !(
@@ -60,7 +60,7 @@ const main = (ctx: Context) => {
     }
 
     if (!Item.is(item, 'edge', 'parameter-start')) return
-    if (Item.is(content.eq(i - 1), 'property', '__New')) return
+    if (Item.is(content.at(i - 1), 'property', '__New')) return
 
     const [iStart, scpStart] = findFnStart(ctx, i)
     const list = pickItems(ctx, {
@@ -97,7 +97,7 @@ const pickItems = (
   const { content } = ctx
   const { i, list, scope } = options
 
-  const item = content.eq(i)
+  const item = content.at(i)
   if (!item) return list
 
   list.push(item)

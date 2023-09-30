@@ -13,7 +13,7 @@ const main = (ctx: Context) => {
       return
     }
 
-    const it = content.eq(i + 1)
+    const it = content.at(i + 1)
     if (!Item.is(it, 'identifier', 'Error')) {
       listContent.push(item)
       return

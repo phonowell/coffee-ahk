@@ -9,7 +9,7 @@ const main = (ctx: Context) => {
   content.list.forEach((item, i) => {
     if (item.type !== 'class') return
 
-    const it = content.eq(i + 1)
+    const it = content.at(i + 1)
     if (!it) throw new Error('Unexpected error: picker/class/count/1')
 
     if (it.type !== 'identifier') return

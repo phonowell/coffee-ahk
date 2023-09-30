@@ -12,14 +12,14 @@ const main = (ctx: Context) => {
   let listContent: typeof content.list = []
 
   const pickIndent = (i: number): number => {
-    const it = content.eq(i)
+    const it = content.at(i)
     if (!it) return 0
     if (it.type === 'new-line') return parseInt(it.value, 10)
     return pickIndent(i - 1)
   }
 
   const pickPre = (i: number, listResult: Item[][] = [[]]): Item[][] => {
-    const it = content.eq(i)
+    const it = content.at(i)
     if (!it) throw new Error('Unexpected error: picker/array/deconstruct/1')
 
     const last = at(listResult, -1)
@@ -69,7 +69,7 @@ const main = (ctx: Context) => {
       listContent.push(item)
       return
     }
-    if (!Item.is(content.eq(i - 1), 'edge', 'array-end')) {
+    if (!Item.is(content.at(i - 1), 'edge', 'array-end')) {
       listContent.push(item)
       return
     }

@@ -9,7 +9,7 @@ const main = (ctx: Context) => {
   content.list.forEach((item, i) => {
     if (!Item.is(item, 'edge', 'parameter-start')) return
 
-    const it = content.eq(i - 1)
+    const it = content.at(i - 1)
     if (!Item.is(it, 'identifier')) return
 
     it.type = 'function'

@@ -1,8 +1,10 @@
 ﻿
-global a := Func("ahk_2")
+(Func("ahk_2")).Call()
 ahk_1() {
-  return 2
+  a := 2
+  return a
 }
 ahk_2() {
-  return (Func("ahk_1")).Call()
+  a := 1
+  (Func("ahk_1")).Call()
 }
