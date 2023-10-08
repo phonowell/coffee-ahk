@@ -1,6 +1,5 @@
 import data from '../../../data/forbidden.json'
 import { Context } from '../../types'
-import Item from '../../module/Item'
 
 // variable
 
@@ -12,9 +11,9 @@ const main = (ctx: Context) => {
   const { content } = ctx
 
   content.list.forEach((item, i) => {
-    if (!Item.is(item, 'identifier')) return
+    if (!item.is('identifier')) return
     const next = content.at(i + 1)
-    if (!Item.is(next, 'sign', '=')) return
+    if (!next?.is('sign', '=')) return
     const v = item.value.toLowerCase()
     if (v.startsWith('a_') || listForbidden.includes(v))
       throw new Error(

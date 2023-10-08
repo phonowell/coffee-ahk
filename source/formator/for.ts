@@ -19,7 +19,7 @@ const main = (ctx: Context) => {
     list.push(last.value)
 
     const last2 = content.last
-    if (Item.is(last2, 'sign', ',')) {
+    if (last2.is('sign', ',')) {
       content.pop()
 
       const last3 = content.pop()

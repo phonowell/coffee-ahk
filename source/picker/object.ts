@@ -19,8 +19,9 @@ const deconstruct = (ctx: Context) => {
 
   const pickPre = (i: number) => {
     const it = content.at(i)
-    if (Item.is(it, 'bracket', '{')) return
-    if (Item.is(it, 'identifier')) listPre.push(it.value)
+    if (!it) return
+    if (it.is('bracket', '{')) return
+    if (it.is('identifier')) listPre.push(it.value)
     listContent.pop()
     pickPre(i - 1)
   }
@@ -52,11 +53,11 @@ const deconstruct = (ctx: Context) => {
     }
 
     // find
-    if (!Item.is(item, 'sign', '=')) {
+    if (!item.is('sign', '=')) {
       listContent.push(item)
       return
     }
-    if (!Item.is(content.at(i - 1), 'bracket', '}')) {
+    if (!content.at(i - 1)?.is('bracket', '}')) {
       listContent.push(item)
       return
     }
@@ -84,14 +85,16 @@ const deconstruct2 = (ctx: Context) => {
   content.list.forEach((item, i) => {
     listContent.push(item)
 
-    if (!Item.is(item, 'identifier')) return
+    if (!item.is('identifier')) return
     if (item.scope[item.scope.length - 1] !== 'object') return
 
     const prev = content.at(i - 1)
-    if (!(Item.is(prev, 'bracket', '{') || Item.is(prev, 'sign', ','))) return
+    if (!prev) return
+    if (!(prev.is('bracket', '{') || prev.is('sign', ','))) return
 
     const next = content.at(i + 1)
-    if (!(Item.is(next, 'bracket', '}') || Item.is(next, 'sign', ','))) return
+    if (!next) return
+    if (!(next.is('bracket', '}') || next.is('sign', ','))) return
 
     listContent.push(
       new Item('sign', ':', [...item.scope]),

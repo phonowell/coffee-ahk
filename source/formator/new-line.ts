@@ -8,11 +8,11 @@ const main = (ctx: Context): boolean => {
 
   if (type === 'terminator') {
     if (value === '\n') {
-      if (Item.is(content.last, 'bracket', '}-')) content.last.value = '}'
+      if (content.last.is('bracket', '}-')) content.last.value = '}'
 
       if (['array', 'call', 'object', 'parameter'].includes(scope.last)) {
-        if (!Item.is(content.last, 'sign', ',')) {
-          if (Item.is(content.last, 'new-line')) content.pop()
+        if (!content.last.is('sign', ',')) {
+          if (content.last.is('new-line')) content.pop()
           content.push('sign', ',')
         }
         return true
@@ -23,7 +23,7 @@ const main = (ctx: Context): boolean => {
     }
 
     if (value === ';') {
-      if (Item.is(content.last, 'bracket', '}-')) content.last.value = '}'
+      if (content.last.is('bracket', '}-')) content.last.value = '}'
 
       content.push('new-line', ctx.indent.toString())
       return true
