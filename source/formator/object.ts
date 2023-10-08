@@ -1,5 +1,4 @@
 import { Context } from '../types'
-import Item from '../module/Item'
 
 // function
 
@@ -7,10 +6,9 @@ const main = (ctx: Context): boolean => {
   const { content, raw, scope, type } = ctx
 
   if (type === '{') {
-    if (scope.last === 'class' && !Item.is(content.last, 'sign', '='))
-      return true
+    if (scope.last === 'class' && !content.last.is('sign', '=')) return true
 
-    if (Item.is(content.last, 'new-line') && raw.generated) content.pop()
+    if (content.last.is('new-line') && raw.generated) content.pop()
 
     scope.push('object')
     content.push('bracket', '{')

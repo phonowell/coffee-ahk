@@ -8,10 +8,8 @@ const arrow = (ctx: Context, type: string) => {
   const { content, scope: scp } = ctx
 
   // fn = -> xxx
-  if (!Item.is(content.last, 'edge', 'parameter-end')) {
-    if (
-      !Item.is(content.list[content.list.length - 2], 'property', 'constructor')
-    )
+  if (!content.last.is('edge', 'parameter-end')) {
+    if (!content.at(-2)?.is('property', 'constructor'))
       content.push('identifier', 'anonymous')
 
     scp.push('parameter')
@@ -40,9 +38,7 @@ const arrow = (ctx: Context, type: string) => {
 const start = (ctx: Context) => {
   const { scope: cache, content } = ctx
 
-  if (
-    !Item.is(content.list[content.list.length - 2], 'property', 'constructor')
-  )
+  if (!content.at(-2)?.is('property', 'constructor'))
     content.push('identifier', 'anonymous')
 
   cache.push('parameter')
@@ -59,7 +55,7 @@ const findEdge = (
   const it = content.at(i)
   if (!it) return 0
 
-  if (Item.is(it, 'edge', 'parameter-start')) return i
+  if (it.is('edge', 'parameter-start')) return i
   return findEdge(ctx, i - 1)
 }
 
@@ -82,9 +78,9 @@ const main = (ctx: Context) => {
     // Native(string)
     const listItem = [content.at(-3), content.at(-2), content.at(-1)]
     if (
-      Item.is(listItem[0], 'identifier', 'Native') &&
-      Item.is(listItem[1], 'edge', 'call-start') &&
-      Item.is(listItem[2], 'string')
+      listItem[0]?.is('identifier', 'Native') &&
+      listItem[1]?.is('edge', 'call-start') &&
+      listItem[2]?.is('string')
     ) {
       listItem[0].type = 'void'
       listItem[1].type = 'void'

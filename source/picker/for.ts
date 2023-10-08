@@ -10,10 +10,7 @@ const main = (ctx: Context) => {
     const it = content.at(i)
     if (!it) return 0
 
-    if (
-      Item.is(it, 'edge', 'block-start') &&
-      it.scope[it.scope.length - 1] === 'for'
-    )
+    if (it.is('edge', 'block-start') && it.scope[it.scope.length - 1] === 'for')
       return i
 
     return findIndex(i + 1)
@@ -23,7 +20,7 @@ const main = (ctx: Context) => {
     const it = content.at(i)
     if (!it) return ''
 
-    if (Item.is(it, 'for', 'for')) {
+    if (it.is('for', 'for')) {
       const next = content.at(i + 1)
       if (!next) throw new Error('Unexpected error: picker/for/2')
       return next.value
@@ -35,7 +32,7 @@ const main = (ctx: Context) => {
   // each
   const listCache: [number, Item[]][] = []
   content.list.forEach((item, i) => {
-    if (!Item.is(item, 'for-in', 'in')) return
+    if (!item.is('for-in', 'in')) return
 
     const name = findName(i)
     if (name.startsWith('__') && name.endsWith('__')) return

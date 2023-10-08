@@ -62,7 +62,7 @@ class Item {
    * @returns A new instance of Item with the same type, value, and scope as the provided item.
    * @throws An error if the provided item is not an instance of Item.
    */
-  static clone(item: Item) {
+  private static clone(item: Item) {
     if (!(item instanceof Item))
       throw new Error('item must be an instance of Item')
 
@@ -78,7 +78,7 @@ class Item {
    * @returns True if the provided item is an instance of Item with the specified type and value, false otherwise.
    * @throws An error if the provided item is not an instance of Item.
    */
-  static is(
+  private static is(
     item: Item | undefined,
     type: (typeof listType)[number],
     value?: string,
@@ -93,7 +93,7 @@ class Item {
    * @param input The input to check.
    * @returns True if the provided input is an instance of Item, false otherwise.
    */
-  static isItem(input: unknown): input is Item {
+  private static isItem(input: unknown): input is Item {
     return input instanceof Item
   }
 
@@ -103,7 +103,7 @@ class Item {
    * @param b The second item or scope to compare.
    * @returns True if the scopes are equal, false otherwise.
    */
-  static isScopeEqual(a: Item | Scope[], b: Item | Scope[]) {
+  private static isScopeEqual(a: Item | Scope[], b: Item | Scope[]) {
     const scpA = this.isItem(a) ? a.scope : a
     const scpB = this.isItem(b) ? b.scope : b
     return scpA.length === scpB.length && scpA.join('|') === scpB.join('|')

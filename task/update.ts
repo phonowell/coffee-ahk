@@ -20,7 +20,7 @@ const main = async () => {
     .filter(it => {
       const [name, data] = it
       if (data.isDeprecated) return false
-      if (name === 'node-fetch') return false
+      if (name === '@swc/core') return false
       return true
     })
     .map(it => it[0])

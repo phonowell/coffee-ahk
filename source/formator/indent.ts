@@ -1,5 +1,4 @@
 import { Context } from '../types'
-import Item from '../module/Item'
 
 // function
 
@@ -8,7 +7,7 @@ const main = (ctx: Context) => {
 
   if (type === 'indent') {
     // indent after '='
-    if (Item.is(content.last, 'sign', '=')) return true
+    if (content.last.is('sign', '=')) return true
 
     if (['array', 'call', 'object', 'parameter'].includes(scope.last))
       return true
@@ -42,7 +41,7 @@ const main = (ctx: Context) => {
   }
 
   if (type === 'outdent') {
-    if (Item.is(content.last, 'bracket', '}-')) {
+    if (content.last.is('bracket', '}-')) {
       content.last.value = '}'
       return true
     }

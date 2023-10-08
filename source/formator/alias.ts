@@ -1,4 +1,3 @@
-import Item from '../module/Item'
 import { Context } from '../types'
 
 // function
@@ -12,7 +11,7 @@ const main = (ctx: Context) => {
   }
 
   if (type === '::') {
-    if (Item.is(content.last, '.')) content.pop()
+    if (content.last.is('.')) content.pop()
     content.push('.').push('prototype')
     return true
   }

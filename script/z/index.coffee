@@ -4,7 +4,7 @@ do ->
 
   a = 1
 
-  do ->
+  do (a = a) ->
 
     a = 2
     return a
