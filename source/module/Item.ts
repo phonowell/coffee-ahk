@@ -1,6 +1,6 @@
 import at from '../utils/at'
 
-import { TScope as Scope } from './Scope'
+import { KeyScope as Scope } from './Scope'
 
 // variable
 
@@ -62,7 +62,7 @@ class Item {
    * @returns A new instance of Item with the same type, value, and scope as the provided item.
    * @throws An error if the provided item is not an instance of Item.
    */
-  private static clone(item: Item) {
+  static #clone(item: Item) {
     if (!(item instanceof Item))
       throw new Error('item must be an instance of Item')
 
@@ -78,12 +78,12 @@ class Item {
    * @returns True if the provided item is an instance of Item with the specified type and value, false otherwise.
    * @throws An error if the provided item is not an instance of Item.
    */
-  private static is(
+  static #is(
     item: Item | undefined,
     type: (typeof listType)[number],
     value?: string,
   ): item is Item & boolean {
-    if (!this.isItem(item)) return false
+    if (!Item.#isItem(item)) return false
     if (typeof value === 'undefined') return item.type === type
     return item.type === type && item.value === value
   }
@@ -93,7 +93,7 @@ class Item {
    * @param input The input to check.
    * @returns True if the provided input is an instance of Item, false otherwise.
    */
-  private static isItem(input: unknown): input is Item {
+  static #isItem(input: unknown): input is Item {
     return input instanceof Item
   }
 
@@ -103,9 +103,9 @@ class Item {
    * @param b The second item or scope to compare.
    * @returns True if the scopes are equal, false otherwise.
    */
-  private static isScopeEqual(a: Item | Scope[], b: Item | Scope[]) {
-    const scpA = this.isItem(a) ? a.scope : a
-    const scpB = this.isItem(b) ? b.scope : b
+  static #isScopeEqual(a: Item | Scope[], b: Item | Scope[]) {
+    const scpA = Item.#isItem(a) ? a.scope : a
+    const scpB = Item.#isItem(b) ? b.scope : b
     return scpA.length === scpB.length && scpA.join('|') === scpB.join('|')
   }
 
@@ -117,12 +117,8 @@ class Item {
    * @returns A new instance of Item.
    * @throws An error if the provided arguments are invalid.
    */
-  static new(
-    ...args:
-      | ConstructorParameters<typeof Item>
-      | Parameters<(typeof Item)['clone']>
-  ) {
-    if (args[0] instanceof Item) return this.clone(args[0])
+  static new(...args: ConstructorParameters<typeof Item> | Item[]) {
+    if (args[0] instanceof Item) return Item.#clone(args[0])
     if (typeof args[0] === 'string')
       return new Item(...(args as ConstructorParameters<typeof Item>))
     throw new Error(`invalid item: ${JSON.stringify(args)}`)
@@ -133,7 +129,7 @@ class Item {
    * @returns A new item that is a clone of this item.
    */
   clone() {
-    return Item.clone(this)
+    return Item.#clone(this)
   }
 
   /**
@@ -143,7 +139,7 @@ class Item {
    * @returns True if this item is of the specified type and, optionally, has the specified value; false otherwise.
    */
   is(type: (typeof listType)[number], value?: string) {
-    return Item.is(this, type, value)
+    return Item.#is(this, type, value)
   }
 
   /**
@@ -152,7 +148,7 @@ class Item {
    * @returns True if the scopes are equal, false otherwise.
    */
   isScopeEqual(item: Item | Scope[]) {
-    return Item.isScopeEqual(this, item)
+    return Item.#isScopeEqual(this, item)
   }
 
   /**
