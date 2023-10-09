@@ -1,26 +1,25 @@
 import { Context } from '../types'
 import Item from '../module/Item'
-import scope from '../module/Scope'
 
 // functions
 
 const arrow = (ctx: Context, type: string) => {
-  const { content, scope: scp } = ctx
+  const { content, scope } = ctx
 
   // fn = -> xxx
   if (!content.last.is('edge', 'parameter-end')) {
     if (!content.at(-2)?.is('property', 'constructor'))
       content.push('identifier', 'anonymous')
 
-    scp.push('parameter')
+    scope.push('parameter')
     content.push('edge', 'parameter-start')
 
     if (type === '=>') content.push('this').push('sign', '=').push('this')
 
     content.push('edge', 'parameter-end')
-    scp.pop()
+    scope.pop()
   } else if (type === '=>') {
-    const scp2: Item['scope'] = [...scp.clone(), 'parameter']
+    const scp2: Item['scope'] = [...scope.clone(), 'parameter']
     content.list.splice(
       findEdge(ctx) + 1,
       0,
@@ -31,17 +30,17 @@ const arrow = (ctx: Context, type: string) => {
     )
   }
 
-  scp.push('function')
+  scope.push('function')
   return true
 }
 
 const start = (ctx: Context) => {
-  const { scope: cache, content } = ctx
+  const { content, scope } = ctx
 
   if (!content.at(-2)?.is('property', 'constructor'))
     content.push('identifier', 'anonymous')
 
-  cache.push('parameter')
+  scope.push('parameter')
   content.push('edge', 'parameter-start')
   return true
 }
@@ -60,7 +59,7 @@ const findEdge = (
 }
 
 const main = (ctx: Context) => {
-  const { content, type } = ctx
+  const { content, scope, type } = ctx
 
   if (['->', '=>'].includes(type)) return arrow(ctx, type)
 

@@ -2,7 +2,7 @@ import at from '../utils/at'
 
 // interface
 
-export type TScope = (typeof listRule)[number]
+export type KeyScope = (typeof listRule)[number]
 
 // variable
 
@@ -28,15 +28,15 @@ const listRule = [
 // function
 
 class Scope {
-  #list: TScope[] = []
-  next: TScope = ''
+  #list: KeyScope[] = []
+  next: KeyScope = ''
 
   /**
    * Returns the last item in the Scope's list, or an empty string if the list is empty.
    * @returns The last item in the Scope's list, or an empty string if the list is empty.
    */
   get last() {
-    return this.eq(-1) ?? ''
+    return this.at(-1) ?? ''
   }
 
   /**
@@ -45,6 +45,16 @@ class Scope {
    */
   get length() {
     return this.#list.length
+  }
+
+  /**
+   * Returns the item at the specified index in the Scope's list.
+   * @param n The index of the item to retrieve.
+   * @returns The item at the specified index in the Scope's list.
+   * @throws An error if the specified index is out of bounds.
+   */
+  at(n: number) {
+    return at(this.#list, n)
   }
 
   /**
@@ -64,16 +74,6 @@ class Scope {
   }
 
   /**
-   * Returns the item at the specified index in the Scope's list.
-   * @param n The index of the item to retrieve.
-   * @returns The item at the specified index in the Scope's list.
-   * @throws An error if the specified index is out of bounds.
-   */
-  eq(n: number) {
-    return at(this.#list, n)
-  }
-
-  /**
    * Removes and returns the last item in the Scope's list.
    * If the list is empty, returns an empty string.
    * @returns The last item in the Scope's list, or an empty string if the list is empty.
@@ -87,7 +87,7 @@ class Scope {
    * @param name The name to add to the Scope's list.
    * @throws An error if the provided name is empty.
    */
-  push(name: TScope) {
+  push(name: KeyScope) {
     if (!name) throw new Error('scope.push: name is empty')
     this.#list.push(name)
   }
