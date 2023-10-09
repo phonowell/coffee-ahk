@@ -1,11 +1,11 @@
 import { compile } from 'coffeescript'
 
 import transpile from '../formator'
-import content from '../module/Content'
-import scope from '../module/Scope'
+import Content from '../module/Content'
 import pick from '../picker'
 import render from '../renderer'
 import { Context } from '../types'
+import Scope from '../module/Scope'
 
 // interface
 
@@ -22,8 +22,9 @@ const main = (cont: string, option: Context['option']): Result => {
     ast: true,
   })
 
-  scope.clear()
-  content.clear()
+  const scope = new Scope()
+  const content = new Content(scope)
+
   const ctx: Context = {
     cache: {
       global: new Set(),

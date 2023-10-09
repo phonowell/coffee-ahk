@@ -1,6 +1,6 @@
+import Scope from '../module/Scope'
 import { OptionPartial } from '../index'
-import content from '../module/Content'
-import scope from '../module/Scope'
+import Content from '../module/Content'
 
 export type Cache = {
   global: Set<string>
@@ -8,12 +8,12 @@ export type Cache = {
 
 export type Context = {
   cache: Cache
-  content: typeof content
+  content: Content
   flag: Flag
   indent: number
   option: OptionPartial
   raw: Raw
-  scope: typeof scope
+  scope: Scope
   type: string
   value: string
 }

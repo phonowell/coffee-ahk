@@ -1,5 +1,6 @@
+import Scope from '../../module/Scope'
 import { Context } from '../../types'
-import Item, { Scope } from '../../module/Item'
+import Item from '../../module/Item'
 
 // function
 
@@ -17,12 +18,12 @@ const main = (ctx: Context) => {
         item.is('bracket', ')'))
     ) {
       flag = false
-      const scope2: Scope[] = [...item.scope, 'call']
+      const scope2: Scope['list'] = [...item.scope.list, 'call']
       listContent.push(
         // add `()` for type-checking
-        Item.new('bracket', ')', item.scope),
-        Item.new('edge', 'call-start', scope2),
-        Item.new('edge', 'call-end', scope2),
+        new Item('bracket', ')', item.scope),
+        new Item('edge', 'call-start', scope2),
+        new Item('edge', 'call-end', scope2),
         item,
       )
       return
@@ -36,7 +37,7 @@ const main = (ctx: Context) => {
     flag = true
 
     // add `()` for type-checking
-    listContent.push(Item.new('bracket', '(', item.scope))
+    listContent.push(new Item('bracket', '(', item.scope))
   })
 
   content.reload(listContent)

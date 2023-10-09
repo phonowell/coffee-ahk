@@ -1,19 +1,24 @@
 import at from '../utils/at'
 
 import Item from './Item'
-import scope from './Scope'
+import Scope from './Scope'
 
 // function
 
 class Content {
   list: Item[] = []
+  scope: Scope
+
+  constructor(scope: Scope) {
+    this.scope = scope
+  }
 
   /**
    * Returns the last item in the Content, or a new empty Item if the Content is empty.
    * @returns The last item in the Content, or a new empty Item if the Content is empty.
    */
   get last() {
-    return this.at(-1) ?? Item.new()
+    return this.at(-1) ?? new Item()
   }
 
   /**
@@ -57,8 +62,8 @@ class Content {
    * @returns The Content instance with the new item added to its list.
    */
   push(...args: Parameters<(typeof Item)['new']>) {
-    const it = Item.new(...args)
-    if (!it.scope.length) it.scope = scope.clone()
+    const it = new Item(...args)
+    if (!it.scope.length) it.scope.reload(this.scope)
     this.list.push(it)
     return this
   }
@@ -94,13 +99,12 @@ class Content {
    * @returns The Content instance with the new item added to the beginning of its list.
    */
   unshift(...args: Parameters<(typeof Item)['new']>) {
-    const it = Item.new(...args)
-    if (!it.scope.length) it.scope = scope.clone()
+    const it = new Item(...args)
+    if (!it.scope.length) it.scope.reload(this.scope)
     this.list.unshift(it)
     return this
   }
 }
 
 // export
-const content = new Content()
-export default content
+export default Content
