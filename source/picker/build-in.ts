@@ -93,7 +93,7 @@ const insert = (ctx: Context, flag: string, fn: Item[]) => {
       `_${ctx.option.salt}_`,
     )
 
-    content.load([...listItem, ...content.list])
+    content.reload([...listItem, ...content.list])
   }
 }
 

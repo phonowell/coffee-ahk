@@ -27,7 +27,7 @@ const main = (ctx: Context) => {
   })
 
   // reload
-  content.load(listContent)
+  content.reload(listContent)
 }
 
 // export

@@ -18,19 +18,19 @@ const main = (ctx: Context) => {
 
     listContent.push(item)
 
-    if (!Item.is(item, 'sign', '=')) return
+    if (!item.is('sign', '=')) return
 
     const prev = content.at(i - 1)
-    if (!Item.is(prev, 'identifier')) return
+    if (!prev?.is('identifier')) return
     if (prev.scope.length) return
-    if (i - 2 >= 0 && !Item.is(content.at(i - 2), 'new-line')) return
+    if (i - 2 >= 0 && !content.at(i - 2)?.is('new-line')) return
 
     if (cache.has(prev.value)) return
     cache.add(prev.value)
 
     if (
-      Item.is(content.at(i + 1), 'identifier', prev.value) &&
-      Item.is(content.at(i + 2), 'new-line')
+      content.at(i + 1)?.is('identifier', prev.value) &&
+      content.at(i + 2)?.is('new-line')
     ) {
       listContent.splice(listContent.length - 2, 2)
       flagIgnore = 2
@@ -44,7 +44,7 @@ const main = (ctx: Context) => {
     )
   })
 
-  content.load(listContent)
+  content.reload(listContent)
   ctx.cache.global = cache
 }
 

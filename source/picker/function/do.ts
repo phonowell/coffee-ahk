@@ -12,9 +12,9 @@ const main = (ctx: Context) => {
   content.list.forEach(item => {
     if (
       flag &&
-      (Item.is(item, 'new-line') ||
-        Item.is(item, 'bracket', '}') ||
-        Item.is(item, 'bracket', ')'))
+      (item.is('new-line') ||
+        item.is('bracket', '}') ||
+        item.is('bracket', ')'))
     ) {
       flag = false
       const scope2: Scope[] = [...item.scope, 'call']
@@ -28,7 +28,7 @@ const main = (ctx: Context) => {
       return
     }
 
-    if (!Item.is(item, 'native', '__mark:do__')) {
+    if (!item.is('native', '__mark:do__')) {
       listContent.push(item)
       return
     }
@@ -39,7 +39,7 @@ const main = (ctx: Context) => {
     listContent.push(Item.new('bracket', '(', item.scope))
   })
 
-  content.load(listContent)
+  content.reload(listContent)
 }
 
 // export

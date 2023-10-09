@@ -27,18 +27,12 @@ const main = (ctx: Context) => {
 
     listResult.push(it)
 
-    if (
-      Item.is(it, 'edge', 'index-start') &&
-      it.scope.join('|') === item.scope.join('|')
-    ) {
+    if (it.is('edge', 'index-start') && it.isScopeEqual(item)) {
       countIgnore++
       return pickItem(item, i + 1, listResult)
     }
 
-    if (
-      Item.is(it, 'edge', 'index-end') &&
-      it.scope.join('|') === item.scope.join('|')
-    ) {
+    if (it.is('edge', 'index-end') && it.isScopeEqual(item)) {
       countIgnore--
       if (countIgnore === 0) return [i, listResult]
       return pickItem(item, i + 1, listResult)
@@ -50,7 +44,7 @@ const main = (ctx: Context) => {
   const update = (range: Range, list: Item[]) => {
     const listContent: Item[] = [...content.list]
     listContent.splice(range[0], range[1] - range[0] + 1, ...list)
-    content.load(listContent)
+    content.reload(listContent)
   }
 
   // each
@@ -61,11 +55,12 @@ const main = (ctx: Context) => {
     len = content.list.length
     const item = content.at(i)
 
-    if (!Item.is(item, 'edge', 'index-start')) continue
+    if (!item?.is('edge', 'index-start')) continue
 
     const next = content.at(i + 1)
-    if (Item.is(next, 'identifier', token)) continue
-    if (Item.is(next, 'edge', 'index-end')) continue
+    if (!next) continue
+    if (next.is('identifier', token)) continue
+    if (next.is('edge', 'index-end')) continue
 
     const [iEnd, listItem] = pickItem(item, i)
     const listUnwrap: Item[] = listItem.slice(1, listItem.length - 1)

@@ -1,4 +1,4 @@
-import { findLastIndex, isEqual, findIndex } from 'lodash'
+import { findLastIndex, findIndex } from 'lodash'
 
 import { Context } from '../../types'
 import Item from '../../module/Item'
@@ -13,7 +13,7 @@ const main = (ctx: Context) => {
 const next = (ctx: Context, count = 1) => {
   const { content } = ctx
 
-  content.load()
+  content.reload()
   const i = findLastIndex(content.list, {
     type: 'function',
     value: 'anonymous',
@@ -44,14 +44,14 @@ const pickItem = (
   const item = content.at(i)
   if (!item) return listResult
 
-  const it = Item.new(item)
+  const it = item.clone()
 
   // reset scope
   for (let j = 0; j < scope.length - 1; j++) it.scope.shift()
 
   listResult.push(it)
 
-  if (!Item.is(item, 'edge', 'block-end') || !isEqual(item.scope, scope)) {
+  if (!item.is('edge', 'block-end') || !item.isScopeEqual(scope)) {
     item.type = 'void'
     return pickItem(ctx, count, i + 1, scope, listResult)
   }
@@ -112,7 +112,7 @@ const transFunc = (ctx: Context) => {
     listContent.push(Item.new('edge', 'call-end', [...scope2, 'call']))
   })
 
-  content.load(listContent)
+  content.reload(listContent)
 }
 
 // export

@@ -12,7 +12,7 @@ const findFunctionStart = (ctx: Context, i: number): number => {
   const { content } = ctx
   const it = content.at(i)
 
-  if (Item.is(it, 'edge', 'block-start')) return i
+  if (it?.is('edge', 'block-start')) return i
 
   return findFunctionStart(ctx, i + 1)
 }
@@ -24,8 +24,8 @@ const main = (ctx: Context) => {
   content.list.forEach((item, i) => {
     listContent.push(item)
 
-    if (!Item.is(item, 'edge', 'parameter-start')) return
-    if (Item.is(content.at(i - 1), 'property', '__New')) return
+    if (!item.is('edge', 'parameter-start')) return
+    if (content.at(i - 1)?.is('property', '__New')) return
 
     const iStart = findFunctionStart(ctx, i)
 
@@ -52,7 +52,7 @@ const main = (ctx: Context) => {
     })
   })
 
-  content.load(listContent)
+  content.reload(listContent)
 
   // (a,)
   removeTrailingComma(ctx)
@@ -63,21 +63,24 @@ const pickContext = (ctx: Context, i: number, item: Item) => {
   const it = content.at(i)
 
   if (
-    Item.is(it, 'edge', 'block-end') &&
-    it.scope.join('|') ===
-      [...item.scope.slice(0, item.scope.length - 1), 'function'].join('|')
+    it?.is('edge', 'block-end') &&
+    it.isScopeEqual([...item.scope.slice(0, item.scope.length - 1), 'function'])
   )
     return
 
-  if (Item.is(it, 'identifier') && !cacheContext.get(it.value)) {
+  if (it?.is('identifier') && !cacheContext.get(it.value)) {
     const prev = content.at(i - 1)
+    if (!prev) return
+
     const next = content.at(i + 1)
+    if (!next) return
+
     cacheContext.set(
       it.value,
-      Item.is(prev, 'for', 'for') ||
-        Item.is(next, 'sign', '=') ||
-        Item.is(next, 'for-in') ||
-        it.scope[it.scope.length - 1] === 'parameter',
+      prev.is('for', 'for') ||
+        next.is('sign', '=') ||
+        next.is('for-in') ||
+        it.scopeAt(-1) === 'parameter',
     )
   }
 
@@ -88,19 +91,16 @@ const pickParameter = (ctx: Context, i: number, item: Item) => {
   const { content } = ctx
   const it = content.at(i)
 
-  if (
-    Item.is(it, 'edge', 'parameter-end') &&
-    it.scope.join('|') === item.scope.join('|')
-  )
-    return
+  if (it?.is('edge', 'parameter-end') && it.isScopeEqual(item)) return
 
-  if (Item.is(it, 'identifier')) {
+  if (it?.is('identifier')) {
     const next = content.at(i + 1)
+    if (!next) return
     if (
-      Item.is(next, 'sign', '=') ||
-      Item.is(next, 'sign', ',') ||
-      Item.is(next, 'sign', '...') ||
-      Item.is(next, 'edge', 'parameter-end')
+      next.is('sign', '=') ||
+      next.is('sign', ',') ||
+      next.is('sign', '...') ||
+      next.is('edge', 'parameter-end')
     )
       cacheParameter.add(it.value)
   }
@@ -113,16 +113,13 @@ const removeTrailingComma = (ctx: Context) => {
 
   const listContent: Item[] = []
   content.list.forEach((item, i) => {
-    if (
-      Item.is(item, 'sign', ',') &&
-      Item.is(content.at(i + 1), 'edge', 'parameter-end')
-    )
+    if (item.is('sign', ',') && content.at(i + 1)?.is('edge', 'parameter-end'))
       return
 
     listContent.push(item)
   })
 
-  content.load(listContent)
+  content.reload(listContent)
 }
 
 // export

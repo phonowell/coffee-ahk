@@ -1,5 +1,4 @@
 import { Context } from '../../types'
-import Item from '../../module/Item'
 
 // function
 
@@ -7,12 +6,12 @@ const main = (ctx: Context) => {
   const { content } = ctx
 
   content.list.forEach((item, i) => {
-    if (!Item.is(item, 'edge', 'parameter-start')) return
+    if (!item.is('edge', 'parameter-start')) return
 
-    const it = content.at(i - 1)
-    if (!Item.is(it, 'identifier')) return
+    const prev = content.at(i - 1)
+    if (!prev?.is('identifier')) return
 
-    it.type = 'function'
+    prev.type = 'function'
   })
 }
 

@@ -37,7 +37,7 @@ let cacheComment: string[] = []
 const commaLike2 = (ctx: Context) => {
   const { i, it } = ctx
   const next = ctx.content.at(i + 1)
-  if (!Item.is(next, 'new-line')) return `${it.value} `
+  if (!next?.is('new-line')) return `${it.value} `
   return it.value
 }
 
@@ -50,7 +50,7 @@ const edge2 = (ctx: Context) => {
     const prev = content.at(i - 1)
 
     if (!prev) return value2
-    if (Item.is(prev, 'sign', ':')) return value2
+    if (prev.is('sign', ':')) return value2
 
     return ` ${value2}`
   }
@@ -80,8 +80,8 @@ const if2 = (ctx: Context): string => {
   if (value === 'else') return ' else'
 
   if (value === 'if') {
-    const _prev = content.at(i - 1)
-    if (Item.is(_prev, 'if', 'else')) return ' if '
+    const prev = content.at(i - 1)
+    if (prev?.is('if', 'else')) return ' if '
     return 'if '
   }
 
@@ -127,7 +127,7 @@ const try2 = (ctx: Context): string => {
 
   if (value === 'catch') {
     const next = content.at(i + 1)
-    if (Item.is(next, 'edge', 'block-start')) return ' catch'
+    if (next?.is('edge', 'block-start')) return ' catch'
     return ' catch '
   }
 

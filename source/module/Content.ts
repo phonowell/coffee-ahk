@@ -43,22 +43,6 @@ class Content {
   }
 
   /**
-   * Removes all void items from the provided list and sets the Content's list to the result.
-   * If no list is provided, defaults to using the Content's current list.
-   * @param list The list of items to filter.
-   * @returns The Content instance with the filtered list.
-   */
-  load(list: Item[] = this.list) {
-    const listResult: Item[] = []
-    list.forEach(it => {
-      if (it.is('void')) return
-      listResult.push(it)
-    })
-    this.list = listResult
-    return this
-  }
-
-  /**
    * Removes and returns the last item in the Content's list.
    * @returns The last item in the Content's list.
    */
@@ -76,6 +60,22 @@ class Content {
     const it = Item.new(...args)
     if (!it.scope.length) it.scope = scope.clone()
     this.list.push(it)
+    return this
+  }
+
+  /**
+   * Removes all void items from the provided list and sets the Content's list to the result.
+   * If no list is provided, defaults to using the Content's current list.
+   * @param list The list of items to filter.
+   * @returns The Content instance with the filtered list.
+   */
+  reload(list: Item[] = this.list) {
+    const listResult: Item[] = []
+    list.forEach(it => {
+      if (it.is('void')) return
+      listResult.push(it)
+    })
+    this.list = listResult
     return this
   }
 
