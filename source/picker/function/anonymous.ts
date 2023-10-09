@@ -2,6 +2,7 @@ import { findLastIndex, findIndex } from 'lodash'
 
 import { Context } from '../../types'
 import Item from '../../module/Item'
+import Scope from '../../module/Scope'
 
 // functions
 
@@ -24,7 +25,7 @@ const next = (ctx: Context, count = 1) => {
   if (!it) throw new Error('Unexpected error: picker/function/anonymous/1')
   it.value = `${ctx.option.salt}_${count}`
 
-  pickItem(ctx, count, i, [...it.scope, 'function']).forEach(item => {
+  pickItem(ctx, count, i, [...it.scope.list, 'function']).forEach(item => {
     if (item.type === 'void') return
     content.push(item)
   })
@@ -36,7 +37,7 @@ const pickItem = (
   ctx: Context,
   count: number,
   i: number,
-  scope: Item['scope'],
+  scope: Scope['list'],
   listResult: Item[] = [],
 ): Item[] => {
   const { content } = ctx
@@ -51,7 +52,7 @@ const pickItem = (
 
   listResult.push(it)
 
-  if (!item.is('edge', 'block-end') || !item.isScopeEqual(scope)) {
+  if (!item.is('edge', 'block-end') || !item.scope.isEquals(scope)) {
     item.type = 'void'
     return pickItem(ctx, count, i + 1, scope, listResult)
   }
@@ -59,7 +60,7 @@ const pickItem = (
   // last one
   item.type = 'native'
   item.value = `Func("${ctx.option.salt}_${count}")`
-  listResult.push(Item.new('new-line', '0', scope))
+  listResult.push(new Item('new-line', '0', scope))
 
   // reset indent
   const diff: number =
@@ -98,18 +99,18 @@ const transFunc = (ctx: Context) => {
       return
     }
 
-    const scope2 = [...item.scope]
+    const scope2 = item.scope.list
     scope2.pop()
 
-    listContent.push(Item.new('identifier', 'Func', scope2))
-    listContent.push(Item.new('edge', 'call-start', [...scope2, 'call']))
+    listContent.push(new Item('identifier', 'Func', scope2))
+    listContent.push(new Item('edge', 'call-start', [...scope2, 'call']))
     listContent.push(
-      Item.new('string', item.value.slice(5, item.value.length - 1), [
+      new Item('string', item.value.slice(5, item.value.length - 1), [
         ...scope2,
         'call',
       ]),
     )
-    listContent.push(Item.new('edge', 'call-end', [...scope2, 'call']))
+    listContent.push(new Item('edge', 'call-end', [...scope2, 'call']))
   })
 
   content.reload(listContent)

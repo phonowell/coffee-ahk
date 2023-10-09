@@ -1,24 +1,25 @@
+import Scope from '../../module/Scope'
 import { Context } from '../../types'
-import Item, { Scope } from '../../module/Item'
+import Item from '../../module/Item'
 
 // interface
 
 type Flag = {
   i: number
-  scope: Scope[]
+  scope: Scope
   isObjectWithoutBrackets: boolean
 }
 
 // functions
 
-const findFnStart = (ctx: Context, i: number): [number, Scope[]] => {
+const findFnStart = (ctx: Context, i: number): [number, Scope] => {
   const { content } = ctx
   const item = content.at(i)
 
-  if (!(item?.is('edge', 'block-start') && item.scopeAt(-1) === 'function'))
+  if (!(item?.is('edge', 'block-start') && item.scope.at(-1) === 'function'))
     return findFnStart(ctx, i + 1)
 
-  return [i, [...item.scope]]
+  return [i, item.scope]
 }
 
 // would not add `return` before items return `true` in this function
@@ -37,7 +38,7 @@ const main = (ctx: Context) => {
 
   const flag: Flag = {
     i: -1,
-    scope: [],
+    scope: new Scope(),
     isObjectWithoutBrackets: false,
   }
 
@@ -48,9 +49,9 @@ const main = (ctx: Context) => {
     if (i === flag.i) {
       if (flag.isObjectWithoutBrackets)
         listContent.push(
-          Item.new('new-line', flag.scope.length.toString(), flag.scope),
+          new Item('new-line', flag.scope.length.toString(), flag.scope),
         )
-      listContent.push(Item.new('statement', 'return', flag.scope))
+      listContent.push(new Item('statement', 'return', flag.scope))
       return
     }
 
@@ -66,8 +67,8 @@ const main = (ctx: Context) => {
 
     const isObjectWithoutBrackets = list[1].is('bracket', '{')
     if (
-      list.filter(it => it.is('new-line') && it.isScopeEqual(scpStart)).length >
-      (isObjectWithoutBrackets ? 1 : 2)
+      list.filter(it => it.is('new-line') && it.scope.isEquals(scpStart))
+        .length > (isObjectWithoutBrackets ? 1 : 2)
     )
       return
     if (ignore(list[2])) return
@@ -85,7 +86,7 @@ const pickItems = (
   options: {
     i: number
     list: Item[]
-    scope: Scope[]
+    scope: Scope
   },
 ): Item[] => {
   const { content } = ctx
@@ -96,7 +97,7 @@ const pickItems = (
 
   list.push(item)
 
-  const isEnded = item.is('edge', 'block-end') && item.isScopeEqual(scope)
+  const isEnded = item.is('edge', 'block-end') && item.scope.isEquals(scope)
 
   if (!isEnded)
     return pickItems(ctx, {

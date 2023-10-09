@@ -37,13 +37,13 @@ const deconstruct = (ctx: Context) => {
         listContent = [
           ...listContent,
           // \n xxx = token[xxx]
-          Item.new('new-line', indent.toString(), _scope),
-          Item.new('identifier', listPre[listPre.length - j - 1], _scope),
-          Item.new('sign', '=', _scope),
-          Item.new('identifier', token, _scope),
-          Item.new('edge', 'index-start', _scope),
-          Item.new('string', `"${listPre[listPre.length - j - 1]}"`, _scope),
-          Item.new('edge', 'index-end', _scope),
+          new Item('new-line', indent.toString(), _scope),
+          new Item('identifier', listPre[listPre.length - j - 1], _scope),
+          new Item('sign', '=', _scope),
+          new Item('identifier', token, _scope),
+          new Item('edge', 'index-start', _scope),
+          new Item('string', `"${listPre[listPre.length - j - 1]}"`, _scope),
+          new Item('edge', 'index-end', _scope),
         ]
       }
 
@@ -67,8 +67,8 @@ const deconstruct = (ctx: Context) => {
 
     listContent = [
       ...listContent,
-      Item.new('identifier', token, item.scope),
-      Item.new('sign', '=', item.scope),
+      new Item('identifier', token, item.scope),
+      new Item('sign', '=', item.scope),
     ]
   })
 
@@ -86,7 +86,7 @@ const deconstruct2 = (ctx: Context) => {
     listContent.push(item)
 
     if (!item.is('identifier')) return
-    if (item.scopeAt(-1) !== 'object') return
+    if (item.scope.at(-1) !== 'object') return
 
     const prev = content.at(i - 1)
     if (!prev) return

@@ -15,7 +15,7 @@ const main = (ctx: Context) => {
   if (['forin', 'forof'].includes(type)) {
     const list: string[] = []
 
-    const last = content.pop() ?? Item.new()
+    const last = content.pop() ?? new Item()
     list.push(last.value)
 
     const last2 = content.last

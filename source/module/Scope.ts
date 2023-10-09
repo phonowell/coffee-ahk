@@ -32,6 +32,14 @@ class Scope {
   next: KeyScope = ''
 
   /**
+   * Creates a new Scope instance.
+   * @param list A list of key scopes to initialize the Scope with.
+   */
+  constructor(...args: Parameters<Scope['reload']>) {
+    this.reload(...args)
+  }
+
+  /**
    * Returns the last item in the Scope's list, or an empty string if the list is empty.
    * @returns The last item in the Scope's list, or an empty string if the list is empty.
    */
@@ -45,6 +53,14 @@ class Scope {
    */
   get length() {
     return this.#list.length
+  }
+
+  /**
+   * Returns a clone of the Scope's list.
+   * @returns A clone of the Scope's list.
+   */
+  get list() {
+    return [...this.#list]
   }
 
   /**
@@ -65,12 +81,12 @@ class Scope {
     this.#list = []
   }
 
-  /**
-   * Returns a new array containing clones of all items in the Scope's list.
-   * @returns A new array containing clones of all items in the Scope's list.
-   */
-  clone() {
-    return [...this.#list]
+  isEquals(target: Scope | KeyScope[] | string[]) {
+    const list = target instanceof Scope ? target.list : target
+    return (
+      this.#list.length === list.length &&
+      this.#list.every((item, i) => item === list[i])
+    )
   }
 
   /**
@@ -91,8 +107,19 @@ class Scope {
     if (!name) throw new Error('scope.push: name is empty')
     this.#list.push(name)
   }
+
+  reload(input: Scope | KeyScope[] = []) {
+    this.#list = input instanceof Scope ? input.list : input
+  }
+
+  shift() {
+    return this.#list.shift() ?? ''
+  }
+
+  unshift(...args: KeyScope[]) {
+    this.#list.unshift(...args)
+  }
 }
 
 // export
-const scope = new Scope()
-export default scope
+export default Scope

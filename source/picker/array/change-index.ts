@@ -1,5 +1,6 @@
 import { Context } from '../../types'
 import Item from '../../module/Item'
+import Scope from '../../module/Scope'
 
 // interface
 
@@ -27,12 +28,12 @@ const main = (ctx: Context) => {
 
     listResult.push(it)
 
-    if (it.is('edge', 'index-start') && it.isScopeEqual(item)) {
+    if (it.is('edge', 'index-start') && it.scope.isEquals(item.scope)) {
       countIgnore++
       return pickItem(item, i + 1, listResult)
     }
 
-    if (it.is('edge', 'index-end') && it.isScopeEqual(item)) {
+    if (it.is('edge', 'index-end') && it.scope.isEquals(item.scope)) {
       countIgnore--
       if (countIgnore === 0) return [i, listResult]
       return pickItem(item, i + 1, listResult)
@@ -82,16 +83,16 @@ const main = (ctx: Context) => {
       ctx.flag.isChangeIndexUsed = true // set flag
 
       const list = [...listUnwrap]
-      const _scope = list[0].scope
-      const _scopeCall = [..._scope, 'call'] as typeof _scope
+      const scp = list[0].scope
+      const scpCall = new Scope([...scp.list, 'call'])
 
       update(
         [i + 1, iEnd - 1],
         [
-          Item.new('identifier', token, _scope),
-          Item.new('edge', 'call-start', _scopeCall),
+          new Item('identifier', token, scp),
+          new Item('edge', 'call-start', scpCall),
           ...list,
-          Item.new('edge', 'call-end', _scopeCall),
+          new Item('edge', 'call-end', scpCall),
         ],
       )
 
@@ -103,7 +104,7 @@ const main = (ctx: Context) => {
       const list =
         listUnwrap.length === 1
           ? [
-              Item.new(
+              new Item(
                 first.type,
                 (parseFloat(first.value) + 1).toString(),
                 first.scope,
@@ -111,8 +112,8 @@ const main = (ctx: Context) => {
             ]
           : [
               listUnwrap[listUnwrap.length - 1],
-              Item.new('math', '+', first.scope),
-              Item.new('number', '1', first.scope),
+              new Item('math', '+', first.scope),
+              new Item('number', '1', first.scope),
             ]
 
       update([i + listUnwrap.length, i + listUnwrap.length], list)

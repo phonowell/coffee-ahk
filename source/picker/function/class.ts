@@ -11,19 +11,19 @@ const appendBind = (ctx: Context) => {
   content.list.forEach((item, i) => {
     listContent.push(item)
     if (!item.is('edge', 'block-end')) return
-    if (item.scopeAt(-1) !== 'function') return
-    if (item.scopeAt(-2) !== 'class') return
+    if (item.scope.at(-1) !== 'function') return
+    if (item.scope.at(-2) !== 'class') return
 
     const index = findEdge(ctx, i, item)
     if (content.at(index - 1)?.is('property', 'constructor')) return
 
-    const scope2 = [[...item.scope]]
+    const scope2 = [item.scope.list]
     scope2[1] = [...scope2[0], 'call']
-    listContent.push(Item.new('.', '.', scope2[0]))
-    listContent.push(Item.new('identifier', 'Bind', scope2[0]))
-    listContent.push(Item.new('edge', 'call-start', scope2[1]))
-    listContent.push(Item.new('this', 'this', scope2[1]))
-    listContent.push(Item.new('edge', 'call-end', scope2[1]))
+    listContent.push(new Item('.', '.', scope2[0]))
+    listContent.push(new Item('identifier', 'Bind', scope2[0]))
+    listContent.push(new Item('edge', 'call-start', scope2[1]))
+    listContent.push(new Item('this', 'this', scope2[1]))
+    listContent.push(new Item('edge', 'call-end', scope2[1]))
   })
 
   content.reload(listContent)
@@ -36,7 +36,10 @@ const findEdge = (ctx: Context, i: number, item: Item): number => {
   if (!it) return 0
   if (
     it.is('edge', 'parameter-start') &&
-    item.isScopeEqual([...it.scope.slice(0, it.scope.length - 1), 'function'])
+    item.scope.isEquals([
+      ...it.scope.list.slice(0, it.scope.length - 1),
+      'function',
+    ])
   )
     return i
   return findEdge(ctx, i - 1, item)
@@ -53,7 +56,7 @@ const formatSuper = (ctx: Context) => {
     const next = content.at(i + 1)
     if (!next?.is('edge', 'call-start')) return
 
-    const scope2 = [...next.scope]
+    const scope2 = next.scope.list
 
     listContent.push(
       new Item('.', '.', scope2),
@@ -86,18 +89,18 @@ const prependThis = (ctx: Context) => {
 
     if (
       !(
-        item.scopeAt(-1) === 'class' ||
-        (item.scopeAt(-1) === 'parameter' && item.scopeAt(-2) === 'class')
+        item.scope.at(-1) === 'class' ||
+        (item.scope.at(-1) === 'parameter' && item.scope.at(-2) === 'class')
       )
     )
       return
 
-    const scope2 = [...item.scope]
-    listContent.push(Item.new('this', 'this', scope2))
+    const scope2 = item.scope.list
+    listContent.push(new Item('this', 'this', scope2))
 
     const it = content.at(i + 1)
     if (it?.is('edge', 'parameter-end')) return
-    listContent.push(Item.new('sign', ',', scope2))
+    listContent.push(new Item('sign', ',', scope2))
   })
 
   content.reload(listContent)

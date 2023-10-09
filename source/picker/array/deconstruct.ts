@@ -53,8 +53,8 @@ const main = (ctx: Context) => {
               ['edge', 'index-start'],
               ['number', (j + 1).toString()],
               ['edge', 'index-end'],
-            ].map(args =>
-              Item.new(args[0] as Item['type'], args[1], item.scope),
+            ].map(
+              args => new Item(args[0] as Item['type'], args[1], item.scope),
             ),
           ]),
       )
@@ -84,8 +84,8 @@ const main = (ctx: Context) => {
 
     listContent = [
       ...listContent,
-      Item.new('identifier', token, item.scope),
-      Item.new('sign', '=', item.scope),
+      new Item('identifier', token, item.scope),
+      new Item('sign', '=', item.scope),
     ]
   })
 

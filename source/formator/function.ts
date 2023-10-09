@@ -1,5 +1,6 @@
 import { Context } from '../types'
 import Item from '../module/Item'
+import Scope from '../module/Scope'
 
 // functions
 
@@ -19,14 +20,14 @@ const arrow = (ctx: Context, type: string) => {
     content.push('edge', 'parameter-end')
     scope.pop()
   } else if (type === '=>') {
-    const scp2: Item['scope'] = [...scope.clone(), 'parameter']
+    const scp2: Scope['list'] = [...scope.list, 'parameter']
     content.list.splice(
       findEdge(ctx) + 1,
       0,
-      Item.new('this', 'this', scp2),
-      Item.new('sign', '=', scp2),
-      Item.new('this', 'this', scp2),
-      Item.new('sign', ',', scp2),
+      new Item('this', 'this', scp2),
+      new Item('sign', '=', scp2),
+      new Item('this', 'this', scp2),
+      new Item('sign', ',', scp2),
     )
   }
 

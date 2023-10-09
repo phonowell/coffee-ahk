@@ -47,7 +47,7 @@ const main = (ctx: Context) => {
           ['sign', '='],
           ['identifier', name],
           ['sign', ','],
-        ].map(args => Item.new(args[0] as Item['type'], args[1], item.scope)),
+        ].map(args => new Item(args[0] as Item['type'], args[1], item.scope)),
       )
     })
   })
@@ -64,7 +64,10 @@ const pickContext = (ctx: Context, i: number, item: Item) => {
 
   if (
     it?.is('edge', 'block-end') &&
-    it.isScopeEqual([...item.scope.slice(0, item.scope.length - 1), 'function'])
+    it.scope.isEquals([
+      ...item.scope.list.slice(0, item.scope.length - 1),
+      'function',
+    ])
   )
     return
 
@@ -80,7 +83,7 @@ const pickContext = (ctx: Context, i: number, item: Item) => {
       prev.is('for', 'for') ||
         next.is('sign', '=') ||
         next.is('for-in') ||
-        it.scopeAt(-1) === 'parameter',
+        it.scope.at(-1) === 'parameter',
     )
   }
 
@@ -91,7 +94,7 @@ const pickParameter = (ctx: Context, i: number, item: Item) => {
   const { content } = ctx
   const it = content.at(i)
 
-  if (it?.is('edge', 'parameter-end') && it.isScopeEqual(item)) return
+  if (it?.is('edge', 'parameter-end') && it.scope.isEquals(item.scope)) return
 
   if (it?.is('identifier')) {
     const next = content.at(i + 1)

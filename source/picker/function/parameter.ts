@@ -13,7 +13,7 @@ const replaceFn = (ctx: Context, listFn: Set<string>) => {
 
   content.list.forEach((it, i) => {
     if (it.type !== 'identifier') return
-    if (it.scopeAt(-1) !== 'call') return
+    if (it.scope.at(-1) !== 'call') return
     if (!listFn.has(it.value)) return
     if (content.at(i + 1)?.is('edge', 'call-start')) return
 

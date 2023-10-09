@@ -1,6 +1,7 @@
 import { Context } from '../../types'
-import Item, { Scope } from '../../module/Item'
+import Item from '../../module/Item'
 import at from '../../utils/at'
+import Scope from '../../module/Scope'
 
 // interface
 
@@ -10,7 +11,7 @@ type Option = {
   i: number
   list: Item[]
   result: Item[]
-  scope: Scope[]
+  scope: Scope
 }
 
 // function
@@ -56,15 +57,15 @@ const main = (ctx: Context) => {
   content.list.forEach((item, i) => {
     if (listStart.includes(i))
       listContent.push(
-        Item.new('identifier', token, item.scope),
-        Item.new('edge', 'call-start', [...item.scope, 'call']),
+        new Item('identifier', token, item.scope),
+        new Item('edge', 'call-start', [...item.scope.list, 'call']),
       )
     listContent.push(item)
     if (listEnd.includes(i))
       listContent.push(
-        Item.new('sign', ',', item.scope),
-        Item.new('string', `"#rf/${ctx.option.salt}/${++count}"`, item.scope),
-        Item.new('edge', 'call-end', [...item.scope, 'call']),
+        new Item('sign', ',', item.scope),
+        new Item('string', `"#rf/${ctx.option.salt}/${++count}"`, item.scope),
+        new Item('edge', 'call-end', [...item.scope.list, 'call']),
       )
   })
 
@@ -88,7 +89,7 @@ const pickIt = (option: Option): [number, Item[]] => {
   const hasIdentifier2 =
     ['identifier', 'super', 'this'].includes(item.type) || hasIdentifier
 
-  if (countBracket2 === 0 && hasIdentifier2 && item.isScopeEqual(scope))
+  if (countBracket2 === 0 && hasIdentifier2 && item.scope.isEquals(scope))
     return [i, result]
 
   return pickIt({

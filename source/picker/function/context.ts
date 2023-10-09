@@ -1,5 +1,6 @@
 import { sortBy } from 'lodash'
 
+import Scope from '../../module/Scope'
 import { Context } from '../../types'
 import Item from '../../module/Item'
 
@@ -13,28 +14,30 @@ let countIgnore = 0
 // functions
 
 const cache = (ctx: Context, item: Item, i: number) => {
-  const scp = [item.scope.slice(0, item.scope.length - 1)]
+  const scp = [item.scope.list.slice(0, item.scope.length - 1)]
   scp[1] = [...scp[0], 'call']
 
   let listItem: Item[] = []
   for (const listIt of listParam) {
     for (const it of listIt) {
-      it.scope = it.scope
-        .join(',')
-        .replace(/^.*?parameter/u, scp[1].join(','))
-        .split(',') as Item['scope']
+      it.scope.reload(
+        it.scope.list
+          .join(',')
+          .replace(/^.*?parameter/u, scp[1].join(','))
+          .split(',') as Scope['list'],
+      )
       listItem.push(it)
     }
-    listItem.push(Item.new('sign', ',', scp[1]))
+    listItem.push(new Item('sign', ',', scp[1]))
   }
   listItem.pop()
 
   listItem = [
-    Item.new('.', '.', scp[0]),
-    Item.new('identifier', 'Bind', scp[0]),
-    Item.new('edge', 'call-start', scp[1]),
+    new Item('.', '.', scp[0]),
+    new Item('identifier', 'Bind', scp[0]),
+    new Item('edge', 'call-start', scp[1]),
     ...listItem,
-    Item.new('edge', 'call-end', scp[1]),
+    new Item('edge', 'call-end', scp[1]),
   ]
 
   listCache.push([findIndex(ctx, item, i) + 1, listItem])
@@ -45,7 +48,7 @@ const findIndex = (ctx: Context, item: Item, i: number): number => {
 
   const it = content.at(i)
   if (!it) return 0
-  if (it.is('edge', 'block-end') && it.isScopeEqual(item)) return i
+  if (it.is('edge', 'block-end') && it.scope.isEquals(item.scope)) return i
   return findIndex(ctx, item, i + 1)
 }
 
@@ -63,7 +66,7 @@ const main = (ctx: Context) => {
     // ignore
     if (countIgnore) {
       countIgnore--
-      listContent.push(Item.new('void', '', []))
+      listContent.push(new Item('void', '', []))
       return
     }
 
@@ -91,7 +94,7 @@ const pick = (ctx: Context, item: Item, i: number): boolean => {
   // find `fn(x = x)`
   //            ^
   if (!item.is('sign', '=')) return false
-  if (item.scopeAt(-1) !== 'parameter') return false
+  if (item.scope.at(-1) !== 'parameter') return false
 
   const itNext = content.at(i + 1)
   if (!itNext) return false
@@ -102,7 +105,7 @@ const pick = (ctx: Context, item: Item, i: number): boolean => {
   if (!['identifier', 'this'].includes(itPrev.type)) return false
 
   // pick
-  listContent.push(Item.new('void'))
+  listContent.push(new Item('void'))
   listParam.push(pickItem(ctx, itNext, i + 1))
   countIgnore = listParam[listParam.length - 1].length
   return true
@@ -120,7 +123,7 @@ const pickItem = (
   if (!it) return listItem
 
   if (
-    it.isScopeEqual(item) &&
+    it.scope.isEquals(item.scope) &&
     (it.is('sign', ',') || it.is('edge', 'parameter-end'))
   )
     return listItem

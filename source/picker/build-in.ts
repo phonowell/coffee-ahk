@@ -31,8 +31,8 @@ const changeIndex: ItemLike[] = [
   { type: 'edge', value: 'block-end', scope: ['function'] },
   { type: 'new-line', value: '0', scope: [] },
 ]
-const changeIndex2 = changeIndex.map(it =>
-  Item.new(it.type, it.value, it.scope),
+const changeIndex2 = changeIndex.map(
+  it => new Item(it.type, it.value, it.scope),
 )
 
 const returnFunction: ItemLike[] = [
@@ -75,8 +75,8 @@ const returnFunction: ItemLike[] = [
   { type: 'edge', value: 'block-end', scope: ['function'] },
   { type: 'new-line', value: '0', scope: [] },
 ]
-const returnFunction2 = returnFunction.map(it =>
-  Item.new(it.type, it.value, it.scope),
+const returnFunction2 = returnFunction.map(
+  it => new Item(it.type, it.value, it.scope),
 )
 
 // functions
@@ -85,7 +85,7 @@ const insert = (ctx: Context, flag: string, fn: Item[]) => {
   const { content } = ctx
 
   if (ctx.flag[flag]) {
-    const listItem: Item[] = fn.map(it => Item.new(it.type, it.value, it.scope))
+    const listItem: Item[] = fn.map(it => new Item(it.type, it.value, it.scope))
     if (!listItem.length) return
 
     listItem[1].value = listItem[1].value.replace(

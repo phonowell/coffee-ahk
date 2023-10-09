@@ -10,7 +10,7 @@ const main = (ctx: Context) => {
     const it = content.at(i)
     if (!it) return 0
 
-    if (it.is('edge', 'block-start') && it.scopeAt(-1) === 'for') return i
+    if (it.is('edge', 'block-start') && it.scope.at(-1) === 'for') return i
 
     return findIndex(i + 1)
   }
@@ -47,12 +47,12 @@ const main = (ctx: Context) => {
     listCache.unshift([
       index + 1,
       [
-        Item.new('new-line', indent, scope),
-        Item.new('identifier', name, scope),
-        Item.new('sign', '=', scope),
-        Item.new('identifier', name, scope),
-        Item.new('math', '-', scope),
-        Item.new('number', '1', scope),
+        new Item('new-line', indent, scope),
+        new Item('identifier', name, scope),
+        new Item('sign', '=', scope),
+        new Item('identifier', name, scope),
+        new Item('math', '-', scope),
+        new Item('number', '1', scope),
       ],
     ])
   })
