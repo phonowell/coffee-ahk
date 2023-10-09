@@ -15,12 +15,7 @@ const findFnStart = (ctx: Context, i: number): [number, Scope[]] => {
   const { content } = ctx
   const item = content.at(i)
 
-  if (
-    !(
-      Item.is(item, 'edge', 'block-start') &&
-      item.scope[item.scope.length - 1] === 'function'
-    )
-  )
+  if (!(item?.is('edge', 'block-start') && item.scopeAt(-1) === 'function'))
     return findFnStart(ctx, i + 1)
 
   return [i, [...item.scope]]
@@ -28,12 +23,12 @@ const findFnStart = (ctx: Context, i: number): [number, Scope[]] => {
 
 // would not add `return` before items return `true` in this function
 const ignore = (item: Item) => {
-  if (Item.is(item, 'for')) return true
-  if (Item.is(item, 'if')) return true
-  if (Item.is(item, 'native') && item.value !== '__mark:do__') return true
-  if (Item.is(item, 'statement') && item.value !== 'new') return true
-  if (Item.is(item, 'try')) return true
-  if (Item.is(item, 'while')) return true
+  if (item.is('for')) return true
+  if (item.is('if')) return true
+  if (item.is('native') && item.value !== '__mark:do__') return true
+  if (item.is('statement') && item.value !== 'new') return true
+  if (item.is('try')) return true
+  if (item.is('while')) return true
   return false
 }
 
@@ -59,8 +54,8 @@ const main = (ctx: Context) => {
       return
     }
 
-    if (!Item.is(item, 'edge', 'parameter-start')) return
-    if (Item.is(content.at(i - 1), 'property', '__New')) return
+    if (!item.is('edge', 'parameter-start')) return
+    if (content.last.is('property', '__New')) return
 
     const [iStart, scpStart] = findFnStart(ctx, i)
     const list = pickItems(ctx, {
@@ -69,11 +64,10 @@ const main = (ctx: Context) => {
       scope: scpStart,
     })
 
-    const isObjectWithoutBrackets = Item.is(list[1], 'bracket', '{')
+    const isObjectWithoutBrackets = list[1].is('bracket', '{')
     if (
-      list.filter(
-        it => Item.is(it, 'new-line') && Item.isScopeEqual(it.scope, scpStart),
-      ).length > (isObjectWithoutBrackets ? 1 : 2)
+      list.filter(it => it.is('new-line') && it.isScopeEqual(scpStart)).length >
+      (isObjectWithoutBrackets ? 1 : 2)
     )
       return
     if (ignore(list[2])) return
@@ -83,7 +77,7 @@ const main = (ctx: Context) => {
     flag.isObjectWithoutBrackets = isObjectWithoutBrackets
   })
 
-  content.load(listContent)
+  content.reload(listContent)
 }
 
 const pickItems = (
@@ -102,8 +96,7 @@ const pickItems = (
 
   list.push(item)
 
-  const isEnded =
-    Item.is(item, 'edge', 'block-end') && Item.isScopeEqual(item.scope, scope)
+  const isEnded = item.is('edge', 'block-end') && item.isScopeEqual(scope)
 
   if (!isEnded)
     return pickItems(ctx, {

@@ -8,21 +8,21 @@ const main = (ctx: Context) => {
   const listContent: Item[] = []
 
   content.list.forEach((item, i) => {
-    if (!Item.is(item, 'statement', 'new')) {
+    if (!item.is('statement', 'new')) {
       listContent.push(item)
       return
     }
 
-    const it = content.at(i + 1)
-    if (!Item.is(it, 'identifier', 'Error')) {
+    const next = content.at(i + 1)
+    if (!next?.is('identifier', 'Error')) {
       listContent.push(item)
       return
     }
 
-    it.value = 'Exception'
+    next.value = 'Exception'
   })
 
-  content.load(listContent)
+  content.reload(listContent)
 }
 
 // export

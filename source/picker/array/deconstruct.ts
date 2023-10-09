@@ -20,14 +20,14 @@ const main = (ctx: Context) => {
 
   const pickPre = (i: number, listResult: Item[][] = [[]]): Item[][] => {
     const it = content.at(i)
-    if (!it) throw new Error('Unexpected error: picker/array/deconstruct/1')
+    if (!it) return listResult
 
     const last = at(listResult, -1)
-    if (!last) throw new Error('Unexpected error: picker/array/deconstruct/2')
+    if (!last) return listResult
 
-    if (Item.is(it, 'edge', 'array-start')) return listResult
+    if (it.is('edge', 'array-start')) return listResult
 
-    if (Item.is(it, 'sign', ',')) listResult.push([])
+    if (it.is('sign', ',')) listResult.push([])
     else last.unshift(it)
 
     listContent.pop()
@@ -65,11 +65,11 @@ const main = (ctx: Context) => {
     }
 
     // find
-    if (!Item.is(item, 'sign', '=')) {
+    if (!item.is('sign', '=')) {
       listContent.push(item)
       return
     }
-    if (!Item.is(content.at(i - 1), 'edge', 'array-end')) {
+    if (!content.at(i - 1)?.is('edge', 'array-end')) {
       listContent.push(item)
       return
     }
@@ -90,7 +90,7 @@ const main = (ctx: Context) => {
   })
 
   // reload
-  content.load(listContent)
+  content.reload(listContent)
 }
 
 // export

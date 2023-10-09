@@ -10,8 +10,7 @@ const main = (ctx: Context) => {
     const it = content.at(i)
     if (!it) return 0
 
-    if (it.is('edge', 'block-start') && it.scope[it.scope.length - 1] === 'for')
-      return i
+    if (it.is('edge', 'block-start') && it.scopeAt(-1) === 'for') return i
 
     return findIndex(i + 1)
   }
@@ -61,7 +60,7 @@ const main = (ctx: Context) => {
   if (listCache.length) {
     const listContent: Item[] = [...content.list]
     for (const it of listCache) listContent.splice(it[0], 0, ...it[1])
-    content.load(listContent)
+    content.reload(listContent)
   }
 }
 

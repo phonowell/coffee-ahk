@@ -73,7 +73,7 @@ const deconstruct = (ctx: Context) => {
   })
 
   // reload
-  content.load(listContent)
+  content.reload(listContent)
 }
 
 const deconstruct2 = (ctx: Context) => {
@@ -86,7 +86,7 @@ const deconstruct2 = (ctx: Context) => {
     listContent.push(item)
 
     if (!item.is('identifier')) return
-    if (item.scope[item.scope.length - 1] !== 'object') return
+    if (item.scopeAt(-1) !== 'object') return
 
     const prev = content.at(i - 1)
     if (!prev) return
@@ -103,7 +103,7 @@ const deconstruct2 = (ctx: Context) => {
   })
 
   // reload
-  content.load(listContent)
+  content.reload(listContent)
 }
 
 const main = (ctx: Context) => {

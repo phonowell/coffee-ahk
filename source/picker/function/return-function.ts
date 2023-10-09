@@ -25,13 +25,12 @@ const main = (ctx: Context) => {
   const listEnd: number[] = []
 
   content.list.forEach((item, i) => {
-    if (!Item.is(item, 'edge', 'call-start')) return
+    if (!item.is('edge', 'call-start')) return
 
     const prev = content.at(i - 1)
-    if (!prev) throw new Error('Unexpected error: picker/return-function/1')
-
-    if (Item.is(prev, 'function')) return
-    if (Item.is(prev, 'super')) return
+    if (!prev) return
+    if (prev.is('function')) return
+    if (prev.is('super')) return
 
     const [i2, listIt] = pickIt({
       countBracket: 0,
@@ -41,9 +40,7 @@ const main = (ctx: Context) => {
       result: [],
       scope: prev.scope,
     })
-    const list = listIt.filter(
-      it => Item.is(it, 'identifier') || Item.is(it, 'property'),
-    )
+    const list = listIt.filter(it => it.is('identifier') || it.is('property'))
     const last = list[list.length - 1]
     if (last.value.startsWith('__')) return
     if (isUpper(last.value)) return
@@ -71,7 +68,7 @@ const main = (ctx: Context) => {
       )
   })
 
-  content.load(listContent)
+  content.reload(listContent)
 }
 
 const pickIt = (option: Option): [number, Item[]] => {
@@ -82,7 +79,7 @@ const pickIt = (option: Option): [number, Item[]] => {
 
   result.unshift(item)
 
-  const countBracket2 = !Item.is(item, 'bracket')
+  const countBracket2 = !item.is('bracket')
     ? countBracket
     : item.value === '('
     ? countBracket - 1
@@ -91,11 +88,7 @@ const pickIt = (option: Option): [number, Item[]] => {
   const hasIdentifier2 =
     ['identifier', 'super', 'this'].includes(item.type) || hasIdentifier
 
-  if (
-    countBracket2 === 0 &&
-    hasIdentifier2 &&
-    Item.isScopeEqual(item.scope, scope)
-  )
+  if (countBracket2 === 0 && hasIdentifier2 && item.isScopeEqual(scope))
     return [i, result]
 
   return pickIt({

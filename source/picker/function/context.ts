@@ -82,7 +82,7 @@ const main = (ctx: Context) => {
   for (const [index, listItem] of sortBy(listCache, item => item[0]).reverse())
     listContent.splice(index, 0, ...listItem)
 
-  content.load(listContent)
+  content.reload(listContent)
 }
 
 const pick = (ctx: Context, item: Item, i: number): boolean => {
