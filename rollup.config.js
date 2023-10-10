@@ -9,7 +9,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 
 const config = [
   {
-    input: { index: 'source/index.ts' },
+    input: { index: 'src/index.ts' },
     output: [
       {
         exports: 'named',

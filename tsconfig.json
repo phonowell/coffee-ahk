@@ -27,5 +27,5 @@
     "types": ["node"]
   },
   "exclude": ["node_modules"],
-  "include": ["source", "task", ".eslintrc.js"]
+  "include": ["src", "task", ".eslintrc.js"]
 }

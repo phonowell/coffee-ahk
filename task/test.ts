@@ -1,7 +1,7 @@
 import { argv, echo, glob, read, write } from 'fire-keeper'
 
 import c2aViaJs from '../dist'
-import c2aViaTs from '../source'
+import c2aViaTs from '../src'
 
 // function
 
@@ -9,7 +9,7 @@ const checkVersion = async () => {
   const pkg = await read<{ version: string }>('./package.json')
   if (!pkg) throw new Error('package.json not found')
   const { version } = pkg
-  const content = await read('./source/renderer/index.ts')
+  const content = await read('./src/renderer/index.ts')
 
   if (!content?.includes(version)) throw new Error('found different version')
 }
