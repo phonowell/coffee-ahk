@@ -60,7 +60,7 @@
   "scripts": {
     "alice": "ts-node --swc task/alice",
     "build": "npm run alice forbid && rollup -c --bundleConfigAsCjs",
-    "lint": "eslint source --ext ts,tsx --fix --max-warnings 0 --report-unused-disable-directives",
+    "lint": "eslint src --ext ts,tsx --fix --max-warnings 0 --report-unused-disable-directives",
     "test": "npm run alice test",
     "watch": "npm run alice watch"
   },

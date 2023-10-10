@@ -1,4 +1,4 @@
-import c2a from '../source'
+import c2a from '../src'
 
 // function
 
