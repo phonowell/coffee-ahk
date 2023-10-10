@@ -36,14 +36,42 @@ const listType = [
   'while',
 ] as const
 
-// function
+// class
 
+/**
+ * An item of the AST.
+ */
 class Item {
+  /**
+   * The comment associated with the item.
+   * @type {string[] | undefined}
+   */
   comment?: string[]
+
+  /**
+   * The scope of the item.
+   * @type {Scope}
+   */
   scope: Scope
+
+  /**
+   * The type of the item.
+   * @type {string}
+   */
   type: (typeof listType)[number]
+
+  /**
+   * The value of the item.
+   * @type {string}
+   */
   value: string
 
+  /**
+   * Creates a new item.
+   * @param {string} [type] - The type of the item.
+   * @param {string} [value] - The value of the item.
+   * @param {Scope} [scope] - The scope of the item.
+   */
   constructor(
     ...args:
       | [
@@ -66,12 +94,22 @@ class Item {
     this.scope = new Scope(args[2])
   }
 
-  clone() {
+  /**
+   * Clones the item.
+   * @returns {Item} A new item with the same properties as the original.
+   */
+  clone(): Item {
     const { scope, type, value } = this
     return new Item(type, value, scope)
   }
 
-  is(type: (typeof listType)[number], value?: string) {
+  /**
+   * Checks if the item is of a certain type and value.
+   * @param {string} type - The type to check.
+   * @param {string} [value] - The value to check.
+   * @returns {boolean} Whether the item is of the specified type and value.
+   */
+  is(type: (typeof listType)[number], value?: string): boolean {
     if (type !== this.type) return false
     if (typeof value === 'undefined') return true
     return value === this.value

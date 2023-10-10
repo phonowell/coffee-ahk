@@ -12,7 +12,7 @@ import Scope from '../models/Scope'
 type Result = {
   ast: Context['content']['list']
   content: string
-  raw: Context['raw'][]
+  raw: Context['token'][]
 }
 
 // function
@@ -36,15 +36,15 @@ const main = (cont: string, option: Context['option']): Result => {
     },
     indent: 0,
     option,
-    raw: {},
+    token: undefined as unknown as Context['token'],
     scope,
     type: '',
     value: '',
   }
 
   for (const token of ast.tokens) {
-    ctx.raw = token
-    ctx.raw[2] = {}
+    ctx.token = token
+    ctx.token[2] = {}
     ctx.type = token[0].toLowerCase()
     ctx.value = token[1].toString()
 

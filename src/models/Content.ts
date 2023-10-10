@@ -3,44 +3,92 @@ import at from '../utils/at'
 import Item from './Item'
 import Scope from './Scope'
 
-// function
+// class
 
+/**
+ * A collection of items of the AST.
+ */
 class Content {
+  /**
+   * The list of items in the content.
+   * @type {Item[]}
+   * @private
+   */
   #list: Item[] = []
+
+  /**
+   * The scope of the content.
+   * @type {Scope}
+   */
   scope: Scope
 
+  /**
+   * Creates a new content.
+   * @param {Scope} scope - The scope of the content.
+   */
   constructor(scope: Scope) {
     this.scope = scope
   }
 
-  get last() {
+  /**
+   * Gets the last item in the content.
+   * @returns {Item} The last item in the content.
+   */
+  get last(): Item {
     return this.at(-1) ?? new Item()
   }
 
-  get length() {
+  /**
+   * Gets the number of items in the content.
+   * @returns {number} The number of items in the content.
+   */
+  get length(): number {
     return this.#list.length
   }
 
-  get list() {
+  /**
+   * Gets a copy of the list of items in the content.
+   * @returns {Item[]} A copy of the list of items in the content.
+   */
+  get list(): Item[] {
     return [...this.#list]
   }
 
-  at(n: number) {
+  /**
+   * Gets the item at the specified index.
+   * @param {number} n - The index of the item to get.
+   * @returns {Item | undefined} The item at the specified index, or undefined if the index is out of range.
+   */
+  at(n: number): Item | undefined {
     return at(this.#list, n)
   }
 
-  pop() {
+  /**
+   * Removes and returns the last item in the content.
+   * @returns {Item} The last item in the content, or a new item if the content is empty.
+   */
+  pop(): Item {
     return this.#list.pop() ?? new Item()
   }
 
-  push(...args: ConstructorParameters<typeof Item>) {
+  /**
+   * Adds one or more items to the end of the content.
+   * @param {...ConstructorParameters<typeof Item>} args - The arguments to create the items with.
+   * @returns {Content} The content.
+   */
+  push(...args: ConstructorParameters<typeof Item>): this {
     const it = new Item(...args)
     if (!it.scope.length) it.scope.reload(this.scope)
     this.#list.push(it)
     return this
   }
 
-  reload(list: Item[] = this.#list) {
+  /**
+   * Reloads the content with a new list of items.
+   * @param {Item[]} [list=this.#list] - The list of items to reload the content with.
+   * @returns {Content} The content.
+   */
+  reload(list: Item[] = this.#list): this {
     const listResult: Item[] = []
     list.forEach(it => {
       if (it.is('void')) return
@@ -50,11 +98,20 @@ class Content {
     return this
   }
 
-  shift() {
+  /**
+   * Removes and returns the first item in the content.
+   * @returns {Item} The first item in the content, or a new item if the content is empty.
+   */
+  shift(): Item {
     return this.#list.shift() ?? new Item()
   }
 
-  unshift(...args: ConstructorParameters<typeof Item>) {
+  /**
+   * Adds one or more items to the beginning of the content.
+   * @param {...ConstructorParameters<typeof Item>} args - The arguments to create the items with.
+   * @returns {Content} The content.
+   */
+  unshift(...args: ConstructorParameters<typeof Item>): this {
     const it = new Item(...args)
     if (!it.scope.length) it.scope.reload(this.scope)
     this.#list.unshift(it)
