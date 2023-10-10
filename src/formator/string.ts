@@ -3,10 +3,10 @@ import { Context } from '../types'
 // function
 
 const main = (ctx: Context): boolean => {
-  const { content, raw, type, value } = ctx
+  const { content, token, type, value } = ctx
 
   if (type === 'string') {
-    content.push('string', transAlias(value, raw[1].quote))
+    content.push('string', transAlias(value, token[1].quote ?? ''))
     return true
   }
 

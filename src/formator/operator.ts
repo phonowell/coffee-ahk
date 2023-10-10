@@ -5,10 +5,10 @@ import { Context } from '../types'
 // function
 
 const main = (ctx: Context): boolean => {
-  const { content, raw, type, value } = ctx
+  const { content, token, type, value } = ctx
 
   if (type === '+') {
-    if (!raw.spaced) {
+    if (!token.spaced) {
       const { last } = content
 
       if (last.type === 'math' || last.type === 'negative') {
@@ -23,7 +23,7 @@ const main = (ctx: Context): boolean => {
   }
 
   if (type === '-') {
-    if (!raw.spaced) {
+    if (!token.spaced) {
       const { last } = content
 
       if (!['identifier', 'math'].includes(last.type)) {
