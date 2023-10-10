@@ -52,9 +52,6 @@ jspm_packages
 # build
 build
 dist
-dist-wechat
-public
-src
 
 # compiled
 *.css
@@ -63,32 +60,15 @@ src
 *.json
 *.map
 
-# cordova
-hooks
-platforms
-plugins
-www
-
 # git
 .gitattributes
-.gitignore
-
-# gurumin
-gurumin
 
 # ide
 .idea
 .vscode
 
-# npm
-.npmignore
-
 # secret
 secret
-
-# lint config files
-.stylintsrc
-coffeelint.json
 
 # temp
 .temp
@@ -96,6 +76,3 @@ temp
 
 # history
 .history
-
-# storage
-storage
