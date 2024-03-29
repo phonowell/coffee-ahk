@@ -27,6 +27,7 @@ const main = async () => {
 
   const listCmd = listName.map(name => `pnpm i ${name}@latest`)
   await exec(listCmd)
+  await exec('pnpm update')
 }
 
 // export
