@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import kleur from 'kleur'
 import pad from 'lodash/pad'
 

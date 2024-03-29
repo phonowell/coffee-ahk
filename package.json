@@ -17,7 +17,7 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
-    "@swc/core": "1.4.11",
+    "@swc/core": "^1.4.11",
     "@types/cson": "^7.20.3",
     "@types/lodash": "^4.17.0",
     "@types/node": "^20.11.30",
@@ -59,10 +59,10 @@
   },
   "scripts": {
     "alice": "ts-node --swc task/alice",
-    "build": "npm run alice forbid && rollup -c --bundleConfigAsCjs",
+    "build": "pnpm alice forbid && rollup -c --bundleConfigAsCjs",
     "lint": "eslint src --ext ts,tsx --fix --max-warnings 0 --report-unused-disable-directives",
-    "test": "npm run alice test",
-    "watch": "npm run alice watch"
+    "test": "pnpm alice test",
+    "watch": "pnpm alice watch"
   },
   "sideEffects": false,
   "types": "./dist/index.d.ts",

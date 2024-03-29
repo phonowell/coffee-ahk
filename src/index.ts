@@ -58,7 +58,6 @@ const transpileAsFile = async (
   const result = start(content, option)
 
   if (option.verbose) {
-    // eslint-disable-next-line no-console
     if (option.displayCoffeescriptAst) console.log(result.raw)
     log(result.ast)
   }
@@ -72,7 +71,6 @@ const transpileAsText = (content: string, option: Option): string => {
   const result = start(content, option)
 
   if (option.verbose) {
-    // eslint-disable-next-line no-console
     if (option.displayCoffeescriptAst) console.log(result.raw)
     log(result.ast)
   }

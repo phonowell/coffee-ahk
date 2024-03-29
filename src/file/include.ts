@@ -1,5 +1,5 @@
 import cson from 'cson'
-import { glob, read, getDirname, toJson, toString } from 'fire-keeper'
+import { glob, read, getDirname, toJSON, toString } from 'fire-keeper'
 import iconv from 'iconv-lite'
 import trim from 'lodash/trim'
 
@@ -187,7 +187,7 @@ const transform = async () => {
         ].join('\n')
       }
       if (source.endsWith('.json') || source.endsWith('.yaml')) {
-        const jstring = cson.stringify(toJson(before))
+        const jstring = cson.stringify(toJSON(before))
         return `__${cacheSalt}_module_${data.id}__ = ${
           jstring.includes('\n') ? `\n${jstring}` : jstring
         }`
