@@ -1,9 +1,7 @@
 import cson from 'cson'
-import { glob, read, getDirname, toJSON, toString } from 'fire-keeper'
+import { getDirname, glob, read } from 'fire-keeper'
 import iconv from 'iconv-lite'
-import trim from 'lodash/trim'
-
-// variable
+import { trim } from 'radash'
 
 const cache = new Map<
   string,
@@ -18,25 +16,22 @@ const listExt = ['.ahk', '.coffee', '.json', '.yaml'] as const
 let cacheSalt = ''
 let idModule = 0
 
-// function
-
 const closureCoffee = (content: string) =>
   content
     .split(/\n/u)
-    .map(line => `  ${line}`)
+    .map((line) => `  ${line}`)
     .join('\n')
 
 const contentIncludes = (content: string, target: string) => {
   const listContent = content.split('\n')
-  for (const line of listContent) {
-    if (line.startsWith(target)) return true
-  }
+  for (const line of listContent) if (line.startsWith(target)) return true
+
   return false
 }
 
 const getSource = async (source: string, path: string) => {
   const isFile = path.startsWith('.')
-  const isInListExt = listExt.some(ext => path.endsWith(ext))
+  const isInListExt = listExt.some((ext) => path.endsWith(ext))
 
   const group = isInListExt
     ? [path]
@@ -77,7 +72,7 @@ const pickImport = async (source: string, line: string) => {
       line
         .replace('import ', '')
         .split(' from ')
-        .map(it => it.trim())
+        .map((it) => it.trim())
     : // import path
       ['', line.replace('import ', '').trim()]
 
@@ -96,12 +91,13 @@ const replaceAnchor = async (source: string, content: string) => {
 
     const [entry, path] = await pickImport(source, line)
 
-    if (!cache.has(path))
+    if (!cache.has(path)) {
       cache.set(path, {
         content: '',
         dependencies: [],
         id: entry ? ++idModule : 0,
       })
+    }
 
     const id = cache.get(path)?.id ?? 0
     if (!id) continue
@@ -118,7 +114,7 @@ const sortModules = (
   listReady: string[] = [],
 ): string[] => {
   const cache2 = [...cache]
-  cache2.forEach(item => {
+  cache2.forEach((item) => {
     const [source, { content, dependencies }] = item
     if (dependencies.length) return
     listContent.push(content)
@@ -126,11 +122,11 @@ const sortModules = (
     cache.delete(source)
   })
   if (!cache.size) return listContent
-  ;[...cache].forEach(item => {
+  ;[...cache].forEach((item) => {
     const [source, { dependencies }] = item
     cache.set(source, {
       ...item[1],
-      dependencies: dependencies.filter(it => !listReady.includes(it)),
+      dependencies: dependencies.filter((it) => !listReady.includes(it)),
     })
   })
   return sortModules(listContent, listReady)
@@ -151,7 +147,7 @@ const transform = async () => {
       if (content instanceof Buffer)
         return iconv.decode(content, 'utf8', { addBOM: true })
       if (typeof content === 'string') return content
-      return toString(content)
+      return content.toString()
     })()
 
     const dependencies = await (async () => {
@@ -171,11 +167,9 @@ const transform = async () => {
       ? await replaceAnchor(source, before2)
       : before2
 
-    // eslint-disable-next-line no-loop-func
     const after = (() => {
-      if (source.endsWith('.ahk')) {
-        return ['```', before, '```'].join('\n')
-      }
+      if (source.endsWith('.ahk')) return ['```', before, '```'].join('\n')
+
       if (source.endsWith('.coffee')) {
         if (!contentIncludes(before, 'export ')) {
           // return ['do ->', closureCoffee(before)].join('\n')
@@ -187,7 +181,7 @@ const transform = async () => {
         ].join('\n')
       }
       if (source.endsWith('.json') || source.endsWith('.yaml')) {
-        const jstring = cson.stringify(toJSON(before))
+        const jstring = cson.stringify(JSON.parse(before))
         return `__${cacheSalt}_module_${data.id}__ = ${
           jstring.includes('\n') ? `\n${jstring}` : jstring
         }`
@@ -201,10 +195,7 @@ const transform = async () => {
       dependencies,
     })
   }
-  if ([...cache].filter(item => !item[1].content).length) {
-    await transform()
-  }
+  if ([...cache].filter((item) => !item[1].content).length) await transform()
 }
 
-// export
 export default main

@@ -1,16 +1,13 @@
-import { Context } from '../types'
 import Item from '../models/Item'
-import Scope from '../models/Scope'
 
-// interface
+import type Scope from '../models/Scope'
+import type { Context } from '../types'
 
 type ItemLike = {
   type: Item['type']
   value: Item['value']
   scope: Scope['list']
 }
-
-// variables
 
 const changeIndex: ItemLike[] = [
   { type: 'native', value: 'global ', scope: [] },
@@ -33,7 +30,7 @@ const changeIndex: ItemLike[] = [
   { type: 'new-line', value: '0', scope: [] },
 ]
 const changeIndex2 = changeIndex.map(
-  it => new Item(it.type, it.value, it.scope),
+  (it) => new Item(it.type, it.value, it.scope),
 )
 
 const returnFunction: ItemLike[] = [
@@ -77,16 +74,16 @@ const returnFunction: ItemLike[] = [
   { type: 'new-line', value: '0', scope: [] },
 ]
 const returnFunction2 = returnFunction.map(
-  it => new Item(it.type, it.value, it.scope),
+  (it) => new Item(it.type, it.value, it.scope),
 )
-
-// functions
 
 const insert = (ctx: Context, flag: string, fn: Item[]) => {
   const { content } = ctx
 
   if (ctx.flag[flag]) {
-    const listItem: Item[] = fn.map(it => new Item(it.type, it.value, it.scope))
+    const listItem: Item[] = fn.map(
+      (it) => new Item(it.type, it.value, it.scope),
+    )
     if (!listItem.length) return
 
     listItem[1].value = listItem[1].value.replace(
@@ -104,5 +101,4 @@ const main = (ctx: Context) => {
   insert(ctx, 'isFunctionIncluded', returnFunction2)
 }
 
-// export
 export default main

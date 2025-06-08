@@ -1,34 +1,98 @@
-import { exec } from 'fire-keeper'
+import { echo, exec, read } from 'fire-keeper'
 
-// interface
-
-type Result = {
-  current: string
-  latest: string
-  wanted: string
-  isDeprecated: boolean
-  dependencyType: 'dependencies' | 'devDependencies'
+type PackageJson = {
+  dependencies?: Record<string, string>
+  devDependencies?: Record<string, string>
 }
 
-// function
+const DEPS_TO_INSTALL: string[] = ['clsx']
 
-const main = async () => {
-  const [, raw] = await exec('pnpm outdated --json')
-  const result = JSON.parse(raw) as Record<string, Result>
+const DEV_DEPS_TO_INSTALL: string[] = [
+  'eslint-plugin-unused-imports',
+  'radash',
+  'ts-morph',
+  'unplugin-auto-import',
+  'web-vitals',
+]
 
-  const listName = Object.entries(result)
-    .filter(it => {
-      const [, data] = it
-      if (data.isDeprecated) return false
+const DEPS_TO_REMOVE: string[] = ['classnames', 'moment']
+
+const getDeps = async () => {
+  const pkg = await read<PackageJson>('./package.json')
+  if (!pkg) return []
+
+  const deps = [
+    ...Object.entries(pkg.dependencies ?? {}),
+    ...Object.entries(pkg.devDependencies ?? {}),
+  ]
+
+  return deps
+}
+
+const manageDeps = async () => {
+  const deps = await getDeps()
+
+  const depsToInstall = DEPS_TO_INSTALL.filter(
+    (name) => !deps.some(([depName]) => depName === name),
+  )
+
+  if (depsToInstall.length) {
+    const list = depsToInstall.join(' ')
+    await exec(`pnpm add ${list}`)
+  }
+
+  const devDepsToInstall = DEV_DEPS_TO_INSTALL.filter(
+    (name) => !deps.some(([depName]) => depName === name),
+  )
+
+  if (devDepsToInstall.length) {
+    const list = devDepsToInstall.join(' ')
+    await exec(`pnpm add -D ${list}`)
+  }
+
+  const depsToRemove = DEPS_TO_REMOVE.filter((name) =>
+    deps.some(([depName]) => depName === name),
+  )
+
+  if (depsToRemove.length) {
+    const list = depsToRemove.join(' ')
+    await exec(`pnpm remove ${list}`)
+  }
+}
+
+const updateDeps = async () => {
+  const deps = await getDeps()
+
+  const lockedDeps = deps.filter(
+    ([, version]) => !Number.isNaN(Number(version[0])),
+  )
+  const unlockedDeps = deps.filter(([, version]) =>
+    Number.isNaN(Number(version[0])),
+  )
+
+  const depsToUpdate = unlockedDeps
+    .filter(([name]) => {
+      if (name.endsWith('react') || name.endsWith('react-dom')) return false
       return true
     })
-    .map(it => it[0])
-  if (!listName.length) return
+    .map(([name]) => name)
 
-  const listCmd = listName.map(name => `pnpm i ${name}@latest`)
-  await exec(listCmd)
-  await exec('pnpm update')
+  if (depsToUpdate.length) {
+    const list = depsToUpdate.map((name) => `${name}@latest`).join(' ')
+    await exec(`pnpm up ${list}`)
+  }
+
+  echo(
+    [
+      'These dependencies have been locked:',
+      ...lockedDeps.map((it) => `'${it.join('@')}'`),
+    ].join('\n'),
+  )
 }
 
-// export
+const main = async () => {
+  await manageDeps()
+  await updateDeps()
+}
+
 export default main

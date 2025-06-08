@@ -1,8 +1,4 @@
-import repeat from 'lodash/repeat'
-
-import { Context } from '../types'
-
-// function
+import type { Context } from '../types'
 
 const main = (ctx: Context): boolean => {
   const { content, type, value } = ctx
@@ -17,7 +13,7 @@ const main = (ctx: Context): boolean => {
 
     if (value.includes('e')) {
       const [pre, sub] = value2.split('e')
-      value2 = `${pre}${repeat('0', parseInt(sub, 10))}`
+      value2 = `${pre}${'0'.repeat(parseInt(sub, 10))}`
     }
 
     content.push('number', value2)
@@ -27,5 +23,4 @@ const main = (ctx: Context): boolean => {
   return false
 }
 
-// export
 export default main

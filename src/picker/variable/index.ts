@@ -1,10 +1,8 @@
-import { Context } from '../../types'
-
 import boostGlobal from './boost-global'
 import translateError from './translate-error'
 import validate from './validate'
 
-// function
+import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
   validate(ctx)
@@ -16,5 +14,4 @@ const main = (ctx: Context) => {
   translateError(ctx)
 }
 
-// export
 export default main

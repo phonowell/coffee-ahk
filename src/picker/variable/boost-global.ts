@@ -1,7 +1,6 @@
-import { Context } from '../../types'
 import Item from '../../models/Item'
 
-// function
+import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
   const { content } = ctx
@@ -48,5 +47,4 @@ const main = (ctx: Context) => {
   ctx.cache.global = cache
 }
 
-// export
 export default main

@@ -1,9 +1,8 @@
 import kleur from 'kleur'
-import pad from 'lodash/pad'
 
-import Item from '../models/Item'
+import pad from '../utils/pad'
 
-// function
+import type Item from '../models/Item'
 
 const log = (message: string | number) => {
   const msg = typeof message !== 'string' ? message.toString() : message
@@ -25,5 +24,4 @@ const main = (ast: Item[]) => {
   log('eof')
 }
 
-// export
 export default main

@@ -1,9 +1,8 @@
-import { Context } from '../../types'
 import Item from '../../models/Item'
 import at from '../../utils/at'
-import Scope from '../../models/Scope'
 
-// interface
+import type Scope from '../../models/Scope'
+import type { Context } from '../../types'
 
 type Option = {
   countBracket: number
@@ -13,8 +12,6 @@ type Option = {
   result: Item[]
   scope: Scope
 }
-
-// function
 
 const isUpper = (ipt: string) => !ipt.startsWith(ipt[0].toLowerCase())
 
@@ -41,7 +38,7 @@ const main = (ctx: Context) => {
       result: [],
       scope: prev.scope,
     })
-    const list = listIt.filter(it => it.is('identifier') || it.is('property'))
+    const list = listIt.filter((it) => it.is('identifier') || it.is('property'))
     const last = list[list.length - 1]
     if (last.value.startsWith('__')) return
     if (isUpper(last.value)) return
@@ -55,18 +52,20 @@ const main = (ctx: Context) => {
   let count = 0
 
   content.list.forEach((item, i) => {
-    if (listStart.includes(i))
+    if (listStart.includes(i)) {
       listContent.push(
         new Item('identifier', token, item.scope),
         new Item('edge', 'call-start', [...item.scope.list, 'call']),
       )
+    }
     listContent.push(item)
-    if (listEnd.includes(i))
+    if (listEnd.includes(i)) {
       listContent.push(
         new Item('sign', ',', item.scope),
         new Item('string', `"#rf/${ctx.option.salt}/${++count}"`, item.scope),
         new Item('edge', 'call-end', [...item.scope.list, 'call']),
       )
+    }
   })
 
   content.reload(listContent)
@@ -102,5 +101,4 @@ const pickIt = (option: Option): [number, Item[]] => {
   })
 }
 
-// export
 export default main

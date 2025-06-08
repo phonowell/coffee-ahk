@@ -1,8 +1,4 @@
-// interface
-
-import { Context } from '../types'
-
-// function
+import type { Context } from '../types'
 
 const main = (ctx: Context): boolean => {
   const { content, type, value } = ctx
@@ -15,5 +11,4 @@ const main = (ctx: Context): boolean => {
   return false
 }
 
-// export
 export default main

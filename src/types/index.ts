@@ -1,8 +1,7 @@
-import cs from 'coffeescript'
-
-import Scope from '../models/Scope'
-import { OptionPartial } from '../index'
-import Content from '../models/Content'
+import type { OptionPartial } from '../index'
+import type Content from '../models/Content'
+import type Scope from '../models/Scope'
+import type cs from 'coffeescript'
 
 type Cache = {
   global: Set<string>

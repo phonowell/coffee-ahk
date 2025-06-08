@@ -1,16 +1,13 @@
-import Scope from '../../models/Scope'
-import { Context } from '../../types'
 import Item from '../../models/Item'
+import Scope from '../../models/Scope'
 
-// interface
+import type { Context } from '../../types'
 
 type Flag = {
   i: number
   scope: Scope
   isObjectWithoutBrackets: boolean
 }
-
-// functions
 
 const findFnStart = (ctx: Context, i: number): [number, Scope] => {
   const { content } = ctx
@@ -47,10 +44,11 @@ const main = (ctx: Context) => {
     listContent.push(item)
 
     if (i === flag.i) {
-      if (flag.isObjectWithoutBrackets)
+      if (flag.isObjectWithoutBrackets) {
         listContent.push(
           new Item('new-line', flag.scope.length.toString(), flag.scope),
         )
+      }
       listContent.push(new Item('statement', 'return', flag.scope))
       return
     }
@@ -67,7 +65,7 @@ const main = (ctx: Context) => {
 
     const isObjectWithoutBrackets = list[1].is('bracket', '{')
     if (
-      list.filter(it => it.is('new-line') && it.scope.isEquals(scpStart))
+      list.filter((it) => it.is('new-line') && it.scope.isEquals(scpStart))
         .length > (isObjectWithoutBrackets ? 1 : 2)
     )
       return
@@ -99,15 +97,15 @@ const pickItems = (
 
   const isEnded = item.is('edge', 'block-end') && item.scope.isEquals(scope)
 
-  if (!isEnded)
+  if (!isEnded) {
     return pickItems(ctx, {
       i: i + 1,
       list,
       scope,
     })
+  }
 
   return list
 }
 
-// export
 export default main

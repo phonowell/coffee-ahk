@@ -1,5 +1,3 @@
-// function
-
 /**
  * Runs the provided function and returns its result.
  * @template T - The return type of the provided function.
@@ -8,5 +6,4 @@
  */
 const run = <T>(fn: (...args: unknown[]) => T): T => fn()
 
-// export
 export default run

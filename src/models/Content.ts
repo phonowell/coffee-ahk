@@ -1,9 +1,8 @@
 import at from '../utils/at'
 
 import Item from './Item'
-import Scope from './Scope'
 
-// class
+import type Scope from './Scope'
 
 /**
  * A collection of items of the AST.
@@ -90,7 +89,7 @@ class Content {
    */
   reload(list: Item[] = this.#list): this {
     const listResult: Item[] = []
-    list.forEach(it => {
+    list.forEach((it) => {
       if (it.is('void')) return
       listResult.push(it)
     })
@@ -119,5 +118,4 @@ class Content {
   }
 }
 
-// export
 export default Content

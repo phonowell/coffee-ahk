@@ -2,8 +2,6 @@ import { glob } from 'fire-keeper'
 
 import c2a from '../src'
 
-// function
-
 const main = async () => {
   const listSource = await glob('./script/segment/*.coffee')
   for (const source of listSource) {
@@ -17,5 +15,4 @@ const main = async () => {
   }
 }
 
-// export
 export default main

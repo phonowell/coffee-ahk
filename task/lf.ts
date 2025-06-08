@@ -1,14 +1,12 @@
 import { glob, read, write } from 'fire-keeper'
 
-// function
-
 const main = async () => {
   const listSource = await glob([
     './*.js',
     './*.ts',
-    './source/**/*.ts',
-    './source/**/*.js',
-    './source/**/*.tsx',
+    './src/**/*.js',
+    './src/**/*.ts',
+    './src/**/*.tsx',
     './task/*.ts',
   ])
   for (const source of listSource) {
@@ -20,5 +18,4 @@ const main = async () => {
   }
 }
 
-// export
 export default main

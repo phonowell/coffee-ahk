@@ -3,8 +3,6 @@ import { argv, echo, glob, read, write } from 'fire-keeper'
 import c2aViaJs from '../dist'
 import c2aViaTs from '../src'
 
-// function
-
 const checkVersion = async () => {
   const pkg = await read<{ version: string }>('./package.json')
   if (!pkg) throw new Error('package.json not found')
@@ -84,5 +82,4 @@ const pickTarget = () => {
   return a._[1] || a.target || ''
 }
 
-// export
 export default main

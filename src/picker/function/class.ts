@@ -1,8 +1,7 @@
-import { Context } from '../../types'
 import Item from '../../models/Item'
 import at from '../../utils/at'
 
-// functions
+import type { Context } from '../../types'
 
 const appendBind = (ctx: Context) => {
   const { content } = ctx
@@ -105,11 +104,10 @@ const prependThis = (ctx: Context) => {
 
 const renameConstructor = (ctx: Context) => {
   const { content } = ctx
-  content.list.forEach(it => {
+  content.list.forEach((it) => {
     if (!it.is('property', 'constructor')) return
     it.value = '__New'
   })
 }
 
-// export
 export default main

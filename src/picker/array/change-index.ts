@@ -1,19 +1,14 @@
-import { Context } from '../../types'
 import Item from '../../models/Item'
 import Scope from '../../models/Scope'
 
-// interface
+import type { Context } from '../../types'
 
 type Range = [number, number]
-
-// function
 
 const main = (ctx: Context) => {
   const { content } = ctx
   const token = `__ci_${ctx.option.salt}__`
   let countIgnore = 0
-
-  // function
 
   const pickItem = (
     item: Item,
@@ -123,5 +118,4 @@ const main = (ctx: Context) => {
   }
 }
 
-// export
 export default main

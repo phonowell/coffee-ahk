@@ -1,7 +1,5 @@
 import include from './include'
 
-// function
-
 const main = async (source: string, salt: string): Promise<string> => {
   let src = source
 
@@ -14,5 +12,4 @@ const main = async (source: string, salt: string): Promise<string> => {
   return content.replace(/\r/g, '')
 }
 
-// export
 export default main

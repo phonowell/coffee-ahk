@@ -1,10 +1,8 @@
-import iconv from 'iconv-lite'
 import { getName, write } from 'fire-keeper'
+import iconv from 'iconv-lite'
 
-import { OptionPartial } from '..'
-import Item from '../models/Item'
-
-// function
+import type { OptionPartial } from '..'
+import type Item from '../models/Item'
 
 const main = async (
   source: string,
@@ -28,5 +26,4 @@ const main = async (
   if (option.ast) await write(`${dirname}/${basename}.ast.json`, data.ast)
 }
 
-// export
 export default main

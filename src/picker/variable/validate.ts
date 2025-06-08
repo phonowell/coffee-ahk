@@ -1,11 +1,8 @@
 import data from '../../../data/forbidden.json'
-import { Context } from '../../types'
 
-// variable
+import type { Context } from '../../types'
 
-const listForbidden = data.map(item => item.toLowerCase())
-
-// function
+const listForbidden = data.map((item) => item.toLowerCase())
 
 const main = (ctx: Context) => {
   const { content } = ctx
@@ -15,12 +12,12 @@ const main = (ctx: Context) => {
     const next = content.at(i + 1)
     if (!next?.is('sign', '=')) return
     const v = item.value.toLowerCase()
-    if (v.startsWith('a_') || listForbidden.includes(v))
+    if (v.startsWith('a_') || listForbidden.includes(v)) {
       throw new Error(
         `ahk/forbidden: variable name '${item.value}' is not allowed`,
       )
+    }
   })
 }
 
-// export
 export default main

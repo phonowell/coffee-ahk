@@ -1,8 +1,4 @@
-// interface
-
-import { Context } from '../types'
-
-// variable
+import type { Context } from '../types'
 
 const listForbidden = [
   '..',
@@ -14,8 +10,6 @@ const listForbidden = [
   'func_exist',
   'import',
 ]
-
-// function
 
 const main = (ctx: Context) => {
   const { type } = ctx
@@ -29,5 +23,4 @@ const main = (ctx: Context) => {
   return false
 }
 
-// export
 export default main

@@ -1,12 +1,9 @@
-import { Context } from '../../types'
 import Item from '../../models/Item'
 
-// variable
+import type { Context } from '../../types'
 
 const cacheContext = new Map<string, boolean>()
 const cacheParameter = new Set<string>()
-
-// function
 
 const findFunctionStart = (ctx: Context, i: number): number => {
   const { content } = ctx
@@ -47,7 +44,7 @@ const main = (ctx: Context) => {
           ['sign', '='],
           ['identifier', name],
           ['sign', ','],
-        ].map(args => new Item(args[0] as Item['type'], args[1], item.scope)),
+        ].map((args) => new Item(args[0] as Item['type'], args[1], item.scope)),
       )
     })
   })
@@ -125,5 +122,4 @@ const removeTrailingComma = (ctx: Context) => {
   content.reload(listContent)
 }
 
-// export
 export default main

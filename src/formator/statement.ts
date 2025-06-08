@@ -1,8 +1,4 @@
-// interface
-
-import { Context } from '../types'
-
-// function
+import type { Context } from '../types'
 
 const main = (ctx: Context): boolean => {
   const { content, type, value } = ctx
@@ -22,11 +18,12 @@ const main = (ctx: Context): boolean => {
     return true
   }
 
-  if (type === 'statement')
+  if (type === 'statement') {
     if (value === 'break' || value === 'continue') {
       content.push('statement', value)
       return true
     }
+  }
 
   if (type === 'unary' && value === 'new') {
     content.push('statement', 'new')
@@ -36,5 +33,4 @@ const main = (ctx: Context): boolean => {
   return false
 }
 
-// export
 export default main

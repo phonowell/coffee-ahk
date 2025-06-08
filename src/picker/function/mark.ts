@@ -1,6 +1,4 @@
-import { Context } from '../../types'
-
-// function
+import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
   const { content } = ctx
@@ -15,5 +13,4 @@ const main = (ctx: Context) => {
   })
 }
 
-// export
 export default main

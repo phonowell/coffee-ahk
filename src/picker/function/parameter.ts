@@ -1,6 +1,4 @@
-import { Context } from '../../types'
-
-// function
+import type { Context } from '../../types'
 
 const main = (ctx: Context, listFn: Set<string>) => {
   // replace const as parameter =
@@ -22,5 +20,4 @@ const replaceFn = (ctx: Context, listFn: Set<string>) => {
   })
 }
 
-// export
 export default main

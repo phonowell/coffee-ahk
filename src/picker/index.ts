@@ -1,5 +1,3 @@
-import { Context } from '../types'
-
 import partArray from './array'
 import partBuildIn from './build-in'
 import partClass from './class'
@@ -9,9 +7,7 @@ import partNewLine from './new-line'
 import partObject from './object'
 import partVariable from './variable'
 
-// interface
-
-// variable
+import type { Context } from '../types'
 
 const map: Record<string, (ctx: Context) => void> = {
   array: partArray,
@@ -21,8 +17,6 @@ const map: Record<string, (ctx: Context) => void> = {
   variable: partVariable,
 } as const
 
-// function
-
 const main = (ctx: Context) => {
   for (const key of Object.keys(map)) map[key](ctx)
 
@@ -31,5 +25,4 @@ const main = (ctx: Context) => {
   partFunction(ctx)
 }
 
-// export
 export default main

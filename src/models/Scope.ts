@@ -1,18 +1,14 @@
 import at from '../utils/at'
 
-// interface
-
 /**
  * KeyScope type
  */
-type KeyScope = (typeof listRule)[number]
-
-// variable
+type KeyScope = (typeof _listRule)[number]
 
 /**
  * listRule array
  */
-const listRule = [
+const _listRule = [
   '',
   'array',
   'call',
@@ -30,8 +26,6 @@ const listRule = [
   'try',
   'while',
 ] as const
-
-// function
 
 /**
  * Scope class
@@ -163,5 +157,4 @@ class Scope {
   }
 }
 
-// export
 export default Scope

@@ -1,8 +1,7 @@
-import { Context } from '../types'
 import Item from '../models/Item'
-import Scope from '../models/Scope'
 
-// functions
+import type Scope from '../models/Scope'
+import type { Context } from '../types'
 
 const arrow = (ctx: Context, type: string) => {
   const { content, scope } = ctx
@@ -109,5 +108,4 @@ const main = (ctx: Context) => {
   return false
 }
 
-// export
 export default main

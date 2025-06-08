@@ -1,7 +1,5 @@
-import { Context } from '../../types'
-import Item from '../../models/Item'
-
-// function
+import type Item from '../../models/Item'
+import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
   const { content } = ctx
@@ -25,5 +23,4 @@ const main = (ctx: Context) => {
   content.reload(listContent)
 }
 
-// export
 export default main

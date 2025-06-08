@@ -1,7 +1,6 @@
-import { Context } from '../types'
 import Item from '../models/Item'
 
-// function
+import type { Context } from '../types'
 
 const deconstruct = (ctx: Context) => {
   const { content } = ctx
@@ -112,5 +111,4 @@ const main = (ctx: Context) => {
   deconstruct2(ctx)
 }
 
-// export
 export default main

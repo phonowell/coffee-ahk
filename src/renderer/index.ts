@@ -1,17 +1,12 @@
-import repeat from 'lodash/repeat'
-import trim from 'lodash/trim'
+import { trim } from 'radash'
 
-import { Context as Context2 } from '../types'
-import Item from '../models/Item'
-
-// interface
+import type Item from '../models/Item'
+import type { Context as Context2 } from '../types'
 
 type Context = Context2 & {
   i: number
   it: Item
 }
-
-// variable
 
 const mapEdge: Record<string, string> = {
   'array-end': ']',
@@ -31,8 +26,6 @@ const mapEdge: Record<string, string> = {
 } as const
 
 let cacheComment: string[] = []
-
-// function
 
 const commaLike2 = (ctx: Context) => {
   const { i, it } = ctx
@@ -56,7 +49,6 @@ const edge2 = (ctx: Context) => {
   }
 
   if (value === 'call-start') {
-    // function name
     const prev = content.at(i - 1)
     if (!prev) throw new Error('Unexpected error: renderer/index/1')
 
@@ -102,7 +94,7 @@ const negative2 = (ctx: Context): string => {
 const newLine2 = (ctx: Context): string => {
   let n = parseInt(ctx.it.value, 10)
   if (!(n >= 0)) n = 0
-  return `\n${repeat(' ', n * 2)}`
+  return `\n${' '.repeat(n * 2)}`
 }
 
 const sign2 = (ctx: Context): string => {
@@ -202,5 +194,4 @@ const mapMethod: Record<string, string | ((ctx: Context) => string)> = {
   while: 'while ',
 } as const
 
-// export
 export default main
