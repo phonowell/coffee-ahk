@@ -1,12 +1,8 @@
 import start from './entry'
 import log from './logger'
 
-// interface
-
 type Option = typeof optionDefault
 export type OptionPartial = Partial<Option>
-
-// variable
 
 const optionDefault = {
   asText: false,
@@ -20,8 +16,6 @@ const optionDefault = {
   useBuiltIns: true,
   verbose: false,
 }
-
-// function
 
 const generatedSalt = (): string =>
   Math.random().toString(32).split('.')[1].padStart(11, '0')
@@ -47,7 +41,7 @@ const transpileAsFile = async (
 
   const listSource = [source, `${source}.coffee`, `${source}/index.coffee`]
 
-  const [source2] = (await glob(listSource)).filter(item =>
+  const [source2] = (await glob(listSource)).filter((item) =>
     item.endsWith('.coffee'),
   )
   if (!source2) throw new Error(`invalid source '${source}'`)
@@ -78,5 +72,4 @@ const transpileAsText = (content: string, option: Option): string => {
   return result.content
 }
 
-// export
 export default main

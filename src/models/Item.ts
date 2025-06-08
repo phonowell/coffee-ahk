@@ -1,8 +1,6 @@
 import Scope from './Scope'
 
-// variable
-
-const listType = [
+const _listType = [
   '++',
   '--',
   '.',
@@ -36,8 +34,6 @@ const listType = [
   'while',
 ] as const
 
-// class
-
 /**
  * An item of the AST.
  */
@@ -58,7 +54,7 @@ class Item {
    * The type of the item.
    * @type {string}
    */
-  type: (typeof listType)[number]
+  type: (typeof _listType)[number]
 
   /**
    * The value of the item.
@@ -109,12 +105,11 @@ class Item {
    * @param {string} [value] - The value to check.
    * @returns {boolean} Whether the item is of the specified type and value.
    */
-  is(type: (typeof listType)[number], value?: string): boolean {
+  is(type: (typeof _listType)[number], value?: string): boolean {
     if (type !== this.type) return false
     if (typeof value === 'undefined') return true
     return value === this.value
   }
 }
 
-// export
 export default Item

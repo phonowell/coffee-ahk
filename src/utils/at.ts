@@ -1,4 +1,4 @@
-// functions
+s
 
 const asArray = <T>(input: T[], index: number) =>
   input[index < 0 ? input.length + index : index] as T | undefined
@@ -21,5 +21,4 @@ const at = <T>(
   return asObject(input, key as string)
 }
 
-// export
 export default at

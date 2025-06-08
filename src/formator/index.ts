@@ -1,5 +1,3 @@
-import { Context } from '../types'
-
 import partAlias from './alias'
 import partArray from './array'
 import partAwait from './await'
@@ -29,9 +27,7 @@ import partSwitch from './switch'
 import partTry from './try'
 import partWhile from './while'
 
-// interface
-
-// variable
+import type { Context } from '../types'
 
 const map: Record<string, (ctx: Context) => boolean> = {
   'new-line': partNewLine,
@@ -64,8 +60,6 @@ const map: Record<string, (ctx: Context) => boolean> = {
   while: partWhile,
 } as const
 
-// function
-
 const main = (ctx: Context) => {
   for (const key of Object.keys(map)) {
     if (key === 'comment') continue
@@ -75,5 +69,4 @@ const main = (ctx: Context) => {
   map.comment(ctx)
 }
 
-// export
 export default main

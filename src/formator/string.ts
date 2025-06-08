@@ -1,6 +1,4 @@
-import { Context } from '../types'
-
-// function
+import type { Context } from '../types'
 
 const main = (ctx: Context): boolean => {
   const { content, token, type, value } = ctx
@@ -45,5 +43,4 @@ const transAlias = (input: string, wrapper: string): string => {
   return result
 }
 
-// export
 export default main

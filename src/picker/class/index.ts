@@ -1,9 +1,7 @@
-import { Context } from '../../types'
-
 import count from './count'
 import validate from './validate'
 
-// function
+import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
   // list all classes
@@ -13,5 +11,4 @@ const main = (ctx: Context) => {
   // console.log(setClass)
 }
 
-// export
 export default main

@@ -1,17 +1,13 @@
-import { sortBy } from 'lodash'
-
-import Scope from '../../models/Scope'
-import { Context } from '../../types'
 import Item from '../../models/Item'
+import sortBy from '../../utils/sortBy'
 
-// variables
+import type Scope from '../../models/Scope'
+import type { Context } from '../../types'
 
 const listCache: [number, Item[]][] = []
 const listContent: Item[] = []
 const listParam: Item[][] = []
 let countIgnore = 0
-
-// functions
 
 const cache = (ctx: Context, item: Item, i: number) => {
   const scp = [item.scope.slice(0, item.scope.length - 1)]
@@ -82,7 +78,10 @@ const main = (ctx: Context) => {
   })
 
   // insert
-  for (const [index, listItem] of sortBy(listCache, item => item[0]).reverse())
+  for (const [index, listItem] of sortBy(
+    listCache,
+    (item) => item[0],
+  ).reverse())
     listContent.splice(index, 0, ...listItem)
 
   content.reload(listContent)
@@ -132,5 +131,4 @@ const pickItem = (
   return pickItem(ctx, item, i + 1, listItem)
 }
 
-// export
 export default main

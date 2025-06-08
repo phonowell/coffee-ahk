@@ -1,9 +1,7 @@
-import { Context } from '../../types'
-
 import changeIndex from './change-index'
 import deconstruct from './deconstruct'
 
-// function
+import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
   // list[0] -> list[1]
@@ -14,5 +12,4 @@ const main = (ctx: Context) => {
   deconstruct(ctx)
 }
 
-// export
 export default main

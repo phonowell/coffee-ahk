@@ -1,8 +1,7 @@
-import Scope from '../../models/Scope'
-import { Context } from '../../types'
 import Item from '../../models/Item'
 
-// function
+import type Scope from '../../models/Scope'
+import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
   const { content } = ctx
@@ -10,7 +9,7 @@ const main = (ctx: Context) => {
   let flag = false
 
   const listContent: Item[] = []
-  content.list.forEach(item => {
+  content.list.forEach((item) => {
     if (
       flag &&
       (item.is('new-line') ||
@@ -43,5 +42,4 @@ const main = (ctx: Context) => {
   content.reload(listContent)
 }
 
-// export
 export default main

@@ -1,8 +1,7 @@
-import at from '../../utils/at'
-import { Context } from '../../types'
 import Item from '../../models/Item'
+import at from '../../utils/at'
 
-// function
+import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
   const { content } = ctx
@@ -47,14 +46,17 @@ const main = (ctx: Context) => {
             // \n xxx = token[n]
             ...[
               ['new-line', indent.toString()],
-              ...listPre[listPre.length - j - 1].map(it => [it.type, it.value]),
+              ...listPre[listPre.length - j - 1].map((it) => [
+                it.type,
+                it.value,
+              ]),
               ['sign', '='],
               ['identifier', token],
               ['edge', 'index-start'],
               ['number', (j + 1).toString()],
               ['edge', 'index-end'],
             ].map(
-              args => new Item(args[0] as Item['type'], args[1], item.scope),
+              (args) => new Item(args[0] as Item['type'], args[1], item.scope),
             ),
           ]),
       )
@@ -93,5 +95,4 @@ const main = (ctx: Context) => {
   content.reload(listContent)
 }
 
-// export
 export default main

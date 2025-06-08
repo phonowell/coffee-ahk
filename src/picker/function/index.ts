@@ -1,5 +1,3 @@
-import { Context } from '../../types'
-
 import pickAnonymous from './anonymous'
 import partAwait from './await'
 import partClass from './class'
@@ -12,7 +10,7 @@ import mark from './mark'
 import transParam from './parameter'
 import returnFunction from './return-function'
 
-// function
+import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
   partAwait(ctx)
@@ -47,5 +45,4 @@ const main = (ctx: Context) => {
   returnFunction(ctx)
 }
 
-// export
 export default main

@@ -1,8 +1,4 @@
-// interface
-
-import { Context } from '../types'
-
-// function
+import type { Context } from '../types'
 
 const main = (ctx: Context) => {
   const { content, scope, type } = ctx
@@ -22,5 +18,4 @@ const main = (ctx: Context) => {
   return false
 }
 
-// export
 export default main

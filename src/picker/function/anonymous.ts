@@ -1,10 +1,9 @@
-import { findLastIndex, findIndex } from 'lodash'
-
-import { Context } from '../../types'
 import Item from '../../models/Item'
-import Scope from '../../models/Scope'
+import findIndex from '../../utils/findIndex'
+import findLastIndex from '../../utils/findLastIndex'
 
-// functions
+import type Scope from '../../models/Scope'
+import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
   next(ctx)
@@ -25,7 +24,7 @@ const next = (ctx: Context, count = 1) => {
   if (!it) throw new Error('Unexpected error: picker/function/anonymous/1')
   it.value = `${ctx.option.salt}_${count}`
 
-  pickItem(ctx, count, i, [...it.scope.list, 'function']).forEach(item => {
+  pickItem(ctx, count, i, [...it.scope.list, 'function']).forEach((item) => {
     if (item.type === 'void') return
     content.push(item)
   })
@@ -72,13 +71,14 @@ const pickItem = (
       ].value,
       10,
     ) - 1
-  if (diff > 0)
-    listResult.forEach(it2 => {
+  if (diff > 0) {
+    listResult.forEach((it2) => {
       if (it2.type !== 'new-line') return
       let value = parseInt(it2.value, 10) - diff
       if (!(value >= 0)) value = 0
       it2.value = value.toString()
     })
+  }
 
   return listResult
 }
@@ -87,7 +87,7 @@ const transFunc = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
-  content.list.forEach(item => {
+  content.list.forEach((item) => {
     if (
       !(
         item.type === 'native' &&
@@ -116,5 +116,4 @@ const transFunc = (ctx: Context) => {
   content.reload(listContent)
 }
 
-// export
 export default main

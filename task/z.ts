@@ -1,7 +1,5 @@
 import c2a from '../src'
 
-// function
-
 const main = async () => {
   await c2a('./script/z', {
     // displayCoffeescriptAst: true,
@@ -12,5 +10,4 @@ const main = async () => {
   })
 }
 
-// export
 export default main

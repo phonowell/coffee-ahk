@@ -2,20 +2,17 @@ import { compile } from 'coffeescript'
 
 import transpile from '../formator'
 import Content from '../models/Content'
+import Scope from '../models/Scope'
 import pick from '../picker'
 import render from '../renderer'
-import { Context } from '../types'
-import Scope from '../models/Scope'
 
-// interface
+import type { Context } from '../types'
 
 type Result = {
   ast: Context['content']['list']
   content: string
   raw: Context['token'][]
 }
-
-// function
 
 const main = (cont: string, option: Context['option']): Result => {
   const ast = compile(cont, {
@@ -60,5 +57,4 @@ const main = (cont: string, option: Context['option']): Result => {
   }
 }
 
-// export
 export default main
