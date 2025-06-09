@@ -1,6 +1,6 @@
-import at from '../utils/at'
+import at from '../utils/at.js'
 
-import Item from './Item'
+import Item from './Item.js'
 
 import type Scope from './Scope'
 

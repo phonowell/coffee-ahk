@@ -1,5 +1,8 @@
-import start from './entry'
-import log from './logger'
+import { glob } from 'fire-keeper'
+
+import start from './entry/index.js'
+import { read, write } from './file/index.js'
+import log from './logger/index.js'
 
 type Option = typeof optionDefault
 export type OptionPartial = Partial<Option>
@@ -37,16 +40,15 @@ const transpileAsFile = async (
   source: string,
   option: Option,
 ): Promise<string> => {
-  const glob = (await import('fire-keeper/dist/glob')).default
-
-  const listSource = [source, `${source}.coffee`, `${source}/index.coffee`]
+  const listSource = source.endsWith('.coffee')
+    ? [source]
+    : [source, `${source}.coffee`, `${source}/index.coffee`]
 
   const [source2] = (await glob(listSource)).filter((item) =>
     item.endsWith('.coffee'),
   )
   if (!source2) throw new Error(`invalid source '${source}'`)
 
-  const { read, write } = await import('./file')
   const content = await read(source2, option.salt)
 
   const result = start(content, option)

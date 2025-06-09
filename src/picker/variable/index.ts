@@ -1,6 +1,6 @@
-import boostGlobal from './boost-global'
-import translateError from './translate-error'
-import validate from './validate'
+import boostGlobal from './boost-global.js'
+import translateError from './translate-error.js'
+import validate from './validate.js'
 
 import type { Context } from '../../types'
 

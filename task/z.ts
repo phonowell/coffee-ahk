@@ -1,4 +1,4 @@
-import c2a from '../src'
+import c2a from '../src/index.js'
 
 const main = async () => {
   await c2a('./script/z', {

@@ -1,7 +1,7 @@
 import { argv, echo, glob, read, write } from 'fire-keeper'
 
-import c2aViaJs from '../dist'
-import c2aViaTs from '../src'
+import c2aViaJs from '../dist/index.js'
+import c2aViaTs from '../src/index.js'
 
 const checkVersion = async () => {
   const pkg = await read<{ version: string }>('./package.json')
@@ -35,12 +35,13 @@ const compile2 = async (source: string) =>
     .trim()
 
 const main = async () => {
-  const target = pickTarget()
-  const listSource = await glob(
-    `./script/test/**/${
-      target && target !== 'overwrite' ? target : '*'
-    }.coffee`,
-  )
+  const target = await pickTarget()
+
+  const pattern = `./script/test/**/${
+    !!target && target !== 'overwrite' ? target : '*'
+  }.coffee`
+
+  const listSource = await glob(pattern)
 
   for (const source of listSource) {
     const target2 = source.replace('.coffee', '.ahk')
@@ -51,7 +52,7 @@ const main = async () => {
       continue
     }
 
-    const contentTarget = ((await read(target2)) || '')
+    const contentTarget = ((await read(target2)) ?? '')
       .toString()
       .replace(/\r/g, '')
       .trim()
@@ -77,9 +78,9 @@ const main = async () => {
   await checkVersion()
 }
 
-const pickTarget = () => {
-  const a = argv()
-  return a._[1] || a.target || ''
+const pickTarget = async () => {
+  const a = await argv()
+  return a._[1] ?? a.target
 }
 
 export default main

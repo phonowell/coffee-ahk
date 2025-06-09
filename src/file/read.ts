@@ -1,4 +1,4 @@
-import include from './include'
+import include from './include.js'
 
 const main = async (source: string, salt: string): Promise<string> => {
   let src = source

@@ -1,10 +1,10 @@
 import { compile } from 'coffeescript'
 
-import transpile from '../formator'
-import Content from '../models/Content'
-import Scope from '../models/Scope'
-import pick from '../picker'
-import render from '../renderer'
+import transpile from '../formator/index.js'
+import Content from '../models/Content.js'
+import Scope from '../models/Scope.js'
+import pick from '../picker/index.js'
+import render from '../renderer/index.js'
 
 import type { Context } from '../types'
 

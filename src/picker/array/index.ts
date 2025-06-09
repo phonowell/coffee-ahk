@@ -1,5 +1,5 @@
-import changeIndex from './change-index'
-import deconstruct from './deconstruct'
+import changeIndex from './change-index.js'
+import deconstruct from './deconstruct.js'
 
 import type { Context } from '../../types'
 

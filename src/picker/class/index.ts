@@ -1,5 +1,5 @@
-import count from './count'
-import validate from './validate'
+import count from './count.js'
+import validate from './validate.js'
 
 import type { Context } from '../../types'
 

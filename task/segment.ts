@@ -1,6 +1,6 @@
 import { glob } from 'fire-keeper'
 
-import c2a from '../src'
+import c2a from '../src/index.js'
 
 const main = async () => {
   const listSource = await glob('./script/segment/*.coffee')
