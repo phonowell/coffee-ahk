@@ -88,7 +88,7 @@ const insert = (ctx: Context, flag: string, fn: Item[]) => {
 
     listItem[1].value = listItem[1].value.replace(
       /_salt_/g,
-      `_${ctx.option.salt}_`,
+      `_${ctx.options.salt}_`,
     )
 
     content.reload([...listItem, ...content.list])
@@ -96,9 +96,9 @@ const insert = (ctx: Context, flag: string, fn: Item[]) => {
 }
 
 const main = (ctx: Context) => {
-  if (!ctx.option.useBuiltIns) return
+  if (!ctx.options.builtins) return
   insert(ctx, 'isChangeIndexUsed', changeIndex2)
-  insert(ctx, 'isFunctionIncluded', returnFunction2)
+  if (ctx.options.track) insert(ctx, 'isFunctionIncluded', returnFunction2)
 }
 
 export default main

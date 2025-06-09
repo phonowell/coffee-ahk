@@ -14,7 +14,7 @@ type Result = {
   raw: Context['token'][]
 }
 
-const main = (cont: string, option: Context['option']): Result => {
+const main = (cont: string, option: Context['options']): Result => {
   const ast = compile(cont, {
     ast: true,
   })
@@ -32,7 +32,7 @@ const main = (cont: string, option: Context['option']): Result => {
       isFunctionIncluded: false,
     },
     indent: 0,
-    option,
+    options: option,
     token: undefined as unknown as Context['token'],
     scope,
     type: '',

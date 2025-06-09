@@ -1,4 +1,4 @@
-import type { OptionPartial } from '../index'
+import type { PartialOptions } from '../index'
 import type Content from '../models/Content'
 import type Scope from '../models/Scope'
 import type cs from 'coffeescript'
@@ -12,7 +12,7 @@ type Context = {
   content: Content
   flag: Flag
   indent: number
-  option: OptionPartial
+  options: PartialOptions
   scope: Scope
   token: Token & { origin?: Token }
   type: string

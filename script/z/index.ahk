@@ -6,5 +6,5 @@ ahk_1(a) {
 }
 ahk_2() {
   a := 1
-  __rf_ahk__.Call((Func("ahk_1").Bind(a)), "#rf/ahk/1").Call()
+  (Func("ahk_1").Bind(a)).Call()
 }
