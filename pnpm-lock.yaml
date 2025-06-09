@@ -18,8 +18,8 @@ importers:
         specifier: ^8.4.0
         version: 8.4.0
       fire-keeper:
-        specifier: ^0.0.226
-        version: 0.0.226
+        specifier: ^0.0.227
+        version: 0.0.227
       iconv-lite:
         specifier: ^0.6.3
         version: 0.6.3
@@ -1462,8 +1462,8 @@ packages:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
 
-  fire-keeper@0.0.226:
-    resolution: {integrity: sha512-2PU2DE7VBtxYwow4PytWBaDm5GfSQ+ih70RieATHL3r76JOsImtvpJeuLTfm/Cj9mQFHl+uUKoMNkxoAbQja7A==}
+  fire-keeper@0.0.227:
+    resolution: {integrity: sha512-kj5cH71D/mHi9lTlJZsxIytY1IfHvqoAAmfNB32sUokjoTmszjEeP3Gm1XzeEU+XzstCFndH8jaCbLLBQsSJFA==}
 
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
@@ -4478,7 +4478,7 @@ snapshots:
       locate-path: 6.0.0
       path-exists: 4.0.0
 
-  fire-keeper@0.0.226:
+  fire-keeper@0.0.227:
     dependencies:
       archiver: 7.0.1
       chokidar: 4.0.3
