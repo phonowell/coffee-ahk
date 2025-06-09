@@ -4,6 +4,7 @@ import {
   getBasename,
   getDirname,
   glob,
+  os,
   prompt,
   root,
   run,
@@ -17,51 +18,34 @@ type AsyncFn = <T>() => Promise<T>
  * @param taskName 任务名称
  */
 const executeTask = async (taskName: string) => {
-  const formattedTaskName = run(() => {
+  const formatted = run(() => {
     if (!taskName.includes('@')) return taskName
     const [a, b] = taskName.split('@')
     return [b, a].join('/')
   })
 
-  const [taskPath] = await glob([
-    `./task/${formattedTaskName}.js`,
-    `./task/${formattedTaskName}.ts`,
-    `./task/${formattedTaskName}/index.js`,
-    `./task/${formattedTaskName}/index.ts`,
+  const [firstMatched] = await glob([
+    `./task/${formatted}.js`,
+    `./task/${formatted}.ts`,
+    `./task/${formatted}/index.js`,
+    `./task/${formatted}/index.ts`,
   ])
 
-  if (!taskPath) {
-    echo(`Task not found: '${formattedTaskName}'`)
+  if (!firstMatched) {
+    echo(`Task not found: '${formatted}'`)
     return
   }
 
-  const taskFn = ((await import(taskPath)) as { default: AsyncFn | undefined })
+  const parsed = os() === 'windows' ? `file:///${firstMatched}` : firstMatched
+
+  const fn = ((await import(parsed)) as { default: AsyncFn | undefined })
     .default
-  if (!taskFn) {
-    echo(`No valid task function found: '${formattedTaskName}'`)
+  if (!fn) {
+    echo(`No valid task function found: '${formatted}'`)
     return
   }
 
-  await taskFn()
-}
-
-const findMatchingTask = (inputTask: string, tasks: string[]): string => {
-  // 精确匹配
-  if (tasks.includes(inputTask)) return inputTask
-
-  // 模糊匹配
-  const matchingTasks = tasks.filter((task) => {
-    const [taskName] = task.split('@')
-    return taskName === inputTask
-  })
-
-  if (matchingTasks.length === 1) return matchingTasks[0]
-  if (matchingTasks.length > 1) {
-    echo(`Multiple tasks found for '${inputTask}': ${matchingTasks.join(', ')}`)
-    return inputTask
-  }
-
-  return inputTask
+  await fn()
 }
 
 /**
@@ -69,12 +53,7 @@ const findMatchingTask = (inputTask: string, tasks: string[]): string => {
  * @returns 任务名称数组
  */
 const loadTasks = async (): Promise<string[]> => {
-  const sources = await glob([
-    './task/**/*.js',
-    './task/**/*.ts',
-    '!./task/utils/**/*',
-    '!*.d.ts',
-  ])
+  const sources = await glob(['./task/**/*.js', './task/**/*.ts', '!*.d.ts'])
 
   return sources
     .map((source) =>
@@ -107,12 +86,10 @@ const promptTask = async (tasks: string[]): Promise<string> => {
  * 主函数：处理命令行参数或提示用户选择一个任务，然后执行该任务
  */
 const main = async () => {
-  const args = (await argv())._[0]
-  const tasks = await loadTasks()
-
-  const task = args
-    ? findMatchingTask(args.toString(), tasks)
-    : await promptTask(tasks)
+  const taskArg = (await argv())._[0]
+  const task = taskArg
+    ? taskArg.toString()
+    : await promptTask(await loadTasks())
 
   if (!task) return
   await executeTask(task)
