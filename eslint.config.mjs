@@ -232,6 +232,13 @@ export default [{
     // ❌ 不推荐: import { a } from 'module'; import { b } from 'module'
     'import/no-duplicates': 'warn',
 
+    // 导入文件扩展名
+    // ✅ 允许: import foo from './foo.js'
+    // ❌ 禁止: import foo from './foo'
+    'import/extensions': ['error', 'always', {
+      ignorePackages: true
+    }],
+
     // console 语句允许使用
     "no-console": "off",
 

@@ -1,4 +1,4 @@
-import at from '../utils/at'
+import at from '../utils/at.js'
 
 /**
  * KeyScope type

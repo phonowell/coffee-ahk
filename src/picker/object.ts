@@ -1,4 +1,4 @@
-import Item from '../models/Item'
+import Item from '../models/Item.js'
 
 import type { Context } from '../types'
 

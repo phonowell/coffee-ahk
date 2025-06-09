@@ -1,5 +1,5 @@
-import Item from '../../models/Item'
-import sortBy from '../../utils/sortBy'
+import Item from '../../models/Item.js'
+import sortBy from '../../utils/sortBy.js'
 
 import type Scope from '../../models/Scope'
 import type { Context } from '../../types'

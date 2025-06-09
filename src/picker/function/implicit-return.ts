@@ -1,5 +1,5 @@
-import Item from '../../models/Item'
-import Scope from '../../models/Scope'
+import Item from '../../models/Item.js'
+import Scope from '../../models/Scope.js'
 
 import type { Context } from '../../types'
 

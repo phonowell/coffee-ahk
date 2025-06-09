@@ -1,6 +1,6 @@
 import { watch } from 'fire-keeper'
 
-import c2a from '../src'
+import c2a from '../src/index.js'
 
 const main = () => {
   process.on('uncaughtException', console.error)

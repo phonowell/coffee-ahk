@@ -1,5 +1,5 @@
-import Item from '../../models/Item'
-import Scope from '../../models/Scope'
+import Item from '../../models/Item.js'
+import Scope from '../../models/Scope.js'
 
 import type { Context } from '../../types'
 
@@ -106,13 +106,12 @@ const main = (ctx: Context) => {
               ),
             ]
           : [
-              listUnwrap[listUnwrap.length - 1],
+              ...listUnwrap,
               new Item('math', '+', first.scope),
               new Item('number', '1', first.scope),
             ]
 
-      update([i + listUnwrap.length, i + listUnwrap.length], list)
-
+      update([i + 1, iEnd - 1], list)
       continue
     }
   }

@@ -1,6 +1,6 @@
-import Item from '../../models/Item'
-import findIndex from '../../utils/findIndex'
-import findLastIndex from '../../utils/findLastIndex'
+import Item from '../../models/Item.js'
+import findIndex from '../../utils/findIndex.js'
+import findLastIndex from '../../utils/findLastIndex.js'
 
 import type Scope from '../../models/Scope'
 import type { Context } from '../../types'

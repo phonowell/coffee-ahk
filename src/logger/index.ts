@@ -1,6 +1,6 @@
 import kleur from 'kleur'
 
-import pad from '../utils/pad'
+import pad from '../utils/pad.js'
 
 import type Item from '../models/Item'
 
