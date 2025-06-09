@@ -57,10 +57,10 @@
     "url": "https://github.com/phonowell/coffee-ahk.git"
   },
   "scripts": {
-    "build": "pnpm alice forbid && rollup -c --bundleConfigAsCjs",
+    "build": "pnpm task forbid && rollup -c --bundleConfigAsCjs",
     "task": "ts-node --swc task/index.ts",
-    "test": "pnpm alice test",
-    "watch": "pnpm alice watch"
+    "test": "pnpm task test",
+    "watch": "pnpm task watch"
   },
   "sideEffects": false,
   "types": "./dist/index.d.ts",
