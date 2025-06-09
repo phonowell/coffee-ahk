@@ -7,7 +7,7 @@ const main = () => {
 
   watch('./script/**/*.coffee', (path) =>
     c2a(path, {
-      displayCoffeescriptAst: true,
+      coffeeAst: true,
       salt: 'ahk',
       verbose: true,
     }),

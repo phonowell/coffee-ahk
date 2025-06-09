@@ -1,7 +1,7 @@
 import { getName, write } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
-import type { OptionPartial } from '..'
+import type { PartialOptions } from '..'
 import type Item from '../models/Item'
 
 const main = async (
@@ -10,7 +10,7 @@ const main = async (
     ast: Item[]
     content: string
   },
-  option: OptionPartial,
+  options: PartialOptions,
 ): Promise<void> => {
   const { basename, dirname } = getName(source)
 
@@ -23,7 +23,7 @@ const main = async (
       .toString(),
   )
 
-  if (option.ast) await write(`${dirname}/${basename}.ast.json`, data.ast)
+  if (options.ast) await write(`${dirname}/${basename}.ast.json`, data.ast)
 }
 
 export default main

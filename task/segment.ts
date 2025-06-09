@@ -7,10 +7,10 @@ const main = async () => {
   for (const source of listSource) {
     await c2a(source, {
       ast: true,
-      insertTranspilerInformation: false,
-      pickAnonymous: false,
+      metadata: false,
+      anonymous: false,
       salt: 'salt',
-      useBuiltIns: false,
+      builtins: false,
     })
   }
 }

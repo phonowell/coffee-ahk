@@ -15,7 +15,7 @@ const checkVersion = async () => {
 const compile = async (source: string) =>
   (
     await c2aViaTs(source, {
-      insertTranspilerInformation: false,
+      metadata: false,
       salt: 'ahk',
       save: false,
     })
@@ -26,7 +26,7 @@ const compile = async (source: string) =>
 const compile2 = async (source: string) =>
   (
     await c2aViaJs(source, {
-      insertTranspilerInformation: false,
+      metadata: false,
       salt: 'ahk',
       save: false,
     })

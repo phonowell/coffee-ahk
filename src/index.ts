@@ -4,41 +4,53 @@ import start from './entry/index.js'
 import { read, write } from './file/index.js'
 import log from './logger/index.js'
 
-type Option = typeof optionDefault
-export type OptionPartial = Partial<Option>
+type Options = typeof DEFAULT_OPTIONS
+export type PartialOptions = Partial<Options>
 
-const optionDefault = {
-  asText: false,
+const DEFAULT_OPTIONS = {
+  /** Include anonymous functions */
+  anonymous: true,
+  /** Generate AST output */
   ast: false,
-  displayCoffeescriptAst: false,
-  ignoreComment: true,
-  insertTranspilerInformation: true,
-  pickAnonymous: true,
+  /** Use built-in functions */
+  builtins: true,
+  /** Show CoffeeScript AST */
+  coffeeAst: false,
+  /** Preserve comments in output */
+  comments: false,
+  /** Include metadata in output */
+  metadata: true,
+  /** Salt for transpilation */
   salt: '',
+  /** Save output to file */
   save: true,
-  useBuiltIns: true,
+  /** Return string instead of file */
+  string: false,
+  /** Track function calls */
+  track: false,
+  /** Enable verbose logging */
   verbose: false,
 }
 
-const generatedSalt = (): string =>
+const generateSalt = (): string =>
   Math.random().toString(32).split('.')[1].padStart(11, '0')
 
-const main = (source: string, option: OptionPartial = {}) => {
+const main = (source: string, option: PartialOptions = {}) => {
   const option2 = {
-    ...optionDefault,
+    ...DEFAULT_OPTIONS,
     ...option,
   }
 
   // salt
-  if (!option2.salt) option2.salt = generatedSalt()
+  if (!option2.salt) option2.salt = generateSalt()
 
-  if (option2.asText) return transpileAsText(source, option2)
+  if (option2.string) return transpileAsText(source, option2)
   return transpileAsFile(source, option2)
 }
 
 const transpileAsFile = async (
   source: string,
-  option: Option,
+  options: Options,
 ): Promise<string> => {
   const listSource = source.endsWith('.coffee')
     ? [source]
@@ -49,25 +61,25 @@ const transpileAsFile = async (
   )
   if (!source2) throw new Error(`invalid source '${source}'`)
 
-  const content = await read(source2, option.salt)
+  const content = await read(source2, options.salt)
 
-  const result = start(content, option)
+  const result = start(content, options)
 
-  if (option.verbose) {
-    if (option.displayCoffeescriptAst) console.log(result.raw)
+  if (options.verbose) {
+    if (options.coffeeAst) console.log(result.raw)
     log(result.ast)
   }
 
-  if (option.save) await write(source2, result, option)
+  if (options.save) await write(source2, result, options)
 
   return result.content
 }
 
-const transpileAsText = (content: string, option: Option): string => {
-  const result = start(content, option)
+const transpileAsText = (content: string, options: Options): string => {
+  const result = start(content, options)
 
-  if (option.verbose) {
-    if (option.displayCoffeescriptAst) console.log(result.raw)
+  if (options.verbose) {
+    if (options.coffeeAst) console.log(result.raw)
     log(result.ast)
   }
 

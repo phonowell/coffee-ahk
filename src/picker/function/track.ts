@@ -1,8 +1,8 @@
 import Item from '../../models/Item.js'
 import at from '../../utils/at.js'
 
-import type Scope from '../../models/Scope'
-import type { Context } from '../../types'
+import type Scope from '../../models/Scope.js'
+import type { Context } from '../../types/index.js'
 
 type Option = {
   countBracket: number
@@ -17,7 +17,7 @@ const isUpper = (ipt: string) => !ipt.startsWith(ipt[0].toLowerCase())
 
 const main = (ctx: Context) => {
   const { content } = ctx
-  const token = `__rf_${ctx.option.salt}__`
+  const token = `__rf_${ctx.options.salt}__`
 
   const listStart: number[] = []
   const listEnd: number[] = []
@@ -62,7 +62,7 @@ const main = (ctx: Context) => {
     if (listEnd.includes(i)) {
       listContent.push(
         new Item('sign', ',', item.scope),
-        new Item('string', `"#rf/${ctx.option.salt}/${++count}"`, item.scope),
+        new Item('string', `"#rf/${ctx.options.salt}/${++count}"`, item.scope),
         new Item('edge', 'call-end', [...item.scope.list, 'call']),
       )
     }

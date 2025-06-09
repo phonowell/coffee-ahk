@@ -8,7 +8,7 @@ import injectImplicitParameter from './implicit-parameter.js'
 import injectImplicitReturn from './implicit-return.js'
 import mark from './mark.js'
 import transParam from './parameter.js'
-import returnFunction from './return-function.js'
+import track from './track.js'
 
 import type { Context } from '../../types'
 
@@ -33,7 +33,7 @@ const main = (ctx: Context) => {
   injectContext(ctx)
 
   // anonymous
-  if (ctx.option.pickAnonymous && setFn.has('anonymous')) {
+  if (ctx.options.anonymous && setFn.has('anonymous')) {
     pickAnonymous(ctx)
     setFn = count(ctx) // re-count
   }
@@ -42,7 +42,7 @@ const main = (ctx: Context) => {
 
   partDo(ctx)
 
-  returnFunction(ctx)
+  if (ctx.options.track) track(ctx)
 }
 
 export default main

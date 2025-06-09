@@ -22,7 +22,7 @@ const next = (ctx: Context, count = 1) => {
 
   const it = content.at(i)
   if (!it) throw new Error('Unexpected error: picker/function/anonymous/1')
-  it.value = `${ctx.option.salt}_${count}`
+  it.value = `${ctx.options.salt}_${count}`
 
   pickItem(ctx, count, i, [...it.scope.list, 'function']).forEach((item) => {
     if (item.type === 'void') return
@@ -58,7 +58,7 @@ const pickItem = (
 
   // last one
   item.type = 'native'
-  item.value = `Func("${ctx.option.salt}_${count}")`
+  item.value = `Func("${ctx.options.salt}_${count}")`
   listResult.push(new Item('new-line', '0', scope))
 
   // reset indent

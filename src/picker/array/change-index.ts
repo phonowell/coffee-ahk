@@ -7,7 +7,7 @@ type Range = [number, number]
 
 const main = (ctx: Context) => {
   const { content } = ctx
-  const token = `__ci_${ctx.option.salt}__`
+  const token = `__ci_${ctx.options.salt}__`
   let countIgnore = 0
 
   const pickItem = (
