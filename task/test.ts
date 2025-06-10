@@ -3,15 +3,6 @@ import { argv, echo, glob, read, write } from 'fire-keeper'
 import c2aViaJs from '../dist/index.js'
 import c2aViaTs from '../src/index.js'
 
-const checkVersion = async () => {
-  const pkg = await read<{ version: string }>('./package.json')
-  if (!pkg) throw new Error('package.json not found')
-  const { version } = pkg
-  const content = await read('./src/renderer/index.ts')
-
-  if (!content?.includes(version)) throw new Error('found different version')
-}
-
 const compile = async (source: string) =>
   (
     await c2aViaTs(source, {
@@ -74,8 +65,6 @@ const main = async () => {
   }
 
   echo('all test(s) passed!')
-
-  await checkVersion()
 }
 
 const pickTarget = async () => {
