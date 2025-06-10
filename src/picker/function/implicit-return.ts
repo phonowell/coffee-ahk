@@ -54,7 +54,7 @@ const main = (ctx: Context) => {
     }
 
     if (!item.is('edge', 'parameter-start')) return
-    if (content.last.is('property', '__New')) return
+    if (content.at(i - 1)?.is('property', '__New')) return
 
     const [iStart, scpStart] = findFnStart(ctx, i)
     const list = pickItems(ctx, {

@@ -1,6 +1,6 @@
 import Scope from './Scope.js'
 
-type ItemType =
+export type ItemType =
   | '++'
   | '--'
   | '.'

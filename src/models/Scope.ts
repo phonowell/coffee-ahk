@@ -1,7 +1,6 @@
 import { at } from 'fire-keeper'
 
-/** KeyScope type */
-type KeyScope =
+export type ScopeType =
   | ''
   | 'array'
   | 'call'
@@ -21,19 +20,19 @@ type KeyScope =
 
 /** Scope class */
 class Scope {
-  #list: KeyScope[] = []
-  next: KeyScope = ''
+  #list: ScopeType[] = []
+  next: ScopeType = ''
 
   /** Constructor that accepts Scope or KeyScope arrays */
   constructor(...args: Parameters<Scope['reload']>) {
     this.reload(...args)
   }
 
-  get first(): KeyScope {
+  get first(): ScopeType {
     return this.at(0) ?? ''
   }
 
-  get last(): KeyScope {
+  get last(): ScopeType {
     return this.at(-1) ?? ''
   }
 
@@ -41,16 +40,16 @@ class Scope {
     return this.#list.length
   }
 
-  get list(): KeyScope[] {
+  get list(): ScopeType[] {
     return [...this.#list]
   }
 
-  at(n: number): KeyScope | undefined {
+  at(n: number): ScopeType | undefined {
     return at(this.#list, n)
   }
 
   /** Check if target is equal to the current scope list */
-  isEqual(target: Scope | KeyScope[]): boolean {
+  isEqual(target: Scope | ScopeType[]): boolean {
     const list = target instanceof Scope ? target.list : target
     return (
       this.#list.length === list.length &&
@@ -58,28 +57,28 @@ class Scope {
     )
   }
 
-  pop(): KeyScope {
+  pop(): ScopeType {
     return this.#list.pop() ?? ''
   }
 
-  push(...args: KeyScope[]): number {
+  push(...args: ScopeType[]): number {
     return this.#list.push(...args)
   }
 
   /** Reload the scope list with new input */
-  reload(input: Scope | KeyScope[] = []) {
+  reload(input: Scope | ScopeType[] = []) {
     this.#list = input instanceof Scope ? input.list : input
   }
 
-  shift(): KeyScope {
+  shift(): ScopeType {
     return this.#list.shift() ?? ''
   }
 
-  slice(...args: Parameters<string[]['slice']>): KeyScope[] {
+  slice(...args: Parameters<string[]['slice']>): ScopeType[] {
     return this.#list.slice(...args)
   }
 
-  unshift(...args: KeyScope[]): number {
+  unshift(...args: ScopeType[]): number {
     return this.#list.unshift(...args)
   }
 }
