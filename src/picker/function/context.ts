@@ -44,7 +44,7 @@ const findIndex = (ctx: Context, item: Item, i: number): number => {
 
   const it = content.at(i)
   if (!it) return 0
-  if (it.is('edge', 'block-end') && it.scope.isEquals(item.scope)) return i
+  if (it.is('edge', 'block-end') && it.scope.isEqual(item.scope)) return i
   return findIndex(ctx, item, i + 1)
 }
 
@@ -122,7 +122,7 @@ const pickItem = (
   if (!it) return listItem
 
   if (
-    it.scope.isEquals(item.scope) &&
+    it.scope.isEqual(item.scope) &&
     (it.is('sign', ',') || it.is('edge', 'parameter-end'))
   )
     return listItem

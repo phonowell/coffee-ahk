@@ -23,12 +23,12 @@ const main = (ctx: Context) => {
 
     listResult.push(it)
 
-    if (it.is('edge', 'index-start') && it.scope.isEquals(item.scope)) {
+    if (it.is('edge', 'index-start') && it.scope.isEqual(item.scope)) {
       countIgnore++
       return pickItem(item, i + 1, listResult)
     }
 
-    if (it.is('edge', 'index-end') && it.scope.isEquals(item.scope)) {
+    if (it.is('edge', 'index-end') && it.scope.isEqual(item.scope)) {
       countIgnore--
       if (countIgnore === 0) return [i, listResult]
       return pickItem(item, i + 1, listResult)

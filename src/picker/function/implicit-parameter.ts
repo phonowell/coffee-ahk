@@ -61,7 +61,7 @@ const pickContext = (ctx: Context, i: number, item: Item) => {
 
   if (
     it?.is('edge', 'block-end') &&
-    it.scope.isEquals([
+    it.scope.isEqual([
       ...item.scope.slice(0, item.scope.length - 1),
       'function',
     ])
@@ -91,7 +91,7 @@ const pickParameter = (ctx: Context, i: number, item: Item) => {
   const { content } = ctx
   const it = content.at(i)
 
-  if (it?.is('edge', 'parameter-end') && it.scope.isEquals(item.scope)) return
+  if (it?.is('edge', 'parameter-end') && it.scope.isEqual(item.scope)) return
 
   if (it?.is('identifier')) {
     const next = content.at(i + 1)

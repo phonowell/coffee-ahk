@@ -65,7 +65,7 @@ const main = (ctx: Context) => {
 
     const isObjectWithoutBrackets = list[1].is('bracket', '{')
     if (
-      list.filter((it) => it.is('new-line') && it.scope.isEquals(scpStart))
+      list.filter((it) => it.is('new-line') && it.scope.isEqual(scpStart))
         .length > (isObjectWithoutBrackets ? 1 : 2)
     )
       return
@@ -95,7 +95,7 @@ const pickItems = (
 
   list.push(item)
 
-  const isEnded = item.is('edge', 'block-end') && item.scope.isEquals(scope)
+  const isEnded = item.is('edge', 'block-end') && item.scope.isEqual(scope)
 
   if (!isEnded) {
     return pickItems(ctx, {
