@@ -1,73 +1,46 @@
 import Scope from './Scope.js'
 
-const _listType = [
-  '++',
-  '--',
-  '.',
-  'await',
-  'boolean',
-  'bracket', // (){}
-  'class',
-  'compare',
-  'edge', // array-end array-start block-end block-start call-end call-start expression-end expression-start index-end index-start interpolation-end interpolation-start parameter-end parameter-start
-  'error',
-  'for',
-  'for-in', // in of
-  'function',
-  'identifier',
-  'if', // case default else if switch
-  'logical-operator', // ! && ||
-  'math',
-  'native',
-  'negative', // + -
-  'new-line',
-  'number',
-  'property',
-  'prototype',
-  'sign', // , ... : =
-  'statement', // break continue extends new return throw
-  'string',
-  'super',
-  'this',
-  'try', // catch finally try
-  'void',
-  'while',
-] as const
+type ItemType =
+  | '++'
+  | '--'
+  | '.'
+  | 'await'
+  | 'boolean'
+  | 'bracket' // (){}
+  | 'class'
+  | 'compare'
+  | 'edge' // array-end array-start block-end block-start call-end call-start expression-end expression-start index-end index-start interpolation-end interpolation-start parameter-end parameter-start
+  | 'error'
+  | 'for'
+  | 'for-in' // in of
+  | 'function'
+  | 'identifier'
+  | 'if' // case default else if switch
+  | 'logical-operator' // ! && ||
+  | 'math'
+  | 'native'
+  | 'negative' // + -
+  | 'new-line'
+  | 'number'
+  | 'property'
+  | 'prototype'
+  | 'sign' // , ... : =
+  | 'statement' // break continue extends new return throw
+  | 'string'
+  | 'super'
+  | 'this'
+  | 'try' // catch finally try
+  | 'void'
+  | 'while'
 
-/**
- * An item of the AST.
- */
+/** An item of the AST */
 class Item {
-  /**
-   * The comment associated with the item.
-   * @type {string[] | undefined}
-   */
   comment?: string[]
-
-  /**
-   * The scope of the item.
-   * @type {Scope}
-   */
   scope: Scope
-
-  /**
-   * The type of the item.
-   * @type {string}
-   */
-  type: (typeof _listType)[number]
-
-  /**
-   * The value of the item.
-   * @type {string}
-   */
+  type: ItemType
   value: string
 
-  /**
-   * Creates a new item.
-   * @param {string} [type] - The type of the item.
-   * @param {string} [value] - The value of the item.
-   * @param {Scope} [scope] - The scope of the item.
-   */
+  /** Creates a new item with type, value, and scope, or clones from another Item. */
   constructor(
     ...args:
       | [
@@ -90,25 +63,17 @@ class Item {
     this.scope = new Scope(args[2])
   }
 
-  /**
-   * Clones the item.
-   * @returns {Item} A new item with the same properties as the original.
-   */
+  /** Clones the item. */
   clone(): Item {
     const { scope, type, value } = this
     return new Item(type, value, scope)
   }
 
-  /**
-   * Checks if the item is of a certain type and value.
-   * @param {string} type - The type to check.
-   * @param {string} [value] - The value to check.
-   * @returns {boolean} Whether the item is of the specified type and value.
-   */
-  is(type: (typeof _listType)[number], value?: string): boolean {
-    if (type !== this.type) return false
-    if (typeof value === 'undefined') return true
-    return value === this.value
+  /** Checks if the item is of a certain type and value. */
+  is(expectedType: ItemType, expectedValue?: string): boolean {
+    if (expectedType !== this.type) return false
+    if (typeof expectedValue === 'undefined') return true
+    return expectedValue === this.value
   }
 }
 

@@ -51,7 +51,7 @@ const pickItem = (
 
   listResult.push(it)
 
-  if (!item.is('edge', 'block-end') || !item.scope.isEquals(scope)) {
+  if (!item.is('edge', 'block-end') || !item.scope.isEqual(scope)) {
     item.type = 'void'
     return pickItem(ctx, count, i + 1, scope, listResult)
   }

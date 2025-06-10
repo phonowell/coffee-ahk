@@ -1,5 +1,6 @@
+import { at } from 'fire-keeper'
+
 import Item from '../../models/Item.js'
-import at from '../../utils/at.js'
 
 import type { Context } from '../../types'
 
@@ -35,7 +36,7 @@ const findEdge = (ctx: Context, i: number, item: Item): number => {
   if (!it) return 0
   if (
     it.is('edge', 'parameter-start') &&
-    item.scope.isEquals([...it.scope.slice(0, it.scope.length - 1), 'function'])
+    item.scope.isEqual([...it.scope.slice(0, it.scope.length - 1), 'function'])
   )
     return i
   return findEdge(ctx, i - 1, item)

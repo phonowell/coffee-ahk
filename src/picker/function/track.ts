@@ -1,5 +1,6 @@
+import { at } from 'fire-keeper'
+
 import Item from '../../models/Item.js'
-import at from '../../utils/at.js'
 
 import type Scope from '../../models/Scope.js'
 import type { Context } from '../../types/index.js'
@@ -88,7 +89,7 @@ const pickIt = (option: Option): [number, Item[]] => {
   const hasIdentifier2 =
     ['identifier', 'super', 'this'].includes(item.type) || hasIdentifier
 
-  if (countBracket2 === 0 && hasIdentifier2 && item.scope.isEquals(scope))
+  if (countBracket2 === 0 && hasIdentifier2 && item.scope.isEqual(scope))
     return [i, result]
 
   return pickIt({
