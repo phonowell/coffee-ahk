@@ -1,5 +1,13 @@
-# @ts-check
+# 编译结果位于 script/z/index.ahk
+# 你可以通过运行 `pnpm task z` 进行编译
+# 我怀疑问题出在 `native` 相关模块中
+# 注意，ahk的数组下标从1开始，而不是0
+# 因此正确的结果应该是`it[1] == 0 && it[2] == 1`
+# 所有的测试脚本你都应该在当前文件中进行修改，不要新建文件
 
-class A
-  constructor: ->
-    @a = 1
+->
+  Native ''
+  Native ''
+  Native '' # 当这一行存在时便会发生下标偏移的问题
+
+do (it) -> it[0] == 0 and it[1] == 1
