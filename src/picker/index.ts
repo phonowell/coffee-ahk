@@ -1,5 +1,5 @@
 import asArray from './array/index.js'
-import asBuildIn from './build-in.js'
+import asBuildInLoader from './build-in-loader.js'
 import asClass from './class/index.js'
 import asFor from './for.js'
 import asFunction from './function/index.js'
@@ -9,7 +9,7 @@ import asVariable from './variable/index.js'
 
 import type { Context } from '../types'
 
-const main = (ctx: Context) => {
+const main = async (ctx: Context) => {
   asNewLine(ctx) // have to be first
 
   asFor(ctx)
@@ -17,7 +17,7 @@ const main = (ctx: Context) => {
   asObject(ctx)
   asVariable(ctx)
 
-  asBuildIn(ctx)
+  await asBuildInLoader(ctx)
   asClass(ctx)
   asFunction(ctx)
 }

@@ -4,6 +4,7 @@ export type ItemType =
   | '++'
   | '--'
   | '.'
+  | 'async'
   | 'await'
   | 'boolean'
   | 'bracket' // (){}

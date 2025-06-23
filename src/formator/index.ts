@@ -1,5 +1,6 @@
 import partAlias from './alias.js'
 import partArray from './array.js'
+import partAsync from './async.js'
 import partAwait from './await.js'
 import partBoolean from './boolean.js'
 import partBracket from './bracket.js'
@@ -33,6 +34,7 @@ const map: Record<string, (ctx: Context) => boolean> = {
   'new-line': partNewLine,
   alias: partAlias,
   array: partArray,
+  async: partAsync,
   await: partAwait,
   boolean: partBoolean,
   bracket: partBracket,

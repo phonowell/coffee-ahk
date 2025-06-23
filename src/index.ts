@@ -63,7 +63,7 @@ const transpileAsFile = async (
 
   const content = await read(source2, options.salt)
 
-  const result = start(content, options)
+  const result = await start(content, options)
 
   if (options.verbose) {
     if (options.coffeeAst) console.log(result.raw)
@@ -75,8 +75,11 @@ const transpileAsFile = async (
   return result.content
 }
 
-const transpileAsText = (content: string, options: Options): string => {
-  const result = start(content, options)
+const transpileAsText = async (
+  content: string,
+  options: Options,
+): Promise<string> => {
+  const result = await start(content, options)
 
   if (options.verbose) {
     if (options.coffeeAst) console.log(result.raw)

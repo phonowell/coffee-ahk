@@ -8,12 +8,14 @@ import injectImplicitParameter from './implicit-parameter.js'
 import injectImplicitReturn from './implicit-return.js'
 import mark from './mark.js'
 import transParam from './parameter.js'
+import partPromise from './promise.js'
 import track from './track.js'
 
 import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
   partAwait(ctx)
+  partPromise(ctx)
 
   // mark function
   // change its type from `fn: identifier(...)`

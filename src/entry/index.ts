@@ -14,7 +14,10 @@ type Result = {
   raw: Context['token'][]
 }
 
-const main = (cont: string, option: Context['options']): Result => {
+const main = async (
+  cont: string,
+  option: Context['options'],
+): Promise<Result> => {
   const ast = compile(cont, {
     ast: true,
   })
@@ -48,7 +51,7 @@ const main = (cont: string, option: Context['options']): Result => {
     transpile(ctx)
   }
 
-  pick(ctx)
+  await pick(ctx)
 
   return {
     ast: content.list,

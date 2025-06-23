@@ -1,4 +1,9 @@
-global __ci_ahk__ := Func("ahk_1")
+global __ci_ahk__ := anonymous(__ipt__) {
+  if __ipt__ is Number
+    return __ipt__ + 1
+  return __ipt__
+}
+
 a[1]
 a["a"]
 a[__ci_ahk__.Call(a)]
@@ -12,8 +17,3 @@ a[__ci_ahk__.Call(1 - this.b)]
 a["string" . (b) . ""]
 a[__ci_ahk__.Call(fn.Call())]
 a[__ci_ahk__.Call(this.fn.Call())]
-ahk_1(__ipt__) {
-  if __ipt__ is Number
-    return __ipt__ + 1
-  return __ipt__
-}
