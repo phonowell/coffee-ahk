@@ -75,7 +75,7 @@ const pickItem = (
     listResult.forEach((it2) => {
       if (it2.type !== 'new-line') return
       let value = parseInt(it2.value, 10) - diff
-      if (!(value >= 0)) value = 0
+      if (value < 0) value = 0
       it2.value = value.toString()
     })
   }

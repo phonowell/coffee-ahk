@@ -93,7 +93,7 @@ const negative2 = (ctx: Context): string => {
 
 const newLine2 = (ctx: Context): string => {
   let n = parseInt(ctx.it.value, 10)
-  if (!(n >= 0)) n = 0
+  if (n < 0) n = 0
   return `\n${' '.repeat(n * 2)}`
 }
 
