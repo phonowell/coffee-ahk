@@ -1,8 +1,11 @@
+/** Utility functions for data manipulation */
+
 type Iteratee<T> = (value: T) => string | number | boolean | null | undefined
 type PropertyPath = string | number
 type SortIteratee<T> = Iteratee<T> | PropertyPath
 type ComparableValue = string | number | boolean
 
+/** Handle null and undefined values in comparison */
 const handleNullUndefined = (
   aValue: unknown,
   bValue: unknown,
@@ -15,6 +18,8 @@ const handleNullUndefined = (
   if (bIsNull) return 1
   return null
 }
+
+/** Compare two values of any type */
 const compareValues = (aValue: unknown, bValue: unknown): number => {
   if (typeof aValue === typeof bValue) {
     if (
@@ -35,7 +40,8 @@ const compareValues = (aValue: unknown, bValue: unknown): number => {
   return 0
 }
 
-const sortBy = <T>(array: T[], ...iteratees: SortIteratee<T>[]): T[] => {
+/** Sort array by multiple iteratees */
+export const sortBy = <T>(array: T[], ...iteratees: SortIteratee<T>[]): T[] => {
   if (!Array.isArray(array)) return []
   if (iteratees.length === 0) return [...array]
 
@@ -68,4 +74,4 @@ const sortBy = <T>(array: T[], ...iteratees: SortIteratee<T>[]): T[] => {
   })
 }
 
-export default sortBy
+export default { sortBy }

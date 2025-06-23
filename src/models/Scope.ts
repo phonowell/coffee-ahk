@@ -1,22 +1,6 @@
 import { at } from 'fire-keeper'
 
-export type ScopeType =
-  | ''
-  | 'array'
-  | 'call'
-  | 'case'
-  | 'catch'
-  | 'class'
-  | 'else'
-  | 'finally'
-  | 'for'
-  | 'function'
-  | 'if'
-  | 'object'
-  | 'parameter'
-  | 'switch'
-  | 'try'
-  | 'while'
+import type { ScopeType } from './ScopeType.js'
 
 /** Scope class */
 class Scope {

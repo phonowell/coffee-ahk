@@ -1,6 +1,6 @@
 import kleur from 'kleur'
 
-import pad from '../utils/pad.js'
+import { pad } from '../utils/arrayHelpers.js'
 
 import type Item from '../models/Item'
 
