@@ -5,15 +5,9 @@ type PackageJson = {
   devDependencies?: Record<string, string>
 }
 
-const DEPS_TO_INSTALL: string[] = ['clsx']
+const DEPS_TO_INSTALL: string[] = []
 
-const DEV_DEPS_TO_INSTALL: string[] = [
-  'eslint-plugin-unused-imports',
-  'radash',
-  'ts-morph',
-  'unplugin-auto-import',
-  'web-vitals',
-]
+const DEV_DEPS_TO_INSTALL: string[] = ['eslint-plugin-unused-imports', 'radash']
 
 const DEPS_TO_REMOVE: string[] = ['classnames', 'moment']
 

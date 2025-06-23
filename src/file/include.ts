@@ -37,9 +37,9 @@ const getSource = async (source: string, path: string) => {
     ? [path]
     : [`${path}.coffee`, `${path}/index.coffee`]
 
-  group.filter(
-    (it, i) => (group[i] = isFile ? `${source}/${it}` : `./node_modules/${it}`),
-  )
+  group.forEach((it, i) => {
+    group[i] = isFile ? `${source}/${it}` : `./node_modules/${it}`
+  })
   const listResult = await glob(group)
   if (listResult.length) return listResult[0]
 
@@ -147,7 +147,7 @@ const transform = async () => {
       if (content instanceof Buffer)
         return iconv.decode(content, 'utf8', { addBOM: true })
       if (typeof content === 'string') return content
-      return content.toString()
+      return JSON.stringify(content)
     })()
 
     const dependencies = await (async () => {

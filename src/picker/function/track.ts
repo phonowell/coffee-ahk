@@ -80,11 +80,11 @@ const pickIt = (option: Option): [number, Item[]] => {
 
   result.unshift(item)
 
-  const countBracket2 = !item.is('bracket')
-    ? countBracket
-    : item.value === '('
-      ? countBracket - 1
-      : countBracket + 1
+  let countBracket2 = countBracket
+  if (item.is('bracket')) {
+    if (item.value === '(') countBracket2 = countBracket - 1
+    else countBracket2 = countBracket + 1
+  }
 
   const hasIdentifier2 =
     ['identifier', 'super', 'this'].includes(item.type) || hasIdentifier

@@ -1,6 +1,39 @@
 type Iteratee<T> = (value: T) => string | number | boolean | null | undefined
 type PropertyPath = string | number
 type SortIteratee<T> = Iteratee<T> | PropertyPath
+type ComparableValue = string | number | boolean
+
+const handleNullUndefined = (
+  aValue: unknown,
+  bValue: unknown,
+): number | null => {
+  const aIsNull = aValue === null || aValue === undefined
+  const bIsNull = bValue === null || bValue === undefined
+
+  if (aIsNull && bIsNull) return 0
+  if (aIsNull) return -1
+  if (bIsNull) return 1
+  return null
+}
+const compareValues = (aValue: unknown, bValue: unknown): number => {
+  if (typeof aValue === typeof bValue) {
+    if (
+      typeof aValue === 'string' ||
+      typeof aValue === 'number' ||
+      typeof aValue === 'boolean'
+    ) {
+      if ((aValue as ComparableValue) < (bValue as ComparableValue)) return -1
+      if ((aValue as ComparableValue) > (bValue as ComparableValue)) return 1
+      return 0
+    }
+  }
+
+  const aStr = String(aValue)
+  const bStr = String(bValue)
+  if (aStr < bStr) return -1
+  if (aStr > bStr) return 1
+  return 0
+}
 
 const sortBy = <T>(array: T[], ...iteratees: SortIteratee<T>[]): T[] => {
   if (!Array.isArray(array)) return []
@@ -22,26 +55,14 @@ const sortBy = <T>(array: T[], ...iteratees: SortIteratee<T>[]): T[] => {
       const aValue = iteratee(a)
       const bValue = iteratee(b)
 
-      // Handle null/undefined values
-      if (
-        (aValue === null || aValue === undefined) &&
-        (bValue === null || bValue === undefined)
-      )
-        continue
-      if (aValue === null || aValue === undefined) return -1
-      if (bValue === null || bValue === undefined) return 1
-
-      // Safe comparison for primitive types
-      if (typeof aValue === typeof bValue) {
-        if (aValue < bValue) return -1
-        if (aValue > bValue) return 1
-      } else {
-        // Convert to string for mixed type comparison
-        const aStr = String(aValue)
-        const bStr = String(bValue)
-        if (aStr < bStr) return -1
-        if (aStr > bStr) return 1
+      const nullResult = handleNullUndefined(aValue, bValue)
+      if (nullResult !== null) {
+        if (nullResult === 0) continue
+        return nullResult
       }
+
+      const compareResult = compareValues(aValue, bValue)
+      if (compareResult !== 0) return compareResult
     }
     return 0
   })
