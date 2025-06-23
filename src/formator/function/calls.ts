@@ -30,7 +30,7 @@ export const handleCallEnd = (ctx: Context) => {
     listItem[2].value = value
       .substring(1, value.length - 1)
       .replace(/`%/g, '%')
-      .replace(/"{2,}/g, '"')
+      .replace(/""/g, '"')
     content.push('void', 'call-end')
     scope.pop()
     return true
