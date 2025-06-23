@@ -1,6 +1,16 @@
-import { trim } from 'radash'
+// Main renderer orchestrator
+import {
+  logicalOperator2,
+  negative2,
+  newLine2,
+  sign2,
+  statement2,
+} from './basic.js'
+import { getCacheComment, injectComment, setCacheComment } from './comments.js'
+import { if2, try2 } from './control-flow.js'
+import { edge2 } from './edge.js'
 
-import type Item from '../models/Item'
+import type Item from '../models/Item.js'
 import type { Context as Context2 } from '../types'
 
 type Context = Context2 & {
@@ -8,150 +18,15 @@ type Context = Context2 & {
   it: Item
 }
 
-const mapEdge: Record<string, string> = {
-  'array-end': ']',
-  'array-start': '[',
-  'block-end': '}',
-  'block-start': '{',
-  'call-end': ')',
-  'call-start': '(',
-  'expression-end': ')',
-  'expression-start': '(',
-  'index-end': ']',
-  'index-start': '[',
-  'interpolation-end': ') . ',
-  'interpolation-start': ' . (',
-  'parameter-end': ')',
-  'parameter-start': '(',
-} as const
-
-let cacheComment: string[] = []
-
-const commaLike2 = (ctx: Context) => {
-  const { i, it } = ctx
-  const next = ctx.content.at(i + 1)
-  if (!next?.is('new-line')) return `${it.value} `
-  return it.value
-}
-
-const edge2 = (ctx: Context) => {
-  const { content, i, it } = ctx
-  const { value } = it
-
-  if (value === 'block-start') {
-    const value2 = mapEdge[value]
-    const prev = content.at(i - 1)
-
-    if (!prev) return value2
-    if (prev.is('sign', ':')) return value2
-
-    return ` ${value2}`
-  }
-
-  if (value === 'call-start') {
-    const prev = content.at(i - 1)
-    if (!prev) throw new Error('Unexpected error: renderer/index/1')
-
-    const name = trim(prev.value, '_')
-    // if name starts with lower case, it is a user defined function
-    // use [name].Call() to call it
-    // otherwise it is a built-in function
-    // use [name]() to call it
-    return name.startsWith(name[0].toLowerCase()) ? '.Call(' : '('
-  }
-
-  return mapEdge[value] || value
-}
-
-const if2 = (ctx: Context): string => {
-  const { content, i, it } = ctx
-  const { value } = it
-
-  if (value === 'case') return 'case '
-  if (value === 'default') return 'default'
-  if (value === 'else') return ' else'
-
-  if (value === 'if') {
-    const prev = content.at(i - 1)
-    if (prev?.is('if', 'else')) return ' if '
-    return 'if '
-  }
-
-  if (value === 'switch') return 'switch '
-  return ''
-}
-
-const logicalOperator2 = (ctx: Context): string => {
-  const { value } = ctx.it
-  return ['&&', '||'].includes(value) ? ` ${value} ` : value
-}
-
-const negative2 = (ctx: Context): string => {
-  const { value } = ctx.it
-  return value === '-' ? value : ''
-}
-
-const newLine2 = (ctx: Context): string => {
-  let n = parseInt(ctx.it.value, 10)
-  if (n < 0) n = 0
-  return `\n${' '.repeat(n * 2)}`
-}
-
-const sign2 = (ctx: Context): string => {
-  const { value } = ctx.it
-  if ([',', ':'].includes(value)) return commaLike2(ctx)
-  if (value === '=') return ' := '
-  if (value === '...') return '*'
-  return value
-}
-
-const statement2 = (ctx: Context): string => {
-  const { value } = ctx.it
-  if (value === 'export') return 'return '
-  if (value === 'extends') return ' extends '
-  if (['new', 'return', 'throw'].includes(value)) return commaLike2(ctx)
-  return ctx.it.value
-}
-
-const try2 = (ctx: Context): string => {
-  const { content, i, it } = ctx
-  const { value } = it
-
-  if (value === 'catch') {
-    const next = content.at(i + 1)
-    if (next?.is('edge', 'block-start')) return ' catch'
-    return ' catch '
-  }
-
-  if (value === 'finally') return ' finally'
-  if (value === 'try') return 'try'
-  return ''
-}
-
-const injectComment = (input: string, ctx: Context): string => {
-  if (!ctx.options.comments) return input
-
-  const { i, it } = ctx
-  if (!cacheComment.length) return input
-  if (it.type !== 'new-line') return input
-
-  const _prev = ctx.content.at(i - 1)
-  const seprator =
-    _prev && _prev.type !== 'new-line' && _prev.value ? ' ; ' : '; '
-
-  const newLine = newLine2(ctx)
-
-  const output = `${seprator}${cacheComment.join(' ')}${newLine}`
-  cacheComment = []
-  return output
-}
-
 const main = (ctx: Context2): string => {
   const content = ctx.content.list
     .map((it, i) => {
       const context: Context = { ...ctx, i, it }
 
-      if (it.comment) cacheComment = [...cacheComment, ...it.comment]
+      if (it.comment) {
+        const cacheComment = getCacheComment()
+        setCacheComment([...cacheComment, ...it.comment])
+      }
 
       for (const key of Object.keys(mapMethod)) {
         if (it.type === key) {

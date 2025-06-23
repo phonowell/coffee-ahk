@@ -1,18 +1,19 @@
+// Main implicit parameter processor
 import Item from '../../models/Item.js'
 
+import {
+  clearCaches,
+  getCacheContext,
+  getCacheParameter,
+  pickContext,
+  pickParameter,
+} from './implicit-parameter/context.js'
+import {
+  findFunctionStart,
+  removeTrailingComma,
+} from './implicit-parameter/utils.js'
+
 import type { Context } from '../../types'
-
-const cacheContext = new Map<string, boolean>()
-const cacheParameter = new Set<string>()
-
-const findFunctionStart = (ctx: Context, i: number): number => {
-  const { content } = ctx
-  const it = content.at(i)
-
-  if (it?.is('edge', 'block-start')) return i
-
-  return findFunctionStart(ctx, i + 1)
-}
 
 const main = (ctx: Context) => {
   const { content } = ctx
@@ -26,10 +27,12 @@ const main = (ctx: Context) => {
 
     const iStart = findFunctionStart(ctx, i)
 
-    cacheParameter.clear()
-    cacheContext.clear()
+    clearCaches()
     pickParameter(ctx, i, item)
     pickContext(ctx, iStart, item)
+
+    const cacheContext = getCacheContext()
+    const cacheParameter = getCacheParameter()
 
     cacheContext.forEach((isDefined, name) => {
       if (isDefined) return
@@ -53,73 +56,6 @@ const main = (ctx: Context) => {
 
   // (a,)
   removeTrailingComma(ctx)
-}
-
-const pickContext = (ctx: Context, i: number, item: Item) => {
-  const { content } = ctx
-  const it = content.at(i)
-
-  if (
-    it?.is('edge', 'block-end') &&
-    it.scope.isEqual([
-      ...item.scope.slice(0, item.scope.length - 1),
-      'function',
-    ])
-  )
-    return
-
-  if (it?.is('identifier') && !cacheContext.get(it.value)) {
-    const prev = content.at(i - 1)
-    if (!prev) return
-
-    const next = content.at(i + 1)
-    if (!next) return
-
-    cacheContext.set(
-      it.value,
-      prev.is('for', 'for') ||
-        next.is('sign', '=') ||
-        next.is('for-in') ||
-        it.scope.at(-1) === 'parameter',
-    )
-  }
-
-  pickContext(ctx, i + 1, item)
-}
-
-const pickParameter = (ctx: Context, i: number, item: Item) => {
-  const { content } = ctx
-  const it = content.at(i)
-
-  if (it?.is('edge', 'parameter-end') && it.scope.isEqual(item.scope)) return
-
-  if (it?.is('identifier')) {
-    const next = content.at(i + 1)
-    if (!next) return
-    if (
-      next.is('sign', '=') ||
-      next.is('sign', ',') ||
-      next.is('sign', '...') ||
-      next.is('edge', 'parameter-end')
-    )
-      cacheParameter.add(it.value)
-  }
-
-  pickParameter(ctx, i + 1, item)
-}
-
-const removeTrailingComma = (ctx: Context) => {
-  const { content } = ctx
-
-  const listContent: Item[] = []
-  content.list.forEach((item, i) => {
-    if (item.is('sign', ',') && content.at(i + 1)?.is('edge', 'parameter-end'))
-      return
-
-    listContent.push(item)
-  })
-
-  content.reload(listContent)
 }
 
 export default main
