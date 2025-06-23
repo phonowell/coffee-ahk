@@ -50,6 +50,7 @@ const mapMethod: Record<string, string | ((ctx: Context) => string)> = {
   'for-in': ' in ',
   'logical-operator': logicalOperator2,
   'new-line': newLine2,
+  async: 'async ',
   await: 'await ',
   class: 'class ',
   compare: ' ~ ',

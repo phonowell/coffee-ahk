@@ -1,13 +1,68 @@
-# 编译结果位于 script/z/index.ahk
-# 你可以通过运行 `pnpm task z` 进行编译
-# 我怀疑问题出在 `native` 相关模块中
-# 注意，ahk的数组下标从1开始，而不是0
-# 因此正确的结果应该是`it[1] == 0 && it[2] == 1`
-# 所有的测试脚本你都应该在当前文件中进行修改，不要新建文件
+# Comprehensive Promise/Async Test
 
-->
-  Native ''
-  Native ''
-  Native '' # 当这一行存在时便会发生下标偏移的问题
+# 1. Basic async function
+fetchData = ->
+  data = await httpGet("api/data")
+  return JSON.parse(data)
 
-do (it) -> it[0] == 0 and it[1] == 1
+# 2. Async function with parameters and error handling
+processData = (url, options) ->
+  try
+    response = await fetch(url, options)
+    result = await response.json()
+    return result
+  catch err
+    console.error("Failed to process:", err)
+    throw err
+
+# 3. Promise constructor with timeout
+delay = (ms) ->
+  new Promise (resolve) ->
+    setTimeout(resolve, ms)
+
+# 4. Promise.all for parallel operations
+loadAllData = ->
+  Promise.all([
+    fetchData()
+    delay(1000)
+    processData("/api/users", { method: "GET" })
+  ])
+
+# 5. Promise chaining with error handling
+pipeline = ->
+  fetchData()
+    .then (data) ->
+      console.log("Got data:", data)
+      return processData("/api/process", {
+        method: "POST"
+        body: JSON.stringify(data)
+      })
+    .then (result) ->
+      console.log("Processed:", result)
+      return result
+    .catch (err) ->
+      console.error("Pipeline failed:", err)
+      return null
+    .finally ->
+      console.log("Pipeline complete")
+
+# 6. Complex async workflow
+complexWorkflow = ->
+  try
+    # Sequential operations
+    userData = await fetchData()
+    processedData = await processData("/transform", userData)
+
+    # Parallel operations
+    [result1, result2, result3] = await Promise.all([
+      processData("/save", processedData)
+      processData("/backup", processedData)
+      delay(500)
+    ])
+
+    # Final step
+    finalResult = await processData("/finalize", { result1, result2 })
+    return finalResult
+  catch err
+    console.error("Workflow failed:", err)
+    throw err
