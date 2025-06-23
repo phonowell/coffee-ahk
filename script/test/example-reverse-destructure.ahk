@@ -1,0 +1,9 @@
+global points := 100
+global score := {points: points}
+global x := 10
+global y := 20
+global z := 30
+global coordinate := {x: x, y: y, z: z}
+global name := "Player1"
+global level := 5
+global player := {name: name, level: level, health: 100}
