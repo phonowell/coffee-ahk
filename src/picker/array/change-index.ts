@@ -1,46 +1,21 @@
-import Item from '../../models/Item.js'
-import Scope from '../../models/Scope.js'
+import { pickItem } from './change-index/pick-item.js'
+import {
+  processIdentifierType,
+  processNumberType,
+} from './change-index/process-types.js'
+import { updateContent } from './change-index/update-content.js'
 
+import type { Range } from './change-index/types.js'
+import type Item from '../../models/Item.js'
 import type { Context } from '../../types'
-
-type Range = [number, number]
 
 const main = (ctx: Context) => {
   const { content } = ctx
   const token = `__ci_${ctx.options.salt}__`
-  let countIgnore = 0
-
-  const pickItem = (
-    item: Item,
-    i: number,
-    listResult: Item[] = [],
-  ): [number, Item[]] => {
-    const it = content.at(i)
-    if (!it) {
-      countIgnore = 0
-      return [i, listResult]
-    }
-
-    listResult.push(it)
-
-    if (it.is('edge', 'index-start') && it.scope.isEqual(item.scope)) {
-      countIgnore++
-      return pickItem(item, i + 1, listResult)
-    }
-
-    if (it.is('edge', 'index-end') && it.scope.isEqual(item.scope)) {
-      countIgnore--
-      if (countIgnore === 0) return [i, listResult]
-      return pickItem(item, i + 1, listResult)
-    }
-
-    return pickItem(item, i + 1, listResult)
-  }
+  const countIgnore = { value: 0 }
 
   const update = (range: Range, list: Item[]) => {
-    const listContent: Item[] = content.list
-    listContent.splice(range[0], range[1] - range[0] + 1, ...list)
-    content.reload(listContent)
+    updateContent(ctx, range, list)
   }
 
   // each
@@ -58,8 +33,8 @@ const main = (ctx: Context) => {
     if (next.is('identifier', token)) continue
     if (next.is('edge', 'index-end')) continue
 
-    const [iEnd, listItem] = pickItem(item, i)
-    const listUnwrap: Item[] = listItem.slice(1, listItem.length - 1)
+    const [iEnd, listItem] = pickItem(ctx, item, i, countIgnore)
+    const listUnwrap = listItem.slice(1, listItem.length - 1)
     let type: 'identifier' | 'number' | 'string' = 'number'
 
     for (const it of listUnwrap) {
@@ -75,45 +50,12 @@ const main = (ctx: Context) => {
     }
 
     if (type === 'identifier') {
-      ctx.flag.isChangeIndexUsed = true // set flag
-
-      const list = [...listUnwrap]
-      const scp = list[0].scope
-      const scpCall = new Scope([...scp.list, 'call'])
-
-      update(
-        [i + 1, iEnd - 1],
-        [
-          new Item('identifier', token, scp),
-          new Item('edge', 'call-start', scpCall),
-          ...list,
-          new Item('edge', 'call-end', scpCall),
-        ],
-      )
-
+      processIdentifierType(ctx, [i + 1, iEnd - 1], listUnwrap, update)
       continue
     }
 
-    if (type === 'number') {
-      const first = listUnwrap[0]
-      const list =
-        listUnwrap.length === 1
-          ? [
-              new Item(
-                first.type,
-                (parseFloat(first.value) + 1).toString(),
-                first.scope,
-              ),
-            ]
-          : [
-              ...listUnwrap,
-              new Item('math', '+', first.scope),
-              new Item('number', '1', first.scope),
-            ]
-
-      update([i + 1, iEnd - 1], list)
-      continue
-    }
+    if (type === 'number')
+      processNumberType([i + 1, iEnd - 1], listUnwrap, update)
   }
 }
 
