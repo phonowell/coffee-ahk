@@ -32,20 +32,22 @@ const DEFAULT_OPTIONS = {
   verbose: false,
 }
 
+/** Generate random salt for transpilation */
 const generateSalt = (): string =>
   Math.random().toString(32).split('.')[1].padStart(11, '0')
 
-const main = (source: string, option: PartialOptions = {}) => {
-  const option2 = {
+/** Main transpilation function */
+const transpile = (source: string, options: PartialOptions = {}) => {
+  const mergedOptions = {
     ...DEFAULT_OPTIONS,
-    ...option,
+    ...options,
   }
 
   // salt
-  if (!option2.salt) option2.salt = generateSalt()
+  if (!mergedOptions.salt) mergedOptions.salt = generateSalt()
 
-  if (option2.string) return transpileAsText(source, option2)
-  return transpileAsFile(source, option2)
+  if (mergedOptions.string) return transpileAsText(source, mergedOptions)
+  return transpileAsFile(source, mergedOptions)
 }
 
 const transpileAsFile = async (
@@ -89,4 +91,4 @@ const transpileAsText = async (
   return result.content
 }
 
-export default main
+export default transpile

@@ -1,9 +1,9 @@
 import { compile } from 'coffeescript'
 
-import transpile from '../formator/index.js'
+import processFormatters from '../formatters/index.js'
 import Content from '../models/Content.js'
 import Scope from '../models/Scope.js'
-import pick from '../picker/index.js'
+import processAst from '../processors/index.js'
 import render from '../renderer/index.js'
 
 import type { Context } from '../types'
@@ -49,10 +49,10 @@ const main = async (
     ctx.type = token[0].toLowerCase()
     ctx.value = token[1].toString()
 
-    transpile(ctx)
+    processFormatters(ctx)
   }
 
-  await pick(ctx)
+  await processAst(ctx)
 
   return {
     ast: content.list,

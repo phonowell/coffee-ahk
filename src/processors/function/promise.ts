@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/prefer-optional-chain */
 import type Item from '../../models/Item.js'
 import type { Context } from '../../types'
 
@@ -33,12 +32,12 @@ const handlePromiseIdentifier = (list: Item[], index: number) => {
   const prevItem = list[index - 1]
 
   // Handle Promise constructor: new Promise(...)
-  if (prevItem && prevItem.is('statement', 'new')) return
+  if (prevItem.is('statement', 'new')) return
 
   // Handle Promise static methods
-  if (nextItem && nextItem.is('.')) {
+  if (nextItem.is('.')) {
     const methodItem = list[index + 2]
-    if (methodItem && methodItem.is('identifier')) {
+    if (methodItem.is('identifier')) {
       const method = methodItem.value
       const staticMethods = ['resolve', 'reject', 'all', 'race', 'allSettled']
       if (staticMethods.includes(method)) {
@@ -55,7 +54,6 @@ const isPromiseMethod = (item: Item, list: Item[], index: number): boolean => {
   return (
     item.is('identifier') &&
     promiseMethods.includes(item.value) &&
-    prevItem &&
     prevItem.is('.')
   )
 }

@@ -1,5 +1,5 @@
 import Item from '../../../models/Item.js'
-import findIndex from '../../../utils/findIndex.js'
+import { findIndex } from '../../../utils/arrayHelpers.js'
 
 import type Scope from '../../../models/Scope'
 import type { Context } from '../../../types'

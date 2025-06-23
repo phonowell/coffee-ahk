@@ -1,6 +1,6 @@
 // Cache handling for function context
 import Item from '../../../models/Item.js'
-import sortBy from '../../../utils/sortBy.js'
+import { sortBy } from '../../../utils/dataHelpers.js'
 
 import type Scope from '../../../models/Scope'
 import type { Context } from '../../../types'

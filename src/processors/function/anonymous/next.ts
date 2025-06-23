@@ -1,4 +1,4 @@
-import findLastIndex from '../../../utils/findLastIndex.js'
+import { findLastIndex } from '../../../utils/arrayHelpers.js'
 
 import { pickItem } from './pick-item.js'
 
