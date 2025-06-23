@@ -1,6 +1,7 @@
-import { at } from 'fire-keeper'
-
 import Item from '../../models/Item.js'
+
+import { pickIndent } from './deconstruct/pick-indent.js'
+import { pickPre } from './deconstruct/pick-pre.js'
 
 import type { Context } from '../../types'
 
@@ -11,34 +12,11 @@ const main = (ctx: Context) => {
   const token = '__array__'
   let listContent: Item[] = []
 
-  const pickIndent = (i: number): number => {
-    const it = content.at(i)
-    if (!it) return 0
-    if (it.type === 'new-line') return parseInt(it.value, 10)
-    return pickIndent(i - 1)
-  }
-
-  const pickPre = (i: number, listResult: Item[][] = [[]]): Item[][] => {
-    const it = content.at(i)
-    if (!it) return listResult
-
-    const last = at(listResult, -1)
-    if (!last) return listResult
-
-    if (it.is('edge', 'array-start')) return listResult
-
-    if (it.is('sign', ',')) listResult.push([])
-    else last.unshift(it)
-
-    listContent.pop()
-    return pickPre(i - 1, listResult)
-  }
-
   // each
   content.list.forEach((item, i) => {
     // output
     if (listPre.length && item.type === 'new-line') {
-      const indent = pickIndent(i - 1)
+      const indent = pickIndent(ctx, i - 1)
 
       listPre.forEach(
         (_, j) =>
@@ -82,7 +60,7 @@ const main = (ctx: Context) => {
     // [xxx] = [xxx]
     //    ^1 ^2
     // 1 is what you need, and 2 is where you are, so minus 2
-    listPre = pickPre(i - 2)
+    listPre = pickPre(ctx, i - 2, listContent)
     listContent = listContent.slice(0, listContent.length - 2)
 
     listContent = [
