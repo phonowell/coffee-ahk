@@ -10,11 +10,19 @@ const main = (ctx: Context) => {
     listContent.push(item)
 
     // Handle Promise constructor and static methods
-    if (item.is('identifier', 'Promise'))
+    if (item.is('identifier', 'Promise')) {
+      ctx.flag.isPromiseUsed = true
       handlePromiseIdentifier(content.list, i)
+    }
 
     // Handle Promise method calls (.then, .catch, .finally)
-    if (isPromiseMethod(item, content.list, i)) handlePromiseMethod(item)
+    if (isPromiseMethod(item, content.list, i)) {
+      ctx.flag.isPromiseUsed = true
+      handlePromiseMethod(item)
+    }
+
+    // Handle await keyword
+    if (item.is('await')) ctx.flag.isPromiseUsed = true
   })
 
   content.reload(listContent)

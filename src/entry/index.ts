@@ -33,6 +33,7 @@ const main = async (
     flag: {
       isChangeIndexUsed: false,
       isFunctionIncluded: false,
+      isPromiseUsed: false,
     },
     indent: 0,
     options: option,
