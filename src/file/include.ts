@@ -2,7 +2,7 @@
 import { read } from 'fire-keeper'
 
 import { setCacheSalt, sortModules } from './include/cache.js'
-import { replaceAnchor, transform } from './include/transformer.js'
+import { replaceAnchor, transformAll } from './include/transformer.js'
 
 const main = async (source: string, salt: string) => {
   setCacheSalt(salt)
@@ -11,7 +11,7 @@ const main = async (source: string, salt: string) => {
   if (!content) throw new Error(`invalid source '${source}'`)
 
   const result = await replaceAnchor(source, content)
-  await transform()
+  await transformAll()
   return [...sortModules(), result].join('\n')
 }
 
