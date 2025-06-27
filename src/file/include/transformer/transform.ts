@@ -1,76 +1,133 @@
-// Content transformation functions
 import cson from 'cson'
-import { read } from 'fire-keeper'
+import { getExtname, read, run } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
-import { getCache, getCacheSalt } from '../cache.js'
-import { pickImport } from '../source-resolver.js'
-import { closureCoffee, contentIncludes } from '../utils.js'
+import { getCache as fetchCache, getCacheSalt as fetchSalt } from '../cache.js'
+import { pickImport as resolveImport } from '../source-resolver.js'
+import {
+  contentIncludes as hasExport,
+  closureCoffee as wrapClosure,
+} from '../utils.js'
 
-import { replaceAnchor } from './replace-anchor.js'
+import { replaceAnchor as replaceMark } from './replace-anchor.js'
 
-export const transform = async () => {
-  const cache = getCache()
-  const cacheSalt = getCacheSalt()
+type Cache = ReturnType<typeof fetchCache>
+type Meta = Cache extends Map<unknown, infer V> ? V : never
 
-  for (const item of [...cache]) {
-    const [source, data] = item
-    if (data.content) continue
+const handleAhk = (
+  file: string,
+  text: string,
+  meta: Meta,
+  cache: Cache,
+  deps: string[],
+) => {
+  const result = ['```', text, '```'].join('\n')
+  cache.set(file, { ...meta, content: result, dependencies: deps })
+}
 
-    const content = await read<Buffer | string | object>(source)
-    if (!content) {
-      cache.delete(source)
-      continue
-    }
-
-    const before2 = (() => {
-      if (content instanceof Buffer)
-        return iconv.decode(content, 'utf8', { addBOM: true })
-      if (typeof content === 'string') return content
-      return JSON.stringify(content)
-    })()
-
-    const dependencies = await (async () => {
-      if (source.endsWith('.coffee')) {
-        const list: string[] = []
-        for (const line of before2.split('\n')) {
-          if (!line.startsWith('import ')) continue
-          const [, path] = await pickImport(source, line)
-          list.push(path)
-        }
-        return list
-      }
-      return []
-    })()
-
-    const before = source.endsWith('.coffee')
-      ? await replaceAnchor(source, before2)
-      : before2
-
-    const after = (() => {
-      if (source.endsWith('.ahk')) return ['```', before, '```'].join('\n')
-
-      if (source.endsWith('.coffee')) {
-        if (!contentIncludes(before, 'export ')) return before
-        return [
-          `__${cacheSalt}_module_${data.id}__ = do ->`,
-          closureCoffee(before),
-        ].join('\n')
-      }
-      if (source.endsWith('.json') || source.endsWith('.yaml')) {
-        const jstring = cson.stringify(JSON.parse(before))
-        return `__${cacheSalt}_module_${data.id}__ = ${
-          jstring.includes('\n') ? `\n${jstring}` : jstring
-        }`
-      }
-      throw new Error(`invalid source '${source}'`)
-    })()
-
-    cache.set(source, {
-      ...data,
-      content: after,
-      dependencies,
-    })
+const handleCoffee = async (
+  file: string,
+  text: string,
+  meta: Meta,
+  cache: Cache,
+  salt: string,
+  deps: string[],
+) => {
+  const replaced = await replaceMark(file, text)
+  let result: string
+  if (!hasExport(replaced, 'export ')) {
+    result = replaced
+    cache.set(file, { ...meta, content: result, dependencies: deps })
+    return
   }
-  if ([...cache].filter((item) => !item[1].content).length) await transform()
+  result = [
+    `__${salt}_module_${meta.id}__ = do ->`,
+    wrapClosure(replaced),
+  ].join('\n')
+  cache.set(file, { ...meta, content: result, dependencies: deps })
+}
+
+const handleJsonOrYaml = (
+  file: string,
+  text: string,
+  meta: Meta,
+  cache: Cache,
+  salt: string,
+  deps: string[],
+) => {
+  const jsonStr = cson.stringify(JSON.parse(text))
+  const result = `__${salt}_module_${meta.id}__ = ${
+    jsonStr.includes('\n') ? `\n${jsonStr}` : jsonStr
+  }`
+  cache.set(file, { ...meta, content: result, dependencies: deps })
+}
+
+const collectCoffeeDeps = async (
+  file: string,
+  text: string,
+): Promise<string[]> => {
+  const depSet = new Set<string>()
+  for (const line of text.split('\n')) {
+    if (!line.startsWith('import ')) continue
+    const [, depPath] = await resolveImport(file, line)
+    depSet.add(depPath)
+  }
+  return Array.from(depSet)
+}
+
+const processFile = async (
+  file: string,
+  meta: Meta,
+  cache: Cache,
+  salt: string,
+) => {
+  if (meta.content) return
+
+  // 读取文件内容，支持 Buffer、string、object
+  const raw = await read<Buffer | string | object>(file)
+  if (!raw) {
+    cache.delete(file)
+    return
+  }
+
+  const text = run(() => {
+    if (raw instanceof Buffer)
+      return iconv.decode(raw, 'utf8', { addBOM: true })
+    if (typeof raw === 'string') return raw
+    return JSON.stringify(raw)
+  })
+
+  // 获取文件扩展名
+  const ext = getExtname(file)
+
+  // 收集依赖，仅处理 .coffee 文件，去重
+  let deps: string[] = []
+  if (ext === '.coffee') deps = await collectCoffeeDeps(file, text)
+
+  // 处理内容
+  if (ext === '.ahk') {
+    handleAhk(file, text, meta, cache, deps)
+    return
+  }
+  if (ext === '.coffee') {
+    await handleCoffee(file, text, meta, cache, salt, deps)
+    return
+  }
+  if (ext === '.json' || ext === '.yaml') {
+    handleJsonOrYaml(file, text, meta, cache, salt, deps)
+    return
+  }
+  throw new Error(`不支持的文件类型: '${file}'`)
+}
+
+export const transformAll = async () => {
+  const cache = fetchCache()
+  const salt = fetchSalt()
+
+  const filesToProcess = [...cache].filter(([, meta]) => !meta.content)
+  for (const [file, meta] of filesToProcess)
+    await processFile(file, meta, cache, salt)
+
+  // 递归处理未完成的项
+  if ([...cache].some(([, meta]) => !meta.content)) await transformAll()
 }
