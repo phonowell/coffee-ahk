@@ -20,7 +20,11 @@ const main = (ctx: Context) => {
 
     if (it.is('for', 'for')) {
       const next = content.at(i + 1)
-      if (!next) throw new Error('Unexpected error: picker/for/2')
+      if (!next) {
+        throw new Error(
+          `ahk/internal: for: missing variable name after for/in keyword (token index ${i})`,
+        )
+      }
       return next.value
     }
 
@@ -38,7 +42,11 @@ const main = (ctx: Context) => {
     const index = findIndex(i)
 
     const next = content.at(index + 1)
-    if (!next) throw new Error('Unexpected error: picker/for/1')
+    if (!next) {
+      throw new Error(
+        `ahk/internal: for: missing block-start after for/in statement (token index ${index})`,
+      )
+    }
 
     const indent = next.value
     const { scope } = next

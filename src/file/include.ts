@@ -8,7 +8,11 @@ const main = async (source: string, salt: string) => {
   setCacheSalt(salt)
 
   const content = await read<string>(source)
-  if (!content) throw new Error(`invalid source '${source}'`)
+  if (!content) {
+    throw new Error(
+      `ahk/file: include failed, source file not found or empty: '${source}'`,
+    )
+  }
 
   const result = await replaceAnchor(source, content)
   await transformAll()

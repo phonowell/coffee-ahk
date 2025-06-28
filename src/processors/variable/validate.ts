@@ -20,7 +20,7 @@ const checkSimpleAssignment = (ctx: Context, i: number): void => {
 
   if (isVariableForbidden(item.value)) {
     throw new Error(
-      `ahk/forbidden: variable name '${item.value}' is not allowed`,
+      `ahk/forbidden: variable name '${item.value}' is reserved or forbidden. See forbidden.json or avoid a_ prefix.`,
     )
   }
 }
@@ -43,7 +43,7 @@ const checkDestructuringAssignment = (ctx: Context, i: number): void => {
     if (current?.is('bracket', ']') && nextItem?.is('sign', '=')) {
       if (isVariableForbidden(item.value)) {
         throw new Error(
-          `ahk/forbidden: variable name '${item.value}' is not allowed`,
+          `ahk/forbidden: variable name '${item.value}' is reserved or forbidden in destructuring assignment.`,
         )
       }
       break
@@ -76,7 +76,7 @@ const checkFunctionParameters = (ctx: Context, i: number): void => {
   if (isAfterParameterStart || isAfterCommaInParameters) {
     if (isVariableForbidden(item.value)) {
       throw new Error(
-        `ahk/forbidden: parameter name '${item.value}' is not allowed`,
+        `ahk/forbidden: parameter name '${item.value}' is reserved or forbidden in function definition.`,
       )
     }
   }

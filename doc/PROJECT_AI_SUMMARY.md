@@ -36,6 +36,29 @@ Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
 - `data/`: Config, forbidden, sync rules
 - `script/test/`: Test cases (.coffee/.ahk)
 
+## 3.1. formatters vs processors
+
+### src/formatters/
+
+- **Purpose:** Responsible for formatting and transforming each token or small code fragment into a standard AST item.
+- **Granularity:** Fine-grained, processes one token at a time.
+- **Typical usage:** Handles left-to-right token conversion, e.g. operators, if, for, property, etc. Each formatter decides how to convert a token and append it to `content`.
+- **Return value:** Usually returns a boolean to indicate if the token was handled.
+- **Example:** `operator.ts` converts `a ||= b` to `if (!a) a = b` during token processing.
+
+### src/processors/
+
+- **Purpose:** Responsible for global, batch, or structural post-processing of the entire content list after all tokens have been formatted.
+- **Granularity:** Coarse-grained, processes the whole content list.
+- **Typical usage:** Performs batch filtering, reordering, merging, or advanced transforms (e.g. destructuring, for-in expansion) that require knowledge of the full code context.
+- **Return value:** Usually void; modifies the content list in place.
+- **Example:** `object/deconstruct.ts` rewrites destructuring assignments after all tokens are processed.
+
+### Summary
+
+- **formatters**: Per-token, left-to-right, structure-building, suitable for syntax sugar and direct token-to-item mapping.
+- **processors**: Whole-content, post-processing, suitable for global transforms, batch rewrites, or context-dependent logic.
+
 ## 4. Constraints
 
 - No support: optional chaining, getter/setter, implicit return, NaN/null/undefined (all → ''), full import/export, npm

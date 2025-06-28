@@ -8,7 +8,11 @@ const main = (ctx: Context) => {
     if (item.type !== 'class') return
 
     const it = content.at(i + 1)
-    if (!it) throw new Error('Unexpected error: picker/class/count/1')
+    if (!it) {
+      throw new Error(
+        `ahk/internal: class/count: missing identifier after class keyword (token index ${i})`,
+      )
+    }
 
     if (it.type !== 'identifier') return
     setClass.add(it.value)

@@ -15,7 +15,11 @@ export const next = (ctx: Context, count = 1) => {
   if (!~i) return
 
   const it = content.at(i)
-  if (!it) throw new Error('Unexpected error: picker/function/anonymous/1')
+  if (!it) {
+    throw new Error(
+      `ahk/internal: function/anonymous: missing anonymous function at expected index (content length: ${content.list.length})`,
+    )
+  }
   it.value = `${ctx.options.salt}_${count}`
 
   pickItem(ctx, count, i, [...it.scope.list, 'function']).forEach((item) => {

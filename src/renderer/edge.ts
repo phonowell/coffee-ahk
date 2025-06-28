@@ -42,7 +42,11 @@ export const edge2 = (ctx: Context) => {
 
   if (value === 'call-start') {
     const prev = content.at(i - 1)
-    if (!prev) throw new Error('Unexpected error: renderer/index/1')
+    if (!prev) {
+      throw new Error(
+        `ahk/internal: edge2: missing function name before call-start (token index: ${i})`,
+      )
+    }
 
     const name = trim(prev.value, '_')
     // if name starts with lower case, it is a user defined function

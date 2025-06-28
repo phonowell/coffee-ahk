@@ -168,7 +168,9 @@ const processFile = async (
     handleJsonOrYaml(file, text, meta, cache, salt, deps)
     return
   }
-  throw new Error(`不支持的文件类型: '${file}'`)
+  throw new Error(
+    `ahk/file: unsupported file type for transformation: '${file}'`,
+  )
 }
 
 export const transformAll = async () => {

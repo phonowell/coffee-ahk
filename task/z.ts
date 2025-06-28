@@ -2,11 +2,9 @@ import c2a from '../src/index.js'
 
 const main = async () => {
   await c2a('./script/z', {
-    // displayCoffeescriptAst: true,
-    // metadata: false,
-    // pickAnonymous: false,
+    ast: true,
+    metadata: false,
     salt: 'ahk',
-    // verbose: true,
   })
 }
 
