@@ -13,7 +13,6 @@ import type { Context } from '../../types'
 
 /** Process function-related transformations */
 const functionProcessor = (context: Context) => {
-
   // mark function
   // change its type from `fn: identifier(...)`
   // to `fn: function(...)`

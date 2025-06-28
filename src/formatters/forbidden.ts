@@ -14,11 +14,17 @@ const listForbidden = [
 const main = (ctx: Context) => {
   const { type } = ctx
 
-  if (listForbidden.includes(type))
-    throw new Error(`ahk/forbidden: '${type}' is not allowed`)
+  if (listForbidden.includes(type)) {
+    throw new Error(
+      `ahk/forbidden: token type '${type}' is not supported in CoffeeScript→AHK transpilation.`,
+    )
+  }
 
-  if (type === 'post_if')
-    throw new Error("ahk/forbidden: 'post-if' is not allowed")
+  if (type === 'post_if') {
+    throw new Error(
+      'ahk/forbidden: post-if syntax is not supported. Use standard if/else.',
+    )
+  }
 
   return false
 }

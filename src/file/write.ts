@@ -42,7 +42,7 @@ const main = async (
   for (let i = 0; i < lines.length; i++) {
     if (lines[i].length > MAX_LINE_LENGTH) {
       throw new Error(
-        `Line too long at line ${i + 1}: file/write/1\n${lines[i].slice(0, 80)}...`,
+        `ahk/file: line too long at line ${i + 1} (max ${MAX_LINE_LENGTH} chars):\n${lines[i].slice(0, 80)}...`,
       )
     }
   }

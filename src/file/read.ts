@@ -7,7 +7,11 @@ const main = async (source: string, salt: string): Promise<string> => {
   if (!src.endsWith(extname)) src += extname
 
   const content = await include(src, salt)
-  if (!content) throw new Error(`invalid source '${src}'`)
+  if (!content) {
+    throw new Error(
+      `ahk/file: include failed, source file not found or empty: '${src}'`,
+    )
+  }
 
   return content.replace(/\r/g, '')
 }

@@ -6,8 +6,11 @@ const main = (ctx: Context): boolean => {
   if (type === 'number') {
     let value2 = value
 
-    if (value.includes('n'))
-      throw new Error("ahk/forbidden: 'BigInt' is not allowed")
+    if (value.includes('n')) {
+      throw new Error(
+        `ahk/forbidden: 'BigInt' literal is not supported in AHK v1. Offending value: '${value}'`,
+      )
+    }
 
     if (value.includes('_')) value2 = value2.replace(/_/g, '')
 

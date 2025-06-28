@@ -21,10 +21,15 @@ export const getSource = async (source: string, path: string) => {
   const pkg = await read<{ main: string }>(
     `./node_modules/${path}/package.json`,
   )
-  if (!pkg?.main) throw new Error(`invalid package '${source}'`)
+  if (!pkg?.main) {
+    throw new Error(
+      `ahk/file: package.json missing 'main' field for '${source}'`,
+    )
+  }
 
   const listResult2 = await glob(`./node_modules/${path}/${pkg.main}`)
-  if (!listResult2.length) throw new Error(`invalid package '${source}'`)
+  if (!listResult2.length)
+    throw new Error(`ahk/file: resolved package main not found: '${source}'`)
 
   return listResult2[0]
 }
