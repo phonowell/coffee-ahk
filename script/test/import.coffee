@@ -1,3 +1,3 @@
 import './includes/lodash'
-# import plus from './includes/plus'
-# import { minus } from './includes/math'
+import plus from './includes/plus'
+import m, { minus } from './includes/math'

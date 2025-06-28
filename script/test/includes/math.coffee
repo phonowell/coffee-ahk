@@ -2,7 +2,5 @@ plus = (a, b) -> a + b
 
 minus = (a, b) -> a - b
 
-export {
-  plus,
-  minus
-}
+export default { plus, minus }
+export { plus, minus }

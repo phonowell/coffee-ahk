@@ -30,15 +30,40 @@ export const getSource = async (source: string, path: string) => {
 }
 
 export const pickImport = async (source: string, line: string) => {
-  const [entry, path] = line.includes(' from ')
-    ? // import entry from path
-      line
-        .replace('import ', '')
-        .split(' from ')
-        .map((it) => it.trim())
-    : // import path
-      ['', line.replace('import ', '').trim()]
+  // 支持 import m, { a, b } from ... 以及原有语法
+  let defaultImport = ''
+  let namedImports: string[] = []
+  let path = ''
+
+  if (line.includes(' from ')) {
+    const importClause = line.replace('import ', '').split(' from ')[0].trim()
+    path = line.split(' from ')[1].trim()
+    // import m, { a, b } from ...
+    if (/^[\w$]+\s*,\s*{.+}$/.test(importClause)) {
+      const m = RegExp(/^([\w$]+)\s*,\s*{(.+)}$/).exec(importClause)
+      if (m) {
+        defaultImport = m[1].trim()
+        namedImports = m[2]
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+      }
+    } else if (/^{.+}$/.test(importClause)) {
+      // import { a, b } from ...
+      namedImports = importClause
+        .slice(1, -1)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    } else if (importClause) {
+      // import m from ...
+      defaultImport = importClause
+    }
+  } else {
+    // import './foo'
+    path = line.replace('import ', '').trim()
+  }
 
   const src = await getSource(getDirname(source), trim(path, ' /\'"'))
-  return [entry, src]
+  return { default: defaultImport, named: namedImports, path: src }
 }
