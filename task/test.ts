@@ -28,7 +28,7 @@ const compile2 = async (source: string) =>
 const main = async () => {
   const target = await pickTarget()
 
-  const pattern = `./script/test/**/${
+  const pattern = `./script/test/${
     !!target && target !== 'overwrite' ? target : '*'
   }.coffee`
 
