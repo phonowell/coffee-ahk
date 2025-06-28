@@ -1,8 +1,8 @@
 # Documentation
 
-You can think of `Coffee-AHK` as a dialect of `CoffeeScript`. It is compatible with existing `AHK` code and adds new features like `anonymous functions`, `destructuring assignment`, and even `package management support`. It is also a subset of `CoffeeScript` that correctly compiles to `JavaScript` code and runs on all platforms.
+You can think of `Coffee-AHK` as a dialect of `CoffeeScript` that compiles to AutoHotkey v1 scripts. It is compatible with existing `AHK` code and adds modern features such as classes, modules, functional programming, destructuring assignment, various syntactic sugar, and partial npm package management. With plugin support, it can also leverage TypeScript's static type system. Note: AutoHotkey is case-insensitive.
 
-Latest version: **0.0.52**
+Latest version: **0.0.61**
 
 ## Overview
 

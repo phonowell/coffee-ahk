@@ -6,10 +6,22 @@ Translate `coffeescript` to `ahk`.
 
 ## Features
 
-- Full CoffeeScript to AutoHotkey transpilation
-- Class inheritance and method binding
-- Function parameter binding and implicit returns
-- Error handling with try/catch blocks
+- Transpiles CoffeeScript to AutoHotkey v1 scripts
+- Supports class syntax, inheritance, and method binding
+- Import/export syntax for modules (including `.coffee`, `.ahk`, `.json`, `.yaml`)
+- Recursive import resolution and namespace isolation
+- Partial npm package management support (install and import local/third-party modules)
+- Functional programming support; functions are first-class citizens
+- Arrow functions (`->`, `=>`) and `this` binding
+- Function parameter binding, default values, and rest parameters
+- Destructuring assignment for arrays and objects
+- Supports various syntactic sugar, such as destructuring, splats, and concise expressions
+- Try/catch/finally error handling
+- Chained and implicit function calls
+- Anonymous and higher-order functions
+- Native AHK code embedding with backticks
+- Strict variable and reserved word checking
+- Optional TypeScript static type system support via plugins
 
 ## Usage
 
@@ -27,32 +39,22 @@ await c2a("./script/toolkit/index.coffee", {
 });
 ```
 
-## Test
+## Testing
 
 ```shell
-npm run test
+pnpm test
 ```
 
-## Notice
+## Limitations
 
-- Not yet supported `? `;
-
-- Does not yet support inverted syntax such as `a = 1 unless a >= 1`; normal syntax must be used;
-
-- No `NaN`, `null` and `undefined`, which are all converted to the empty string `''`;
-
-- No `getter`/`setter`;
-
-- No implicit `return`, all `return`s must be written explicitly;
-
-- The distinction between characters and numbers in `ahk` is blurred, `'0'` returns `false` in `ahk`;
-
-- Using `=>` outside of `class` is not recommended, because pure functions in `ahk` do not have `this`;
-
-- Use `utf8` for encoding `.coffee` files. The encoding of `.ahk` files uses `uft8 with BOM`;
-
-- Import and export are not yet complete;
-
-- Npm package management support is not complete;
-
-- You can use `true`, `false`, `on` and `off`, but be careful not to use type judgments. The `boolean` type does not exist in `ahk`;
+- AutoHotkey is case-insensitive; variable and function names are not case-sensitive
+- No support for getter/setter
+- No implicit return; all `return` statements must be explicit
+- No true boolean type in AHK; `true`, `false`, `on`, and `off` are syntactic sugar
+- Character and number distinction is blurred in AHK; `'0'` is falsy
+- `NaN`, `null`, and `undefined` are converted to the empty string `''`
+- Optional chaining (`?`) is not supported
+- Inverted syntax (e.g., `a = 1 unless a >= 1`) is not supported; use standard syntax
+- Avoid using `=>` outside classes; pure functions in AHK lack `this`
+- `.coffee` files must be UTF-8; `.ahk` files must be UTF-8 with BOM
+- Import/export and npm package management are incomplete
