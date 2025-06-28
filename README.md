@@ -2,12 +2,11 @@
 
 Translate `coffeescript` to `ahk`.
 
-[Documentation](./doc/documentation.md) | [文档](./doc/cn/documentation.md) | [Promise Support](./doc/promise-support.md)
+[Documentation](./doc/documentation.md) | [文档](./doc/cn/documentation.md)
 
 ## Features
 
 - Full CoffeeScript to AutoHotkey transpilation
-- **Promise/async support** - Write modern async code with `await`, `Promise.resolve()`, `.then()`, etc.
 - Class inheritance and method binding
 - Function parameter binding and implicit returns
 - Error handling with try/catch blocks

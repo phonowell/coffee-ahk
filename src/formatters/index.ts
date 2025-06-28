@@ -1,7 +1,5 @@
 import aliasFormatter from './alias.js'
 import arrayFormatter from './array.js'
-import asyncFormatter from './async.js'
-import awaitFormatter from './await.js'
 import booleanFormatter from './boolean.js'
 import bracketFormatter from './bracket.js'
 import classFormatter from './class.js'
@@ -34,8 +32,6 @@ const formattersMap: Record<string, (ctx: Context) => boolean> = {
   'new-line': newLineFormatter,
   alias: aliasFormatter,
   array: arrayFormatter,
-  async: asyncFormatter,
-  await: awaitFormatter,
   boolean: booleanFormatter,
   bracket: bracketFormatter,
   class: classFormatter,
