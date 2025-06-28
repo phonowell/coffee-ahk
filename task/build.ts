@@ -13,7 +13,7 @@ const genBuiltins = async () => {
   const c2a = (await import('../src/index.js')).default
 
   // 编译segment文件
-  const segments = ['changeIndex', 'returnFunction', 'Promise']
+  const segments = ['changeIndex', 'returnFunction']
 
   for (const segment of segments) {
     const sourcePath = `./script/segment/${segment}.coffee`

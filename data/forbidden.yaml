@@ -1,6 +1,7 @@
 # JavaScript 保留字
 - abstract
 - arguments
+- async
 - await
 - boolean
 - break
@@ -42,6 +43,7 @@
 - null
 - package
 - private
+- promise
 - protected
 - public
 - return
