@@ -4,10 +4,7 @@ import iconv from 'iconv-lite'
 
 import { getCache as fetchCache, getCacheSalt as fetchSalt } from '../cache.js'
 import { pickImport as resolveImport } from '../source-resolver.js'
-import {
-  contentIncludes as hasExport,
-  closureCoffee as wrapClosure,
-} from '../utils.js'
+import { closureCoffee as wrapClosure } from '../utils.js'
 
 import { replaceAnchor as replaceMark } from './replace-anchor.js'
 
@@ -25,6 +22,39 @@ const handleAhk = (
   cache.set(file, { ...meta, content: result, dependencies: deps })
 }
 
+const parseExportsFromCoffee = (replaced: string) => {
+  const exportDefault: string[] = []
+  const exportNamed: string[] = []
+  const codeLines: string[] = []
+
+  for (const line of replaced.split('\n')) {
+    const trimmed = line.trim()
+    if (!trimmed.startsWith('export ')) {
+      codeLines.push(line)
+      continue
+    }
+    // export default foo
+    if (/^export\s+default\s+(.+)/.test(trimmed)) {
+      const m = /^export\s+default\s+(.+)/.exec(trimmed)
+      if (m) exportDefault.push(m[1].trim())
+      continue
+    }
+    // export {a, b} or export {a: foo()}
+    if (/^export\s*{(.+)}/.test(trimmed)) {
+      const m = /^export\s*{(.+)}/.exec(trimmed)
+      if (m) {
+        m[1].split(',').forEach((pair) => {
+          const seg = pair.trim()
+          if (!seg) return
+          exportNamed.push(seg)
+        })
+      }
+    }
+    // Other export statements are ignored for now
+  }
+  return { exportDefault, exportNamed, codeLines }
+}
+
 const handleCoffee = async (
   file: string,
   text: string,
@@ -34,15 +64,36 @@ const handleCoffee = async (
   deps: string[],
 ) => {
   const replaced = await replaceMark(file, text)
-  let result: string
-  if (!hasExport(replaced, 'export ')) {
-    result = replaced
-    cache.set(file, { ...meta, content: result, dependencies: deps })
-    return
+  const { exportDefault, exportNamed, codeLines } =
+    parseExportsFromCoffee(replaced)
+
+  // 组装 return 语句
+  let returnLine = ''
+  if (exportDefault.length && exportNamed.length) {
+    // default 和命名导出共存
+    const namedObj = exportNamed
+      .map((s) => (s.includes(':') ? s : `${s}: ${s}`))
+      .join(', ')
+    returnLine = `return { default: ${exportDefault[0]}, ${namedObj} }`
+  } else if (exportDefault.length) {
+    // 只导出 default 也统一为对象
+    returnLine = `return { default: ${exportDefault[0]} }`
+  } else if (exportNamed.length) {
+    const namedObj = exportNamed
+      .map((s) => (s.includes(':') ? s : `${s}: ${s}`))
+      .join(', ')
+    returnLine = `return { ${namedObj} }`
   }
-  result = [
-    `__${salt}_module_${meta.id}__ = do ->`,
-    wrapClosure(replaced),
+
+  if (returnLine) codeLines.push(returnLine)
+
+  // 保证 return 语句缩进与模块体一致
+  const closureBody = wrapClosure(codeLines.join('\n'))
+  const result = [
+    exportDefault.length || exportNamed.length
+      ? `__${salt}_module_${meta.id}__ = do ->`
+      : 'do ->',
+    closureBody,
   ].join('\n')
   cache.set(file, { ...meta, content: result, dependencies: deps })
 }
@@ -69,7 +120,7 @@ const collectCoffeeDeps = async (
   const depSet = new Set<string>()
   for (const line of text.split('\n')) {
     if (!line.startsWith('import ')) continue
-    const [, depPath] = await resolveImport(file, line)
+    const { path: depPath } = await resolveImport(file, line)
     depSet.add(depPath)
   }
   return Array.from(depSet)

@@ -45,16 +45,25 @@ Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
 
 ## 5. Import Handling
 
-- `import 'xxx'`: Target file content is directly inserted into global scope of output (e.g. `import './includes/lodash'` → `lodash = {}` in output)
-- `import entry from 'xxx'`: Generates `entry = __SALT_module_ID__`, imported file is inserted as a module, referenced by variable
-- `import { x } from 'xxx'`: Generates property binding (e.g. `x := __object__["x"]`), content inserted as module
-- All import dependencies are processed recursively, deduped, handled by source-resolver/transformers
-- No real module scope or export mechanism is simulated
+- `import 'xxx'`:
+  - If importing a `.coffee` file, its content is wrapped in a closure before insertion.
+  - Other file types are inserted without closure wrapping.
+  - Example: `import './includes/lodash'` → `lodash = {}` in output.
+- `import entry from 'xxx'`:
+  - Generates `entry = __SALT_module_ID__.default`, where the imported file (including `.coffee`, `.json`, `.yaml`) is assigned to a salt-based variable and always returns an object.
+  - `.json`/`.yaml` files are stringified and imported as CoffeeScript objects.
+- `import { x } from 'xxx'`:
+  - Generates property binding (e.g. `x = __SALT_module_ID__.x`), content inserted as module.
+- `import entry, { x, y } from 'xxx'`:
+  - Supports mixed default and named imports. Generates `entry = __SALT_module_ID__.default`, `x = __SALT_module_ID__.x`, `y = __SALT_module_ID__.y`.
+- All import dependencies are processed recursively, deduped, and tracked via a cache mechanism.
+- No real module scope or export mechanism is simulated.
+- All exports are unified as a returned object at the end of the module, e.g. `return { default: foo, a: a, b: bar() }`. If only default is exported, returns `{ default: foo }`.
 
 ## 6. Types/Artifacts
 
-- Input: `.coffee` text/path
-- Intermediate: AST, formatting objects, logs
+- Input: `.coffee`, `.ahk`, `.json`, `.yaml` text/path
+- Intermediate: AST, formatting objects, logs, cache (for deduplication and transformation state)
 - Output: `.ahk` text/file
 - Key types: `Content`, `Item`, `Scope`
 
@@ -71,3 +80,11 @@ Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
 ## 8. Maintenance
 
 - After any structure/core/config change, update this file. Always verify with real code.
+
+## 9. Transformation Logic & Constraints
+
+- Only `.coffee`, `.ahk`, `.json`, `.yaml` are supported for transformation.
+- Transformation is recursive and cache-driven: all files and their dependencies are processed until completion.
+- All export statements are collected and removed from the code body; a single return statement is appended at the end of the module closure, returning an object with all exported members (default and named).
+- `.ahk` files are wrapped in code blocks in the output.
+- Salt-based variable naming is used for all imported modules.
