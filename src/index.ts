@@ -26,8 +26,6 @@ const DEFAULT_OPTIONS = {
   save: true,
   /** Return string instead of file */
   string: false,
-  /** Track function calls */
-  track: false,
   /** Enable verbose logging */
   verbose: false,
 }

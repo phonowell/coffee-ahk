@@ -77,8 +77,6 @@ const main = async (ctx: Context) => {
 
   await insert(ctx, 'isChangeIndexUsed', 'changeIndex')
   await insert(ctx, 'isPromiseUsed', 'Promise')
-  if (ctx.options.track)
-    await insert(ctx, 'isFunctionIncluded', 'returnFunction')
 }
 
 export default main

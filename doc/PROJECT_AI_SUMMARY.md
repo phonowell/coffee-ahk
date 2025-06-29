@@ -14,7 +14,30 @@
 
 Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
 
-## 2. Data Flow
+---
+
+## 2. Constraints
+
+- No support: optional chaining, getter/setter, implicit return, NaN/null/undefined (all → ''), full import/export, npm
+- AHK v1: no property accessors, no real module system, no boolean type (true/false/on/off = sugar)
+- .coffee: UTF-8; .ahk: UTF-8 with BOM
+- Export in CoffeeScript is simulated (downgraded to return/closure var)
+
+---
+
+## 3. Error Message Format
+
+- All thrown errors in TypeScript use: `throw new Error('ahk/file: ...')`
+- The message starts with `ahk/file:` followed by a concise description and relevant variable (e.g. file path, source).
+- Example:
+  - `throw new Error('ahk/file: invalid source \\'${source}\\'')`
+  - `throw new Error('ahk/file: resolved package main not found: \\'${source}\\'')`
+  - `throw new Error('ahk/file: module contains both class and export: \\'${file}\\'')`
+- This format ensures error traceability and consistency across the project.
+
+---
+
+## 4. Data Flow
 
 - Input: `.coffee` file/string
 - Read: `src/file/read.ts`
@@ -22,7 +45,9 @@ Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
 - Output: `.ahk` via `src/file/write.ts`
 - Logging: `src/logger/index.ts`
 
-## 3. Modules
+---
+
+## 5. Modules
 
 - `src/formatters/`: Syntax mapping (function, class, array, etc.)
 - `src/processors/`: Advanced transforms (destructuring, class, etc.)
@@ -36,9 +61,9 @@ Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
 - `data/`: Config, forbidden, sync rules
 - `script/test/`: Test cases (.coffee/.ahk)
 
-## 3.1. formatters vs processors
+### 5.1. formatters vs processors
 
-### src/formatters/
+#### src/formatters/
 
 - **Purpose:** Responsible for formatting and transforming each token or small code fragment into a standard AST item.
 - **Granularity:** Fine-grained, processes one token at a time.
@@ -46,7 +71,7 @@ Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
 - **Return value:** Usually returns a boolean to indicate if the token was handled.
 - **Example:** `operator.ts` converts `a ||= b` to `if (!a) a = b` during token processing.
 
-### src/processors/
+#### src/processors/
 
 - **Purpose:** Responsible for global, batch, or structural post-processing of the entire content list after all tokens have been formatted.
 - **Granularity:** Coarse-grained, processes the whole content list.
@@ -54,19 +79,14 @@ Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
 - **Return value:** Usually void; modifies the content list in place.
 - **Example:** `object/deconstruct.ts` rewrites destructuring assignments after all tokens are processed.
 
-### Summary
+#### Summary
 
 - **formatters**: Per-token, left-to-right, structure-building, suitable for syntax sugar and direct token-to-item mapping.
 - **processors**: Whole-content, post-processing, suitable for global transforms, batch rewrites, or context-dependent logic.
 
-## 4. Constraints
+---
 
-- No support: optional chaining, getter/setter, implicit return, NaN/null/undefined (all → ''), full import/export, npm
-- AHK v1: no property accessors, no real module system, no boolean type (true/false/on/off = sugar)
-- .coffee: UTF-8; .ahk: UTF-8 with BOM
-- Export in CoffeeScript is simulated (downgraded to return/closure var)
-
-## 5. Import Handling
+## 6. Import Handling
 
 - `import 'xxx'`:
   - If importing a `.coffee` file, its content is wrapped in a closure before insertion.
@@ -81,16 +101,30 @@ Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
   - Supports mixed default and named imports. Generates `entry = __SALT_module_ID__.default`, `x = __SALT_module_ID__.x`, `y = __SALT_module_ID__.y`.
 - All import dependencies are processed recursively, deduped, and tracked via a cache mechanism.
 - No real module scope or export mechanism is simulated.
-- All exports are unified as a returned object at the end of the module, e.g. `return { default: foo, a: a, b: bar() }`. If only default is exported, returns `{ default: foo }`.
+- All exports are unified as a returned object at the end of the module closure, e.g. `return { default: foo, a: a, b: bar() }`. If only default is exported, returns `{ default: foo }`.
 
-## 6. Types/Artifacts
+---
+
+## 7. Transformation Logic & Constraints
+
+- Only `.coffee`, `.ahk`, `.json`, `.yaml` are supported for transformation.
+- Transformation is recursive and cache-driven: all files and their dependencies are processed until completion.
+- All export statements are collected and removed from the code body; a single return statement is appended at the end of the module closure, returning an object with all exported members (default and named).
+- `.ahk` files are wrapped in code blocks in the output.
+- Salt-based variable naming is used for all imported modules.
+
+---
+
+## 8. Types/Artifacts
 
 - Input: `.coffee`, `.ahk`, `.json`, `.yaml` text/path
 - Intermediate: AST, formatting objects, logs, cache (for deduplication and transformation state)
 - Output: `.ahk` text/file
 - Key types: `Content`, `Item`, `Scope`
 
-## 7. Test Coverage
+---
+
+## 9. Test Coverage
 
 - All test cases in `script/test/`. Each `.coffee` must have a corresponding `.ahk` (1:1 mapping).
 - Test runner: transpiles each `.coffee`, compares output to `.ahk`. Mismatch prints both and throws error.
@@ -100,14 +134,8 @@ Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
   - `pnpm test overwrite` — Overwrite all `.ahk` files with current transpiler output (danger: replaces expected outputs)
 - Strict mapping and output validation enforced.
 
-## 8. Maintenance
+---
+
+## 10. Maintenance
 
 - After any structure/core/config change, update this file. Always verify with real code.
-
-## 9. Transformation Logic & Constraints
-
-- Only `.coffee`, `.ahk`, `.json`, `.yaml` are supported for transformation.
-- Transformation is recursive and cache-driven: all files and their dependencies are processed until completion.
-- All export statements are collected and removed from the code body; a single return statement is appended at the end of the module closure, returning an object with all exported members (default and named).
-- `.ahk` files are wrapped in code blocks in the output.
-- Salt-based variable naming is used for all imported modules.

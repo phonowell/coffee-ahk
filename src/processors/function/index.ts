@@ -7,7 +7,6 @@ import injectImplicitParameters from './implicit-parameter.js'
 import injectImplicitReturns from './implicit-return.js'
 import markFunctions from './mark.js'
 import transformParameters from './parameter.js'
-import trackFunctionCalls from './track.js'
 
 import type { Context } from '../../types'
 
@@ -40,7 +39,6 @@ const functionProcessor = (context: Context) => {
 
   processDoStatements(context)
 
-  if (context.options.track) trackFunctionCalls(context)
 }
 
 export default functionProcessor

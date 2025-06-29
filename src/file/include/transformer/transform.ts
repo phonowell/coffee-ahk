@@ -90,6 +90,23 @@ const handleCoffee = async (
   const { exportDefault, exportNamed, codeLines } =
     parseExportsFromCoffee(replaced)
 
+  // 检查是否有 class 声明
+  const codeBody = codeLines.join('\n')
+  const hasClass = /^\s*class\s+\w+/m.test(codeBody)
+  const hasExport = exportDefault.length > 0 || exportNamed.length > 0
+
+  if (hasClass && hasExport) {
+    throw new Error(
+      `ahk/file: module contains both class and export: '${file}'`,
+    )
+  }
+
+  if (hasClass && !hasExport) {
+    // 仅有 class，直接输出 class 代码
+    cache.set(file, { ...meta, content: codeBody, dependencies: deps })
+    return
+  }
+
   // 组装 return 语句
   const returnLine = run(() => {
     // default 和命名导出共存
