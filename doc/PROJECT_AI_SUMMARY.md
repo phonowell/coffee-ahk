@@ -7,6 +7,7 @@
 > 3. After major changes, update this file, but always verify with real code.
 > 4. All output targets AutoHotkey v1.
 > 5. This document MUST use simple, clear English.
+> 6. The project is ESM + TypeScript. All source files use `.ts` extension (not `.js`). When referencing modules, always use `.ts` and ESM import/export syntax. Do not reference `.js` files in `src/`.
 
 ---
 

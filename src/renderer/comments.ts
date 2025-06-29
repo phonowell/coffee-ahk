@@ -1,4 +1,6 @@
 // Comment injection functionality
+import { trim } from 'radash'
+
 import { newLine2 } from './basic.js'
 
 import type Item from '../models/Item.js'
@@ -19,17 +21,18 @@ export const setCacheComment = (comments: string[]) => {
 export const injectComment = (input: string, ctx: Context): string => {
   if (!ctx.options.comments) return input
 
-  const { i, it } = ctx
+  const { it } = ctx
   if (!cacheComment.length) return input
   if (it.type !== 'new-line') return input
 
-  const _prev = ctx.content.at(i - 1)
-  const seprator =
-    _prev && _prev.type !== 'new-line' && _prev.value ? ' ; ' : '; '
+  const _prev = ctx.content.last
+  const seprator = _prev.type !== 'new-line' && _prev.value ? ' ; ' : '; '
 
   const newLine = newLine2(ctx)
 
-  const output = `${seprator}${cacheComment.join(' ')}${newLine}`
+  const output = `${seprator}${cacheComment
+    .map((line) => trim(line, ' #;'))
+    .join('; ')}${newLine}`
   cacheComment = []
   return output
 }
