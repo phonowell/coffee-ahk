@@ -7,8 +7,6 @@ const main = (ctx: Context) => {
   // list all classes
   const setClass = count(ctx)
   validate(setClass)
-
-  // console.log(setClass)
 }
 
 export default main

@@ -1,4 +1,4 @@
-class A extends B {
+class Ａ extends B {
   a := 0
   b := {}
   c := {a: 1}
@@ -11,7 +11,7 @@ class A extends B {
   e := Func("ahk_3").Bind(this)
   f := Func("ahk_2").Bind(this)
 }
-global b := new A()
+global b := new Ａ()
 ahk_1(this) {
   return this.a
 }

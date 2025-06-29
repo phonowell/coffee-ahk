@@ -3,11 +3,13 @@ import type Content from '../models/Content'
 import type Scope from '../models/Scope'
 import type cs from 'coffeescript'
 
-type Cache = {
+export type Cache = {
   global: Set<string>
+  classNames: Set<string>
+  identifiers: Set<string>
 }
 
-type Context = {
+export type Context = {
   cache: Cache
   content: Content
   flag: Flag
@@ -19,10 +21,8 @@ type Context = {
   value: string
 }
 
-type Flag = {
+export type Flag = {
   isChangeIndexUsed: boolean
 }
 
 type Token = ReturnType<typeof cs.compile>['tokens'][number]
-
-export type { Cache, Context, Flag }

@@ -1,5 +1,6 @@
 // Main renderer orchestrator
 import {
+  identifier2,
   logicalOperator2,
   negative2,
   newLine2,
@@ -56,6 +57,7 @@ const mapMethod: Record<string, string | ((ctx: Context) => string)> = {
   compare: ' ~ ',
   edge: edge2,
   for: 'for ',
+  identifier: identifier2,
   if: if2,
   math: ' ~ ',
   negative: negative2,

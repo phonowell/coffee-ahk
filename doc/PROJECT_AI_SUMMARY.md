@@ -10,34 +10,31 @@
 
 ---
 
-## 1. Overview
+## 1. Core Constraints (Most Important)
 
-Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
+- AutoHotkey is case-insensitive; variable and function names are not case-sensitive.
+  **Class names are simulated as case-sensitive:**
+  - Class names must start with an uppercase letter.
+  - All class identifiers are rendered with uppercase letters replaced by full-width Unicode for AHK v1 case simulation.
+  - Variable, function, and parameter names cannot be the same as any class name; such conflicts will throw an error at compile time.
+- No support: optional chaining, getter/setter, implicit return, NaN/null/undefined (all → ''), full import/export, npm.
+- AHK v1: no property accessors, no real module system, no boolean type (true/false/on/off = sugar).
+- .coffee: UTF-8; .ahk: UTF-8 with BOM.
+- Export in CoffeeScript is simulated (downgraded to return/closure var).
 
 ---
 
-## 2. Constraints
+## 2. Error Message Format
 
-- No support: optional chaining, getter/setter, implicit return, NaN/null/undefined (all → ''), full import/export, npm
-- AHK v1: no property accessors, no real module system, no boolean type (true/false/on/off = sugar)
-- .coffee: UTF-8; .ahk: UTF-8 with BOM
-- Export in CoffeeScript is simulated (downgraded to return/closure var)
-
----
-
-## 3. Error Message Format
-
-- All thrown errors in TypeScript use: `throw new Error('ahk/file: ...')`
-- The message starts with `ahk/file:` followed by a concise description and relevant variable (e.g. file path, source).
+- All thrown errors in TypeScript use: `throw new Error('ahk/file: ...')` or `throw new Error('ahk/class-case: ...')`.
+- The message starts with a prefix followed by a concise description and relevant variable (e.g. file path, source).
 - Example:
   - `throw new Error('ahk/file: invalid source \\'${source}\\'')`
-  - `throw new Error('ahk/file: resolved package main not found: \\'${source}\\'')`
-  - `throw new Error('ahk/file: module contains both class and export: \\'${file}\\'')`
-- This format ensures error traceability and consistency across the project.
+  - `throw new Error('ahk/class-case: class name 'Foo' must start with an uppercase letter.')`
 
 ---
 
-## 4. Data Flow
+## 3. Data Flow
 
 - Input: `.coffee` file/string
 - Read: `src/file/read.ts`
@@ -47,7 +44,7 @@ Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
 
 ---
 
-## 5. Modules
+## 4. Modules
 
 - `src/formatters/`: Syntax mapping (function, class, array, etc.)
 - `src/processors/`: Advanced transforms (destructuring, class, etc.)
@@ -61,26 +58,25 @@ Transpiles CoffeeScript to AutoHotkey v1. TypeScript. API only.
 - `data/`: Config, forbidden, sync rules
 - `script/test/`: Test cases (.coffee/.ahk)
 
-### 5.1. formatters vs processors
+---
 
-#### src/formatters/
+## 5. formatters vs processors
 
+### src/formatters/
 - **Purpose:** Responsible for formatting and transforming each token or small code fragment into a standard AST item.
 - **Granularity:** Fine-grained, processes one token at a time.
 - **Typical usage:** Handles left-to-right token conversion, e.g. operators, if, for, property, etc. Each formatter decides how to convert a token and append it to `content`.
 - **Return value:** Usually returns a boolean to indicate if the token was handled.
 - **Example:** `operator.ts` converts `a ||= b` to `if (!a) a = b` during token processing.
 
-#### src/processors/
-
+### src/processors/
 - **Purpose:** Responsible for global, batch, or structural post-processing of the entire content list after all tokens have been formatted.
 - **Granularity:** Coarse-grained, processes the whole content list.
 - **Typical usage:** Performs batch filtering, reordering, merging, or advanced transforms (e.g. destructuring, for-in expansion) that require knowledge of the full code context.
 - **Return value:** Usually void; modifies the content list in place.
 - **Example:** `object/deconstruct.ts` rewrites destructuring assignments after all tokens are processed.
 
-#### Summary
-
+**Summary:**
 - **formatters**: Per-token, left-to-right, structure-building, suitable for syntax sugar and direct token-to-item mapping.
 - **processors**: Whole-content, post-processing, suitable for global transforms, batch rewrites, or context-dependent logic.
 

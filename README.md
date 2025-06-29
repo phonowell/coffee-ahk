@@ -47,7 +47,11 @@ pnpm test
 
 ## Limitations
 
-- AutoHotkey is case-insensitive; variable and function names are not case-sensitive
+- AutoHotkey is case-insensitive; variable and function names are not case-sensitive.
+  **Class names are simulated as case-sensitive:**
+  - Class names must start with an uppercase letter.
+  - All class identifiers are rendered with uppercase letters replaced by full-width Unicode for AHK v1 case simulation.
+  - Variable, function, and parameter names cannot be the same as any class name; such conflicts will throw an error at compile time.
 - No support for getter/setter
 - No implicit return; all `return` statements must be explicit
 - No true boolean type in AHK; `true`, `false`, `on`, and `off` are syntactic sugar

@@ -1,5 +1,5 @@
 global fn := Func("ahk_3")
-class A {
+class Ａ {
   __New() {
     this.a := 1
   }

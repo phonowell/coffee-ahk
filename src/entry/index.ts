@@ -28,6 +28,8 @@ const main = async (
   const ctx: Context = {
     cache: {
       global: new Set(),
+      classNames: new Set(),
+      identifiers: new Set(),
     },
     content,
     flag: {
