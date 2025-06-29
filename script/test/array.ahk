@@ -3,7 +3,6 @@ global __ci_ahk__ := anonymous(__ipt__) {
     return __ipt__ + 1
   return __ipt__
 }
-
 global a := []
 a := [1]
 a := [1, 2, 3]

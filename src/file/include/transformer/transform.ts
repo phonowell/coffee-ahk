@@ -27,30 +27,53 @@ const parseExportsFromCoffee = (replaced: string) => {
   const exportNamed: string[] = []
   const codeLines: string[] = []
 
-  for (const line of replaced.split('\n')) {
+  const lines = replaced.split('\n')
+  let i = 0
+  while (i < lines.length) {
+    const line = lines[i]
     const trimmed = line.trim()
+    // 只处理 export 开头的行
     if (!trimmed.startsWith('export ')) {
       codeLines.push(line)
+      i++
       continue
     }
-    // export default foo
-    if (/^export\s+default\s+(.+)/.test(trimmed)) {
-      const m = /^export\s+default\s+(.+)/.exec(trimmed)
-      if (m) exportDefault.push(m[1].trim())
-      continue
-    }
-    // export {a, b} or export {a: foo()}
-    if (/^export\s*{(.+)}/.test(trimmed)) {
-      const m = /^export\s*{(.+)}/.exec(trimmed)
-      if (m) {
-        m[1].split(',').forEach((pair) => {
-          const seg = pair.trim()
-          if (!seg) return
-          exportNamed.push(seg)
-        })
+
+    // export default foo 或 export default ->
+    const exportDefaultMatch = /^export\s+default\s+(.+)/.exec(trimmed)
+    if (exportDefaultMatch) {
+      // 判断是否为多行缩进块
+      const exportLineIndent = RegExp(/^(\s*)/).exec(line)?.[1] ?? ''
+      const exportBody = [exportDefaultMatch[1]]
+      let j = i + 1
+      while (
+        j < lines.length &&
+        (lines[j].trim() === '' ||
+          lines[j].startsWith(`${exportLineIndent} `) ||
+          lines[j].startsWith(`${exportLineIndent}\t`))
+      ) {
+        exportBody.push(lines[j].slice(exportLineIndent.length))
+        j++
       }
+      exportDefault.push(exportBody.join('\n').trim())
+      i = j
+      continue
     }
-    // Other export statements are ignored for now
+
+    // export {a, b} or export {a: foo()}
+    const exportNamedMatch = /^export\s*{(.+)}/.exec(trimmed)
+    if (exportNamedMatch) {
+      exportNamedMatch[1].split(',').forEach((pair) => {
+        const seg = pair.trim()
+        if (!seg) return
+        exportNamed.push(seg)
+      })
+      i++
+      continue
+    }
+
+    // 其他 export 忽略
+    i++
   }
   return { exportDefault, exportNamed, codeLines }
 }
@@ -68,22 +91,28 @@ const handleCoffee = async (
     parseExportsFromCoffee(replaced)
 
   // 组装 return 语句
-  let returnLine = ''
-  if (exportDefault.length && exportNamed.length) {
+  const returnLine = run(() => {
     // default 和命名导出共存
-    const namedObj = exportNamed
-      .map((s) => (s.includes(':') ? s : `${s}: ${s}`))
-      .join(', ')
-    returnLine = `return { default: ${exportDefault[0]}, ${namedObj} }`
-  } else if (exportDefault.length) {
-    // 只导出 default 也统一为对象
-    returnLine = `return { default: ${exportDefault[0]} }`
-  } else if (exportNamed.length) {
-    const namedObj = exportNamed
-      .map((s) => (s.includes(':') ? s : `${s}: ${s}`))
-      .join(', ')
-    returnLine = `return { ${namedObj} }`
-  }
+    if (exportDefault.length && exportNamed.length) {
+      const namedObj = exportNamed
+        .map((s) => (s.includes(':') ? s : `${s}: ${s}`))
+        .join(', ')
+      return `return { default: ${exportDefault[0]}, ${namedObj} }`
+    }
+
+    // 只导出 default
+    if (exportDefault.length) return `return { default: ${exportDefault[0]} }`
+
+    if (exportNamed.length) {
+      const namedObj = exportNamed
+        .map((s) => (s.includes(':') ? s : `${s}: ${s}`))
+        .join(', ')
+      return `return { ${namedObj} }`
+    }
+
+    // 没有任何导出
+    return ''
+  })
 
   if (returnLine) codeLines.push(returnLine)
 

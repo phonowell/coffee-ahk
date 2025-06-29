@@ -56,7 +56,7 @@ const main = async (
 
   return {
     ast: content.list,
-    content: render(ctx),
+    content: render(ctx).trim(),
     raw: ast.tokens,
   }
 }

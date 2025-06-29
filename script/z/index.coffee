@@ -1,3 +1,3 @@
-a = value: 0
-a.value or= 1
-a.value ?= 1
+import './includes/lodash'
+import plus from './includes/plus'
+import m, { minus } from './includes/math'

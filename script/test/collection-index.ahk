@@ -3,7 +3,6 @@ global __ci_ahk__ := anonymous(__ipt__) {
     return __ipt__ + 1
   return __ipt__
 }
-
 a[1]
 a["a"]
 a[__ci_ahk__.Call(a)]
