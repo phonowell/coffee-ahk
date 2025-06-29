@@ -8,8 +8,6 @@ type Options = typeof DEFAULT_OPTIONS
 export type PartialOptions = Partial<Options>
 
 const DEFAULT_OPTIONS = {
-  /** Include anonymous functions */
-  anonymous: true,
   /** Generate AST output */
   ast: false,
   /** Use built-in functions */

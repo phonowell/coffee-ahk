@@ -17,9 +17,6 @@ const functionProcessor = (context: Context) => {
   // to `fn: function(...)`
   markFunctions(context)
 
-  // list all functions
-  let functionSet = countFunctions(context)
-
   processClassMethods(context)
 
   injectImplicitParameters(context)
@@ -30,10 +27,8 @@ const functionProcessor = (context: Context) => {
   injectFunctionContext(context)
 
   // anonymous
-  if (context.options.anonymous && functionSet.has('anonymous')) {
-    processAnonymousFunctions(context)
-    functionSet = countFunctions(context) // re-count
-  }
+  processAnonymousFunctions(context)
+  const functionSet = countFunctions(context)
 
   transformParameters(context, functionSet)
 
