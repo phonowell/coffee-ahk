@@ -60,7 +60,6 @@
   "scripts": {
     "build": "pnpm task build && rollup -c --bundleConfigAsCjs",
     "lint": "eslint \"src/**/*.{ts,tsx}\" \"task/**/*.ts\" --fix",
-    "publish": "pnpm task publish",
     "task": "tsx task/index.ts",
     "test": "pnpm task test",
     "watch": "pnpm task watch"
