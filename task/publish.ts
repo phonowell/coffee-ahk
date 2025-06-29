@@ -8,12 +8,16 @@ const main = async () => {
     return
   }
 
+  // 执行打包
+  await exec('pnpm build')
+
   // 执行`npm version patch`，并获取其返回的tag号
   const [, version] = await exec('npm version patch')
   if (!version) {
     console.log('未能获取到合法版本号')
     return
   }
+
   // 调用`git push origin xxx`将tag推送至远端
   await exec(`git push origin ${version}`)
 
