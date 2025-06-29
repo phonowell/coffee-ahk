@@ -3,7 +3,6 @@ import type { Context } from '../../types'
 
 export const handleCallStart = (ctx: Context) => {
   const { scope } = ctx
-  ctx.flag.isFunctionIncluded = true
   const { next } = scope
   scope.next = ''
   scope.push('call')

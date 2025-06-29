@@ -21,8 +21,6 @@ type Context = {
 
 type Flag = {
   isChangeIndexUsed: boolean
-  isFunctionIncluded: boolean
-  isPromiseUsed: boolean
 }
 
 type Token = ReturnType<typeof cs.compile>['tokens'][number]

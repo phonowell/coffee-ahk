@@ -21,9 +21,7 @@ const genBuiltins = async () => {
       await c2a(sourcePath, {
         ast: false,
         metadata: false,
-        anonymous: false,
         salt: 'salt',
-        builtins: false, // 避免循环依赖
         save: true,
       })
       console.log(`Generated ${segment}.ahk from ${segment}.coffee`)
@@ -31,6 +29,21 @@ const genBuiltins = async () => {
       console.warn(`Failed to generate ${segment}:`, error)
     }
   }
+
+  // 生成 builtins.gen.ts 静态集成文件
+  const buffer = await read('./script/segment/changeIndex.ahk')
+  if (!buffer)
+    throw new Error('Failed to read ./script/segment/changeIndex.ahk')
+
+  const content = buffer.toString().trim()
+  const result = [
+    '// This file is auto-generated during build. Do not edit manually.',
+    '',
+    `export const changeIndex_ahk = \`${content}\``,
+    '',
+  ].join('\n')
+
+  await write('./src/processors/builtins.gen.ts', result)
 }
 
 const main = async () => {

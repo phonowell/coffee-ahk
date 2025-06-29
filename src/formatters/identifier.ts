@@ -5,8 +5,6 @@ const identifierFormatter = (context: Context): boolean => {
   const { content, type, value } = context
 
   if (type === 'identifier') {
-    if (value === 'Promise') context.flag.isPromiseUsed = true
-
     content.push('identifier', value)
     return true
   }

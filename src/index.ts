@@ -10,8 +10,6 @@ export type PartialOptions = Partial<Options>
 const DEFAULT_OPTIONS = {
   /** Generate AST output */
   ast: false,
-  /** Use built-in functions */
-  builtins: true,
   /** Show CoffeeScript AST */
   coffeeAst: false,
   /** Preserve comments in output */

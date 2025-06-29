@@ -32,8 +32,6 @@ const main = async (
     content,
     flag: {
       isChangeIndexUsed: false,
-      isFunctionIncluded: false,
-      isPromiseUsed: false,
     },
     indent: 0,
     options: option,
