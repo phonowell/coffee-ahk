@@ -38,7 +38,6 @@ const functionProcessor = (context: Context) => {
   transformParameters(context, functionSet)
 
   processDoStatements(context)
-
 }
 
 export default functionProcessor
