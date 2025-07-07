@@ -1,5 +1,3 @@
-import kleur from 'kleur'
-
 import { pad } from '../utils/arrayHelpers.js'
 
 import type Item from '../models/Item'
@@ -8,7 +6,7 @@ const log = (message: string | number) => {
   const msg = typeof message !== 'string' ? message.toString() : message
 
   console.log()
-  console.log(kleur.blue(pad(msg, 80, '-')))
+  console.log(pad(msg, 80, '-'))
 }
 
 const main = (ast: Item[]) => {

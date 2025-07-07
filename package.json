@@ -8,7 +8,6 @@
     "cson": "^8.4.0",
     "fire-keeper": "^0.0.227",
     "iconv-lite": "^0.6.3",
-    "kleur": "^4.1.5",
     "radash": "^12.1.1"
   },
   "description": "coffeescript -> ahk",
