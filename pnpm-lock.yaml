@@ -20,9 +20,6 @@ importers:
       iconv-lite:
         specifier: ^0.6.3
         version: 0.6.3
-      kleur:
-        specifier: ^4.1.5
-        version: 4.1.5
       radash:
         specifier: ^12.1.1
         version: 12.1.1

@@ -5,22 +5,22 @@ import c2aViaTs from '../src/index.js'
 
 const compile = async (source: string) =>
   (
-    await c2aViaTs(source, {
+    (await c2aViaTs(source, {
       metadata: false,
       salt: 'ahk',
       save: false,
-    })
+    })) ?? ''
   )
     .replace(/\r/g, '')
     .trim()
 
 const compile2 = async (source: string) =>
   (
-    await c2aViaJs(source, {
+    (await c2aViaJs(source, {
       metadata: false,
       salt: 'ahk',
       save: false,
-    })
+    })) ?? ''
   )
     .replace(/\r/g, '')
     .trim()
