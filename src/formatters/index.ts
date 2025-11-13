@@ -42,7 +42,8 @@ const formattersMap: Record<string, (ctx: Context) => boolean> = {
   function: functionFormatter,
   if: ifFormatter,
   indent: indentFormatter,
-  indentifier: identifierFormatter,
+  // NOTE: previously misspelled as 'indentifier'; corrected to 'identifier'
+  identifier: identifierFormatter,
   module: moduleFormatter,
   native: nativeFormatter,
   nil: nilFormatter,
