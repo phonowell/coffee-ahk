@@ -12,15 +12,21 @@ const main = async () => {
   const processors = await glob('./src/processors/**/*.ts')
   const testFiles = await glob('./script/test/*.coffee')
 
+  // Also check hardcoded error tests
+  const errorTestsContent = readFileSync('./task/test/errors.ts', 'utf-8')
+
   const formatterNames = formatters
     .filter((f) => !f.includes('/index.ts'))
     .map((f) => f.match(/\/(\w+)\.ts$/)?.[1])
     .filter((name): name is string => Boolean(name))
 
+  // Exclude utility files that don't need direct testing
+  const utilityFiles = ['utils', 'types', 'cache', 'ignore', 'next']
   const processorNames = processors
     .filter((f) => !f.includes('/index.ts') && !f.includes('builtins.gen.ts'))
     .map((f) => f.match(/\/(\w+)\.ts$/)?.[1])
     .filter((name): name is string => Boolean(name))
+    .filter((name) => !utilityFiles.includes(name))
 
   const testNames = testFiles
     .map((f) => f.match(/\/(\w+)\.coffee$/)?.[1])
@@ -33,7 +39,9 @@ const main = async () => {
   const untestedProcessors: string[] = []
 
   for (const formatter of formatterNames) {
-    if (testNames.includes(formatter)) {
+    // Check E2E tests and hardcoded error tests
+    const hasTest = testNames.includes(formatter) || errorTestsContent.includes(formatter)
+    if (hasTest) {
       testedFormatters.push(formatter)
     } else {
       untestedFormatters.push(formatter)
@@ -41,11 +49,11 @@ const main = async () => {
   }
 
   for (const processor of processorNames) {
-    // Check if test files contain related keywords
+    // Check E2E tests, test file content, and hardcoded error tests
     const hasTest = testFiles.some((testFile) => {
       const content = readFileSync(testFile, 'utf-8')
       return content.includes(processor) || testFile.includes(processor)
-    })
+    }) || errorTestsContent.includes(processor)
     if (hasTest || testNames.includes(processor)) {
       testedProcessors.push(processor)
     } else {

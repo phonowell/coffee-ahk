@@ -63,6 +63,8 @@ await c2a("./script/toolkit/index.coffee", {
 - Character and number distinction is blurred in AHK; `'0'` is falsy
 - `NaN`, `null`, and `undefined` are converted to the empty string `''`
 - Optional chaining (`?`) is not supported
+- Bitwise operators (`&`, `|`, `^`, `~`, `<<`, `>>`) are not supported
+- Floor division (`//`) and modulo (`%%`) operators conflict with AHK syntax
 - Avoid using `=>` outside classes; pure functions in AHK lack `this`
 - `.coffee` files must be UTF-8; `.ahk` files must be UTF-8 with BOM
 - Import/export and npm package management are incomplete

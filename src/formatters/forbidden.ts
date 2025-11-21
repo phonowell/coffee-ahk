@@ -9,6 +9,14 @@ const listForbidden = [
   'from',
   'func_exist',
   'import',
+  // Bitwise operators - not supported in AHK
+  '&',
+  '|',
+  '^',
+  '~',
+  '<<',
+  '>>',
+  '>>>',
 ]
 
 const main = (ctx: Context) => {

@@ -1,5 +1,6 @@
 import { glob } from 'fire-keeper'
 
+import { version } from '../package.json'
 import start from './entry/index.js'
 import { read, write } from './file/index.js'
 import log from './logger/index.js'
@@ -35,6 +36,32 @@ const printWarnings = (warnings: string[]) => {
   if (warnings.length === 0) return
   console.log(`⚠️ Warnings (${warnings.length}):`)
   warnings.forEach((w) => console.log(`  - ${w}`))
+}
+
+/** Extract line number from error message */
+const extractLineNumber = (message: string): number | null => {
+  const match = message.match(/line (\d+)/i)
+  return match ? parseInt(match[1], 10) : null
+}
+
+/** Show source context around error line */
+const showSourceContext = (source: string, lineNum: number) => {
+  const lines = source.split('\n')
+  const start = Math.max(0, lineNum - 3)
+  const end = Math.min(lines.length, lineNum + 2)
+  console.log('\n📍 Source context:')
+  for (let i = start; i < end; i++) {
+    const marker = i === lineNum - 1 ? '→' : ' '
+    console.log(`  ${marker} ${i + 1} | ${lines[i]}`)
+  }
+}
+
+/** Re-throw error with source context if line number available */
+const rethrowWithContext = (e: unknown, source: string): never => {
+  const error = e as Error
+  const lineNum = extractLineNumber(error.message)
+  if (lineNum) showSourceContext(source, lineNum)
+  throw e
 }
 
 /** Main transpilation function with top-level error handling */
@@ -79,34 +106,49 @@ const transpileAsFile = async (
 
   const content = await read(source2, options.salt)
 
-  const result = await start(content, options)
+  try {
+    const startTime = Date.now()
+    const result = await start(content, options)
+    const elapsed = Date.now() - startTime
 
-  if (options.verbose) {
-    if (options.coffeeAst) console.log(result.raw)
-    log(result.ast)
+    if (options.verbose) {
+      if (options.coffeeAst) console.log(result.raw)
+      log(result.ast)
+      console.log(`⏱️ Compiled in ${elapsed}ms`)
+    }
+
+    printWarnings(result.warnings)
+
+    if (options.save) await write(source2, result, options)
+
+    return result.content
+  } catch (e) {
+    return rethrowWithContext(e, content)
   }
-
-  printWarnings(result.warnings)
-
-  if (options.save) await write(source2, result, options)
-
-  return result.content
 }
 
 const transpileAsText = async (
   content: string,
   options: Options,
 ): Promise<string> => {
-  const result = await start(content, options)
+  try {
+    const startTime = Date.now()
+    const result = await start(content, options)
+    const elapsed = Date.now() - startTime
 
-  if (options.verbose) {
-    if (options.coffeeAst) console.log(result.raw)
-    log(result.ast)
+    if (options.verbose) {
+      if (options.coffeeAst) console.log(result.raw)
+      log(result.ast)
+      console.log(`⏱️ Compiled in ${elapsed}ms`)
+    }
+
+    printWarnings(result.warnings)
+
+    return result.content
+  } catch (e) {
+    return rethrowWithContext(e, content)
   }
-
-  printWarnings(result.warnings)
-
-  return result.content
 }
 
 export default transpile
+export { version }

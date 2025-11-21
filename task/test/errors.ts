@@ -56,6 +56,43 @@ const errorTests: ErrorTest[] = [
     code: 'x = 0\nx ?= 1',
     expectedError: /ahk\/forbidden.*\?=/i,
   },
+  {
+    name: 'Logical AND assignment (&&=) is forbidden',
+    code: 'x = 1\nx &&= 2',
+    expectedError: /ahk\/forbidden.*&&=/i,
+  },
+  {
+    name: 'Floor division (//) is forbidden',
+    code: 'x = 10 // 3',
+    expectedError: /ahk\/forbidden.*\/\/.*comment/i,
+  },
+  {
+    name: 'Floor division assignment (//=) is forbidden',
+    code: 'x = 10\nx //= 3',
+    expectedError: /ahk\/forbidden.*\/\/=.*comment/i,
+  },
+  {
+    name: 'Modulo (%%) is forbidden',
+    code: 'x = 10 %% 3',
+    expectedError: /ahk\/forbidden.*%%.*not supported/i,
+  },
+  {
+    name: 'Modulo assignment (%%=) is forbidden',
+    code: 'x = 10\nx %%= 3',
+    expectedError: /ahk\/forbidden.*%%=.*not supported/i,
+  },
+
+  // Bitwise operators forbidden
+  {
+    name: 'Bitwise AND (&) is forbidden',
+    code: 'x = 5 & 3',
+    expectedError: /ahk\/forbidden.*&.*not supported/i,
+  },
+  {
+    name: 'Bitwise OR (|) is forbidden',
+    code: 'x = 5 | 3',
+    expectedError: /ahk\/forbidden.*\|.*not supported/i,
+  },
 
   // Number forbidden tests
   {
