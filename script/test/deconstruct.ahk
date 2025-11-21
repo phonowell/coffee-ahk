@@ -1,0 +1,13 @@
+global __array__ := [1, 2]
+global a := __array__[1]
+global b := __array__[2]
+__array__ := arr
+global x := __array__[1]
+global y := __array__[2]
+global z := __array__[3]
+global __object__ := person
+global name := __object__["name"]
+global age := __object__["age"]
+__object__ := obj
+global foo := __object__["foo"]
+global bar := __object__["bar"]

@@ -17,8 +17,11 @@ export const pickContext = (ctx: Context, i: number, item: Item) => {
   const { content } = ctx
   const it = content.at(i)
 
+  // 边界检查：防止无限递归
+  if (!it || i >= content.list.length) return
+
   if (
-    it?.is('edge', 'block-end') &&
+    it.is('edge', 'block-end') &&
     it.scope.isEqual([
       ...item.scope.slice(0, item.scope.length - 1),
       'function',
@@ -26,7 +29,7 @@ export const pickContext = (ctx: Context, i: number, item: Item) => {
   )
     return
 
-  if (it?.is('identifier') && !cacheContext.get(it.value)) {
+  if (it.is('identifier') && !cacheContext.get(it.value)) {
     const prev = content.at(i - 1)
     if (!prev) return
 
@@ -49,9 +52,12 @@ export const pickParameter = (ctx: Context, i: number, item: Item) => {
   const { content } = ctx
   const it = content.at(i)
 
-  if (it?.is('edge', 'parameter-end') && it.scope.isEqual(item.scope)) return
+  // 边界检查：防止无限递归
+  if (!it || i >= content.list.length) return
 
-  if (it?.is('identifier')) {
+  if (it.is('edge', 'parameter-end') && it.scope.isEqual(item.scope)) return
+
+  if (it.is('identifier')) {
     const next = content.at(i + 1)
     if (!next) return
     if (

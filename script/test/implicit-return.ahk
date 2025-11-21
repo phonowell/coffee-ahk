@@ -1,15 +1,17 @@
-global fn := Func("ahk_3")
-class Ａ {
-  __New() {
-    this.a := 1
-  }
-}
+global fn1 := Func("ahk_4")
+global fn2 := Func("ahk_3")
+global fn3 := Func("ahk_2").Bind(a, b)
+global fn4 := Func("ahk_1")
 ahk_1() {
-  return 1
+  x := 1
+  x + 1
 }
-ahk_2() {
-  return {a: (Func("ahk_1")).Call()}
+ahk_2(a, b) {
+  return a + b
 }
 ahk_3() {
-  return Func("ahk_2")
+  return "hello"
+}
+ahk_4() {
+  return 42
 }

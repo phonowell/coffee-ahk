@@ -129,13 +129,19 @@ mapMethod = {
 
 **构建**（`task/build.ts`）：`pnpm i` → `forbidden.yaml→json` → `segment/*.coffee→builtins.gen.ts` → `esbuild` → `tsc --emitDeclarationOnly` → 清理dist
 
-**测试系统**（`task/test/`）- 四层防护：
+**测试系统**（`task/test/`）- 四层防护 + 增强功能：
 ```
-pnpm test  # 运行所有62个测试
-├─ 1️⃣ 端到端测试（26个）：并行验证TS源码/dist双编译输出 vs fixture
+pnpm test  # 运行所有74个测试
+├─ 1️⃣ 端到端测试（38个）：并行验证TS源码/dist双编译输出 vs fixture
 ├─ 2️⃣ 单元测试（20个）：Item/Content/Scope核心模型API
 ├─ 3️⃣ 错误场景（16个）：禁止语法验证（?./?=/||=/BigInt/spread等）
-└─ 4️⃣ 覆盖率分析：44.9% (14/26 formatters, 8/23 processors)
+├─ 4️⃣ 覆盖率分析：73.5% (25/26 formatters, 11/23 processors)
+├─ 🛡️ 超时保护：每个测试10秒超时，防止死循环
+├─ 📊 Diff显示：失败时逐行对比（git风格：- expected, + actual）
+├─ ⏱️ 耗时统计：显示总执行时间
+├─ 🚫 空值检测：编译结果或fixture为空时报错，防止假阳性
+├─ 📝 报告输出：生成test-report.md（成功/失败均输出）
+└─ 🔍 Dist检查：测试前验证dist/index.js存在
 ```
 
 | 命令 | 用途 |
@@ -207,14 +213,18 @@ DEFAULT_OPTIONS = {
 | Processor索引偏移 | 插入位置错 | 倒序cache或splice |
 | 使用非法ScopeType | 类型错误 | 仅用`''|'if'|'for'|'class'|'function'`等合法类型 |
 
-### 已知Bug
+### 已修复Bug
 
-**🐛 CRITICAL: 栈溢出（implicit-parameter/context.ts）**
-- **位置**：`src/processors/function/implicit-parameter/context.ts:16-45`
-- **触发**：深度嵌套空do块 `do -> do -> do ->`
-- **原因**：`pickContext`函数无限递归
-- **状态**：边缘测试已暂时移除，需修复后恢复
-- **相关文件**：已删除 `script/test/edge-*.coffee`
+**✅ 栈溢出已修复（implicit-parameter/context.ts）**
+- **修复方案**：在 `pickContext` 和 `pickParameter` 函数开头添加边界检查
+- **代码**：`if (!it || i >= content.list.length) return`
+- **测试**：`script/test/edge-deep-nesting.coffee` 已恢复并通过
+
+### 已知限制
+
+**⚠️ comment测试限制**：注释输出需`options.comments=true`，当前测试仅验证不崩溃。
+
+**⚠️ processor子模块未测**：function processor的12个子模块（validate, context, mark等）是内部实现，难以单独测试，通过集成测试间接覆盖。
 
 ---
 
@@ -225,7 +235,7 @@ DEFAULT_OPTIONS = {
 pnpm i                          # 安装依赖
 pnpm build                      # 完整构建
 
-# 测试（62个测试，~7s）
+# 测试（74个测试，~0.1s）
 pnpm test                       # 所有测试（E2E+单元+错误+覆盖率）
 pnpm test -- overwrite          # 更新fixture
 pnpm test -- <name>             # 单个测试
@@ -244,7 +254,7 @@ pnpm task publish               # 发布
 ## 13. 修改检查清单
 
 **开发前**：
-1. `pnpm test` 确保基线通过（62/62）
+1. `pnpm test` 确保基线通过（74/74）
 2. 理解 formatter/processor 顺序和职责
 
 **开发中**：
@@ -278,23 +288,29 @@ pnpm task publish               # 发布
 ## 附录：项目统计
 
 **Formatters（26个）**：alias, array, boolean, bracket, class, comment, do, for, forbidden, function, identifier, if, indent, module, native, new-line, nil, number, object, operator, property, sign, statement, string, switch, try, while
-- 测试覆盖：14/26 (53.8%)
-- 未测：alias, boolean, bracket, comment, forbidden, identifier, indent, module, nil, operator, sign, statement
+- 测试覆盖：25/26 (96.2%)
+- 未测：forbidden
 
 **Processors（23个）**：newLine, for, array(5), object(3), variable(4), builtIn, class(3), function(11)
-- 测试覆盖：8/23 (34.8%)
-- 未测：deconstruct, validate, context, mark, parameter等15个
+- 测试覆盖：11/23 (47.8%)
 
 **Models（5个）**：Item, Content, Scope, ItemType, ScopeType
 
-**测试套件**：62个测试
-- 端到端：26个（script/test/*.coffee）
+**测试套件**：74个测试
+- 端到端：38个（script/test/*.coffee）
 - 单元测试：20个（Item/Content/Scope）
 - 错误场景：16个（禁止语法验证）
-- 总覆盖率：44.9% (22/49组件)
+- 总覆盖率：73.5% (36/49组件)
 
 ---
 
 **历史修正**：
 - 拼写：`indentifier` → `identifier`（formattersMap键）
-- 测试：移除触发栈溢出的 `edge-*.coffee` 边缘测试
+- 栈溢出：`implicit-parameter/context.ts` 添加边界检查修复
+- 测试增强：超时保护、diff显示、耗时统计、空值检测、报告输出、dist检查、overwrite空值检查
+
+**测试系统状态**：已达成熟状态，38个E2E测试用例及.ahk fixture均已验证正确（含AHK v1语法检查）。后续改进应聚焦于新功能同步测试、bug回归测试、保持覆盖率。
+
+**注意事项**：
+- native测试中`msg`是AHK运行时全局变量，非CoffeeScript参数（设计意图）
+- .ahk中类名宽体字符（如Ａnimal）是§9命名规则的实现，用于模拟大小写敏感

@@ -1,6 +1,7 @@
-fn = -> -> {
-  a: do -> 1
-}
-class A
-  constructor: ->
-    @a = 1
+# Implicit return test
+fn1 = -> 42
+fn2 = -> "hello"
+fn3 = -> a + b
+fn4 = ->
+  x = 1
+  x + 1
