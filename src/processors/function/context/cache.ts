@@ -43,8 +43,8 @@ const findIndex = (ctx: Context, item: Item, i: number): number => {
 }
 
 export const cache = (ctx: Context, item: Item, i: number) => {
-  const scp = [item.scope.slice(0, item.scope.length - 1)]
-  scp[1] = [...scp[0], 'call']
+  const scp0 = item.scope.slice(0, item.scope.length - 1)
+  const scp: [typeof scp0, typeof scp0] = [scp0, [...scp0, 'call']]
 
   let listItem: Item[] = []
   for (const listIt of listParam) {

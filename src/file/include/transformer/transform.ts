@@ -31,6 +31,10 @@ const parseExportsFromCoffee = (replaced: string) => {
   let i = 0
   while (i < lines.length) {
     const line = lines[i]
+    if (!line) {
+      i++
+      continue
+    }
     const trimmed = line.trim()
     // 只处理 export 开头的行
     if (!trimmed.startsWith('export ')) {
@@ -41,19 +45,22 @@ const parseExportsFromCoffee = (replaced: string) => {
 
     // export default foo 或 export default ->
     const exportDefaultMatch = /^export\s+default\s+(.+)/.exec(trimmed)
-    if (exportDefaultMatch) {
+    if (exportDefaultMatch?.[1]) {
       // 判断是否为多行缩进块
       const exportLineIndent = RegExp(/^(\s*)/).exec(line)?.[1] ?? ''
       const exportBody = [exportDefaultMatch[1]]
       let j = i + 1
-      while (
-        j < lines.length &&
-        (lines[j].trim() === '' ||
-          lines[j].startsWith(`${exportLineIndent} `) ||
-          lines[j].startsWith(`${exportLineIndent}\t`))
-      ) {
-        exportBody.push(lines[j].slice(exportLineIndent.length))
-        j++
+      while (j < lines.length) {
+        const nextLine = lines[j]
+        if (!nextLine) break
+        if (
+          nextLine.trim() === '' ||
+          nextLine.startsWith(`${exportLineIndent} `) ||
+          nextLine.startsWith(`${exportLineIndent}\t`)
+        ) {
+          exportBody.push(nextLine.slice(exportLineIndent.length))
+          j++
+        } else break
       }
       exportDefault.push(exportBody.join('\n').trim())
       i = j
@@ -62,7 +69,7 @@ const parseExportsFromCoffee = (replaced: string) => {
 
     // export {a, b} or export {a: foo()}
     const exportNamedMatch = /^export\s*{(.+)}/.exec(trimmed)
-    if (exportNamedMatch) {
+    if (exportNamedMatch?.[1]) {
       exportNamedMatch[1].split(',').forEach((pair) => {
         const seg = pair.trim()
         if (!seg) return

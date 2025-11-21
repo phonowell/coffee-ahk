@@ -34,20 +34,20 @@ const handleMinusOperator = (ctx: Context): boolean => {
   return true
 }
 
+const getLine = (ctx: Context): number => ctx.token[2].first_line + 1
+
 const handleUnaryOperator = (ctx: Context): boolean => {
-  const { content, type, value, token } = ctx
+  const { content, type, value } = ctx
 
   if (type === 'unary' && value === 'typeof') {
-    const line = token[2].first_line + 1
     throw new Error(
-      `ahk/forbidden (line ${line}): 'typeof' is not supported. Use custom type checking instead.`,
+      `ahk/forbidden (line ${getLine(ctx)}): 'typeof' is not supported. Use custom type checking instead.`,
     )
   }
 
   if (type === 'unary' && value === 'delete') {
-    const line = token[2].first_line + 1
     throw new Error(
-      `ahk/forbidden (line ${line}): 'delete' is not supported in AHK.`,
+      `ahk/forbidden (line ${getLine(ctx)}): 'delete' is not supported in AHK.`,
     )
   }
 
@@ -87,21 +87,18 @@ const main = (ctx: Context): boolean => {
   }
   if (type === 'compound_assign') {
     if (value === '||=' || value === '?=' || value === '&&=') {
-      const line = ctx.token[2].first_line + 1
       throw new Error(
-        `ahk/forbidden (line ${line}): compound assignment '${value}' is not supported. Only standard assignments are allowed.`,
+        `ahk/forbidden (line ${getLine(ctx)}): compound assignment '${value}' is not supported. Only standard assignments are allowed.`,
       )
     }
     if (value === '//=') {
-      const line = ctx.token[2].first_line + 1
       throw new Error(
-        `ahk/forbidden (line ${line}): floor division assignment '//=' is not supported (conflicts with AHK comments).`,
+        `ahk/forbidden (line ${getLine(ctx)}): floor division assignment '//=' is not supported (conflicts with AHK comments).`,
       )
     }
     if (value === '%%=') {
-      const line = ctx.token[2].first_line + 1
       throw new Error(
-        `ahk/forbidden (line ${line}): modulo assignment '%%=' is not supported. Use 'x := Mod(x, b)' instead.`,
+        `ahk/forbidden (line ${getLine(ctx)}): modulo assignment '%%=' is not supported. Use 'x := Mod(x, b)' instead.`,
       )
     }
     content.push('math', value)
@@ -110,16 +107,14 @@ const main = (ctx: Context): boolean => {
   if (type === 'math') {
     // // is floor division in CoffeeScript but comment in AHK
     if (value === '//') {
-      const line = ctx.token[2].first_line + 1
       throw new Error(
-        `ahk/forbidden (line ${line}): floor division '//' is not supported (conflicts with AHK comments). Use 'Math.floor(a / b)' instead.`,
+        `ahk/forbidden (line ${getLine(ctx)}): floor division '//' is not supported (conflicts with AHK comments). Use 'Math.floor(a / b)' instead.`,
       )
     }
     // %% is modulo in CoffeeScript but not supported in AHK
     if (value === '%%') {
-      const line = ctx.token[2].first_line + 1
       throw new Error(
-        `ahk/forbidden (line ${line}): modulo '%%' is not supported. Use 'Mod(a, b)' instead.`,
+        `ahk/forbidden (line ${getLine(ctx)}): modulo '%%' is not supported. Use 'Mod(a, b)' instead.`,
       )
     }
     content.push('math', value)

@@ -34,15 +34,9 @@ export const pickItem = (
   listResult.push(new Item('new-line', '0', scope))
 
   // reset indent
-  const diff: number =
-    parseInt(
-      listResult[
-        findIndex(listResult, {
-          type: 'new-line',
-        })
-      ].value,
-      10,
-    ) - 1
+  const newLineIdx = findIndex(listResult, { type: 'new-line' })
+  const newLineItem = listResult.at(newLineIdx)
+  const diff: number = (newLineItem ? parseInt(newLineItem.value, 10) : 1) - 1
   if (diff > 0) {
     listResult.forEach((it2) => {
       if (it2.type !== 'new-line') return

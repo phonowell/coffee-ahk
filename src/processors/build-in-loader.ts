@@ -18,7 +18,11 @@ const getBuiltin = (functionName: string): Item[] => {
   return []
 }
 
-const insert = (ctx: Context, flag: string, functionName: string) => {
+const insert = (
+  ctx: Context,
+  flag: keyof Context['flag'],
+  functionName: string,
+) => {
   const { content } = ctx
 
   if (ctx.flag[flag]) {

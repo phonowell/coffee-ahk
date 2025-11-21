@@ -48,8 +48,12 @@ export const sortBy = <T>(array: T[], ...iteratees: SortIteratee<T>[]): T[] => {
   const getIteratee = (iteratee: SortIteratee<T>): Iteratee<T> => {
     if (typeof iteratee === 'function') return iteratee
 
-    if (typeof iteratee === 'string' || typeof iteratee === 'number')
-      return (item: T) => item[iteratee]
+    if (typeof iteratee === 'string' || typeof iteratee === 'number') {
+      return (item: T) =>
+        (item as Record<PropertyPath, unknown>)[iteratee] as ReturnType<
+          Iteratee<T>
+        >
+    }
 
     return () => undefined
   }

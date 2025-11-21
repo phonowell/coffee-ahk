@@ -41,13 +41,15 @@ const main = (ctx: Context) => {
       scope: scpStart,
     })
 
-    const isObjectWithoutBrackets = list[1].is('bracket', '{')
+    const item1 = list.at(1)
+    const isObjectWithoutBrackets = item1?.is('bracket', '{') ?? false
     if (
       list.filter((it) => it.is('new-line') && it.scope.isEqual(scpStart))
         .length > (isObjectWithoutBrackets ? 1 : 2)
     )
       return
-    if (ignore(list[2])) return
+    const item2 = list.at(2)
+    if (item2 && ignore(item2)) return
 
     flag.i = iStart + (isObjectWithoutBrackets ? 0 : 1)
     flag.scope = scpStart

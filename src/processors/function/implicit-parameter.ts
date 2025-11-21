@@ -39,7 +39,8 @@ const main = (ctx: Context) => {
       if (cacheParameter.has(name)) return
       if (ctx.cache.global.has(name)) return
       if (name.startsWith('__') && name.endsWith('__')) return // like `__xxx__`
-      if (name[0].toLowerCase() !== name[0]) return // like `Xxx`
+      const firstChar = name[0]
+      if (firstChar && firstChar.toLowerCase() !== firstChar) return // like `Xxx`
 
       listContent.push(
         ...[
@@ -47,7 +48,10 @@ const main = (ctx: Context) => {
           ['sign', '='],
           ['identifier', name],
           ['sign', ','],
-        ].map((args) => new Item(args[0] as Item['type'], args[1], item.scope)),
+        ].map(
+          (args) =>
+            new Item(args[0] as Item['type'], args[1] ?? '', item.scope),
+        ),
       )
     })
   })

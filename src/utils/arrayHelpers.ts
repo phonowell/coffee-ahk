@@ -27,8 +27,10 @@ export const findIndex = <T>(
   const getIteratee = (): Predicate<T> | null => {
     if (typeof predicate === 'function') return predicate
 
-    if (typeof predicate === 'string' || typeof predicate === 'number')
-      return (item: T) => Boolean(item[predicate])
+    if (typeof predicate === 'string' || typeof predicate === 'number') {
+      return (item: T) =>
+        Boolean((item as Record<PropertyPath, unknown>)[predicate])
+    }
 
     if (typeof predicate === 'object') {
       return (item: T) => {
@@ -45,8 +47,10 @@ export const findIndex = <T>(
   const iteratee = getIteratee()
   if (!iteratee) return -1
 
-  for (let i = 0; i < array.length; i++)
-    if (iteratee(array[i], i, array)) return i
+  for (let i = 0; i < array.length; i++) {
+    const el = array.at(i)
+    if (el !== undefined && iteratee(el, i, array)) return i
+  }
 
   return -1
 }
@@ -61,8 +65,10 @@ export const findLastIndex = <T>(
   const getIteratee = (): Predicate<T> | null => {
     if (typeof predicate === 'function') return predicate
 
-    if (typeof predicate === 'string' || typeof predicate === 'number')
-      return (item: T) => Boolean(item[predicate])
+    if (typeof predicate === 'string' || typeof predicate === 'number') {
+      return (item: T) =>
+        Boolean((item as Record<PropertyPath, unknown>)[predicate])
+    }
 
     if (typeof predicate === 'object') {
       return (item: T) => {
@@ -79,8 +85,10 @@ export const findLastIndex = <T>(
   const iteratee = getIteratee()
   if (!iteratee) return -1
 
-  for (let i = array.length - 1; i >= 0; i--)
-    if (iteratee(array[i], i, array)) return i
+  for (let i = array.length - 1; i >= 0; i--) {
+    const el = array.at(i)
+    if (el !== undefined && iteratee(el, i, array)) return i
+  }
 
   return -1
 }

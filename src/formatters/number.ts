@@ -16,8 +16,10 @@ const main = (ctx: Context): boolean => {
     if (value.includes('_')) value2 = value2.replace(/_/g, '')
 
     if (value.includes('e')) {
-      const [pre, sub] = value2.split('e')
-      value2 = `${pre}${'0'.repeat(parseInt(sub, 10))}`
+      const parts = value2.split('e')
+      const pre = parts.at(0)
+      const sub = parts.at(1)
+      if (pre && sub) value2 = `${pre}${'0'.repeat(parseInt(sub, 10))}`
     }
 
     content.push('number', value2)

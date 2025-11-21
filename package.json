@@ -13,6 +13,7 @@
   "description": "coffeescript -> ahk",
   "devDependencies": {
     "@types/cson": "^7.20.3",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.10.0",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",

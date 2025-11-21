@@ -10,7 +10,7 @@ const MAX_LINE_LENGTH = 200
 
 const generateVersion = () => {
   const group = version.split('.').map(Number)
-  return [group[0], group[1], group[2] + 1].join('.')
+  return [group[0] ?? 0, group[1] ?? 0, (group[2] ?? 0) + 1].join('.')
 }
 
 const main = async (
@@ -40,9 +40,10 @@ const main = async (
 
   const lines = ahkContent.split('\n')
   for (let i = 0; i < lines.length; i++) {
-    if (lines[i].length > MAX_LINE_LENGTH) {
+    const line = lines[i]
+    if (line && line.length > MAX_LINE_LENGTH) {
       throw new Error(
-        `ahk/file: line too long at line ${i + 1} (max ${MAX_LINE_LENGTH} chars):\n${lines[i].slice(0, 80)}...`,
+        `ahk/file: line too long at line ${i + 1} (max ${MAX_LINE_LENGTH} chars):\n${line.slice(0, 80)}...`,
       )
     }
   }

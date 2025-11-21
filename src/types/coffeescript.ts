@@ -5,7 +5,7 @@ type Token = [
     parsedValue?: unknown
     quote?: string
   },
-  Record<string, never>,
+  { first_line: number; last_line: number },
 ] & {
   comments?: { content: string }[]
   data?: unknown

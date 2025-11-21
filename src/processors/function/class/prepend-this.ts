@@ -13,7 +13,8 @@ export const prependThis = (ctx: Context) => {
     if (!item.is('edge', 'parameter-start')) return
 
     if (at(listContent, -3)?.is('property', 'constructor')) {
-      listContent[listContent.length - 2].type = 'void'
+      const item2 = listContent.at(listContent.length - 2)
+      if (item2) item2.type = 'void'
       return
     }
 

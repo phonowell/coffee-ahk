@@ -134,8 +134,8 @@ mapMethod = {
 **测试系统**（`task/test/`）- 四层防护 + 增强功能：
 
 ```
-pnpm test  # 运行所有84个测试
-├─ 1️⃣ 端到端（38个） 2️⃣ 单元（20个） 3️⃣ 错误（26个，见`task/test/errors.ts`）
+pnpm test  # 运行所有85个测试
+├─ 1️⃣ 端到端（38个） 2️⃣ 单元（20个） 3️⃣ 错误（27个，见`task/test/errors.ts`）
 ├─ 4️⃣ 覆盖率：95.2%（26/26 formatters, 14/16 processors）
 ├─ 🛡️ 超时保护：每个测试10秒超时，防止死循环
 ├─ 📊 Diff显示：失败时逐行对比（git风格：- expected, + actual）
@@ -217,7 +217,25 @@ DEFAULT_OPTIONS = {
 ### 已知限制
 
 - comment测试仅验证不崩溃（需`options.comments=true`）
-- 位运算符已禁止；链式比较`1<y<10`未正确展开为`(1<y)&&(y<10)`
+- 链式比较`1<y<10`未正确展开（需processor改写为`1<y && y<10`）
+
+### TypeScript 严格模式
+
+项目启用了完整严格模式（`noImplicitAny: true`, `noUncheckedIndexedAccess: true`）：
+
+- **数组访问必须用 `at()` 方法**：`array.at(i)` 返回 `T | undefined`，配合空值检查
+- **禁止 `as T` 类型断言绕过**：用条件检查代替
+- **正则匹配结果检查**：`if (m?.[1] && m[2])` 同时满足 TS 和 ESLint
+
+```typescript
+// ✅ 正确
+const item = array.at(i)
+if (!item) return
+console.log(item.value)
+
+// ❌ 错误
+const item = array[i] as Item  // 不安全的类型断言
+```
 
 ---
 
@@ -225,7 +243,7 @@ DEFAULT_OPTIONS = {
 
 ```bash
 pnpm i && pnpm build            # 安装+构建
-pnpm test                       # 84个测试（E2E+单元+错误+覆盖率）
+pnpm test                       # 85个测试（E2E+单元+错误+覆盖率）
 pnpm test -- overwrite          # 更新fixture
 pnpm test -- <name>             # 单测试
 pnpm watch                      # 监听开发

@@ -34,15 +34,16 @@ export const deconstruct = (ctx: Context) => {
       const _scope = item.scope
 
       for (let j = 0; j < listPre.length; j++) {
+        const preItem = listPre[listPre.length - j - 1] ?? ''
         listContent = [
           ...listContent,
           // \n xxx = token[xxx]
           new Item('new-line', indent.toString(), _scope),
-          new Item('identifier', listPre[listPre.length - j - 1], _scope),
+          new Item('identifier', preItem, _scope),
           new Item('sign', '=', _scope),
           new Item('identifier', token, _scope),
           new Item('edge', 'index-start', _scope),
-          new Item('string', `"${listPre[listPre.length - j - 1]}"`, _scope),
+          new Item('string', `"${preItem}"`, _scope),
           new Item('edge', 'index-end', _scope),
         ]
       }

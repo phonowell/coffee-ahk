@@ -4,7 +4,10 @@ import { trim } from 'radash'
 
 import { listExt } from './utils.js'
 
-export const getSource = async (source: string, path: string) => {
+export const getSource = async (
+  source: string,
+  path: string,
+): Promise<string> => {
   const isFile = path.startsWith('.')
   const isInListExt = listExt.some((ext) => path.endsWith(ext))
 
@@ -16,7 +19,8 @@ export const getSource = async (source: string, path: string) => {
     group[i] = isFile ? `${source}/${it}` : `./node_modules/${it}`
   })
   const listResult = await glob(group)
-  if (listResult.length) return listResult[0]
+  const firstResult = listResult[0]
+  if (firstResult) return firstResult
 
   const pkg = await read<{ main: string }>(
     `./node_modules/${path}/package.json`,
@@ -28,25 +32,30 @@ export const getSource = async (source: string, path: string) => {
   }
 
   const listResult2 = await glob(`./node_modules/${path}/${pkg.main}`)
-  if (!listResult2.length)
+  const secondResult = listResult2[0]
+  if (!secondResult)
     throw new Error(`ahk/file: resolved package main not found: '${source}'`)
 
-  return listResult2[0]
+  return secondResult
 }
 
-export const pickImport = async (source: string, line: string) => {
+export const pickImport = async (
+  source: string,
+  line: string,
+): Promise<{ default: string; named: string[]; path: string }> => {
   // 支持 import m, { a, b } from ... 以及原有语法
   let defaultImport = ''
   let namedImports: string[] = []
   let path = ''
 
   if (line.includes(' from ')) {
-    const importClause = line.replace('import ', '').split(' from ')[0].trim()
-    path = line.split(' from ')[1].trim()
+    const importClause =
+      line.replace('import ', '').split(' from ')[0]?.trim() ?? ''
+    path = line.split(' from ')[1]?.trim() ?? ''
     // import m, { a, b } from ...
     if (/^[\w$]+\s*,\s*{.+}$/.test(importClause)) {
       const m = RegExp(/^([\w$]+)\s*,\s*{(.+)}$/).exec(importClause)
-      if (m) {
+      if (m?.[1] && m[2]) {
         defaultImport = m[1].trim()
         namedImports = m[2]
           .split(',')

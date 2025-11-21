@@ -38,7 +38,7 @@ export const replaceAnchor = async (source: string, content: string) => {
     if (namedImports.length) {
       namedImports.forEach((named) => {
         listResult.push(
-          `${named} = __${cacheSalt}_module_${id}__.${named.split(':')[0].trim()}`,
+          `${named} = __${cacheSalt}_module_${id}__.${(named.split(':')[0] ?? '').trim()}`,
         )
       })
     }

@@ -32,6 +32,7 @@ const main = (ctx: Context2): string => {
       for (const key of Object.keys(mapMethod)) {
         if (it.type === key) {
           const method = mapMethod[key]
+          if (!method) continue
           const value =
             typeof method === 'string'
               ? method.replace(/~/g, it.value)
@@ -56,7 +57,11 @@ const mapMethod: Record<string, string | ((ctx: Context) => string)> = {
   class: 'class ',
   compare: ' ~ ',
   edge: edge2,
-  for: 'for ',
+  for: (ctx: Context): string => {
+    const prev = ctx.content.list.at(ctx.i - 1)
+    const needsSpace = prev && !['new-line', 'edge'].includes(prev.type)
+    return needsSpace ? ' for ' : 'for '
+  },
   identifier: identifier2,
   if: if2,
   math: ' ~ ',

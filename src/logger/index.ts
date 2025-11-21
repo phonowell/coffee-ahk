@@ -14,7 +14,8 @@ const main = (ast: Item[]) => {
   log(++line)
 
   for (let i = 0; i < ast.length; i++) {
-    const item = ast[i]
+    const item = ast.at(i)
+    if (!item) continue
     console.log(i, item)
     if (item.type === 'new-line') log(++line)
   }

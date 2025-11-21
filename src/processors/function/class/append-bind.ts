@@ -28,8 +28,10 @@ export const appendBind = (ctx: Context) => {
     const index = findEdge(ctx, i, item)
     if (content.at(index - 1)?.is('property', 'constructor')) return
 
-    const scope2 = [item.scope.list]
-    scope2[1] = [...scope2[0], 'call']
+    const scope2: [typeof item.scope.list, typeof item.scope.list] = [
+      item.scope.list,
+      [...item.scope.list, 'call'],
+    ]
     listContent.push(new Item('.', '.', scope2[0]))
     listContent.push(new Item('identifier', 'Bind', scope2[0]))
     listContent.push(new Item('edge', 'call-start', scope2[1]))

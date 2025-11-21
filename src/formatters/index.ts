@@ -28,7 +28,9 @@ import whileFormatter from './while.js'
 
 import type { Context } from '../types'
 
-const formattersMap: Record<string, (ctx: Context) => boolean> = {
+type Formatter = (ctx: Context) => boolean
+
+const formattersMap = {
   'new-line': newLineFormatter,
   alias: aliasFormatter,
   array: arrayFormatter,
@@ -57,11 +59,13 @@ const formattersMap: Record<string, (ctx: Context) => boolean> = {
   switch: switchFormatter,
   try: tryFormatter,
   while: whileFormatter,
-} as const
+} as const satisfies Record<string, Formatter>
 
 /** Apply formatters to transform context */
 const processFormatters = (context: Context) => {
-  for (const key of Object.keys(formattersMap)) {
+  for (const key of Object.keys(
+    formattersMap,
+  ) as (keyof typeof formattersMap)[]) {
     if (key === 'comment') continue
     if (formattersMap[key](context)) break
   }

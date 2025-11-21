@@ -73,7 +73,8 @@ const pick = (ctx: Context, item: Item, i: number): boolean => {
 
   listContent.push(new Item('void'))
   listParam.push(pickItem(ctx, itNext, i + 1))
-  setCountIgnore(listParam[listParam.length - 1].length)
+  const lastParam = listParam.at(listParam.length - 1)
+  setCountIgnore(lastParam?.length ?? 0)
   return true
 }
 

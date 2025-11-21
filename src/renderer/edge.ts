@@ -26,12 +26,12 @@ const mapEdge: Record<string, string> = {
   'parameter-start': '(',
 } as const
 
-export const edge2 = (ctx: Context) => {
+export const edge2 = (ctx: Context): string => {
   const { content, i, it } = ctx
   const { value } = it
 
   if (value === 'block-start') {
-    const value2 = mapEdge[value]
+    const value2 = mapEdge[value] ?? '{'
     const prev = content.at(i - 1)
 
     if (!prev) return value2
@@ -53,8 +53,11 @@ export const edge2 = (ctx: Context) => {
     // use [name].Call() to call it
     // otherwise it is a built-in function
     // use [name]() to call it
-    return name.startsWith(name[0].toLowerCase()) ? '.Call(' : '('
+    const firstChar = name[0]
+    return firstChar && name.startsWith(firstChar.toLowerCase())
+      ? '.Call('
+      : '('
   }
 
-  return mapEdge[value] || value
+  return mapEdge[value] ?? value
 }

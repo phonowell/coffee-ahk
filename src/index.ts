@@ -1,6 +1,7 @@
 import { glob } from 'fire-keeper'
 
 import { version } from '../package.json'
+
 import start from './entry/index.js'
 import { read, write } from './file/index.js'
 import log from './logger/index.js'
@@ -29,7 +30,7 @@ const DEFAULT_OPTIONS = {
 
 /** Generate random salt for transpilation */
 const generateSalt = (): string =>
-  Math.random().toString(32).split('.')[1].padStart(11, '0')
+  Math.random().toString(32).split('.')[1]?.padStart(11, '0') ?? ''
 
 /** Output warnings to console */
 const printWarnings = (warnings: string[]) => {
@@ -41,7 +42,7 @@ const printWarnings = (warnings: string[]) => {
 /** Extract line number from error message */
 const extractLineNumber = (message: string): number | null => {
   const match = message.match(/line (\d+)/i)
-  return match ? parseInt(match[1], 10) : null
+  return match?.[1] ? parseInt(match[1], 10) : null
 }
 
 /** Show source context around error line */

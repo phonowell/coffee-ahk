@@ -29,9 +29,9 @@ const main = (ctx: Context) => {
       list.unshift(type === 'forin' ? '__index_for__' : '__key_for__')
 
     content
-      .push('identifier', list[0])
+      .push('identifier', list[0] ?? '')
       .push('sign', ',')
-      .push('identifier', list[1])
+      .push('identifier', list[1] ?? '')
       .push('for-in', value)
     return true
   }

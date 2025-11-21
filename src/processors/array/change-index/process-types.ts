@@ -13,7 +13,9 @@ export const processIdentifierType = (
   ctx.flag.isChangeIndexUsed = true // set flag
 
   const list = [...listUnwrap]
-  const scp = list[0].scope
+  const firstItem = list.at(0)
+  if (!firstItem) return
+  const scp = firstItem.scope
   const scpCall = new Scope([...scp.list, 'call'])
 
   update(range, [
@@ -29,7 +31,8 @@ export const processNumberType = (
   listUnwrap: Item[],
   update: (range: Range, list: Item[]) => void,
 ) => {
-  const first = listUnwrap[0]
+  const first = listUnwrap.at(0)
+  if (!first) return
   const list =
     listUnwrap.length === 1
       ? [

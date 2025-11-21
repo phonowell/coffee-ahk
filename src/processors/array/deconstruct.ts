@@ -25,7 +25,7 @@ const main = (ctx: Context) => {
             // \n xxx = token[n]
             ...[
               ['new-line', indent.toString()],
-              ...listPre[listPre.length - j - 1].map((it) => [
+              ...(listPre[listPre.length - j - 1] ?? []).map((it) => [
                 it.type,
                 it.value,
               ]),
@@ -35,7 +35,8 @@ const main = (ctx: Context) => {
               ['number', (j + 1).toString()],
               ['edge', 'index-end'],
             ].map(
-              (args) => new Item(args[0] as Item['type'], args[1], item.scope),
+              (args) =>
+                new Item(args[0] as Item['type'], args[1] ?? '', item.scope),
             ),
           ]),
       )
