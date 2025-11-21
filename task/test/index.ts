@@ -67,6 +67,10 @@ const main = async () => {
     expected: string
   }> = []
 
+  // 分离需要串行执行的import测试（共享模块缓存）
+  const importTests = listSource.filter((s) => s.includes('/import'))
+  const parallelTests = listSource.filter((s) => !s.includes('/import'))
+
   // Parallel execution for non-overwrite mode
   if (target === 'overwrite') {
     // Sequential for overwrite mode
@@ -82,9 +86,46 @@ const main = async () => {
       passed++
     }
   } else {
-    // Parallel execution
+    // 串行执行import测试
+    for (const source of importTests) {
+      const target2 = source.replace('.coffee', '.ahk')
+
+      const content = await withTimeout(compile(source), TIMEOUT_MS, source)
+      const contentTarget = ((await read(target2)) ?? '')
+        .toString()
+        .replace(/\r/g, '')
+        .trim()
+
+      if (!content || !contentTarget) {
+        failed++
+        failures.push({
+          source,
+          turn: 1,
+          actual: content || '(empty)',
+          expected: contentTarget || '(empty fixture)',
+        })
+        continue
+      }
+
+      if (content !== contentTarget) {
+        failed++
+        failures.push({ source, turn: 1, actual: content, expected: contentTarget })
+        continue
+      }
+
+      const content2 = await withTimeout(compile2(source), TIMEOUT_MS, source)
+      if (content2 !== contentTarget) {
+        failed++
+        failures.push({ source, turn: 2, actual: content2, expected: contentTarget })
+        continue
+      }
+
+      passed++
+    }
+
+    // Parallel execution for other tests
     const results = await Promise.all(
-      listSource.map(async (source) => {
+      parallelTests.map(async (source) => {
         const target2 = source.replace('.coffee', '.ahk')
 
         const content = await withTimeout(compile(source), TIMEOUT_MS, source)

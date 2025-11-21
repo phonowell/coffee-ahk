@@ -13,6 +13,103 @@ const generateVersion = () => {
   return [group[0] ?? 0, group[1] ?? 0, (group[2] ?? 0) + 1].join('.')
 }
 
+// 在逗号处拆分超长行（用于对象/数组字面量）
+const splitAtCommas = (line: string): string[] => {
+  if (line.length <= MAX_LINE_LENGTH) return [line]
+
+  // 提取行首缩进
+  const indentMatch = /^(\s*)/.exec(line)
+  const baseIndent = indentMatch?.[1] ?? ''
+  const newIndent = `${baseIndent}    ` // 续行增加4空格缩进
+
+  // 在字符串外的逗号处拆分
+  const result: string[] = []
+  let current = ''
+  let inString = false
+  let stringChar = ''
+  let i = 0
+
+  while (i < line.length) {
+    const char = line[i]
+
+    // 处理字符串边界
+    if (!inString && (char === '"' || char === "'")) {
+      inString = true
+      stringChar = char
+      current += char
+      i++
+      continue
+    }
+
+    if (inString) {
+      current += char
+      // AHK 用 "" 转义双引号
+      if (char === stringChar) {
+        if (line[i + 1] === stringChar) {
+          current += line[i + 1]
+          i += 2
+          continue
+        }
+        inString = false
+      }
+      i++
+      continue
+    }
+
+    // 不在字符串中，检查逗号
+    if (char === ',') {
+      current += char
+      i++
+      // 跳过逗号后的空格
+      while (i < line.length && line[i] === ' ') i++
+
+      // 检查当前累积长度，决定是否换行
+      const testLine = result.length === 0 ? current : `${newIndent}${current}`
+      if (testLine.length > MAX_LINE_LENGTH - 40) {
+        // 留余量给下一段
+        result.push(current)
+        current = ''
+      }
+      continue
+    }
+
+    current += char
+    i++
+  }
+
+  // 处理剩余部分
+  if (current) result.push(current)
+
+  if (result.length <= 1) return [line] // 无法拆分
+
+  // 组装结果：第一行保持原缩进，后续行增加缩进
+  const output = result.map((part, idx) =>
+    idx === 0 ? part : `${newIndent}${part}`,
+  )
+
+  // 验证拆分后每行都在限制内
+  if (output.some((l) => l.length > MAX_LINE_LENGTH)) return [line] // 拆分失败
+
+  return output
+}
+
+// 处理超长行并验证行长限制，返回处理后的内容
+export const processContent = (content: string): string => {
+  const lines = content.split('\n').flatMap((line) => splitAtCommas(line))
+
+  // 验证行长限制
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    if (line && line.length > MAX_LINE_LENGTH) {
+      throw new Error(
+        `ahk/file: line too long at line ${i + 1} (max ${MAX_LINE_LENGTH} chars):\n${line.slice(0, 80)}...`,
+      )
+    }
+  }
+
+  return lines.join('\n')
+}
+
 const main = async (
   source: string,
   data: {
@@ -23,7 +120,7 @@ const main = async (
 ): Promise<void> => {
   const { basename, dirname } = getName(source)
 
-  // 检查行宽限制
+  // 编码为 UTF-8 BOM
   const ahkContent = iconv
     .encode(
       options.metadata
@@ -37,16 +134,6 @@ const main = async (
       },
     )
     .toString()
-
-  const lines = ahkContent.split('\n')
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
-    if (line && line.length > MAX_LINE_LENGTH) {
-      throw new Error(
-        `ahk/file: line too long at line ${i + 1} (max ${MAX_LINE_LENGTH} chars):\n${line.slice(0, 80)}...`,
-      )
-    }
-  }
 
   await write(`${dirname}/${basename}.ahk`, ahkContent)
 

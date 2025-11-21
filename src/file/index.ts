@@ -1,4 +1,4 @@
 import read from './read.js'
-import write from './write.js'
+import write, { processContent } from './write.js'
 
-export { read, write }
+export { processContent, read, write }

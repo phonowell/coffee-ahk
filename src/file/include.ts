@@ -1,10 +1,11 @@
 // Main include processing orchestrator
 import { read } from 'fire-keeper'
 
-import { setCacheSalt, sortModules } from './include/cache.js'
+import { clearCache, setCacheSalt, sortModules } from './include/cache.js'
 import { replaceAnchor, transformAll } from './include/transformer.js'
 
 const main = async (source: string, salt: string) => {
+  clearCache()
   setCacheSalt(salt)
 
   const content = await read<string>(source)

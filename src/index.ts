@@ -3,7 +3,7 @@ import { glob } from 'fire-keeper'
 import { version } from '../package.json'
 
 import start from './entry/index.js'
-import { read, write } from './file/index.js'
+import { processContent, read, write } from './file/index.js'
 import log from './logger/index.js'
 
 type Options = typeof DEFAULT_OPTIONS
@@ -120,9 +120,13 @@ const transpileAsFile = async (
 
     printWarnings(result.warnings)
 
-    if (options.save) await write(source2, result, options)
+    // 处理超长行（逗号换行）并验证行长限制
+    const processed = processContent(result.content)
 
-    return result.content
+    if (options.save)
+      await write(source2, { ...result, content: processed }, options)
+
+    return processed
   } catch (e) {
     return rethrowWithContext(e, content)
   }
@@ -145,7 +149,8 @@ const transpileAsText = async (
 
     printWarnings(result.warnings)
 
-    return result.content
+    // 处理超长行（逗号换行）并验证行长限制
+    return processContent(result.content)
   } catch (e) {
     return rethrowWithContext(e, content)
   }
