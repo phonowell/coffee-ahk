@@ -1,14 +1,15 @@
 import type { Context } from '../types'
 
 const main = (ctx: Context): boolean => {
-  const { content, type, value } = ctx
+  const { content, token, type, value } = ctx
+  const line = token[2].first_line + 1
 
   if (type === 'number') {
     let value2 = value
 
     if (value.includes('n')) {
       throw new Error(
-        `ahk/forbidden: 'BigInt' literal is not supported in AHK v1. Offending value: '${value}'`,
+        `ahk/forbidden (line ${line}): 'BigInt' literal is not supported in AHK v1. Offending value: '${value}'`,
       )
     }
 

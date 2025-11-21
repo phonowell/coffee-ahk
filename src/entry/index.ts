@@ -12,6 +12,7 @@ type Result = {
   ast: Context['content']['list']
   content: string
   raw: Context['token'][]
+  warnings: string[]
 }
 
 const main = async (
@@ -41,11 +42,11 @@ const main = async (
     scope,
     type: '',
     value: '',
+    warnings: [],
   }
 
   for (const token of ast.tokens) {
     ctx.token = token
-    ctx.token[2] = {}
     ctx.type = token[0].toLowerCase()
     ctx.value = token[1].toString()
 
@@ -58,6 +59,7 @@ const main = async (
     ast: content.list,
     content: render(ctx).trim(),
     raw: ast.tokens,
+    warnings: ctx.warnings,
   }
 }
 

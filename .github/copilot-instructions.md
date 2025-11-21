@@ -31,30 +31,31 @@ CoffeeScript源码 → CoffeeScript编译tokens → formatters(token→Item)
 **签名**：`(ctx: Context) => boolean` 返回 `true` 消费token终止后续；`false` 继续下一个
 **执行**：遍历非comment formatter → 最后执行 `comment` 附着注释
 
-| 文件 | 处理token | 生成Item |
-|------|-----------|---------|
-| identifier.ts | IDENTIFIER | identifier（检类名冲突） |
-| operator.ts | +/-/++/--/&&/\|\|/!/** | math/logical-operator/negative/compare |
-| function.ts | ->/=>、CALL_START | function/edge:call-start |
-| string.ts | STRING | string/edge:interpolation-* |
-| class.ts | CLASS | class（注册classNames） |
-| forbidden.ts | 全部 | 验证禁用语法（?./??/\|\|=） |
-| sign.ts | ,/:/.../= | sign |
+| 文件          | 处理token                | 生成Item                               |
+| ------------- | ------------------------ | -------------------------------------- |
+| identifier.ts | IDENTIFIER               | identifier（检类名冲突）               |
+| operator.ts   | +/-/++/--/&&/\|\|/!/\*\* | math/logical-operator/negative/compare |
+| function.ts   | ->/=>、CALL_START        | function/edge:call-start               |
+| string.ts     | STRING                   | string/edge:interpolation-\*           |
+| class.ts      | CLASS                    | class（注册classNames）                |
+| forbidden.ts  | 全部                     | 验证禁用语法（?./??/\|\|=）            |
+| sign.ts       | ,/:/.../=                | sign                                   |
 
 **新增**：创建 `src/formatters/<name>.ts` → 注册 `formattersMap` → 添加 `script/test/<name>.coffee` 测试
 
 <details><summary>Formatter模板</summary>
 
 ```typescript
-import type { Context } from '../types'
+import type { Context } from "../types";
 const main = (ctx: Context): boolean => {
-  const { content, type, value } = ctx
-  if (type !== 'YOUR_TYPE') return false
-  content.push('identifier', value)
-  return true
-}
-export default main
+  const { content, type, value } = ctx;
+  if (type !== "YOUR_TYPE") return false;
+  content.push("identifier", value);
+  return true;
+};
+export default main;
 ```
+
 </details>
 
 ---
@@ -64,34 +65,35 @@ export default main
 **签名**：`(ctx: Context) => void|async` 批量改写Item结构
 **执行顺序（严格）**：newLine(#1规范行) → for(#2索引) → array(#3) → object(#4) → variable(#5) → builtIn(#6异步注入) → class(#7) → function(#8定型)
 
-| 文件 | 功能 | 操作 |
-|------|------|------|
-| for.ts | for-in循环 | 插入 `name = name - 1`（AHK索引从1） |
-| function/implicit-return.ts | 隐式返回 | 简单函数末尾加return |
-| array/deconstruct.ts | 数组解构 | `[a,b]=arr` → 多行赋值 |
-| variable/boost-global.ts | 全局提升 | 未声明变量→global |
-| build-in-loader.ts | 注入内置 | 从builtins.gen.ts加载 |
+| 文件                        | 功能       | 操作                                 |
+| --------------------------- | ---------- | ------------------------------------ |
+| for.ts                      | for-in循环 | 插入 `name = name - 1`（AHK索引从1） |
+| function/implicit-return.ts | 隐式返回   | 简单函数末尾加return                 |
+| array/deconstruct.ts        | 数组解构   | `[a,b]=arr` → 多行赋值               |
+| variable/boost-global.ts    | 全局提升   | 未声明变量→global                    |
+| build-in-loader.ts          | 注入内置   | 从builtins.gen.ts加载                |
 
 **新增**：插入正确顺序位置（依赖规范行放#1后，需原始token顺序放结构重写前）
 
 <details><summary>Processor模板</summary>
 
 ```typescript
-import Item from '../models/Item.js'
+import Item from "../models/Item.js";
 const main = (ctx: Context) => {
-  const { content } = ctx
-  const cache: [number, Item[]][] = []
+  const { content } = ctx;
+  const cache: [number, Item[]][] = [];
   content.list.forEach((item, i) => {
-    if (!item.is('identifier', 'value')) return
-    cache.push([i + 1, [new Item('new-line', indent, scope)]])
-  })
+    if (!item.is("identifier", "value")) return;
+    cache.push([i + 1, [new Item("new-line", indent, scope)]]);
+  });
   if (cache.length) {
-    const list = content.list
-    for (const [idx, items] of cache) list.splice(idx, 0, ...items)
-    content.reload(list)
+    const list = content.list;
+    for (const [idx, items] of cache) list.splice(idx, 0, ...items);
+    content.reload(list);
   }
-}
+};
 ```
+
 </details>
 
 ---
@@ -102,15 +104,15 @@ const main = (ctx: Context) => {
 
 ```typescript
 mapMethod = {
-  'new-line': newLine2,      // 函数：\n+缩进+logger分段
-  'identifier': identifier2,  // 函数：类名首字母→全角
-  'edge': edge2,             // 函数：block-start→{ call-start→(
-  'if': if2,                 // 函数：if/else/switch
-  'class': 'class ',         // 字符串：直接替换
-  'math': ' ~ ',             // 模板：~→value
-  'void': '',                // 移除
-  'super': 'base'            // AHK映射
-}
+  "new-line": newLine2, // 函数：\n+缩进+logger分段
+  identifier: identifier2, // 函数：类名首字母→全角
+  edge: edge2, // 函数：block-start→{ call-start→(
+  if: if2, // 函数：if/else/switch
+  class: "class ", // 字符串：直接替换
+  math: " ~ ", // 模板：~→value
+  void: "", // 移除
+  super: "base", // AHK映射
+};
 ```
 
 **注释流程**：Formatter附着→Renderer收集(`setCacheComment`)→`injectComment`插入
@@ -130,6 +132,7 @@ mapMethod = {
 **构建**（`task/build.ts`）：`pnpm i` → `forbidden.yaml→json` → `segment/*.coffee→builtins.gen.ts` → `esbuild` → `tsc --emitDeclarationOnly` → 清理dist
 
 **测试系统**（`task/test/`）- 四层防护 + 增强功能：
+
 ```
 pnpm test  # 运行所有74个测试
 ├─ 1️⃣ 端到端测试（38个）：并行验证TS源码/dist双编译输出 vs fixture
@@ -144,23 +147,16 @@ pnpm test  # 运行所有74个测试
 └─ 🔍 Dist检查：测试前验证dist/index.js存在
 ```
 
-| 命令 | 用途 |
-|------|------|
-| `pnpm test` | 完整测试套件（~7s并行） |
-| `pnpm test -- overwrite` | 更新fixture |
-| `pnpm test -- <name>` | 单测试文件 |
-| `pnpm task test-unit` | 仅单元测试 |
-| `pnpm task test-errors` | 仅错误测试 |
-| `pnpm task test-coverage` | 仅覆盖率 |
+| 命令                      | 用途                    |
+| ------------------------- | ----------------------- |
+| `pnpm test`               | 完整测试套件（~7s并行） |
+| `pnpm test -- overwrite`  | 更新fixture             |
+| `pnpm test -- <name>`     | 单测试文件              |
+| `pnpm task test-unit`     | 仅单元测试              |
+| `pnpm task test-errors`   | 仅错误测试              |
+| `pnpm task test-coverage` | 仅覆盖率                |
 
-**测试文件结构**：
-- `task/test/index.ts` - 主运行器（集成4层）
-- `task/test/unit.ts` - 20个单元测试
-- `task/test/errors.ts` - 16个错误场景
-- `task/test/coverage.ts` - 动态覆盖率分析
-- `script/test/*.coffee` - 端到端测试用例+fixture
-
-**调试**（`task/watch.ts`）：监听 `script/**/*.coffee`，固定 `salt:'ahk'`，开启 `coffeeAst`+`verbose` 打印tokens/Items
+**调试**（`task/watch.ts`）：监听 `script/**/*.coffee`，固定 `salt:'ahk'`，开启 `coffeeAst`+`verbose`
 
 ---
 
@@ -168,15 +164,15 @@ pnpm test  # 运行所有74个测试
 
 ```typescript
 DEFAULT_OPTIONS = {
-  ast: false,         // AST JSON调试
-  coffeeAst: false,   // 打印tokens
-  comments: false,    // 保留注释
-  metadata: true,     // 时间戳
-  salt: '',           // 函数名盐（测试用'ahk'固定）
-  save: true,         // 写文件
-  string: false,      // 仅返回字符串
-  verbose: false      // 详细日志
-}
+  ast: false, // AST JSON调试
+  coffeeAst: false, // 打印tokens
+  comments: false, // 保留注释
+  metadata: true, // 时间戳
+  salt: "", // 函数名盐（测试用'ahk'固定）
+  save: true, // 写文件
+  string: false, // 仅返回字符串
+  verbose: false, // 详细日志
+};
 ```
 
 **重要**：固定salt保证测试可重复
@@ -192,11 +188,11 @@ DEFAULT_OPTIONS = {
 
 ## 10. 新功能开发策略
 
-| 场景 | 推荐层 | 示例 |
-|------|--------|------|
-| 单token语法糖 | Formatter | `?.`→报错(forbidden) |
-| 多行结构重写 | Processor | 数组解构→多行 |
-| 需回溯 | Formatter临时Item+Processor改写 | 隐式返回 |
+| 场景          | 推荐层                          | 示例                 |
+| ------------- | ------------------------------- | -------------------- |
+| 单token语法糖 | Formatter                       | `?.`→报错(forbidden) |
+| 多行结构重写  | Processor                       | 数组解构→多行        |
+| 需回溯        | Formatter临时Item+Processor改写 | 隐式返回             |
 
 ---
 
@@ -204,49 +200,36 @@ DEFAULT_OPTIONS = {
 
 ### 开发陷阱
 
-| 错误 | 后果 | 解决 |
-|------|------|------|
-| Formatter忘返true | Token重复处理 | 完全消费返true |
-| 随机salt | 测试不稳定 | 固定salt:'ahk' |
-| 直接改content.list | Scope未更新 | 用.reload/.push |
-| Scope泄漏 | 作用域污染 | clone或自动reload |
-| Processor索引偏移 | 插入位置错 | 倒序cache或splice |
-| 使用非法ScopeType | 类型错误 | 仅用`''|'if'|'for'|'class'|'function'`等合法类型 |
+| 错误               | 后果          | 解决              |
+| ------------------ | ------------- | ----------------- | ---- | ----- | ------- | --------------------- |
+| Formatter忘返true  | Token重复处理 | 完全消费返true    |
+| 随机salt           | 测试不稳定    | 固定salt:'ahk'    |
+| 直接改content.list | Scope未更新   | 用.reload/.push   |
+| Scope泄漏          | 作用域污染    | clone或自动reload |
+| Processor索引偏移  | 插入位置错    | 倒序cache或splice |
+| 使用非法ScopeType  | 类型错误      | 仅用`''           | 'if' | 'for' | 'class' | 'function'`等合法类型 |
 
-### 已修复Bug
+### 错误与警告系统
 
-**✅ 栈溢出已修复（implicit-parameter/context.ts）**
-- **修复方案**：在 `pickContext` 和 `pickParameter` 函数开头添加边界检查
-- **代码**：`if (!it || i >= content.list.length) return`
-- **测试**：`script/test/edge-deep-nesting.coffee` 已恢复并通过
+- **行号显示**：formatter错误含行号 `token[2].first_line + 1`
+- **警告输出**：`Context.warnings` + `printWarnings()` 输出非致命警告（如`=>`在非class）
+- 辅助函数：`getForbiddenReason(name)`
 
 ### 已知限制
 
-**⚠️ comment测试限制**：注释输出需`options.comments=true`，当前测试仅验证不崩溃。
-
-**⚠️ processor子模块未测**：function processor的12个子模块（validate, context, mark等）是内部实现，难以单独测试，通过集成测试间接覆盖。
+- comment测试仅验证不崩溃（需`options.comments=true`）
 
 ---
 
 ## 12. 命令速查
 
 ```bash
-# 安装与构建
-pnpm i                          # 安装依赖
-pnpm build                      # 完整构建
-
-# 测试（74个测试，~0.1s）
-pnpm test                       # 所有测试（E2E+单元+错误+覆盖率）
+pnpm i && pnpm build            # 安装+构建
+pnpm test                       # 74个测试（E2E+单元+错误+覆盖率）
 pnpm test -- overwrite          # 更新fixture
-pnpm test -- <name>             # 单个测试
-pnpm task test-unit             # 仅20个单元测试
-pnpm task test-errors           # 仅16个错误测试
-pnpm task test-coverage         # 仅覆盖率分析
-
-# 开发
+pnpm test -- <name>             # 单测试
 pnpm watch                      # 监听开发
-pnpm lint                       # 代码检查
-pnpm task publish               # 发布
+pnpm lint                       # ESLint检查
 ```
 
 ---
@@ -254,10 +237,12 @@ pnpm task publish               # 发布
 ## 13. 修改检查清单
 
 **开发前**：
+
 1. `pnpm test` 确保基线通过（74/74）
 2. 理解 formatter/processor 顺序和职责
 
 **开发中**：
+
 - 改 `forbidden.yaml`/`segment/*` → `pnpm build` 重新生成
 - 新 formatter → 注册 `formattersMap` + 添加测试用例
 - 新 processor → 插入**正确顺序**（见§4执行顺序）
@@ -265,11 +250,15 @@ pnpm task publish               # 发布
 - 避免直接修改 `content.list`，用 `.push()` / `.reload()`
 
 **提交前**：
+
 1. `pnpm test` 验证全部通过
 2. 必要时 `pnpm test -- overwrite` 更新 fixture
-3. 检查 TypeScript 类型无错误
-4. 新功能添加对应测试（E2E/单元/错误场景）
-5. 更新文档（本文件或 README）
+3. `npx tsc --noEmit` 验证 TypeScript 类型无错误
+4. `pnpm lint` 验证 ESLint 无错误（warning可接受）
+5. 新功能添加对应测试（E2E/单元/错误场景）
+6. 更新文档（本文件或 README）
+
+**⚠️ 代码质量规则**：所有代码必须同时通过 TypeScript 和 ESLint 双重检测。
 
 ---
 
@@ -288,29 +277,23 @@ pnpm task publish               # 发布
 ## 附录：项目统计
 
 **Formatters（26个）**：alias, array, boolean, bracket, class, comment, do, for, forbidden, function, identifier, if, indent, module, native, new-line, nil, number, object, operator, property, sign, statement, string, switch, try, while
+
 - 测试覆盖：25/26 (96.2%)
 - 未测：forbidden
 
 **Processors（23个）**：newLine, for, array(5), object(3), variable(4), builtIn, class(3), function(11)
+
 - 测试覆盖：11/23 (47.8%)
 
 **Models（5个）**：Item, Content, Scope, ItemType, ScopeType
 
 **测试套件**：74个测试
-- 端到端：38个（script/test/*.coffee）
+
+- 端到端：38个（script/test/\*.coffee）
 - 单元测试：20个（Item/Content/Scope）
 - 错误场景：16个（禁止语法验证）
 - 总覆盖率：73.5% (36/49组件)
 
 ---
 
-**历史修正**：
-- 拼写：`indentifier` → `identifier`（formattersMap键）
-- 栈溢出：`implicit-parameter/context.ts` 添加边界检查修复
-- 测试增强：超时保护、diff显示、耗时统计、空值检测、报告输出、dist检查、overwrite空值检查
-
-**测试系统状态**：已达成熟状态，38个E2E测试用例及.ahk fixture均已验证正确（含AHK v1语法检查）。后续改进应聚焦于新功能同步测试、bug回归测试、保持覆盖率。
-
-**注意事项**：
-- native测试中`msg`是AHK运行时全局变量，非CoffeeScript参数（设计意图）
-- .ahk中类名宽体字符（如Ａnimal）是§9命名规则的实现，用于模拟大小写敏感
+**注意**：native测试中`msg`是AHK全局变量；类名宽体字符（Ａnimal）是§9命名规则实现

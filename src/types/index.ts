@@ -19,6 +19,7 @@ export type Context = {
   token: Token & { origin?: Token }
   type: string
   value: string
+  warnings: string[]
 }
 
 export type Flag = {

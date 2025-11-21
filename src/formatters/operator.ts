@@ -73,8 +73,9 @@ const main = (ctx: Context): boolean => {
   }
   if (type === 'compound_assign') {
     if (value === '||=' || value === '?=') {
+      const line = ctx.token[2].first_line + 1
       throw new Error(
-        `ahk/forbidden: compound assignment '${value}' is not supported. Only standard assignments are allowed.`,
+        `ahk/forbidden (line ${line}): compound assignment '${value}' is not supported. Only standard assignments are allowed.`,
       )
     }
     content.push('math', value)

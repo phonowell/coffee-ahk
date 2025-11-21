@@ -30,6 +30,13 @@ const DEFAULT_OPTIONS = {
 const generateSalt = (): string =>
   Math.random().toString(32).split('.')[1].padStart(11, '0')
 
+/** Output warnings to console */
+const printWarnings = (warnings: string[]) => {
+  if (warnings.length === 0) return
+  console.log(`⚠️ Warnings (${warnings.length}):`)
+  warnings.forEach((w) => console.log(`  - ${w}`))
+}
+
 /** Main transpilation function with top-level error handling */
 const transpile = async (source: string, options: PartialOptions = {}) => {
   try {
@@ -79,6 +86,8 @@ const transpileAsFile = async (
     log(result.ast)
   }
 
+  printWarnings(result.warnings)
+
   if (options.save) await write(source2, result, options)
 
   return result.content
@@ -94,6 +103,8 @@ const transpileAsText = async (
     if (options.coffeeAst) console.log(result.raw)
     log(result.ast)
   }
+
+  printWarnings(result.warnings)
 
   return result.content
 }

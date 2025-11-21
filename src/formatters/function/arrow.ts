@@ -15,7 +15,15 @@ const findEdge = (ctx: Context, i: number = ctx.content.length - 1): number => {
 }
 
 export const arrow = (ctx: Context, type: string) => {
-  const { content, scope } = ctx
+  const { content, scope, token, warnings } = ctx
+
+  // Warn about => outside class context
+  if (type === '=>' && !scope.list.includes('class')) {
+    const line = token[2].first_line + 1
+    warnings.push(
+      `line ${line}: '=>' outside class has no meaningful 'this' binding in AHK`,
+    )
+  }
 
   // fn = -> xxx
   if (!content.last.is('edge', 'parameter-end')) {

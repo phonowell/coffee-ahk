@@ -85,7 +85,7 @@ const errorTests: ErrorTest[] = [
   {
     name: 'A_ prefix variable name is forbidden',
     code: 'A_Custom = 1',
-    expectedError: /ahk\/forbidden.*variable name.*a_.*prefix/i,
+    expectedError: /ahk\/forbidden.*a_.*prefix.*reserved/i,
   },
   {
     name: 'Reserved parameter name (CoffeeScript error)',

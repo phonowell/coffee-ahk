@@ -1,12 +1,13 @@
 import type { Context } from '../types'
 
 const main = (ctx: Context): boolean => {
-  const { content, scope, type } = ctx
+  const { content, scope, token, type } = ctx
+  const line = token[2].first_line + 1
 
   if (type === '...') {
     if (!['call', 'parameter'].includes(scope.last)) {
       throw new Error(
-        `ahk/forbidden: spread operator '...' is only allowed in function calls or parameter lists. Context: ${scope.last}`,
+        `ahk/forbidden (line ${line}): spread operator '...' is only allowed in function calls or parameter lists. Context: ${scope.last}`,
       )
     }
     content.push('sign', '...')
@@ -17,7 +18,7 @@ const main = (ctx: Context): boolean => {
     const prev = content.last
     if (prev.type === 'identifier' && ctx.cache.classNames.has(prev.value)) {
       throw new Error(
-        `ahk/class-case: cannot assign to class name '${prev.value}'. Please use a different identifier for variables.`,
+        `ahk/class-case (line ${line}): cannot assign to class name '${prev.value}'. Please use a different identifier for variables.`,
       )
     }
     content.push('sign', '=')
