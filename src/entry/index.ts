@@ -35,6 +35,7 @@ const main = async (
     content,
     flag: {
       isChangeIndexUsed: false,
+      isTypeofUsed: false,
     },
     indent: 0,
     options: option,

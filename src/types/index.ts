@@ -24,6 +24,7 @@ export type Context = {
 
 export type Flag = {
   isChangeIndexUsed: boolean
+  isTypeofUsed: boolean
 }
 
 type Token = ReturnType<typeof cs.compile>['tokens'][number]

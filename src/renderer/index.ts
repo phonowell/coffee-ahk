@@ -64,7 +64,12 @@ const mapMethod: Record<string, string | ((ctx: Context) => string)> = {
   },
   identifier: identifier2,
   if: if2,
-  math: ' ~ ',
+  math: (ctx: Context): string => {
+    const { value } = ctx.it
+    // Bitwise NOT is unary, no leading space
+    if (value === '~') return '~'
+    return ` ${value} `
+  },
   negative: negative2,
   sign: sign2,
   statement: statement2,

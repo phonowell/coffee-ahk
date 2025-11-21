@@ -9,16 +9,8 @@ const listForbidden = [
   'from',
   'func_exist',
   'import',
-  // Bitwise operators - not supported in AHK
-  '&',
-  '|',
-  '^',
-  '~',
-  '<<',
-  '>>',
+  // Unsigned right shift - not supported in AHK
   '>>>',
-  // Relation operators - complex semantics not supported
-  'relation',
 ]
 
 const main = (ctx: Context) => {
@@ -35,6 +27,16 @@ const main = (ctx: Context) => {
     throw new Error(
       `ahk/forbidden (line ${line}): post-if syntax is not supported. Use standard if/else.`,
     )
+  }
+
+  // Relation operators: only instanceof is supported, not 'in'
+  if (type === 'relation') {
+    const { value } = ctx
+    if (value === 'in') {
+      throw new Error(
+        `ahk/forbidden (line ${line}): 'in' operator is not supported. Use 'for...in' for iteration.`,
+      )
+    }
   }
 
   return false

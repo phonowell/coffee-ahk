@@ -10,7 +10,7 @@ export default async () => {
 
   // Generate builtins
   const c2a = (await import('../src/index.js')).default
-  for (const segment of ['changeIndex']) {
+  for (const segment of ['changeIndex', 'typeof']) {
     try {
       await c2a(`./script/segment/${segment}.coffee`, {
         ast: false,
@@ -24,13 +24,16 @@ export default async () => {
     }
   }
 
-  const ahk = await read('./script/segment/changeIndex.ahk')
+  const changeIndexAhk = await read('./script/segment/changeIndex.ahk')
+  const typeofAhk = await read('./script/segment/typeof.ahk')
   await write(
     './src/processors/builtins.gen.ts',
     [
       '// This file is auto-generated during build. Do not edit manually.',
       '',
-      `export const changeIndex_ahk = \`${ahk?.toString().trim()}\``,
+      `export const changeIndex_ahk = \`${changeIndexAhk?.toString().trim()}\``,
+      '',
+      `export const typeof_ahk = \`${typeofAhk?.toString().trim()}\``,
       '',
     ].join('\n'),
   )

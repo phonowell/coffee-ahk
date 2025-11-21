@@ -40,9 +40,10 @@ const handleUnaryOperator = (ctx: Context): boolean => {
   const { content, type, value } = ctx
 
   if (type === 'unary' && value === 'typeof') {
-    throw new Error(
-      `ahk/forbidden (line ${getLine(ctx)}): 'typeof' is not supported. Use custom type checking instead.`,
-    )
+    ctx.flag.isTypeofUsed = true
+    content.push('identifier', `__typeof_${ctx.options.salt}__`)
+    content.push('edge', 'typeof-start')
+    return true
   }
 
   if (type === 'unary' && value === 'delete') {
@@ -51,8 +52,14 @@ const handleUnaryOperator = (ctx: Context): boolean => {
     )
   }
 
-  if ((type === 'unary' && value === '!') || type === 'unary_math') {
+  if (type === 'unary' && value === '!') {
     content.push('logical-operator', '!')
+    return true
+  }
+
+  // Bitwise NOT (~)
+  if (type === 'unary_math') {
+    content.push('math', '~')
     return true
   }
 
@@ -118,6 +125,21 @@ const main = (ctx: Context): boolean => {
       )
     }
     content.push('math', value)
+    return true
+  }
+
+  // Bitwise operators: &, |, ^, <<, >>
+  if (type === '&' || type === '|' || type === '^' || type === 'shift') {
+    content.push('math', value)
+    return true
+  }
+
+  // instanceof: obj instanceof Class → obj.__Class == "Class"
+  if (type === 'relation' && value === 'instanceof') {
+    content.push('.', '.')
+    content.push('property', '__Class')
+    content.push('compare', '==')
+    content.push('edge', 'instanceof-class') // marker for processor to convert next identifier to string
     return true
   }
 

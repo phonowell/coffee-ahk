@@ -15,7 +15,7 @@ Translate `coffeescript` to `ahk`.
 - Arrow functions (`->`, `=>`) and `this` binding
 - Function parameter binding, default values, and rest parameters
 - Destructuring assignment for arrays and objects
-- Supports various syntactic sugar, such as destructuring, splats, and concise expressions
+- Supports various syntactic sugar, such as destructuring, splats, chained comparisons, and negative indexing
 - Try/catch/finally error handling
 - Chained and implicit function calls
 - Anonymous and higher-order functions
@@ -63,7 +63,7 @@ await c2a("./script/toolkit/index.coffee", {
 - Character and number distinction is blurred in AHK; `'0'` is falsy
 - `NaN`, `null`, and `undefined` are converted to the empty string `''`
 - Optional chaining (`?`) is not supported
-- Bitwise operators (`&`, `|`, `^`, `~`, `<<`, `>>`) are not supported
+- Unsigned right shift (`>>>`) is not supported
 - Floor division (`//`) and modulo (`%%`) operators conflict with AHK syntax
 - Avoid using `=>` outside classes; pure functions in AHK lack `this`
 - `.coffee` files must be UTF-8; `.ahk` files must be UTF-8 with BOM
@@ -102,13 +102,17 @@ await c2a("./script/toolkit/index.coffee", {
 | `try`/`catch`/`finally`/`throw`         |      ✅      |          ✅           |     ✅     |
 | Array/Object literals                   |      ✅      |          ✅           |     ✅     |
 | Boolean, Comparison, Logical ops        |      ✅      |          ✅           |     ✅     |
+| Bitwise operators (`&\|^~<<>>`)         |      ✅      |          ✅           |     ✅     |
 | `new` operator                          |      ✅      |          ✅           |     ✅     |
 | Chained method calls                    |      ✅      |          ✅           |     ✅     |
 | Native AHK embedding (backticks)        |      ❌      |          ✅           |     ✅     |
 | **Partial Support**                     |
 | Rest parameters (`...args`)             |      ✅      |     ⚠️ (variadic)     |     🟡     |
 | Spread in function calls                |      ✅      |     ⚠️ (variadic)     |     🟡     |
-| `typeof`/`instanceof`                   |      ✅      |          ❌           |     🟡     |
+| `typeof`                                |      ✅      |          ❌           |     ✅     |
+| `instanceof`                            |      ✅      |          ❌           |     ✅     |
+| Chained comparison (`1<y<10`)           |      ✅      |          ❌           |     ✅     |
+| Negative indexing (`arr[-1]`)           |      ✅      |          ❌           |     ✅     |
 | **Not Supported**                       |
 | Optional chaining (`?.`)                |      ✅      |          ❌           |     ❌     |
 | Nullish coalescing (`??`)               |      ✅      |          ❌           |     ❌     |

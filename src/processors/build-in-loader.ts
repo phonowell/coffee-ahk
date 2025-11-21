@@ -1,7 +1,7 @@
 // Built-in function loader
 import Item from '../models/Item.js'
 
-import { changeIndex_ahk } from './builtins.gen.js'
+import { changeIndex_ahk, typeof_ahk } from './builtins.gen.js'
 
 import type { Context } from '../types'
 
@@ -15,6 +15,9 @@ const getBuiltin = (functionName: string): Item[] => {
       new Item('new-line', '0', []),
     ]
   }
+  if (functionName === 'typeof')
+    return [new Item('native', typeof_ahk, []), new Item('new-line', '0', [])]
+
   return []
 }
 
@@ -33,12 +36,19 @@ const insert = (
         if (typeof item.value === 'string') {
           const { value: originalValue } = item
           let value = originalValue
-          if (value.includes('__ci_SALT_PLACEHOLDER__')) {
+          const salt = ctx.options.salt ?? 'salt'
+          if (value.includes('__ci_SALT_PLACEHOLDER__'))
+            value = value.replace(/__ci_SALT_PLACEHOLDER__/g, `__ci_${salt}__`)
+
+          if (value.includes('__typeof_SALT_PLACEHOLDER__')) {
             value = value.replace(
-              /__ci_SALT_PLACEHOLDER__/g,
-              `__ci_${ctx.options.salt ?? 'salt'}__`,
+              /__typeof_SALT_PLACEHOLDER__/g,
+              `__typeof_${salt}__`,
             )
+            // Replace generated function name salt_1 -> {salt}_typeof
+            value = value.replace(/salt_1/g, `${salt}_typeof`)
           }
+
           item.value = value
         }
       })
@@ -49,6 +59,7 @@ const insert = (
 
 const main = (ctx: Context) => {
   insert(ctx, 'isChangeIndexUsed', 'changeIndex')
+  insert(ctx, 'isTypeofUsed', 'typeof')
 }
 
 export default main

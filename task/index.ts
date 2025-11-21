@@ -96,4 +96,4 @@ const main = async () => {
 }
 
 // 执行主函数
-main()
+main().then(() => process.exit(0))

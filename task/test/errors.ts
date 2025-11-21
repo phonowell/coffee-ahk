@@ -82,33 +82,11 @@ const errorTests: ErrorTest[] = [
     expectedError: /ahk\/forbidden.*%%=.*not supported/i,
   },
 
-  // Bitwise operators forbidden
-  {
-    name: 'Bitwise AND (&) is forbidden',
-    code: 'x = 5 & 3',
-    expectedError: /ahk\/forbidden.*&.*not supported/i,
-  },
-  {
-    name: 'Bitwise OR (|) is forbidden',
-    code: 'x = 5 | 3',
-    expectedError: /ahk\/forbidden.*\|.*not supported/i,
-  },
-
-  // Relation operators forbidden
+  // Relation operators forbidden (only 'in' is forbidden, instanceof is supported)
   {
     name: 'in operator is forbidden',
     code: 'x = 1 in [1,2,3]',
-    expectedError: /ahk\/forbidden.*relation.*not supported/i,
-  },
-  {
-    name: 'instanceof operator is forbidden',
-    code: 'x = obj instanceof Array',
-    expectedError: /ahk\/forbidden.*relation.*not supported/i,
-  },
-  {
-    name: 'typeof operator is forbidden',
-    code: 'x = typeof obj',
-    expectedError: /ahk\/forbidden.*typeof.*not supported/i,
+    expectedError: /ahk\/forbidden.*in.*not supported/i,
   },
   {
     name: 'delete operator is forbidden',
