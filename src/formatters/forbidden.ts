@@ -17,6 +17,8 @@ const listForbidden = [
   '<<',
   '>>',
   '>>>',
+  // Relation operators - complex semantics not supported
+  'relation',
 ]
 
 const main = (ctx: Context) => {

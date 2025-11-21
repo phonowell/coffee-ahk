@@ -94,6 +94,28 @@ const errorTests: ErrorTest[] = [
     expectedError: /ahk\/forbidden.*\|.*not supported/i,
   },
 
+  // Relation operators forbidden
+  {
+    name: 'in operator is forbidden',
+    code: 'x = 1 in [1,2,3]',
+    expectedError: /ahk\/forbidden.*relation.*not supported/i,
+  },
+  {
+    name: 'instanceof operator is forbidden',
+    code: 'x = obj instanceof Array',
+    expectedError: /ahk\/forbidden.*relation.*not supported/i,
+  },
+  {
+    name: 'typeof operator is forbidden',
+    code: 'x = typeof obj',
+    expectedError: /ahk\/forbidden.*typeof.*not supported/i,
+  },
+  {
+    name: 'delete operator is forbidden',
+    code: 'delete obj.key',
+    expectedError: /ahk\/forbidden.*delete.*not supported/i,
+  },
+
   // Number forbidden tests
   {
     name: 'BigInt literal is forbidden',

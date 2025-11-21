@@ -35,7 +35,21 @@ const handleMinusOperator = (ctx: Context): boolean => {
 }
 
 const handleUnaryOperator = (ctx: Context): boolean => {
-  const { content, type, value } = ctx
+  const { content, type, value, token } = ctx
+
+  if (type === 'unary' && value === 'typeof') {
+    const line = token[2].first_line + 1
+    throw new Error(
+      `ahk/forbidden (line ${line}): 'typeof' is not supported. Use custom type checking instead.`,
+    )
+  }
+
+  if (type === 'unary' && value === 'delete') {
+    const line = token[2].first_line + 1
+    throw new Error(
+      `ahk/forbidden (line ${line}): 'delete' is not supported in AHK.`,
+    )
+  }
 
   if ((type === 'unary' && value === '!') || type === 'unary_math') {
     content.push('logical-operator', '!')
