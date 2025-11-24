@@ -63,6 +63,30 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 
 **禁止直接写 `.ahk`**，必须写 `.coffee` 让构建编译。
 
+### 模块内联系统
+
+**流程** (`src/file/include/`): import 替换 → export 解析 → 模块组装
+
+**关键文件**:
+- `include.ts::main()` - 入口，组装最终 CoffeeScript
+- `transformer/transform.ts::parseExportsFromCoffee()` - 解析 export 和函数体
+
+**核心逻辑** (`parseExportsFromCoffee`):
+1. 遍历模块每一行
+2. 遇到 `export` 开头的行：
+   - 记录缩进级别 (`exportLineIndent`)
+   - 收集后续所有匹配缩进的行到 `exportBody`（包括空行）
+   - **关键**: `while` 循环中必须用 `line === undefined` 而非 `!line` 判断数组结束
+3. 非 export 行进入 `codeLines`
+4. `codeLines` 经 `closureCoffee` 添加 2 空格缩进后成为模块闭包体
+
+**已知 Bug 和修复** (2025-11-24):
+- **问题**: `if (!nextLine) break` 会在遇到空字符串时中断循环（空字符串是 falsy）
+- **后果**: export 后有空行时，函数体未被收集到 `exportBody`，留在 `codeLines` 中
+- **影响**: 函数体获得双重缩进（原有 2 空格 + 闭包添加 2 空格 = 4 空格），导致 "unexpected indentation" 编译错误
+- **修复**: 改为 `if (nextLine === undefined) break`，仅在数组末尾中断
+- **附加修复**: 跳过 export 前的 `###* @type ... ###` 类型注释（否则会被添加到 `codeLines` 造成缩进不一致）
+
 ## 代码规范
 
 ```typescript
@@ -109,6 +133,7 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 | segment/ 写 .ahk           | 不一致           | 写 .coffee                 |
 | post-if (`y if x`)         | forbidden        | 用 `if x then y`           |
 | **Item.clone() 未复制属性**| **注释等数据丢失**| **克隆所有属性包括comment**|
+| **空行判断用 `!line`**     | **export解析中断**| **用 `line === undefined`**|
 
 ## 新功能开发
 

@@ -38,6 +38,20 @@ const parseExportsFromCoffee = (replaced: string) => {
     const trimmed = line.trim()
     // 只处理 export 开头的行
     if (!trimmed.startsWith('export ')) {
+      // Skip type annotation comments (###* ... ###) immediately before export
+      // They will be handled with the export they annotate
+      if (trimmed.match(/^###\*.*###$/)) {
+        // Peek ahead to see if next non-empty line is export
+        let nextIdx = i + 1
+        while (nextIdx < lines.length && !lines[nextIdx]?.trim()) nextIdx++
+
+        if (lines[nextIdx]?.trim().startsWith('export ')) {
+          // Skip this type comment, it belongs to the export
+          i++
+          continue
+        }
+      }
+
       codeLines.push(line)
       i++
       continue
@@ -52,7 +66,8 @@ const parseExportsFromCoffee = (replaced: string) => {
       let j = i + 1
       while (j < lines.length) {
         const nextLine = lines[j]
-        if (!nextLine) break
+        // Check for undefined (end of array), not empty string
+        if (nextLine === undefined) break
         if (
           nextLine.trim() === '' ||
           nextLine.startsWith(`${exportLineIndent} `) ||
