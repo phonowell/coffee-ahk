@@ -20,22 +20,23 @@ class Item {
       | [Item]
   ) {
     if (args[0] instanceof Item) {
-      const { scope, type, value } = args[0]
-      this.type = type
-      this.value = value
-      this.scope = new Scope(scope)
+      const item = args[0]
+      this.type = item.type
+      this.value = item.value
+      this.scope = new Scope(item.scope)
+      if (item.comment) this.comment = [...item.comment]
       return
     }
 
-    this.type = args[0] ?? 'void'
-    this.value = (typeof args[1] === 'undefined' ? args[0] : args[1]) ?? ''
-    this.scope = new Scope(args[2])
+    const [type, value, scope] = args
+    this.type = type ?? 'void'
+    this.value = value ?? type ?? ''
+    this.scope = new Scope(scope)
   }
 
   /** Clones the item. */
   clone(): Item {
-    const { scope, type, value } = this
-    return new Item(type, value, scope)
+    return new Item(this)
   }
 
   /** Checks if the item is of a certain type and value. */

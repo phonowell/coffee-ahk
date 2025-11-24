@@ -7,7 +7,6 @@ import {
   sign2,
   statement2,
 } from './basic.js'
-import { getCacheComment, injectComment, setCacheComment } from './comments.js'
 import { if2, try2 } from './control-flow.js'
 import { edge2 } from './edge.js'
 
@@ -23,25 +22,76 @@ const main = (ctx: Context2): string => {
   const content = ctx.content.list
     .map((it, i) => {
       const context: Context = { ...ctx, i, it }
+      let output = ''
+      let commentPrefix = ''
 
-      if (it.comment) {
-        const cacheComment = getCacheComment()
-        setCacheComment([...cacheComment, ...it.comment])
+      // Handle standalone comments
+      if (it.comment && ctx.options.comments) {
+        const hasStandaloneComment = it.comment.some((c) =>
+          c.startsWith('STANDALONE:'),
+        )
+
+        if (hasStandaloneComment) {
+          const prevItem = ctx.content.list.at(i - 1)
+          const scopeLast = it.scope.last
+          const indent = ' '.repeat(parseInt(scopeLast || '0', 10) * 2)
+
+          // If previous item is not newline, add newline before comment
+          if (prevItem && prevItem.type !== 'new-line') commentPrefix += '\n'
+
+          it.comment.forEach((commentLine) => {
+            if (commentLine.startsWith('STANDALONE:')) {
+              const content = commentLine
+                .substring(11)
+                .trim()
+                .replace(/^#+\s*/, '')
+                .replace(/;+$/, '')
+              if (content) commentPrefix += `${indent}; ${content}\n`
+            }
+          })
+
+          commentPrefix += indent
+        }
       }
 
+      // Render the item itself
+      let itemRendered = false
       for (const key of Object.keys(mapMethod)) {
         if (it.type === key) {
           const method = mapMethod[key]
           if (!method) continue
+
           const value =
             typeof method === 'string'
               ? method.replace(/~/g, it.value)
               : method(context)
 
-          return injectComment(value, context)
+          output = value
+          itemRendered = true
+          break
         }
       }
-      return injectComment(it.value, context)
+
+      if (!itemRendered) output = it.value
+
+      // Handle inline comments
+      if (it.comment && ctx.options.comments) {
+        const inlineComments = it.comment
+          .filter((c) => c.startsWith('INLINE:'))
+          .map((c) =>
+            c
+              .substring(7)
+              .trim()
+              .replace(/^#+\s*/, '')
+              .replace(/;+$/, ''),
+          )
+          .filter(Boolean)
+
+        if (inlineComments.length > 0)
+          output += `  ; ${inlineComments.join(' ')}`
+      }
+
+      return commentPrefix + output
     })
     .join('')
 

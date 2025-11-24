@@ -2,6 +2,7 @@ import { echo } from 'fire-keeper'
 import Item from '../../src/models/Item.js'
 import Content from '../../src/models/Content.js'
 import Scope from '../../src/models/Scope.js'
+import type { ScopeType } from '../../src/models/ScopeType.js'
 
 interface UnitTest {
   name: string
@@ -70,8 +71,8 @@ const tests: UnitTest[] = [
       content.push('identifier', 'bar')
 
       if (content.list.length !== 2) throw new Error('Content should have 2 items')
-      if (content.list[0].value !== 'foo') throw new Error('First item value mismatch')
-      if (content.list[1].value !== 'bar') throw new Error('Second item value mismatch')
+      if (content.at(0)?.value !== 'foo') throw new Error('First item value mismatch')
+      if (content.at(1)?.value !== 'bar') throw new Error('Second item value mismatch')
     },
   },
   {
@@ -110,8 +111,8 @@ const tests: UnitTest[] = [
       content.reload(newItems)
 
       if (content.list.length !== 2) throw new Error('Reload should replace items')
-      if (content.list[0].value !== 'new1') throw new Error('Reload item 1 mismatch')
-      if (content.list[1].value !== 'new2') throw new Error('Reload item 2 mismatch')
+      if (content.at(0)?.value !== 'new1') throw new Error('Reload item 1 mismatch')
+      if (content.at(1)?.value !== 'new2') throw new Error('Reload item 2 mismatch')
     },
   },
 
@@ -235,6 +236,24 @@ const tests: UnitTest[] = [
       }
       if (content.at(1)?.scope.last !== 'function') {
         throw new Error('Second item scope should be function')
+      }
+    },
+  },
+  {
+    name: 'Scope: reload() creates independent copy of array',
+    test: () => {
+      const arr: ScopeType[] = ['if', 'class']
+      const scope = new Scope()
+      scope.reload(arr)
+
+      // Modifying original array should NOT affect scope
+      arr.push('function')
+
+      if (scope.length !== 2) {
+        throw new Error('Scope should not be affected by external array modification')
+      }
+      if (scope.at(2) !== undefined) {
+        throw new Error('Scope should remain independent')
       }
     },
   },

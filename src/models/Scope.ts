@@ -1,5 +1,3 @@
-import { at } from 'fire-keeper'
-
 import type { ScopeType } from './ScopeType.js'
 
 /** Scope class */
@@ -29,7 +27,7 @@ class Scope {
   }
 
   at(n: number): ScopeType | undefined {
-    return at(this.#list, n)
+    return this.#list.at(n)
   }
 
   /** Check if target is equal to the current scope list */
@@ -51,7 +49,7 @@ class Scope {
 
   /** Reload the scope list with new input */
   reload(input: Scope | ScopeType[] = []) {
-    this.#list = input instanceof Scope ? input.list : input
+    this.#list = input instanceof Scope ? input.list : [...input]
   }
 
   shift(): ScopeType {

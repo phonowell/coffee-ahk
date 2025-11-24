@@ -2,7 +2,6 @@
 import Item from '../../../models/Item.js'
 import { sortBy } from '../../../utils/dataHelpers.js'
 
-import type Scope from '../../../models/Scope'
 import type { Context } from '../../../types'
 
 const listCache: [number, Item[]][] = []
@@ -49,12 +48,14 @@ export const cache = (ctx: Context, item: Item, i: number) => {
   let listItem: Item[] = []
   for (const listIt of listParam) {
     for (const it of listIt) {
-      it.scope.reload(
-        it.scope.list
-          .join(',')
-          .replace(/^.*?parameter/u, scp[1].join(','))
-          .split(',') as Scope['list'],
-      )
+      // Replace scope up to and including 'parameter' with new call scope
+      const scopeList = it.scope.list
+      const paramIndex = scopeList.indexOf('parameter')
+      const newScope =
+        paramIndex >= 0
+          ? [...scp[1], ...scopeList.slice(paramIndex + 1)]
+          : scp[1]
+      it.scope.reload(newScope)
       listItem.push(it)
     }
     listItem.push(new Item('sign', ',', scp[1]))

@@ -2,7 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **元原则**：中文文档 · 300行限制 · AI友好优先 · 节省Tokens · 并行工具调用 · 代码优先于文档 · **人工要求的信息不可轻易移除** · **对话中发现的重要信息主动记录到本文件**
+> **元原则**：中文文档 · 300行限制 · AI友好优先 · 节省Tokens · 并行工具调用 · 代码优先于文档 · **人工要求的信息不可轻易移除**
+
+> **🔴 强制要求**：**完成任务后必须将对话中发现的重要信息（Bug、架构发现、设计决策）更新到本文件相应章节**
 
 ## 项目概述
 
@@ -46,7 +48,9 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 ### 核心数据结构
 
 - **Context**: `{token, type, value, content, scope, cache:{classNames, identifiers, global}, options}`
-- **Item**: 不可变 `{type, value, scope, comment?}`，用 `clone()` 复制
+- **Item**: 不可变 `{type, value, scope, comment?}`
+  - **必须用 `clone()` 复制**，确保 `comment` 等所有属性被复制
+  - ⚠️ 直接 `new Item(type, value, scope)` 会丢失 `comment`
 - **Content**: Item 集合，用 `.push()` 或 `.reload()`，禁直接改 `.list`
 - **Scope**: 缩进栈 `['global', 'class', 'function']`，需克隆防污染
 
@@ -95,15 +99,16 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 
 ## 常见陷阱
 
-| 错误                    | 后果           | 解决                       |
-| ----------------------- | -------------- | -------------------------- |
-| Formatter 未返回 `true` | token 重复处理 | 消费后返回 `true`          |
-| 随机 salt               | 测试不稳定     | 固定 `salt: 'ahk'`         |
-| 直接改 `content.list`   | Scope 未更新   | 用 `.reload()` / `.push()` |
-| Processor 顺序错        | 转换错误       | 按序号插入正确位置         |
-| 测试前未 build          | 测旧代码       | `pnpm build && pnpm test`  |
-| segment/ 写 .ahk        | 不一致         | 写 .coffee                 |
-| post-if (`y if x`)      | forbidden      | 用 `if x then y`           |
+| 错误                       | 后果             | 解决                       |
+| -------------------------- | ---------------- | -------------------------- |
+| Formatter 未返回 `true`    | token 重复处理   | 消费后返回 `true`          |
+| 随机 salt                  | 测试不稳定       | 固定 `salt: 'ahk'`         |
+| 直接改 `content.list`      | Scope 未更新     | 用 `.reload()` / `.push()` |
+| Processor 顺序错           | 转换错误         | 按序号插入正确位置         |
+| 测试前未 build             | 测旧代码         | `pnpm build && pnpm test`  |
+| segment/ 写 .ahk           | 不一致           | 写 .coffee                 |
+| post-if (`y if x`)         | forbidden        | 用 `if x then y`           |
+| **Item.clone() 未复制属性**| **注释等数据丢失**| **克隆所有属性包括comment**|
 
 ## 新功能开发
 
@@ -125,8 +130,44 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 4. Scope 自动管理：`Content.push` 自动 reload
 5. 内置异步加载：builtInLoader 在 function 前
 
+## 注释系统设计
+
+**注释保留**：`comments: true` 选项启用（默认 `false`）
+
+**工作原理**：
+1. **Formatter 阶段** (`comment.ts`)：
+   - 读取 CoffeeScript token 的 `comments` 属性
+   - 比较 comment 行号和 token 行号判断是否 standalone
+   - 在 comment 字符串前添加 `STANDALONE:` 或 `INLINE:` 前缀
+   - 附加到 `content.last.comment` 数组
+
+2. **Renderer 阶段** (`renderer/index.ts`)：
+   - Standalone 注释：在 item 前渲染为独立行，格式 `<indent>; <content>\n`
+   - Inline 注释：在 item 后添加，格式 ` ; <content>`
+
+3. **Item.clone() 修复**：
+   - 必须复制 `comment` 属性，否则 processor 中 clone 的 item 会丢失注释
+
+**特性**：
+- ✅ 独立注释（单独一行）vs 行内注释（代码同行）
+- ✅ 基于 scope 的正确缩进
+- ✅ 多行注释和块注释 (`###`)
+- ✅ JSDoc 风格注释 (`###*`)
+
+**已知限制**：
+- ⚠️ CoffeeScript 将注释附加到下一个有意义的 token，而非语句开始
+  - 示例：`# Comment\nglobal b = 1` 中注释附加到 `b`（identifier），导致渲染为 `global\n; Comment\nb := 1`
+  - 理想输出：`; Comment\nglobal b := 1`
+- ⚠️ 类属性/方法注释后可能影响缩进（cosmetic issue）
+
+**技术细节**：
+- Comment metadata 保存在 `Item.comment: string[]`，每个字符串带 `STANDALONE:` 或 `INLINE:` 前缀
+- CoffeeScript token 的 `comment.locationData.first_line` 用于判断注释类型
+- Token 行号：`token[2].first_line`
+
 ## 提交检查
 
 1. `pnpm build && pnpm test` - 87 测试全过 (44 E2E + 20 unit + 23 error)
 2. `pnpm lint` - 0 errors, 0 warnings
 3. 新功能有测试
+4. **重要发现已更新到本文件**

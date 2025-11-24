@@ -1,5 +1,3 @@
-import { at } from 'fire-keeper'
-
 import Item from './Item.js'
 
 import type Scope from './Scope'
@@ -30,7 +28,7 @@ class Content {
   }
 
   at(index: number): Item | undefined {
-    return at(this.#list, index)
+    return this.#list.at(index)
   }
 
   /** Removes and returns the last item in the content. */

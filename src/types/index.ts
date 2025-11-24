@@ -28,3 +28,15 @@ export type Flag = {
 }
 
 type Token = ReturnType<typeof cs.compile>['tokens'][number]
+
+export type TokenLocationData = {
+  first_line: number
+  first_column: number
+  last_line: number
+  last_column: number
+}
+
+export type CommentData = {
+  content: string
+  locationData?: TokenLocationData
+}

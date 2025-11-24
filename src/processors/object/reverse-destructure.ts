@@ -54,11 +54,11 @@ export const reverseDeconstruct = (ctx: Context) => {
 
     // Find the closing brace position
     let braceIndex = i + 2
-    while (
-      content.at(braceIndex) &&
-      !content.at(braceIndex)?.is('bracket', '}')
-    )
+    let braceItem = content.at(braceIndex)
+    while (braceItem && !braceItem.is('bracket', '}')) {
       braceIndex++
+      braceItem = content.at(braceIndex)
+    }
 
     // Check if this is a simple variable reference
     const afterBrace = content.at(braceIndex + 1)

@@ -18,8 +18,7 @@ export const transFunc = (ctx: Context) => {
       return
     }
 
-    const scope2 = item.scope.list
-    scope2.pop()
+    const scope2 = item.scope.slice(0, -1)
 
     listContent.push(new Item('identifier', 'Func', scope2))
     listContent.push(new Item('edge', 'call-start', [...scope2, 'call']))
