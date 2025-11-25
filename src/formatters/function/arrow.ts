@@ -18,7 +18,7 @@ export const arrow = (ctx: Context, type: string) => {
   const { content, scope, token, warnings } = ctx
 
   // Warn about => outside class context
-  if (type === '=>' && !scope.list.includes('class')) {
+  if (type === '=>' && !scope.includes('class')) {
     const line = token[2].first_line + 1
     warnings.push(
       `line ${line}: '=>' outside class has no meaningful 'this' binding in AHK`,
@@ -26,7 +26,7 @@ export const arrow = (ctx: Context, type: string) => {
   }
 
   // fn = -> xxx
-  if (!content.last.is('edge', 'parameter-end')) {
+  if (!content.at(-1)?.is('edge', 'parameter-end')) {
     if (!content.at(-2)?.is('property', 'constructor'))
       content.push('identifier', 'anonymous')
 

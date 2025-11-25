@@ -3,7 +3,7 @@ import type { Context } from '../types'
 const handleIndentEarlyReturns = (ctx: Context): boolean => {
   const { content, scope } = ctx
 
-  if (content.last.is('sign', '=')) return true
+  if (content.at(-1)?.is('sign', '=')) return true
 
   if (['array', 'call', 'object', 'parameter'].includes(scope.last)) return true
 
@@ -53,8 +53,9 @@ const handleIndent = (ctx: Context): void => {
 const handleOutdent = (ctx: Context): void => {
   const { content, scope } = ctx
 
-  if (content.last.is('bracket', '}-')) {
-    content.last.value = '}'
+  const last = content.at(-1)
+  if (last?.is('bracket', '}-')) {
+    last.value = '}'
     return
   }
 

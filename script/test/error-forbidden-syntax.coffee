@@ -1,17 +1,25 @@
-# This file tests FORBIDDEN syntax that should throw errors
-# Run with: pnpm task test-errors
+# ========================================================
+# DOCUMENTATION ONLY - Not executed as tests
+# Actual error tests are in: task/test/errors.ts
+# Run with: pnpm test (runs all including error tests)
+# ========================================================
 
-# Optional chaining (not supported)
+# Examples of forbidden syntax that coffee-ahk rejects:
+
+# Optional chaining (AHK v1 has no equivalent)
 # x?.y
 
 # Existential operator
 # bin?
 
-# Range operator
+# Range operator (use explicit arrays instead)
 # [1..10]
 
-# Post-if (should fail)
+# Post-if (use "if x then y" instead)
 # return 1 if condition
 
-# Invalid spread in object
+# Spread in object literal (AHK v1 objects don't support)
 # obj = { ...other }
+
+# Ternary operator (use "if/else" instead)
+# x = a ? b : c

@@ -32,15 +32,22 @@ class Scope {
 
   /** Check if target is equal to the current scope list */
   isEqual(target: Scope | ScopeType[]): boolean {
-    const list = target instanceof Scope ? target.list : target
+    if (target instanceof Scope) {
+      if (this.#list.length !== target.length) return false
+      return this.#list.every((item, i) => item === target.at(i))
+    }
     return (
-      this.#list.length === list.length &&
-      this.#list.every((item, i) => item === list[i])
+      this.#list.length === target.length &&
+      this.#list.every((item, i) => item === target[i])
     )
   }
 
-  pop(): ScopeType {
-    return this.#list.pop() ?? ''
+  includes(value: ScopeType): boolean {
+    return this.#list.includes(value)
+  }
+
+  pop(): ScopeType | undefined {
+    return this.#list.pop()
   }
 
   push(...args: ScopeType[]): number {
@@ -52,8 +59,8 @@ class Scope {
     this.#list = input instanceof Scope ? input.list : [...input]
   }
 
-  shift(): ScopeType {
-    return this.#list.shift() ?? ''
+  shift(): ScopeType | undefined {
+    return this.#list.shift()
   }
 
   slice(...args: Parameters<string[]['slice']>): ScopeType[] {

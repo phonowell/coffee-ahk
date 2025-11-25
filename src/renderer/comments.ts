@@ -25,8 +25,8 @@ export const injectComment = (input: string, ctx: Context): string => {
   if (!cacheComment.length) return input
   if (it.type !== 'new-line') return input
 
-  const _prev = ctx.content.last
-  const seprator = _prev.type !== 'new-line' && _prev.value ? ' ; ' : '; '
+  const _prev = ctx.content.at(-1)
+  const seprator = _prev?.type !== 'new-line' && _prev?.value ? ' ; ' : '; '
 
   const newLine = newLine2(ctx)
 

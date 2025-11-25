@@ -13,11 +13,19 @@ ahk_typeof(__v__) {
   }
   return "string"
 }
+global __ci_ahk__ := Func("salt_1")
+salt_1(__arr__, __idx__) {
+  if __idx__ is Number
+    if (__idx__ < 0)
+      return __arr__.Length() + __idx__ + 1
+    return __idx__ + 1
+  return __idx__
+}
 
 global x := __typeof_ahk__.Call(y)
 global z := __typeof_ahk__.Call(123)
 global a := __typeof_ahk__.Call(obj.prop)
-global b := __typeof_ahk__.Call(arr[1])
+global b := __typeof_ahk__.Call(arr[__ci_ahk__.Call(arr), 0)]
 global c := __typeof_ahk__.Call(fn.Call())
 global d := __typeof_ahk__.Call(x) == "number"
 global e := __typeof_ahk__.Call(x) == "string" || __typeof_ahk__.Call(x) == "number"

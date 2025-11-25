@@ -76,16 +76,6 @@ const tests: UnitTest[] = [
     },
   },
   {
-    name: 'Content: last returns last item',
-    test: () => {
-      const content = new Content(new Scope())
-      content.push('identifier', 'first')
-      content.push('identifier', 'last')
-
-      if (content.last.value !== 'last') throw new Error('last should return last item')
-    },
-  },
-  {
     name: 'Content: at() returns item by index',
     test: () => {
       const content = new Content(new Scope())
@@ -224,7 +214,7 @@ const tests: UnitTest[] = [
       scope.push('class')
       content.push('identifier', 'foo')
 
-      if (content.last.scope.last !== 'class') {
+      if (content.at(-1)?.scope.last !== 'class') {
         throw new Error('Item should capture current scope')
       }
 

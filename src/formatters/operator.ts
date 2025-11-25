@@ -4,9 +4,9 @@ const handlePlusOperator = (ctx: Context): boolean => {
   const { content, token } = ctx
 
   if (!token.spaced) {
-    const { last } = content
+    const last = content.at(-1)
 
-    if (last.type === 'math' || last.type === 'negative') {
+    if (last?.type === 'math' || last?.type === 'negative') {
       if (last.type === 'negative') last.type = 'math'
       content.push('negative', '+')
       return true
@@ -21,9 +21,9 @@ const handleMinusOperator = (ctx: Context): boolean => {
   const { content, token } = ctx
 
   if (!token.spaced) {
-    const { last } = content
+    const last = content.at(-1)
 
-    if (!['identifier', 'math'].includes(last.type)) {
+    if (last && !['identifier', 'math'].includes(last.type)) {
       if (last.type === 'negative') last.type = 'math'
       content.push('negative', '-')
       return true

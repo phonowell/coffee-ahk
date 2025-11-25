@@ -1,7 +1,8 @@
 import type { Context } from '../types'
 
 const handleClosingBracket = (content: Context['content']): void => {
-  if (content.last.is('bracket', '}-')) content.last.value = '}'
+  const last = content.at(-1)
+  if (last?.is('bracket', '}-')) last.value = '}'
 }
 
 const handleCommaInScope = (
@@ -9,8 +10,8 @@ const handleCommaInScope = (
   scope: Context['scope'],
 ): boolean => {
   if (['array', 'call', 'object', 'parameter'].includes(scope.last)) {
-    if (!content.last.is('sign', ',')) {
-      if (content.last.is('new-line')) content.pop()
+    if (!content.at(-1)?.is('sign', ',')) {
+      if (content.at(-1)?.is('new-line')) content.pop()
       content.push('sign', ',')
     }
     return true

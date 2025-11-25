@@ -55,8 +55,7 @@ await c2a("./script/toolkit/index.coffee", {
 - AutoHotkey is case-insensitive; variable and function names are not case-sensitive.
   **Class names are simulated as case-sensitive:**
   - Class names must start with an uppercase letter.
-  - All class identifiers are rendered with uppercase letters replaced by full-width Unicode for AHK v1 case simulation.
-  - Variable, function, and parameter names cannot be the same as any class name; such conflicts will throw an error at compile time.
+  - All class identifiers are rendered with uppercase letters replaced by full-width Unicode for AHK v1 case simulation (e.g., `Animal` → `Ａnimal`).
 - No support for getter/setter
 - Implicit return is supported in common cases (functions, object methods); complex control flows (for/while/if/switch/try) still require explicit `return`
 - No true boolean type in AHK; `true`, `false`, `on`, and `off` are syntactic sugar

@@ -1,3 +1,14 @@
 global a := -1
-global b := 2 - 1
-global c := fn.Call(-1)
+global b := -100
+global c := 2 - 1
+global d := 10 - 5 - 2
+global e := fn.Call(-1)
+global f := fn.Call(-2)
+global g := fn.Call(a, -3)
+global h := -a + b
+global i := a *  - 2
+global j := (-1) + (-2)
+global k := 2 * 3
+global l := 10 / 2
+global m := a * b / c
+global n := 10 % 3

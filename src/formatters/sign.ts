@@ -15,8 +15,8 @@ const main = (ctx: Context): boolean => {
 
   if (type === '=') {
     // 检查左值是否与 class 名冲突
-    const prev = content.last
-    if (prev.type === 'identifier' && ctx.cache.classNames.has(prev.value)) {
+    const prev = content.at(-1)
+    if (prev?.type === 'identifier' && ctx.cache.classNames.has(prev.value)) {
       throw new Error(
         `ahk/class-case (line ${line}): cannot assign to class name '${prev.value}'. Please use a different identifier for variables.`,
       )

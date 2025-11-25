@@ -4,9 +4,9 @@ const main = (ctx: Context): boolean => {
   const { content, scope, token, type } = ctx
 
   if (type === '{') {
-    if (scope.last === 'class' && !content.last.is('sign', '=')) return true
+    if (scope.last === 'class' && !content.at(-1)?.is('sign', '=')) return true
 
-    if (content.last.is('new-line') && token.generated) content.pop()
+    if (content.at(-1)?.is('new-line') && token.generated) content.pop()
 
     scope.push('object')
     content.push('bracket', '{')

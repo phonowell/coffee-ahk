@@ -9,7 +9,7 @@ const main = (ctx: Context): boolean => {
   }
 
   if (type === 'index_start') {
-    if (content.last.type === '.') content.pop()
+    if (content.at(-1)?.type === '.') content.pop()
     content.push('edge', 'index-start')
     return true
   }
@@ -20,7 +20,8 @@ const main = (ctx: Context): boolean => {
   }
 
   if (type === 'property') {
-    if (['prototype', 'this'].includes(content.last.type)) content.push('.')
+    const lastType = content.at(-1)?.type
+    if (lastType && ['prototype', 'this'].includes(lastType)) content.push('.')
     content.push('property', value)
     return true
   }

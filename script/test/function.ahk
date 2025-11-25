@@ -1,3 +1,11 @@
+global __ci_ahk__ := Func("salt_1")
+salt_1(__arr__, __idx__) {
+  if __idx__ is Number
+    if (__idx__ < 0)
+      return __arr__.Length() + __idx__ + 1
+    return __idx__ + 1
+  return __idx__
+}
 global fn := Func("ahk_13")
 fn := Func("ahk_12")
 fn := Func("ahk_11")
@@ -44,7 +52,7 @@ ahk_10(a := 1, b := 2) {
   return a + b
 }
 ahk_11(a, b*) {
-  return b[2]
+  return b[__ci_ahk__.Call(b, 1)]
 }
 ahk_12(a := 1) {
   return a

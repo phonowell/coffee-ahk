@@ -9,7 +9,7 @@ const main = (ctx: Context) => {
   }
 
   if (type === '::') {
-    if (content.last.is('.')) content.pop()
+    if (content.at(-1)?.is('.')) content.pop()
     content.push('.').push('prototype')
     return true
   }

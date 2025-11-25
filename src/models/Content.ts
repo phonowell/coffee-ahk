@@ -13,11 +13,6 @@ class Content {
     this.scope = scope
   }
 
-  /** Gets the last item in the content. */
-  get last(): Item {
-    return this.at(-1) ?? new Item()
-  }
-
   get length(): number {
     return this.#list.length
   }
@@ -31,9 +26,9 @@ class Content {
     return this.#list.at(index)
   }
 
-  /** Removes and returns the last item in the content. */
-  pop(): Item {
-    return this.#list.pop() ?? new Item()
+  /** Removes and returns the last item in the content, or undefined if empty. */
+  pop(): Item | undefined {
+    return this.#list.pop()
   }
 
   /** Adds one or more items to the end of the content. */
@@ -50,9 +45,9 @@ class Content {
     return this
   }
 
-  /** Removes and returns the first item in the content. */
-  shift(): Item {
-    return this.#list.shift() ?? new Item()
+  /** Removes and returns the first item in the content, or undefined if empty. */
+  shift(): Item | undefined {
+    return this.#list.shift()
   }
 
   /** Adds one or more items to the beginning of the content. */

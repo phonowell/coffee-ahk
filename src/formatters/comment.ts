@@ -27,8 +27,8 @@ const main = (ctx: Context): boolean => {
       }
     })
 
-    const { last } = content
-    last.comment = listComment
+    const last = content.at(-1)
+    if (last) last.comment = listComment
     return true
   }
 

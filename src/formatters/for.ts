@@ -13,14 +13,14 @@ const main = (ctx: Context) => {
     const list: string[] = []
 
     const last = content.pop()
-    list.push(last.value)
+    if (last) list.push(last.value)
 
-    const last2 = content.last
-    if (last2.is('sign', ',')) {
+    const last2 = content.at(-1)
+    if (last2?.is('sign', ',')) {
       content.pop()
 
       const last3 = content.pop()
-      list.unshift(last3.value)
+      if (last3) list.unshift(last3.value)
     }
 
     if (type === 'forin') list.reverse()

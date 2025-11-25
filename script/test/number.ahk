@@ -1,2 +1,10 @@
 global a := 1
-a := 1000
+global b := 0
+global c := 42
+global d := 3.14
+global e := 0.5
+global f := .5
+global g := 1000
+global h := 2.500
+global i := 1000000
+global j := 999999999
