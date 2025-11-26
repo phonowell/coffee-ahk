@@ -2,7 +2,11 @@
 import { read } from 'fire-keeper'
 
 import { clearCache, setCacheSalt, sortModules } from './include/cache.js'
-import { replaceAnchor, transformAll } from './include/transformer.js'
+import {
+  parseExportsFromCoffee,
+  replaceAnchor,
+  transformAll,
+} from './include/transformer.js'
 
 const main = async (source: string, salt: string) => {
   clearCache()
@@ -15,8 +19,13 @@ const main = async (source: string, salt: string) => {
     )
   }
 
-  const result = await replaceAnchor(source, content)
+  const replaced = await replaceAnchor(source, content)
   await transformAll()
+
+  // Strip export statements from main file (entry point doesn't need exports)
+  const { codeLines } = parseExportsFromCoffee(replaced)
+  const result = codeLines.join('\n')
+
   return [...sortModules(), result].join('\n')
 }
 

@@ -1,15 +1,15 @@
 /**
  * Context Transform Processor
  *
- * Transforms variable access to use __ctx__ object for proper closure semantics.
- * Inner functions can read AND modify outer function variables via shared __ctx__.
+ * Transforms variable access to use λ (lambda) object for proper closure semantics.
+ * Inner functions can read AND modify outer function variables via shared λ.
+ * Using λ (U+03BB) as it semantically represents closures and saves 6 chars vs __ctx__.
  */
+import { CTX, THIS } from '../../constants.js'
 import Item from '../../models/Item.js'
 
 import type { ScopeType } from '../../models/ScopeType.js'
 import type { Context } from '../../types'
-
-const CTX = '__ctx__'
 
 /** Check if identifier should use ctx (local variable inside function) */
 const shouldUseCtx = (
@@ -24,6 +24,7 @@ const shouldUseCtx = (
   if (prev?.type === '.') return false
   if (item.value.startsWith('__') && item.value.endsWith('__')) return false
   if (item.value === 'this') return false
+  if (item.value === CTX) return false // skip λ itself
 
   const first = item.value[0]
   if (first && first === first.toUpperCase()) return false
@@ -98,7 +99,7 @@ const collectParams = (ctx: Context): Map<string, string[]> => {
   return result
 }
 
-/** Generate ctx init items: if (!__ctx__) __ctx__ := {} */
+/** Generate ctx init items: if (!λ) λ := {} */
 const genCtxInit = (scope: ScopeType[]): Item[] => [
   new Item('if', 'if', scope),
   new Item('edge', 'expression-start', scope),
@@ -112,7 +113,7 @@ const genCtxInit = (scope: ScopeType[]): Item[] => [
   new Item('edge', 'object-end', scope),
 ]
 
-/** Generate param assignment: __ctx__.param := param */
+/** Generate param assignment: λ.param := param */
 const genParamAssign = (param: string, scope: ScopeType[]): Item[] => [
   new Item('new-line', '1', scope),
   new Item('identifier', CTX, scope),
@@ -122,15 +123,15 @@ const genParamAssign = (param: string, scope: ScopeType[]): Item[] => [
   new Item('identifier', param, scope),
 ]
 
-/** Generate this alias: this := __this__ */
+/** Generate this alias: this := ℓthis */
 const genThisAlias = (scope: ScopeType[]): Item[] => [
   new Item('new-line', '1', scope),
   new Item('this', 'this', scope),
   new Item('sign', '=', scope),
-  new Item('identifier', '__this__', scope),
+  new Item('identifier', THIS, scope),
 ]
 
-/** Transform function definitions - add __ctx__ param and init */
+/** Transform function definitions - add λ param and init */
 const transformFunctions = (
   ctx: Context,
   params: Map<string, string[]>,
@@ -181,8 +182,8 @@ const transformFunctions = (
 
       const scope = item.scope.toArray()
       const allParams = params.get(funcName) ?? []
-      const hasThis = allParams.includes('__this__')
-      const p = allParams.filter((x) => x !== 'this' && x !== '__this__')
+      const hasThis = allParams.includes(THIS)
+      const p = allParams.filter((x) => x !== 'this' && x !== THIS)
 
       out.push(new Item('new-line', '1', scope))
       out.push(...genCtxInit(scope))
@@ -233,7 +234,7 @@ const collectCatchVars = (ctx: Context): Set<string> => {
   return result
 }
 
-/** Transform variable access: identifier -> __ctx__.identifier */
+/** Transform variable access: identifier -> λ.identifier */
 const transformVars = (ctx: Context, skip: Set<number>) => {
   const { content } = ctx
   const out: Item[] = []
@@ -265,7 +266,7 @@ const transformVars = (ctx: Context, skip: Set<number>) => {
   content.reload(out)
 }
 
-/** Add .Bind(__ctx__) after Func() calls inside functions */
+/** Add .Bind(λ) after Func() calls inside functions */
 const addBind = (ctx: Context) => {
   const { content } = ctx
   const out: Item[] = []

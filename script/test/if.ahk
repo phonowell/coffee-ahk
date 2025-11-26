@@ -33,8 +33,8 @@ if !(fn.Call(1)) {
 } else {
   2
 }
-ahk_1(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_1(λ) {
+  if (!λ) λ := {}
   if !(1) {
     1
   } else {

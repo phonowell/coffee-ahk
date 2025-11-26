@@ -76,16 +76,36 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 **索引处理策略 (v0.0.74+)**:
 
 - **编译时优化**: 单个非负整数字面量直接 +1（`arr[0]` → `arr[1]`），无函数调用
-- **运行时处理**: 负索引、变量、表达式通过 `__ci__` 函数处理（`arr[-1]` → `__ci__(arr, -1)`）
+- **运行时处理**: 负索引、变量、表达式通过 `ℓci` 函数处理（`arr[-1]` → `ℓci_salt(arr, -1)`）
 - 字符串键直接使用不转换
+
+**内部变量命名** (`src/constants.ts`):
+
+- 使用 Unicode 前缀 `ℓ` (U+2113, script small l) 节省字符、避免冲突
+- `λ` — 闭包上下文 | `ℓci` — 索引转换 | `ℓtype` — typeof
+- `ℓarray`/`ℓobject` — 解构临时变量 | `ℓthis` — this 参数替换
+- `ℓi`/`ℓk` — for 循环默认索引/键
 
 **禁止直接写 .ahk**，必须写 .coffee。
 
 ### 模块内联系统
 
-**流程** (`src/file/include/`): import 替换 → export 解析 → 模块组装
+**流程** (`src/file/include/`): import 替换 → export 解析 → 拓扑排序 → 模块组装
 
-**关键**: `parseExportsFromCoffee()` 遍历模块行，收集 export 体时 **必须用 `line === undefined` 判断结束**（空字符串是 falsy）
+**关键文件**:
+
+- `cache.ts` — 模块缓存、循环依赖检测、拓扑排序 (Kahn 算法)
+- `source-resolver.ts` — 路径解析 (相对路径、node_modules、package.json main)
+- `transformer/transform.ts` — export 解析、闭包包装
+- `transformer/replace-anchor.ts` — import 语句替换为变量赋值
+
+**特性**:
+
+- 循环依赖检测 (DFS)，发现时抛出清晰错误路径
+- 副作用模块 (`import './foo'`) 参与依赖排序，确保执行顺序
+- 支持 `export default`、`export { a, b }`、`export { a: expr }`
+
+**注意**: `parseExportsFromCoffee()` 遍历模块行时 **必须用 `line === undefined` 判断结束**（空字符串是 falsy）
 
 ## 代码规范
 
@@ -115,7 +135,7 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 
 ### 索引转换限制
 
-`__ci__` 假设：**数组用数字索引，对象用字符串索引**。
+`ℓci` 假设：**数组用数字索引，对象用字符串索引**。
 
 | 场景                    | 行为   | 结果                       |
 | ----------------------- | ------ | -------------------------- |
@@ -168,7 +188,7 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 ### 已解决 (2025-11-25)
 
 - **链式负索引**: `nested[0][-1]` 之前无法正确转换（arrayItems 收集不完整）
-- **解决方案**: 统一使用 `__ci__` 运行时函数处理所有数字索引，从右到左处理避免修改干扰
+- **解决方案**: 统一使用 `ℓci` 运行时函数处理所有数字索引，从右到左处理避免修改干扰
 - **收集逻辑**: `collectArrayExpression()` 支持回溯索引表达式，正确收集 `nested[0]` 整体
 
 ### API 一致性改进 (2025-11-26)
@@ -182,11 +202,12 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 
 **问题**: 内层函数无法正确读取/修改外层函数变量（AHK v1 `.Bind()` 是值拷贝）
 
-**解决方案**: `__ctx__` 对象模式
+**解决方案**: `λ` (lambda) 对象模式
 
-- 所有非全局变量/参数存入 `__ctx__` 对象
-- 内层函数通过 `.Bind(__ctx__)` 接收上下文引用
-- 变量访问转换为 `__ctx__.xxx`
+- 所有非全局变量/参数存入 `λ` 对象
+- 内层函数通过 `.Bind(λ)` 接收上下文引用
+- 变量访问转换为 `λ.xxx`
+- 使用 `λ` (U+03BB) 而非 `__ctx__`：语义精准（lambda = 闭包），且节省 6 字符/次
 
 ```coffee
 # 输入
@@ -197,14 +218,14 @@ fn = (a) ->
 
 # 输出
 ahk_2(a) {
-  __ctx__:={a: a}
-  __ctx__.b := 1
-  __ctx__.inner := Func("ahk_1").Bind(__ctx__)
-  __ctx__.inner.Call()
+  λ:={a: a}
+  λ.b := 1
+  λ.inner := Func("ahk_1").Bind(λ)
+  λ.inner.Call()
 }
-ahk_1(__ctx__) {
-  if(!__ctx__)__ctx__:={}
-  return __ctx__.a + __ctx__.b
+ahk_1(λ) {
+  if(!λ)λ:={}
+  return λ.a + λ.b
 }
 ```
 
@@ -214,24 +235,45 @@ ahk_1(__ctx__) {
 
 - 全局变量 (`ctx.cache.global`)
 - `this` 关键字
-- `__xxx__` 特殊标识符
+- `ℓxxx` 内部标识符（以 `ℓ` 开头）
 - 首字母大写标识符 (类名、内置函数)
 - 非函数作用域内的标识符
 
 **内置函数保护**: `salt='salt'` 编译的段落不应用 ctx 转换
 
+### Class 与 Export 冲突 (2025-11-26)
+
+**问题**: AHK v1 的 class 必须在顶层定义，不能嵌套在函数/闭包内。而 export 模块会被 `do ->` 包裹以隔离作用域，导致 class 无法正常工作。
+
+**变通方案**: 将 class 定义和 export 分离到两个文件：
+
+```coffee
+# animal.coffee — 纯 class 定义，不使用 export
+class Animal
+  constructor: (@name) ->
+  speak: -> console.log @name
+
+# index.coffee — 主文件，import class 文件
+import './animal'  # 副作用导入，class 定义在顶层执行
+dog = new Animal('Dog')
+```
+
+**原理**: 副作用导入 (`import './xxx'`) 的代码直接内联到主文件顶层，不被闭包包裹，因此 class 可以正常定义。
+
+**限制**: 无法通过 `export default Animal` 导出 class 本身，只能依赖副作用导入后 class 名自动成为全局可用。
+
 ### AHK v1 语法兼容修复 (2025-11-26)
 
-| 问题                | 解决方案                                                               |
-| ------------------- | ---------------------------------------------------------------------- |
-| `this` 作为参数名   | 类方法参数用 `__this__`，函数体开头加 `this := __this__`               |
-| 对象键名表达式      | `shouldUseCtx` 跳过 object scope 中后跟 `:` 的标识符                   |
-| catch 变量前缀      | `collectCatchVars` 收集 catch 变量名，在 catch scope 内跳过 ctx 转换   |
-| `do => @a` this捕获 | `arrow.ts` 标记 `__mark:do-fat__`，`do.ts` 在 `.Call()` 中传入 `this`  |
+| 问题                | 解决方案                                                              |
+| ------------------- | --------------------------------------------------------------------- |
+| `this` 作为参数名   | 类方法参数用 `ℓthis`，函数体开头加 `this := ℓthis`                    |
+| 对象键名表达式      | `shouldUseCtx` 跳过 object scope 中后跟 `:` 的标识符                  |
+| catch 变量前缀      | `collectCatchVars` 收集 catch 变量名，在 catch scope 内跳过 ctx 转换  |
+| `do => @a` this捕获 | `arrow.ts` 标记 `__mark:do-fat__`，`do.ts` 在 `.Call()` 中传入 `this` |
 
 ## 提交检查
 
-1. `pnpm build && pnpm test` — 42 E2E + 20 unit + 23 error 全过
+1. `pnpm build && pnpm test` — 41 E2E + 20 unit + 23 error 全过
 2. `pnpm lint` — 0 errors
 3. 新功能有测试
 4. **重要发现已更新到本文件**

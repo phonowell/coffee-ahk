@@ -1,3 +1,5 @@
+import { INDEX_FOR, KEY_FOR } from '../constants.js'
+
 import type { Context } from '../types'
 
 const main = (ctx: Context) => {
@@ -25,8 +27,7 @@ const main = (ctx: Context) => {
 
     if (type === 'forin') list.reverse()
 
-    if (list.length === 1)
-      list.unshift(type === 'forin' ? '__index_for__' : '__key_for__')
+    if (list.length === 1) list.unshift(type === 'forin' ? INDEX_FOR : KEY_FOR)
 
     content
       .push('identifier', list[0] ?? '')

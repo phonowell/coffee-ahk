@@ -1,15 +1,15 @@
 global fn := Func("ahk_2")
 global nested := Func("ahk_1")
-ahk_1(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_1(λ) {
+  if (!λ) λ := {}
   if (true) {
-    __ctx__.x := 1
-    __ctx__.y := 2
+    λ.x := 1
+    λ.y := 2
   }
 }
-ahk_2(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
-  __ctx__.a := 1
-  __ctx__.b := 2
-  __ctx__.a + __ctx__.b
+ahk_2(λ) {
+  if (!λ) λ := {}
+  λ.a := 1
+  λ.b := 2
+  λ.a + λ.b
 }

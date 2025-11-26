@@ -1,4 +1,4 @@
-import { getCache, getCacheSalt } from '../cache.js'
+import { getCache, getCacheSalt, getNextModuleId } from '../cache.js'
 import { pickImport } from '../source-resolver.js'
 
 export const replaceAnchor = async (source: string, content: string) => {
@@ -15,32 +15,32 @@ export const replaceAnchor = async (source: string, content: string) => {
     const importInfo = await pickImport(source, line)
     const { default: defaultImport, named: namedImports, path } = importInfo
 
+    const hasExports = defaultImport || namedImports.length > 0
+
     if (!cache.has(path)) {
-      const { getNextModuleId } = await import('../cache.js')
+      // All modules get an id for dependency sorting
+      // Side-effect modules (no exports) still participate in ordering
       cache.set(path, {
         content: '',
         dependencies: [],
-        id: defaultImport || namedImports.length ? getNextModuleId() : 0,
+        id: getNextModuleId(),
       })
     }
 
-    const id = cache.get(path)?.id ?? 0
-    if (!id) continue
+    const meta = cache.get(path)
+    if (!meta || !hasExports) continue
 
     // 生成 default 导入赋值
     if (defaultImport) {
       listResult.push(
-        `${defaultImport} = __${cacheSalt}_module_${id}__.default`,
+        `${defaultImport} = __${cacheSalt}_module_${meta.id}__.default`,
       )
     }
 
     // 生成 named 导入赋值
-    if (namedImports.length) {
-      namedImports.forEach((named) => {
-        listResult.push(
-          `${named} = __${cacheSalt}_module_${id}__.${(named.split(':')[0] ?? '').trim()}`,
-        )
-      })
+    for (const named of namedImports) {
+      const key = (named.split(':')[0] ?? '').trim()
+      listResult.push(`${named} = __${cacheSalt}_module_${meta.id}__.${key}`)
     }
   }
 

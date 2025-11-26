@@ -1,11 +1,12 @@
-for __index_for__, value in list {
+for ℓi, value in list {
+  ℓi := ℓi - 1
   value
 }
 for index, value in list {
   index := index - 1
   value
 }
-for __key_for__, value in map {
+for ℓk, value in map {
   value
 }
 for key, value in map {
@@ -18,8 +19,10 @@ for i, a in [1, 2, 3] {
     alert.Call(i + j)
   }
 }
-for __index_for__, a in [1, 2, 3] {
-  for __index_for__, b in [3, 2, 1] {
+for ℓi, a in [1, 2, 3] {
+  ℓi := ℓi - 1
+  for ℓi, b in [3, 2, 1] {
+    ℓi := ℓi - 1
     alert.Call(a + b)
   }
 }

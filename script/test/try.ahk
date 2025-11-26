@@ -11,10 +11,10 @@ try {
   3
 }
 global fn := Func("ahk_1")
-ahk_1(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_1(λ) {
+  if (!λ) λ := {}
   try {
-    __ctx__.alert.Call(1)
+    λ.alert.Call(1)
   } catch e {
     throw e
   }

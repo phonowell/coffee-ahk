@@ -1,12 +1,12 @@
-global __typeof_ahk__ := Func("ahk_typeof")
-ahk_typeof(__v__) {
-  if (__v__ == "") {
+global ℓtype_ahk := Func("ahk_typeof")
+ahk_typeof(ℓv) {
+  if (ℓv == "") {
     return "undefined"
   }
-  if __v__ is Number
+  if ℓv is Number
     return "number"
-  if (IsObject(__v__)) {
-    if (IsFunc(__v__)) {
+  if (IsObject(ℓv)) {
+    if (IsFunc(ℓv)) {
       return "function"
     }
     return "object"
@@ -14,18 +14,18 @@ ahk_typeof(__v__) {
   return "string"
 }
 
-global x := __typeof_ahk__.Call(y)
-global z := __typeof_ahk__.Call(123)
-global a := __typeof_ahk__.Call(obj.prop)
-global b := __typeof_ahk__.Call(arr[1])
-global c := __typeof_ahk__.Call(fn.Call())
-global d := __typeof_ahk__.Call(x) == "number"
-global e := __typeof_ahk__.Call(x) == "string" || __typeof_ahk__.Call(x) == "number"
-global f := __typeof_ahk__.Call(obj.a.b.c)
-global g := __typeof_ahk__.Call(fn.Call().prop)
-global h := __typeof_ahk__.Call("hello")
-fn2.Call(__typeof_ahk__.Call(x))
-global i := __typeof_ahk__.Call(~x)
-global arr2 := [__typeof_ahk__.Call(x), __typeof_ahk__.Call(y)]
-global obj2 := {t: __typeof_ahk__.Call(x)}
-global j := __typeof_ahk__.Call(obj.method.Call().result)
+global x := ℓtype_ahk.Call(y)
+global z := ℓtype_ahk.Call(123)
+global a := ℓtype_ahk.Call(obj.prop)
+global b := ℓtype_ahk.Call(arr[1])
+global c := ℓtype_ahk.Call(fn.Call())
+global d := ℓtype_ahk.Call(x) == "number"
+global e := ℓtype_ahk.Call(x) == "string" || ℓtype_ahk.Call(x) == "number"
+global f := ℓtype_ahk.Call(obj.a.b.c)
+global g := ℓtype_ahk.Call(fn.Call().prop)
+global h := ℓtype_ahk.Call("hello")
+fn2.Call(ℓtype_ahk.Call(x))
+global i := ℓtype_ahk.Call(~x)
+global arr2 := [ℓtype_ahk.Call(x), ℓtype_ahk.Call(y)]
+global obj2 := {t: ℓtype_ahk.Call(x)}
+global j := ℓtype_ahk.Call(obj.method.Call().result)

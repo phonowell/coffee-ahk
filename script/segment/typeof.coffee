@@ -1,10 +1,10 @@
-__typeof_SALT_PLACEHOLDER__ = (__v__) ->
-  if __v__ == ""
+ℓtype_SALT_PLACEHOLDER = (ℓv) ->
+  if ℓv == ""
     return "undefined"
-  Native 'if __v__ is Number'
+  Native 'if ℓv is Number'
   Native '  return "number"'
-  if IsObject(__v__)
-    if IsFunc(__v__)
+  if IsObject(ℓv)
+    if IsFunc(ℓv)
       return "function"
     return "object"
   return "string"

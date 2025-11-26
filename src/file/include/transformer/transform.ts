@@ -1,4 +1,3 @@
-import cson from 'cson'
 import { getExtname, read, run } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
@@ -22,7 +21,11 @@ const handleAhk = (
   cache.set(file, { ...meta, content: result, dependencies: deps })
 }
 
-const parseExportsFromCoffee = (replaced: string) => {
+/**
+ * Parse and extract export statements from CoffeeScript source.
+ * Returns exportDefault, exportNamed arrays and remaining codeLines.
+ */
+export const parseExportsFromCoffee = (replaced: string) => {
   const exportDefault: string[] = []
   const exportNamed: string[] = []
   const codeLines: string[] = []
@@ -174,10 +177,9 @@ const handleJsonOrYaml = (
   salt: string,
   deps: string[],
 ) => {
-  const jsonStr = cson.stringify(JSON.parse(text))
-  const result = `__${salt}_module_${meta.id}__ = ${
-    jsonStr.includes('\n') ? `\n${jsonStr}` : jsonStr
-  }`
+  // JSON is valid CoffeeScript syntax, use directly
+  const jsonStr = JSON.stringify(JSON.parse(text))
+  const result = `__${salt}_module_${meta.id}__ = ${jsonStr}`
   cache.set(file, { ...meta, content: result, dependencies: deps })
 }
 

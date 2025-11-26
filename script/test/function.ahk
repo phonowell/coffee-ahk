@@ -7,73 +7,73 @@ fn.Call(fn.Call(fn))
 fn := Func("ahk_9")
 fn := Func("ahk_8")
 (Func("ahk_4")).Call()
-ahk_1(__ctx__, a, b) {
-  if (!__ctx__) __ctx__ := {}
-  __ctx__.a := a
-  __ctx__.b := b
-  return __ctx__.a + __ctx__.b
+ahk_1(λ, a, b) {
+  if (!λ) λ := {}
+  λ.a := a
+  λ.b := b
+  return λ.a + λ.b
 }
-ahk_2(__ctx__, a) {
-  if (!__ctx__) __ctx__ := {}
-  __ctx__.a := a
-  return __ctx__.a + __ctx__.b
+ahk_2(λ, a) {
+  if (!λ) λ := {}
+  λ.a := a
+  return λ.a + λ.b
 }
-ahk_3(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
-  return __ctx__.a + __ctx__.b
+ahk_3(λ) {
+  if (!λ) λ := {}
+  return λ.a + λ.b
 }
-ahk_4(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
-  __ctx__.fn1 := Func("ahk_3").Bind(__ctx__)
-  __ctx__.fn2 := Func("ahk_2").Bind(__ctx__)
-  __ctx__.fn3 := Func("ahk_1").Bind(__ctx__)
+ahk_4(λ) {
+  if (!λ) λ := {}
+  λ.fn1 := Func("ahk_3").Bind(λ)
+  λ.fn2 := Func("ahk_2").Bind(λ)
+  λ.fn3 := Func("ahk_1").Bind(λ)
 }
-ahk_5(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
-  return __ctx__.a + __ctx__.b + __ctx__.c
+ahk_5(λ) {
+  if (!λ) λ := {}
+  return λ.a + λ.b + λ.c
 }
-ahk_6(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
-  __ctx__.c := 3
-  return (Func("ahk_5").Bind(__ctx__)).Call()
+ahk_6(λ) {
+  if (!λ) λ := {}
+  λ.c := 3
+  return (Func("ahk_5").Bind(λ)).Call()
 }
-ahk_7(__ctx__, b := 2) {
-  if (!__ctx__) __ctx__ := {}
-  __ctx__.b := b
-  return (Func("ahk_6").Bind(__ctx__)).Call()
+ahk_7(λ, b := 2) {
+  if (!λ) λ := {}
+  λ.b := b
+  return (Func("ahk_6").Bind(λ)).Call()
 }
-ahk_8(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
-  __ctx__.a := 1
-  return (Func("ahk_7").Bind(__ctx__)).Call()
+ahk_8(λ) {
+  if (!λ) λ := {}
+  λ.a := 1
+  return (Func("ahk_7").Bind(λ)).Call()
 }
-ahk_9(__ctx__, a, b, c) {
-  if (!__ctx__) __ctx__ := {}
-  __ctx__.a := a
-  __ctx__.b := b
-  __ctx__.c := c
-  __ctx__.a
-  __ctx__.b.Call()
-  __ctx__.c.Call(__ctx__.a)
+ahk_9(λ, a, b, c) {
+  if (!λ) λ := {}
+  λ.a := a
+  λ.b := b
+  λ.c := c
+  λ.a
+  λ.b.Call()
+  λ.c.Call(λ.a)
 }
-ahk_10(__ctx__, a := 1, b := 2) {
-  if (!__ctx__) __ctx__ := {}
-  __ctx__.a := a
-  __ctx__.b := b
-  return __ctx__.a + __ctx__.b
+ahk_10(λ, a := 1, b := 2) {
+  if (!λ) λ := {}
+  λ.a := a
+  λ.b := b
+  return λ.a + λ.b
 }
-ahk_11(__ctx__, a, b*) {
-  if (!__ctx__) __ctx__ := {}
-  __ctx__.a := a
-  __ctx__.b := b
-  return __ctx__.b[2]
+ahk_11(λ, a, b*) {
+  if (!λ) λ := {}
+  λ.a := a
+  λ.b := b
+  return λ.b[2]
 }
-ahk_12(__ctx__, a := 1) {
-  if (!__ctx__) __ctx__ := {}
-  __ctx__.a := a
-  return __ctx__.a
+ahk_12(λ, a := 1) {
+  if (!λ) λ := {}
+  λ.a := a
+  return λ.a
 }
-ahk_13(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_13(λ) {
+  if (!λ) λ := {}
   return 1
 }

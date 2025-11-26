@@ -1,3 +1,5 @@
+import { CI } from '../../constants.js'
+
 import { pickItem } from './change-index/pick-item.js'
 import {
   isSimpleNonNegativeIndex,
@@ -76,7 +78,7 @@ const findAllIndexStarts = (content: Context['content']): number[] => {
 
 const main = (ctx: Context) => {
   const { content } = ctx
-  const token = `__ci_${ctx.options.salt}__`
+  const token = `${CI}_${ctx.options.salt}`
   const countIgnore = { value: 0 }
   // Track processed simple indices by Item reference (stable across content reloads)
   const processedItems = new WeakSet<Item>()

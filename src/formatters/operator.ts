@@ -1,3 +1,5 @@
+import { TYPEOF } from '../constants.js'
+
 import type { Context } from '../types'
 
 const handlePlusOperator = (ctx: Context): boolean => {
@@ -41,7 +43,7 @@ const handleUnaryOperator = (ctx: Context): boolean => {
 
   if (type === 'unary' && value === 'typeof') {
     ctx.flag.isTypeofUsed = true
-    content.push('identifier', `__typeof_${ctx.options.salt}__`)
+    content.push('identifier', `${TYPEOF}_${ctx.options.salt}`)
     content.push('edge', 'typeof-start')
     return true
   }

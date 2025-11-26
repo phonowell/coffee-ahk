@@ -4,8 +4,8 @@ class Ａnimal {
   }
   speak := Func("ahk_1").Bind(this)
 }
-ahk_1(__ctx__, __this__) {
-  if (!__ctx__) __ctx__ := {}
-  this := __this__
+ahk_1(λ, ℓthis) {
+  if (!λ) λ := {}
+  this := ℓthis
   return this.name
 }

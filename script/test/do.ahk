@@ -8,57 +8,58 @@ global d := (Func("ahk_7")).Call()
 (Func("ahk_3")).Call()
 (Func("ahk_2")).Call()
 (Func("ahk_1")).Call()
-ahk_1(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_1(λ) {
+  if (!λ) λ := {}
   return 1
 }
-ahk_2(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
-  for __index_for__, a in [1, 2] {
+ahk_2(λ) {
+  if (!λ) λ := {}
+  for ℓi, a in [1, 2] {
+    ℓi := ℓi - 1
     a
   }
 }
-ahk_3(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_3(λ) {
+  if (!λ) λ := {}
   switch a > 1 {
     case 1: {
       0
     }
   }
 }
-ahk_4(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_4(λ) {
+  if (!λ) λ := {}
   if (a > 1) {
     1
   } else {
     0
   }
 }
-ahk_5(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_5(λ) {
+  if (!λ) λ := {}
   return 5
 }
-ahk_6(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
-  return Func("ahk_5").Bind(__ctx__)
+ahk_6(λ) {
+  if (!λ) λ := {}
+  return Func("ahk_5").Bind(λ)
 }
-ahk_7(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
-  return (Func("ahk_6").Bind(__ctx__)).Call()
+ahk_7(λ) {
+  if (!λ) λ := {}
+  return (Func("ahk_6").Bind(λ)).Call()
 }
-ahk_8(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_8(λ) {
+  if (!λ) λ := {}
   return 4
 }
-ahk_9(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_9(λ) {
+  if (!λ) λ := {}
   return 3
 }
-ahk_10(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_10(λ) {
+  if (!λ) λ := {}
   return 2
 }
-ahk_11(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_11(λ) {
+  if (!λ) λ := {}
   return 1
 }

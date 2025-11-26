@@ -1,3 +1,4 @@
+import { ARRAY } from '../../constants.js'
 import Item from '../../models/Item.js'
 
 import { pickIndent } from './deconstruct/pick-indent.js'
@@ -9,7 +10,7 @@ const main = (ctx: Context) => {
   const { content } = ctx
 
   let listPre: Item[][] = []
-  const token = '__array__'
+  const token = ARRAY
   let listContent: Item[] = []
 
   // each

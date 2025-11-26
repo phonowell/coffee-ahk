@@ -5,7 +5,6 @@
   },
   "dependencies": {
     "coffeescript": "^2.7.0",
-    "cson": "^8.4.0",
     "fire-keeper": "^0.0.230",
     "iconv-lite": "^0.7.0",
     "radash": "^12.1.1"

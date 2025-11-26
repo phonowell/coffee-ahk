@@ -1,3 +1,4 @@
+import { CI } from '../../../constants.js'
 import Item from '../../../models/Item.js'
 import Scope from '../../../models/Scope.js'
 
@@ -61,7 +62,7 @@ export const processIndexWithHelper = (
   const scpCall = new Scope([...scp.toArray(), 'call'])
 
   update(range, [
-    new Item('identifier', `__ci_${ctx.options.salt}__`, scp),
+    new Item('identifier', `${CI}_${ctx.options.salt}`, scp),
     new Item('edge', 'call-start', scpCall),
     ...arrayItems.map((it) => it.clone()),
     new Item('sign', ',', scpCall),

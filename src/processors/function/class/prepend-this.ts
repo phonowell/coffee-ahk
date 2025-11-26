@@ -1,5 +1,6 @@
 import { at } from 'fire-keeper'
 
+import { THIS } from '../../../constants.js'
 import Item from '../../../models/Item.js'
 
 import type { Context } from '../../../types'
@@ -27,8 +28,8 @@ export const prependThis = (ctx: Context) => {
       return
 
     const scope2 = item.scope.toArray()
-    // Use __this__ as parameter name since 'this' is reserved in AHK v1
-    listContent.push(new Item('identifier', '__this__', scope2))
+    // Use ℓthis as parameter name since 'this' is reserved in AHK v1
+    listContent.push(new Item('identifier', THIS, scope2))
 
     const it = content.at(i + 1)
     if (it?.is('edge', 'parameter-end')) return

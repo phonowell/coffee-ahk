@@ -1,3 +1,3 @@
-# Module test - export
-export myFunc = -> 42
-export myVar = "hello"
+import './includes/lodash'
+import plus from './includes/plus'
+import m, { minus } from './includes/math'

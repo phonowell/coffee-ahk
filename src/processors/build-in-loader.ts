@@ -1,4 +1,5 @@
 // Built-in function loader
+import { CI, TYPEOF } from '../constants.js'
 import Item from '../models/Item.js'
 
 import { changeIndex_ahk, typeof_ahk } from './builtins.gen.js'
@@ -31,19 +32,24 @@ const insert = (
   if (ctx.flag[flag]) {
     const listItem = getBuiltin(functionName)
     if (listItem.length > 0) {
-      // 替换salt占位符
+      // 替换 salt 占位符
       listItem.forEach((item) => {
         if (typeof item.value === 'string') {
           const { value: originalValue } = item
           let value = originalValue
           const salt = ctx.options.salt ?? 'salt'
-          if (value.includes('__ci_SALT_PLACEHOLDER__'))
-            value = value.replace(/__ci_SALT_PLACEHOLDER__/g, `__ci_${salt}__`)
 
-          if (value.includes('__typeof_SALT_PLACEHOLDER__')) {
+          if (value.includes(`${CI}_SALT_PLACEHOLDER`)) {
             value = value.replace(
-              /__typeof_SALT_PLACEHOLDER__/g,
-              `__typeof_${salt}__`,
+              new RegExp(`${CI}_SALT_PLACEHOLDER`, 'g'),
+              `${CI}_${salt}`,
+            )
+          }
+
+          if (value.includes(`${TYPEOF}_SALT_PLACEHOLDER`)) {
+            value = value.replace(
+              new RegExp(`${TYPEOF}_SALT_PLACEHOLDER`, 'g'),
+              `${TYPEOF}_${salt}`,
             )
             // Replace generated function name salt_1 -> {salt}_typeof
             value = value.replace(/salt_1/g, `${salt}_typeof`)

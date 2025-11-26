@@ -1,4 +1,5 @@
 // Object deconstruction functionality
+import { OBJECT } from '../../constants.js'
 import Item from '../../models/Item.js'
 
 import type { Context } from '../../types'
@@ -7,7 +8,7 @@ export const deconstruct = (ctx: Context) => {
   const { content } = ctx
 
   const listPre: string[] = []
-  const token = '__object__'
+  const token = OBJECT
   let listContent: Item[] = []
 
   const pickIndent = (i: number): number => {

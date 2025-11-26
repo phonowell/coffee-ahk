@@ -4,31 +4,31 @@ global fn := Func("ahk_3")
 global c := 1
 c := 2
 fn := Func("ahk_2")
-global __array__ := [1, 2]
-a := __array__[1]
-global b := __array__[2]
-__array__ := [1, 2, 3]
-a := __array__[1]
-__array__ := list
-a := __array__[1]
-b := __array__[2]
-__array__ := fn.Call()
-a := __array__[1]
-b := __array__[2]
+global ℓarray := [1, 2]
+a := ℓarray[1]
+global b := ℓarray[2]
+ℓarray := [1, 2, 3]
+a := ℓarray[1]
+ℓarray := list
+a := ℓarray[1]
+b := ℓarray[2]
+ℓarray := fn.Call()
+a := ℓarray[1]
+b := ℓarray[2]
 fn := Func("ahk_1")
-ahk_1(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
-  __array__ := [1, 2, 3]
-  a := __array__[1]
-  b := __array__[2]
-  c := __array__[3]
+ahk_1(λ) {
+  if (!λ) λ := {}
+  ℓarray := [1, 2, 3]
+  a := ℓarray[1]
+  b := ℓarray[2]
+  c := ℓarray[3]
 }
-ahk_2(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_2(λ) {
+  if (!λ) λ := {}
   return c := 3
 }
-ahk_3(__ctx__) {
-  if (!__ctx__) __ctx__ := {}
+ahk_3(λ) {
+  if (!λ) λ := {}
   b := 1
   b := 2
 }

@@ -29,8 +29,7 @@ const functionProcessor = (context: Context) => {
 
   processDoStatements(context)
 
-  // ctx transform: convert variable access to __ctx__.xxx
-  // This replaces the old implicit-parameter and context processors
+  // ctx transform: convert variable access to λ.xxx for closure semantics
   ctxTransform(context)
 }
 

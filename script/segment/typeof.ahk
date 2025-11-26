@@ -1,12 +1,12 @@
-﻿global __typeof_SALT_PLACEHOLDER__ := Func("salt_1")
-salt_1(__v__) {
-  if (__v__ == "") {
+﻿global ℓtype_SALT_PLACEHOLDER := Func("salt_1")
+salt_1(ℓv) {
+  if (ℓv == "") {
     return "undefined"
   }
-  if __v__ is Number
+  if ℓv is Number
     return "number"
-  if (IsObject(__v__)) {
-    if (IsFunc(__v__)) {
+  if (IsObject(ℓv)) {
+    if (IsFunc(ℓv)) {
       return "function"
     }
     return "object"

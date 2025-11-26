@@ -67,7 +67,8 @@ await c2a("./script/toolkit/index.coffee", {
 - Avoid using `=>` outside classes; pure functions in AHK lack `this`
 - `.coffee` files must be UTF-8; `.ahk` files must be UTF-8 with BOM
 - Import/export and npm package management are incomplete
-- **Array/Object index limitation**: In AHK v1, `[]` is syntactic sugar for `{}` (`[a,b]` equals `{1:a, 2:b}`), and there is no native way to distinguish arrays from objects. The index converter (`__ci__`) assumes arrays use numeric indices and objects use string keys. If you use numeric keys on objects (e.g., `obj[0]`), it will be incorrectly converted to `obj[1]`. Note: In AHK v1, `obj[0]` and `obj["0"]` access **different keys** (numeric vs string). Variables are an exception: `i := "0"; obj[i]` accesses the numeric key (pure numeric strings are auto-converted). Workaround: use `obj["0"]` for string keys, or use Native embedding for direct AHK access.
+- **Class + Export conflict**: AHK v1 classes must be defined at top-level (not inside functions/closures). Since exported modules are wrapped in `do ->` for scope isolation, classes cannot be exported directly. Workaround: define classes in separate files without `export`, then use side-effect imports (`import './myclass'`) to include them at top-level.
+- **Array/Object index limitation**: In AHK v1, `[]` is syntactic sugar for `{}` (`[a,b]` equals `{1:a, 2:b}`), and there is no native way to distinguish arrays from objects. The index converter (`ℓci`) assumes arrays use numeric indices and objects use string keys. If you use numeric keys on objects (e.g., `obj[0]`), it will be incorrectly converted to `obj[1]`. Note: In AHK v1, `obj[0]` and `obj["0"]` access **different keys** (numeric vs string). Variables are an exception: `i := "0"; obj[i]` accesses the numeric key (pure numeric strings are auto-converted). Workaround: use `obj["0"]` for string keys, or use Native embedding for direct AHK access.
 
 ---
 

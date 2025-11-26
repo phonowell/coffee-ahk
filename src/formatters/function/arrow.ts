@@ -1,4 +1,5 @@
 // Arrow function handling
+import { THIS } from '../../constants.js'
 import Item from '../../models/Item.js'
 
 import type { ScopeType } from '../../models/ScopeType'
@@ -54,20 +55,20 @@ export const arrow = (ctx: Context, type: string) => {
     scope.push('parameter')
     content.push('edge', 'parameter-start')
 
-    // Use __this__ parameter for => outside class method definitions
-    if (type === '=>' && !isClassMethod) content.push('identifier', '__this__')
+    // Use ℓthis parameter for => outside class method definitions
+    if (type === '=>' && !isClassMethod) content.push('identifier', THIS)
 
     content.push('edge', 'parameter-end')
     scope.pop()
   } else if (type === '=>' && !isClassMethod) {
-    // Use __this__ parameter for => outside class method definitions
+    // Use ℓthis parameter for => outside class method definitions
     const scp2: ScopeType[] = [...scope.toArray(), 'parameter']
     content
       .toArray()
       .splice(
         findEdge(ctx) + 1,
         0,
-        new Item('identifier', '__this__', scp2),
+        new Item('identifier', THIS, scp2),
         new Item('sign', ',', scp2),
       )
   }
