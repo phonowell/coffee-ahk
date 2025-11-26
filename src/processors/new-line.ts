@@ -29,7 +29,7 @@ const main = (ctx: Context) => {
   const { content } = ctx
   // Filter out new-line tokens that should be removed and reload content
   content.reload(
-    content.list.filter((item, i) => !shouldRemoveToken(content, item, i)),
+    content.toArray().filter((item, i) => !shouldRemoveToken(content, item, i)),
   )
 }
 

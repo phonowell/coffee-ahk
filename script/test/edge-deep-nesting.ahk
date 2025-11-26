@@ -14,21 +14,27 @@ global obj := {a: {b: {c: {d: 1}}}}
 a[__ci_ahk__.Call(a, b[__ci_ahk__.Call(b, c[__ci_ahk__.Call(c, d)])])]
 a.b.c.d.e
 fn.Call().Call().Call()
-ahk_1() {
+ahk_1(__ctx__) {
+  if (!__ctx__) __ctx__ := {}
   return 42
 }
-ahk_2() {
-  return (Func("ahk_1")).Call()
+ahk_2(__ctx__) {
+  if (!__ctx__) __ctx__ := {}
+  return (Func("ahk_1").Bind(__ctx__)).Call()
 }
-ahk_3() {
-  return (Func("ahk_2")).Call()
+ahk_3(__ctx__) {
+  if (!__ctx__) __ctx__ := {}
+  return (Func("ahk_2").Bind(__ctx__)).Call()
 }
-ahk_4() {
+ahk_4(__ctx__) {
+  if (!__ctx__) __ctx__ := {}
   return 1
 }
-ahk_5() {
-  return Func("ahk_4")
+ahk_5(__ctx__) {
+  if (!__ctx__) __ctx__ := {}
+  return Func("ahk_4").Bind(__ctx__)
 }
-ahk_6() {
-  return Func("ahk_5")
+ahk_6(__ctx__) {
+  if (!__ctx__) __ctx__ := {}
+  return Func("ahk_5").Bind(__ctx__)
 }

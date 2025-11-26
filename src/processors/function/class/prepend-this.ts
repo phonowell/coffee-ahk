@@ -8,7 +8,7 @@ export const prependThis = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     listContent.push(item)
     if (!item.is('edge', 'parameter-start')) return
 
@@ -26,8 +26,9 @@ export const prependThis = (ctx: Context) => {
     )
       return
 
-    const scope2 = item.scope.list
-    listContent.push(new Item('this', 'this', scope2))
+    const scope2 = item.scope.toArray()
+    // Use __this__ as parameter name since 'this' is reserved in AHK v1
+    listContent.push(new Item('identifier', '__this__', scope2))
 
     const it = content.at(i + 1)
     if (it?.is('edge', 'parameter-end')) return

@@ -22,7 +22,8 @@ class Scope {
     return this.#list.length
   }
 
-  get list(): ScopeType[] {
+  /** Returns a shallow copy of the scope array. */
+  toArray(): ScopeType[] {
     return [...this.#list]
   }
 
@@ -56,7 +57,7 @@ class Scope {
 
   /** Reload the scope list with new input */
   reload(input: Scope | ScopeType[] = []) {
-    this.#list = input instanceof Scope ? input.list : [...input]
+    this.#list = input instanceof Scope ? input.toArray() : [...input]
   }
 
   shift(): ScopeType | undefined {

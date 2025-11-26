@@ -9,7 +9,7 @@ const main = (ctx: Context, listFn: Set<string>) => {
 const replaceFn = (ctx: Context, listFn: Set<string>) => {
   const { content } = ctx
 
-  content.list.forEach((it, i) => {
+  content.toArray().forEach((it, i) => {
     if (it.type !== 'identifier') return
     if (it.scope.at(-1) !== 'call') return
     if (!listFn.has(it.value)) return

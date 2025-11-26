@@ -27,7 +27,7 @@ export const deconstruct = (ctx: Context) => {
   }
 
   // each
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     // output
     if (listPre.length && item.type === 'new-line') {
       const indent = pickIndent(i - 1)

@@ -16,8 +16,7 @@ arr[__ci_ahk__.Call(arr, -2)] := 888
 global obj := {items: [1, 2, 3]}
 obj.items[__ci_ahk__.Call(obj.items, -1)] := 100
 global nested := [[1, 2], [3, 4]]
-global val := nested[__ci_ahk__.Call(nested, 0)][__ci_ahk__.Call(nested[__ci_ahk__.Call(nested, 0)], -1)]
-global val2 := nested[__ci_ahk__.Call(nested, 1)][__ci_ahk__.Call(nested[__ci_ahk__.Call(nested, 1)], -2)]
+global val := nested[1][__ci_ahk__.Call(nested[1], -1)]
+global val2 := nested[2][__ci_ahk__.Call(nested[2], -2)]
 global matrix := [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-global deep := matrix[__ci_ahk__.Call(matrix,0)][__ci_ahk__.Call(matrix[__ci_ahk__.Call(matrix,0)],1)][__ci_ahk__.Call(matrix[__ci_ahk__.Call(matrix,0)][__ci_ahk__.Call(matrix[__ci_ahk__.Call(matrix,
-    0)],1)],-1)]
+global deep := matrix[1][2][__ci_ahk__.Call(matrix[1][2], -1)]

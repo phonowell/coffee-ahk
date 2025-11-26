@@ -7,9 +7,9 @@ salt_1(__arr__, __idx__) {
   return __idx__
 }
 
-a[__ci_ahk__.Call(a, 0)]
-a[__ci_ahk__.Call(a, 1)]
-a[__ci_ahk__.Call(a, 10)]
+a[1]
+a[2]
+a[11]
 a["a"]
 a["key"]
 a[__ci_ahk__.Call(a, a)]
@@ -26,11 +26,11 @@ a[__ci_ahk__.Call(a, fn.Call())]
 a[__ci_ahk__.Call(a, this.fn.Call())]
 a[__ci_ahk__.Call(a, b[__ci_ahk__.Call(b, c)])]
 a[__ci_ahk__.Call(a, b[__ci_ahk__.Call(b, c[__ci_ahk__.Call(c, d)])])]
-arr[__ci_ahk__.Call(arr, 0)] := 1
-arr[__ci_ahk__.Call(arr, 1)] := 2
+arr[1] := 1
+arr[2] := 2
 arr[__ci_ahk__.Call(arr, i)] := value
 arr[__ci_ahk__.Call(arr, idx)] := 999
 arr[__ci_ahk__.Call(arr, i + 1)] := x
 arr[__ci_ahk__.Call(arr, len - 1)] := y
-obj.items[__ci_ahk__.Call(obj.items, 0)] := first
+obj.items[1] := first
 obj.items[__ci_ahk__.Call(obj.items, i)] := value

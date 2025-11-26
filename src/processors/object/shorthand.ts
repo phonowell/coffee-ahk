@@ -9,7 +9,7 @@ export const deconstruct2 = (ctx: Context) => {
   const listContent: Item[] = []
 
   // each
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     listContent.push(item)
 
     if (!item.is('identifier')) return
@@ -24,8 +24,8 @@ export const deconstruct2 = (ctx: Context) => {
     if (!(next.is('bracket', '}') || next.is('sign', ','))) return
 
     listContent.push(
-      new Item('sign', ':', item.scope.list),
-      new Item('identifier', item.value, item.scope.list),
+      new Item('sign', ':', item.scope.toArray()),
+      new Item('identifier', item.value, item.scope.toArray()),
     )
   })
 

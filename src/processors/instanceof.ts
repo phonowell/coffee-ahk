@@ -7,7 +7,7 @@ const main = (ctx: Context) => {
   const { content } = ctx
   const listContent: Item[] = []
 
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     // Skip marker
     if (item.is('edge', 'instanceof-class')) return
 

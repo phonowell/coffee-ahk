@@ -19,7 +19,8 @@ type Context = Context2 & {
 }
 
 const main = (ctx: Context2): string => {
-  const content = ctx.content.list
+  const content = ctx.content
+    .toArray()
     .map((it, i) => {
       const context: Context = { ...ctx, i, it }
       let output = ''
@@ -32,7 +33,7 @@ const main = (ctx: Context2): string => {
         )
 
         if (hasStandaloneComment) {
-          const prevItem = ctx.content.list.at(i - 1)
+          const prevItem = ctx.content.toArray().at(i - 1)
           const scopeLast = it.scope.last
           const indent = ' '.repeat(parseInt(scopeLast || '0', 10) * 2)
 
@@ -108,7 +109,7 @@ const mapMethod: Record<string, string | ((ctx: Context) => string)> = {
   compare: ' ~ ',
   edge: edge2,
   for: (ctx: Context): string => {
-    const prev = ctx.content.list.at(ctx.i - 1)
+    const prev = ctx.content.toArray().at(ctx.i - 1)
     const needsSpace = prev && !['new-line', 'edge'].includes(prev.type)
     return needsSpace ? ' for ' : 'for '
   },

@@ -9,7 +9,7 @@ import render from '../renderer/index.js'
 import type { Context } from '../types'
 
 type Result = {
-  ast: Context['content']['list']
+  ast: ReturnType<Context['content']['toArray']>
   content: string
   raw: Context['token'][]
   warnings: string[]
@@ -57,7 +57,7 @@ const main = async (
   await processAst(ctx)
 
   return {
-    ast: content.list,
+    ast: content.toArray(),
     content: render(ctx).trim(),
     raw: ast.tokens,
     warnings: ctx.warnings,

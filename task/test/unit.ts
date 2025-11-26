@@ -60,7 +60,7 @@ const tests: UnitTest[] = [
     name: 'Content: starts empty',
     test: () => {
       const content = new Content(new Scope())
-      if (content.list.length !== 0) throw new Error('Content should start empty')
+      if (content.toArray().length !== 0) throw new Error('Content should start empty')
     },
   },
   {
@@ -70,7 +70,7 @@ const tests: UnitTest[] = [
       content.push('identifier', 'foo')
       content.push('identifier', 'bar')
 
-      if (content.list.length !== 2) throw new Error('Content should have 2 items')
+      if (content.toArray().length !== 2) throw new Error('Content should have 2 items')
       if (content.at(0)?.value !== 'foo') throw new Error('First item value mismatch')
       if (content.at(1)?.value !== 'bar') throw new Error('Second item value mismatch')
     },
@@ -100,7 +100,7 @@ const tests: UnitTest[] = [
       ]
       content.reload(newItems)
 
-      if (content.list.length !== 2) throw new Error('Reload should replace items')
+      if (content.toArray().length !== 2) throw new Error('Reload should replace items')
       if (content.at(0)?.value !== 'new1') throw new Error('Reload item 1 mismatch')
       if (content.at(1)?.value !== 'new2') throw new Error('Reload item 2 mismatch')
     },
@@ -181,14 +181,14 @@ const tests: UnitTest[] = [
     },
   },
   {
-    name: 'Scope: list property returns copy',
+    name: 'Scope: toArray() returns copy',
     test: () => {
       const scope = new Scope(['if', 'class'])
-      const list1 = scope.list
-      const list2 = scope.list
+      const list1 = scope.toArray()
+      const list2 = scope.toArray()
 
-      if (list1 === list2) throw new Error('list should return new copy each time')
-      if (list1.length !== 2) throw new Error('list length mismatch')
+      if (list1 === list2) throw new Error('toArray should return new copy each time')
+      if (list1.length !== 2) throw new Error('toArray length mismatch')
     },
   },
   {
@@ -251,7 +251,7 @@ const tests: UnitTest[] = [
     name: 'Integration: Scope copies are independent',
     test: () => {
       const scope1 = new Scope(['if'])
-      const scope2 = new Scope(scope1.list) // Create from list copy
+      const scope2 = new Scope(scope1.toArray()) // Create from toArray copy
 
       scope1.push('class')
       scope2.push('function')

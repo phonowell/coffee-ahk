@@ -9,7 +9,7 @@ const main = (ctx: Context) => {
 
   const listContent: Item[] = []
 
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     if (flagIgnore) {
       flagIgnore--
       return

@@ -10,9 +10,9 @@ const main = (ctx: Context) => {
   const listContent: Item[] = []
   let typeofScope: Scope | null = null
 
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     if (item.is('edge', 'typeof-start')) {
-      typeofScope = new Scope([...item.scope.list, 'call'])
+      typeofScope = new Scope([...item.scope.toArray(), 'call'])
       listContent.push(new Item('edge', 'call-start', typeofScope))
       return
     }

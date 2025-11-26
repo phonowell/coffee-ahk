@@ -4,7 +4,12 @@ import type Item from '../../../models/Item.js'
 export const ignore = (item: Item) => {
   if (item.is('for')) return true
   if (item.is('if')) return true
-  if (item.is('native') && item.value !== '__mark:do__') return true
+  if (
+    item.is('native') &&
+    item.value !== '__mark:do__' &&
+    item.value !== '__mark:do-fat__'
+  )
+    return true
   if (item.is('statement') && item.value !== 'new') return true
   if (item.is('try')) return true
   if (item.is('while')) return true

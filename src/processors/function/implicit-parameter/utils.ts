@@ -15,7 +15,7 @@ export const removeTrailingComma = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     if (item.is('sign', ',') && content.at(i + 1)?.is('edge', 'parameter-end'))
       return
 

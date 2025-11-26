@@ -21,7 +21,7 @@ const main = (ctx: Context) => {
   resetCache()
 
   // each
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     const listContent = getListContent()
     const listParam = getListParam()
     const countIgnore = getCountIgnore()

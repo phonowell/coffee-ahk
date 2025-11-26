@@ -4,7 +4,7 @@ const main = (ctx: Context) => {
   const { content } = ctx
   const setClass = new Set<string>()
 
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     if (item.type !== 'class') return
 
     const it = content.at(i + 1)

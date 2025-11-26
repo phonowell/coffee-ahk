@@ -13,7 +13,7 @@ const main = (ctx: Context) => {
   let listContent: Item[] = []
 
   // each
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     // output
     if (listPre.length && item.type === 'new-line') {
       const indent = pickIndent(ctx, i - 1)

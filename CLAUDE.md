@@ -20,6 +20,7 @@ pnpm watch                 # 监听 script/**/*.coffee
 ```
 
 **调试转译**（先 `pnpm build`）:
+
 ```bash
 # ✅ 正确：文件路径 + default export
 node -e "
@@ -44,11 +45,11 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 
 ### 三层处理
 
-| 层 | 位置 | 签名 | 说明 |
-|---|---|---|---|
+| 层         | 位置                     | 签名               | 说明                       |
+| ---------- | ------------------------ | ------------------ | -------------------------- |
 | Formatters | `src/formatters/` (27个) | `(ctx) => boolean` | token→Item，返回`true`消费 |
-| Processors | `src/processors/` (31个) | `(ctx) => void` | 批量改写，**顺序敏感** |
-| Renderer | `src/renderer/` | - | Item→AHK，`mapMethod`映射 |
+| Processors | `src/processors/` (31个) | `(ctx) => void`    | 批量改写，**顺序敏感**     |
+| Renderer   | `src/renderer/`          | -                  | Item→AHK，`mapMethod`映射  |
 
 **Processor 顺序**: newLine(#1) → for(#2) → array(#3) → object(#4) → typeof(#5) → instanceof(#6) → variable(#7) → builtIn(#8) → class(#9) → function(#10)
 
@@ -56,20 +57,27 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 
 - **Context**: `{token, type, value, content, scope, cache, options}`
 - **Item**: 不可变 `{type, value, scope, comment?}` — **必须用 `clone()` 复制**
-- **Content**: Item 集合，用 `.push()` / `.reload()`，禁直接改 `.list`
+- **Content**: Item 集合，用 `.push()` / `.reload()`
+  - `toArray()` 返回**浅拷贝**（不可直接修改）
   - `at(i)` 返回 `Item | undefined`，用 `at(-1)` 取最后一个
   - `pop()` / `shift()` 返回 `Item | undefined`
 - **Scope**: 缩进栈，需克隆防污染
+  - `toArray()` 返回**浅拷贝**（不可直接修改）
   - `includes(value)` 检查是否包含某 scope
   - `pop()` / `shift()` 返回 `ScopeType | undefined`
 
 ### 内置函数
 
 `script/segment/*.coffee` → 构建编译 → `src/processors/builtins.gen.ts`
+
 - `changeIndex.coffee` → **统一索引转换**（0-based→1-based、负索引、变量索引）
 - `typeof.coffee` → 类型检测
 
-**索引处理策略 (v0.0.74+)**: 所有数字索引统一通过 `__ci__` 运行时函数处理，支持链式负索引如 `nested[0][-1]`。字符串键直接使用不转换。
+**索引处理策略 (v0.0.74+)**:
+
+- **编译时优化**: 单个非负整数字面量直接 +1（`arr[0]` → `arr[1]`），无函数调用
+- **运行时处理**: 负索引、变量、表达式通过 `__ci__` 函数处理（`arr[-1]` → `__ci__(arr, -1)`）
+- 字符串键直接使用不转换
 
 **禁止直接写 .ahk**，必须写 .coffee。
 
@@ -83,14 +91,14 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 
 ```typescript
 // ✅ 正确
-const item = array.at(i);                              // 数组用 at()
-if (!item) return;                                     // 空值检查
-const s = `${a}${b}`;                                  // 模板字符串
+const item = array.at(i); // 数组用 at()
+if (!item) return; // 空值检查
+const s = `${a}${b}`; // 模板字符串
 const flag = x?.is("a") === true || x?.is("b") === true; // 布尔链
 
 // ❌ 错误
-array[i] as Item;     // 禁 as 断言
-a + b;                // 禁 + 拼字符串（用模板）
+array[i] as Item; // 禁 as 断言
+a + b; // 禁 + 拼字符串（用模板）
 x?.is("a") || x?.is("b"); // ESLint 警告
 ```
 
@@ -103,26 +111,41 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 - **编码**: UTF-8 with BOM
 - **禁止语法**: `?.` `??` `||=` `&&=` `//` `%%` `in` `delete` — 见 `data/forbidden.yaml`
 - **测试 salt**: 必须固定 `salt: 'ahk'`
+- **数组/对象不可区分**: AHK v1 中 `[]` 是 `{}` 的语法糖，`[a,b]` 等同于 `{1:a, 2:b}`，无原生方法区分两者
+
+### 索引转换限制
+
+`__ci__` 假设：**数组用数字索引，对象用字符串索引**。
+
+| 场景                    | 行为   | 结果                       |
+| ----------------------- | ------ | -------------------------- |
+| `arr[0]`                | 转换   | ✅ `arr[1]`                |
+| `obj["key"]`            | 不转换 | ✅ `obj["key"]`            |
+| `obj[0]` (对象用数字键) | 转换   | ⚠️ `obj[1]` — **可能错误** |
+
+**AHK v1 键类型细节**: `obj[0]` 和 `obj["0"]` 访问**不同的键**（数字键 vs 字符串键）。但变量例外：`i := "0"; obj[i]` 访问数字键（纯数字字符串自动转换）。
+
+**设计决策**: 优先保证 CoffeeScript 数组语义（0-based）。对象数字键场景：用 `obj["0"]` 访问字符串键，或用 Native 嵌入直接写 AHK。
 
 ## 常见陷阱
 
-| 错误 | 后果 | 解决 |
-|---|---|---|
-| Formatter 未返回 `true` | token 重复处理 | 消费后返回 `true` |
-| 直接改 `content.list` | Scope 未更新 | 用 `.reload()` / `.push()` |
-| Processor 顺序错 | 转换错误 | 按序号插入 |
-| 测试前未 build | 测旧代码 | `pnpm build && pnpm test` |
-| `new Item()` 不用 `clone()` | 丢失 comment | 用 `clone()` |
-| `!line` 判断空行 | 循环提前中断 | 用 `line === undefined` |
-| post-if (`y if x`) | forbidden | 用 `if x then y` |
+| 错误                        | 后果           | 解决                       |
+| --------------------------- | -------------- | -------------------------- |
+| Formatter 未返回 `true`     | token 重复处理 | 消费后返回 `true`          |
+| 直接改 `toArray()` 返回值   | 不影响原数据   | 用 `.reload()` / `.push()` |
+| Processor 顺序错            | 转换错误       | 按序号插入                 |
+| 测试前未 build              | 测旧代码       | `pnpm build && pnpm test`  |
+| `new Item()` 不用 `clone()` | 丢失 comment   | 用 `clone()`               |
+| `!line` 判断空行            | 循环提前中断   | 用 `line === undefined`    |
+| post-if (`y if x`)          | forbidden      | 用 `if x then y`           |
 
 ## 新功能开发
 
-| 场景 | 层 | 示例 |
-|---|---|---|
-| 单 token 语法 | Formatter | `?.` → forbidden |
-| 多行结构重写 | Processor | 数组解构 |
-| 需回溯 | Formatter + Processor | 隐式返回 |
+| 场景          | 层                    | 示例             |
+| ------------- | --------------------- | ---------------- |
+| 单 token 语法 | Formatter             | `?.` → forbidden |
+| 多行结构重写  | Processor             | 数组解构         |
+| 需回溯        | Formatter + Processor | 隐式返回         |
 
 **添加 Formatter**: `src/formatters/<name>.ts` → 注册 `formattersMap` → 添加测试
 **添加 Processor**: 按顺序插入（依赖 newLine 放 #1 后，结构重写放 builtIn 前）
@@ -138,21 +161,73 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 ## 已知问题
 
 ### 已修复 (2025-11-24)
+
 - **Export 解析空行中断**: `if (!nextLine) break` 遇空字符串中断 → 改用 `nextLine === undefined`
 - **类型注释干扰**: export 前的 `###* @type ###` 需跳过
 
 ### 已解决 (2025-11-25)
+
 - **链式负索引**: `nested[0][-1]` 之前无法正确转换（arrayItems 收集不完整）
 - **解决方案**: 统一使用 `__ci__` 运行时函数处理所有数字索引，从右到左处理避免修改干扰
 - **收集逻辑**: `collectArrayExpression()` 支持回溯索引表达式，正确收集 `nested[0]` 整体
 
 ### API 一致性改进 (2025-11-26)
+
+- **Content/Scope**: `list` getter → `toArray()` 方法，明确返回浅拷贝语义
 - **Content 类**: 移除 `last` getter，统一用 `at(-1)`；`pop()`/`shift()` 返回 `undefined` 而非空 Item
 - **Scope 类**: 添加 `includes()` 方法；`pop()`/`shift()` 返回 `undefined` 而非空字符串；优化 `isEqual()` 避免数组复制
 - **移除冗余检查**: `identifier.ts` 中类名与变量冲突检查已移除（全角方案已处理）
 
-### 待验证
-- **BUG_REPORT.md**: 声称 `obj[func.Call()] := value` 在 AHK v1 静默失败 — 需真实环境测试
+### 闭包实现 (2025-11-26)
+
+**问题**: 内层函数无法正确读取/修改外层函数变量（AHK v1 `.Bind()` 是值拷贝）
+
+**解决方案**: `__ctx__` 对象模式
+
+- 所有非全局变量/参数存入 `__ctx__` 对象
+- 内层函数通过 `.Bind(__ctx__)` 接收上下文引用
+- 变量访问转换为 `__ctx__.xxx`
+
+```coffee
+# 输入
+fn = (a) ->
+  b = 1
+  inner = -> a + b
+  inner()
+
+# 输出
+ahk_2(a) {
+  __ctx__:={a: a}
+  __ctx__.b := 1
+  __ctx__.inner := Func("ahk_1").Bind(__ctx__)
+  __ctx__.inner.Call()
+}
+ahk_1(__ctx__) {
+  if(!__ctx__)__ctx__:={}
+  return __ctx__.a + __ctx__.b
+}
+```
+
+**关键文件**: `src/processors/function/ctx-transform.ts`
+
+**跳过 ctx 的情况**:
+
+- 全局变量 (`ctx.cache.global`)
+- `this` 关键字
+- `__xxx__` 特殊标识符
+- 首字母大写标识符 (类名、内置函数)
+- 非函数作用域内的标识符
+
+**内置函数保护**: `salt='salt'` 编译的段落不应用 ctx 转换
+
+### AHK v1 语法兼容修复 (2025-11-26)
+
+| 问题                | 解决方案                                                               |
+| ------------------- | ---------------------------------------------------------------------- |
+| `this` 作为参数名   | 类方法参数用 `__this__`，函数体开头加 `this := __this__`               |
+| 对象键名表达式      | `shouldUseCtx` 跳过 object scope 中后跟 `:` 的标识符                   |
+| catch 变量前缀      | `collectCatchVars` 收集 catch 变量名，在 catch scope 内跳过 ctx 转换   |
+| `do => @a` this捕获 | `arrow.ts` 标记 `__mark:do-fat__`，`do.ts` 在 `.Call()` 中传入 `this`  |
 
 ## 提交检查
 

@@ -1,5 +1,9 @@
 import { pickItem } from './change-index/pick-item.js'
-import { processIndexWithHelper } from './change-index/process-types.js'
+import {
+  isSimpleNonNegativeIndex,
+  processIndexWithHelper,
+  processSimpleIndex,
+} from './change-index/process-types.js'
 import { updateContent } from './change-index/update-content.js'
 
 import type { Range } from './change-index/types.js'
@@ -74,6 +78,8 @@ const main = (ctx: Context) => {
   const { content } = ctx
   const token = `__ci_${ctx.options.salt}__`
   const countIgnore = { value: 0 }
+  // Track processed simple indices by Item reference (stable across content reloads)
+  const processedItems = new WeakSet<Item>()
 
   const update = (range: Range, list: Item[]) => {
     updateContent(ctx, range, list)
@@ -93,10 +99,11 @@ const main = (ctx: Context) => {
 
     const item = content.at(i)
     if (!item?.is('edge', 'index-start')) continue
+    if (processedItems.has(item)) continue // Already processed (simple index)
 
     const next = content.at(i + 1)
     if (!next) continue
-    if (next.is('identifier', token)) continue // Already processed
+    if (next.is('identifier', token)) continue // Already processed (__ci__ call)
     if (next.is('edge', 'index-end')) continue // Empty index []
 
     const [iEnd, listItem] = pickItem(ctx, item, i, countIgnore)
@@ -105,11 +112,27 @@ const main = (ctx: Context) => {
     // String keys (object property access) don't need conversion
     if (isStringIndex(listUnwrap)) continue
 
+    // Compile-time optimization: single non-negative integer → direct +1
+    const simpleIndex = isSimpleNonNegativeIndex(listUnwrap)
+    if (simpleIndex !== null) {
+      const indexItem = listUnwrap.at(0)
+      if (indexItem) {
+        processSimpleIndex(
+          [i + 1, iEnd - 1],
+          simpleIndex,
+          indexItem.scope,
+          update,
+        )
+        processedItems.add(item)
+      }
+      continue
+    }
+
     // Collect the full array expression (supports chained index)
     const arrayItems = collectArrayExpression(content, i - 1)
     if (arrayItems.length === 0) continue
 
-    // Process this index
+    // Runtime processing via __ci__ helper
     processIndexWithHelper(
       ctx,
       [i + 1, iEnd - 1],
@@ -119,8 +142,8 @@ const main = (ctx: Context) => {
     )
 
     // Recalculate positions after content modification
+    // Note: __ci__ calls are detected by next.is('identifier', token) check
     positions = findAllIndexStarts(content)
-    // Filter out positions we've already processed (those >= i that are now __ci__ calls)
   }
 }
 

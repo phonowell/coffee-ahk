@@ -11,7 +11,7 @@ const main = (ctx: Context) => {
   let prevCompareIdx = -1
   let middleOperand: Item | null = null
 
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     // If this is a compare and we had a previous compare with a middle operand
     if (item.type === 'compare' && prevCompareIdx !== -1 && middleOperand) {
       // Insert && and clone of middle operand before this compare

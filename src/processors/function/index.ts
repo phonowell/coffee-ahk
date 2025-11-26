@@ -1,9 +1,8 @@
 import processAnonymousFunctions from './anonymous.js'
 import processClassMethods from './class.js'
-import injectFunctionContext from './context.js'
 import countFunctions from './count.js'
+import ctxTransform from './ctx-transform.js'
 import processDoStatements from './do.js'
-import injectImplicitParameters from './implicit-parameter.js'
 import injectImplicitReturns from './implicit-return.js'
 import markFunctions from './mark.js'
 import transformParameters from './parameter.js'
@@ -19,20 +18,20 @@ const functionProcessor = (context: Context) => {
 
   processClassMethods(context)
 
-  injectImplicitParameters(context)
+  // implicit returns (keep this, it's separate from ctx handling)
   injectImplicitReturns(context)
 
-  // replace ctx in parameter
-  // from `fn(a = a)` to `fn(a)`
-  injectFunctionContext(context)
-
-  // anonymous
+  // anonymous function extraction
   processAnonymousFunctions(context)
   const functionSet = countFunctions(context)
 
   transformParameters(context, functionSet)
 
   processDoStatements(context)
+
+  // ctx transform: convert variable access to __ctx__.xxx
+  // This replaces the old implicit-parameter and context processors
+  ctxTransform(context)
 }
 
 export default functionProcessor

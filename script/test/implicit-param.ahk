@@ -1,12 +1,16 @@
-global fn1 := Func("ahk_3").Bind(x, y)
-global fn2 := Func("ahk_2").Bind(a, b, c)
-global fn3 := Func("ahk_1").Bind(b)
-ahk_1(b, a) {
-  return a + b
+global fn1 := Func("ahk_3")
+global fn2 := Func("ahk_2")
+global fn3 := Func("ahk_1")
+ahk_1(__ctx__, a) {
+  if (!__ctx__) __ctx__ := {}
+  __ctx__.a := a
+  return __ctx__.a + __ctx__.b
 }
-ahk_2(a, b, c) {
-  return a * b + c
+ahk_2(__ctx__) {
+  if (!__ctx__) __ctx__ := {}
+  return __ctx__.a * __ctx__.b + __ctx__.c
 }
-ahk_3(x, y) {
-  return x + y
+ahk_3(__ctx__) {
+  if (!__ctx__) __ctx__ := {}
+  return __ctx__.x + __ctx__.y
 }

@@ -14,7 +14,8 @@ while (b < 10) {
     break
   }
 }
-ahk_1() {
+ahk_1(__ctx__) {
+  if (!__ctx__) __ctx__ := {}
   while (a < 5) {
     a++
   }

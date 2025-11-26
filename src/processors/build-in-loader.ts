@@ -52,7 +52,7 @@ const insert = (
           item.value = value
         }
       })
-      content.reload([...listItem, ...content.list])
+      content.reload([...listItem, ...content.toArray()])
     }
   }
 }

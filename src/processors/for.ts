@@ -33,7 +33,7 @@ const main = (ctx: Context) => {
 
   // each
   const listCache: [number, Item[]][] = []
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     if (!item.is('for-in', 'in')) return
 
     const name = findName(i)
@@ -65,7 +65,7 @@ const main = (ctx: Context) => {
   })
 
   if (listCache.length) {
-    const listContent: Item[] = content.list
+    const listContent: Item[] = content.toArray()
     for (const it of listCache) listContent.splice(it[0], 0, ...it[1])
     content.reload(listContent)
   }

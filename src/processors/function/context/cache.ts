@@ -49,7 +49,7 @@ export const cache = (ctx: Context, item: Item, i: number) => {
   for (const listIt of listParam) {
     for (const it of listIt) {
       // Replace scope up to and including 'parameter' with new call scope
-      const scopeList = it.scope.list
+      const scopeList = it.scope.toArray()
       const paramIndex = scopeList.indexOf('parameter')
       const newScope =
         paramIndex >= 0

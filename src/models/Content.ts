@@ -17,8 +17,8 @@ class Content {
     return this.#list.length
   }
 
-  /** Gets a copy of the list of items in the content. */
-  get list(): Item[] {
+  /** Returns a shallow copy of the items array. */
+  toArray(): Item[] {
     return [...this.#list]
   }
 

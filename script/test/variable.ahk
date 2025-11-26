@@ -16,16 +16,19 @@ __array__ := fn.Call()
 a := __array__[1]
 b := __array__[2]
 fn := Func("ahk_1")
-ahk_1() {
+ahk_1(__ctx__) {
+  if (!__ctx__) __ctx__ := {}
   __array__ := [1, 2, 3]
   a := __array__[1]
   b := __array__[2]
   c := __array__[3]
 }
-ahk_2() {
+ahk_2(__ctx__) {
+  if (!__ctx__) __ctx__ := {}
   return c := 3
 }
-ahk_3() {
+ahk_3(__ctx__) {
+  if (!__ctx__) __ctx__ := {}
   b := 1
   b := 2
 }

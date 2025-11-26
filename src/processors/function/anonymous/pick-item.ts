@@ -8,7 +8,7 @@ export const pickItem = (
   ctx: Context,
   count: number,
   i: number,
-  scope: Scope['list'],
+  scope: ReturnType<Scope['toArray']>,
   listResult: Item[] = [],
 ): Item[] => {
   const { content } = ctx

@@ -1,7 +1,7 @@
 // Arrow function handling
 import Item from '../../models/Item.js'
 
-import type Scope from '../../models/Scope'
+import type { ScopeType } from '../../models/ScopeType'
 import type { Context } from '../../types'
 
 const findEdge = (ctx: Context, i: number = ctx.content.length - 1): number => {
@@ -25,6 +25,27 @@ export const arrow = (ctx: Context, type: string) => {
     )
   }
 
+  // Mark do => with fat arrow marker so do processor knows to pass this
+  if (type === '=>') {
+    // Search backwards for __mark:do__ (might not be at -1)
+    for (let i = content.length - 1; i >= 0; i--) {
+      const it = content.at(i)
+      if (it?.is('native', '__mark:do__')) {
+        // Mutate the item directly (content.toArray() returns a copy)
+        it.value = '__mark:do-fat__'
+        break
+      }
+      // Stop if we hit a newline or other structural element
+      if (it?.is('new-line') || it?.is('edge')) break
+    }
+  }
+
+  // Check if this is a class method definition (scope ends with 'class' or 'parameter'+'class')
+  // Class methods are handled by prepend-this.ts processor
+  const isClassMethod =
+    scope.at(-1) === 'class' ||
+    (scope.at(-1) === 'parameter' && scope.at(-2) === 'class')
+
   // fn = -> xxx
   if (!content.at(-1)?.is('edge', 'parameter-end')) {
     if (!content.at(-2)?.is('property', 'constructor'))
@@ -33,20 +54,22 @@ export const arrow = (ctx: Context, type: string) => {
     scope.push('parameter')
     content.push('edge', 'parameter-start')
 
-    if (type === '=>') content.push('this').push('sign', '=').push('this')
+    // Use __this__ parameter for => outside class method definitions
+    if (type === '=>' && !isClassMethod) content.push('identifier', '__this__')
 
     content.push('edge', 'parameter-end')
     scope.pop()
-  } else if (type === '=>') {
-    const scp2: Scope['list'] = [...scope.list, 'parameter']
-    content.list.splice(
-      findEdge(ctx) + 1,
-      0,
-      new Item('this', 'this', scp2),
-      new Item('sign', '=', scp2),
-      new Item('this', 'this', scp2),
-      new Item('sign', ',', scp2),
-    )
+  } else if (type === '=>' && !isClassMethod) {
+    // Use __this__ parameter for => outside class method definitions
+    const scp2: ScopeType[] = [...scope.toArray(), 'parameter']
+    content
+      .toArray()
+      .splice(
+        findEdge(ctx) + 1,
+        0,
+        new Item('identifier', '__this__', scp2),
+        new Item('sign', ',', scp2),
+      )
   }
 
   scope.push('function')

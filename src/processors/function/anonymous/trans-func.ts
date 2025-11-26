@@ -6,7 +6,7 @@ export const transFunc = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
-  content.list.forEach((item) => {
+  content.toArray().forEach((item) => {
     if (
       !(
         item.type === 'native' &&

@@ -22,6 +22,8 @@ const mapEdge: Record<string, string> = {
   'index-start': '[',
   'interpolation-end': ') . ',
   'interpolation-start': ' . (',
+  'object-end': '}',
+  'object-start': '{',
   'parameter-end': ')',
   'parameter-start': '(',
 } as const

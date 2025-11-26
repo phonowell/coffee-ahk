@@ -6,14 +6,14 @@ export const formatSuper = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
-  content.list.forEach((item, i) => {
+  content.toArray().forEach((item, i) => {
     listContent.push(item)
     if (!item.is('super')) return
 
     const next = content.at(i + 1)
     if (!next?.is('edge', 'call-start')) return
 
-    const scope2 = next.scope.list
+    const scope2 = next.scope.toArray()
 
     listContent.push(
       new Item('.', '.', scope2),
