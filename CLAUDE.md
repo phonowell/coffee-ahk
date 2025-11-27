@@ -19,6 +19,7 @@ pnpm lint && pnpm watch    # 代码检查 / 监听 script/**/*.coffee
 ```
 
 **调试转译**（先 `pnpm build`）:
+
 ```bash
 node -e "require('./dist/index.js').default('/tmp/test.coffee', { salt: 'test' }).then(console.log)"
 # ❌ 错误: node_modules/.bin/coffee (CoffeeScript CLI) | .transpile (应 .default) | 代码字符串 (需文件路径)
@@ -46,14 +47,15 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 
 ### 核心数据结构
 
-| 结构    | 说明                                                                                        |
-| ------- | ------------------------------------------------------------------------------------------- |
-| Context | `{token, type, value, content, scope, cache, options}`                                      |
-| Item    | 不可变 `{type, value, scope, comment?}` — **必须用 `clone()` 复制**                         |
-| Content | Item 集合：`push(...items)` / `unshift(...items)` 支持多参数，`at(i)`，`pop()` / `shift()`  |
-| Scope   | 缩进栈：`toArray()` 浅拷贝，`includes(value)`，`pop()` / `shift()` 返回 `undefined`         |
+| 结构    | 说明                                                                                       |
+| ------- | ------------------------------------------------------------------------------------------ |
+| Context | `{token, type, value, content, scope, cache, options}`                                     |
+| Item    | 不可变 `{type, value, scope, comment?}` — **必须用 `clone()` 复制**                        |
+| Content | Item 集合：`push(...items)` / `unshift(...items)` 支持多参数，`at(i)`，`pop()` / `shift()` |
+| Scope   | 缩进栈：`toArray()` 浅拷贝，`includes(value)`，`pop()` / `shift()` 返回 `undefined`        |
 
 **Item 类型系统** (v0.0.77+):
+
 - `ItemOptions` 使用 distributive union 严格约束 type-value 对应关系
 - `{ type: 'if', value: 'xxx' }` → 类型错误；`{ type: 'if', value: 'if' }` → 正确
 - 动态值需类型断言：`value as ItemTypeMap['math']`
@@ -68,6 +70,7 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 **索引策略**: 非负整数直接 +1（`arr[0]`→`arr[1]`）；负索引/变量用 `ℓci` 函数；字符串键不转换
 
 **内部变量** (`src/constants.ts`): `ℓ` (U+2113) 前缀避免冲突
+
 - `λ` 闭包上下文 | `ℓci` 索引 | `ℓtype` typeof | `ℓarray`/`ℓobject` 解构 | `ℓthis` this替换 | `ℓi`/`ℓk` for循环
 
 **禁止直接写 .ahk**，必须写 .coffee。
@@ -76,12 +79,12 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 
 **流程** (`src/file/include/`): import → export 解析 → 拓扑排序 → 组装
 
-| 文件                            | 功能                       |
-| ------------------------------- | -------------------------- |
-| `cache.ts`                      | 缓存、循环依赖检测、Kahn   |
-| `source-resolver.ts`            | 路径解析                   |
-| `transformer/transform.ts`      | export 解析、闭包包装      |
-| `transformer/replace-anchor.ts` | import → 变量赋值          |
+| 文件                            | 功能                     |
+| ------------------------------- | ------------------------ |
+| `cache.ts`                      | 缓存、循环依赖检测、Kahn |
+| `source-resolver.ts`            | 路径解析                 |
+| `transformer/transform.ts`      | export 解析、闭包包装    |
+| `transformer/replace-anchor.ts` | import → 变量赋值        |
 
 **注意**: 遍历行时用 `line === undefined` 判断结束（空字符串是 falsy）
 
@@ -96,28 +99,28 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 
 ## 关键约束
 
-| 约束       | 说明                                                          |
-| ---------- | ------------------------------------------------------------- |
-| 大小写     | AHK 不敏感；类名用全角 (`Animal` → `Ａnimal`)                 |
-| 行长       | 最大 200 字符，`splitAtCommas()` 自动换行                     |
-| 编码       | UTF-8 with BOM                                                |
-| 禁止语法   | `?.` `??` `||=` `&&=` `//` `%%` `in` `delete` — `forbidden.yaml` |
-| 测试 salt  | 必须固定 `salt: 'ahk'`                                        |
-| 数组/对象  | AHK v1 无法区分，`[a,b]` 等同于 `{1:a, 2:b}`                  |
+| 约束      | 说明                                          |
+| --------- | --------------------------------------------- | --- | ------------------------------------------------- |
+| 大小写    | AHK 不敏感；类名用全角 (`Animal` → `Ａnimal`) |
+| 行长      | 最大 200 字符，`splitAtCommas()` 自动换行     |
+| 编码      | UTF-8 with BOM                                |
+| 禁止语法  | `?.` `??` `                                   |     | =` `&&=` `//` `%%` `in` `delete`—`forbidden.yaml` |
+| 测试 salt | 必须固定 `salt: 'ahk'`                        |
+| 数组/对象 | AHK v1 无法区分，`[a,b]` 等同于 `{1:a, 2:b}`  |
 
 **索引限制**: `ℓci` 假设数组用数字索引、对象用字符串索引。`obj[0]` 会被转换为 `obj[1]`（可能错误）— 用 `obj["0"]` 访问字符串键。
 
 ## 常见陷阱
 
-| 错误                      | 解决                              |
-| ------------------------- | --------------------------------- |
-| Formatter 未返回 `true`   | 消费后返回 `true`                 |
-| 直接改 `toArray()` 返回值 | 用 `.reload()` / `.push()`        |
-| Processor 顺序错          | 按序号插入                        |
-| 测试前未 build            | `pnpm build && pnpm test`         |
-| `new Item()` 不用 `clone()` | 用 `clone()`                    |
-| `!line` 判断空行          | 用 `line === undefined`           |
-| post-if (`y if x`)        | 用 `if x then y`                  |
+| 错误                        | 解决                       |
+| --------------------------- | -------------------------- |
+| Formatter 未返回 `true`     | 消费后返回 `true`          |
+| 直接改 `toArray()` 返回值   | 用 `.reload()` / `.push()` |
+| Processor 顺序错            | 按序号插入                 |
+| 测试前未 build              | `pnpm build && pnpm test`  |
+| `new Item()` 不用 `clone()` | 用 `clone()`               |
+| `!line` 判断空行            | 用 `line === undefined`    |
+| post-if (`y if x`)          | 用 `if x then y`           |
 
 ## 新功能开发
 
@@ -166,12 +169,12 @@ fn = (a) ->               ahk_2(a) {
 
 ## AHK v1 兼容修复
 
-| 问题              | 方案                                           |
-| ----------------- | ---------------------------------------------- |
-| `this` 作参数名   | 用 `ℓthis`，函数体加 `this := ℓthis`           |
-| 对象键名表达式    | `shouldUseCtx` 跳过 object scope 后跟 `:` 的   |
-| catch 变量        | `collectCatchVars` 在 catch scope 跳过 ctx     |
-| `do => @a` this   | `arrow.ts` 标记，`do.ts` 在 `.Call()` 传 `this`|
+| 问题            | 方案                                            |
+| --------------- | ----------------------------------------------- |
+| `this` 作参数名 | 用 `ℓthis`，函数体加 `this := ℓthis`            |
+| 对象键名表达式  | `shouldUseCtx` 跳过 object scope 后跟 `:` 的    |
+| catch 变量      | `collectCatchVars` 在 catch scope 跳过 ctx      |
+| `do => @a` this | `arrow.ts` 标记，`do.ts` 在 `.Call()` 传 `this` |
 
 ## 历史修复记录
 
@@ -186,3 +189,19 @@ fn = (a) ->               ahk_2(a) {
 2. `pnpm lint` — 0 errors
 3. 新功能有测试
 4. **重要发现已更新到本文件**
+
+## 问题记录
+
+** 解决之后移除 **
+
+```ahk
+for ℓi, add_arg in λ.args {
+  λ.add_arg := add_arg
+  ℓi := ℓi - 1
+  λ.add_result := λ.add_result + λ.add_arg
+}
+```
+
+add_arg只在for内有效，外层无法访问，无需使用`λ.`前缀。
+
+需要一并检查类似问题。
