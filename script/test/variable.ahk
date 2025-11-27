@@ -16,18 +16,18 @@ b := ℓarray[2]
 a := ℓarray[1]
 b := ℓarray[2]
 fn := Func("ahk_1")
-ahk_1(λ) {
+ahk_1(λ := "") {
   if (!λ) λ := {}
   ℓarray := [1, 2, 3]
   a := ℓarray[1]
   b := ℓarray[2]
   c := ℓarray[3]
 }
-ahk_2(λ) {
+ahk_2(λ := "") {
   if (!λ) λ := {}
   return c := 3
 }
-ahk_3(λ) {
+ahk_3(λ := "") {
   if (!λ) λ := {}
   b := 1
   b := 2

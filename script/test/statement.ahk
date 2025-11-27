@@ -4,16 +4,16 @@ global obj := new MyClass()
 class Ｄog extends Animal {
   bark := Func("ahk_1").Bind(this)
 }
-ahk_1(λ, ℓthis) {
+ahk_1(λ := "", ℓthis) {
   if (!λ) λ := {}
   this := ℓthis
   return "woof"
 }
-ahk_2(λ) {
+ahk_2(λ := "") {
   if (!λ) λ := {}
   throw Exception("oops")
 }
-ahk_3(λ) {
+ahk_3(λ := "") {
   if (!λ) λ := {}
   return 42
 }

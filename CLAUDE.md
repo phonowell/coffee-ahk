@@ -151,7 +151,7 @@ fn = (a) ->               ahk_2(a) {
   inner()                   λ.inner := Func("ahk_1").Bind(λ)
                             λ.inner.Call()
                           }
-                          ahk_1(λ) {
+                          ahk_1(λ := "") {
                             if(!λ)λ:={}
                             return λ.a + λ.b
                           }
@@ -184,13 +184,14 @@ fn = (a) ->               ahk_2(a) {
 | 对象键名表达式  | `shouldUseCtx` 跳过 object scope 后跟 `:` 的    |
 | catch 变量      | `collectCatchVars` 在 catch scope 跳过 ctx      |
 | `do => @a` this | `arrow.ts` 标记，`do.ts` 在 `.Call()` 传 `this` |
+| `Func.Call()`   | `λ := ""` 可选参数，避免动态调用静默失败        |
 
 ## 历史修复记录
 
 - **2025-11-24**: Export 解析空行中断 (`!nextLine` → `=== undefined`)、类型注释干扰
 - **2025-11-25**: 链式负索引 `nested[0][-1]`、`collectArrayExpression()` 回溯
 - **2025-11-26**: Content/Scope API 统一、闭包 λ 实现、class/export 分离方案
-- **2025-11-27**: Item 类型系统重构（严格 type-value 约束）、`::` 输出为 `prototype`、Content.push/unshift 多参数优化
+- **2025-11-27**: Item 类型系统重构（严格 type-value 约束）、`::` 输出为 `prototype`、Content.push/unshift 多参数优化、`λ` 改为可选参数修复 `Func.Call()` 静默失败
 
 ## 提交检查
 

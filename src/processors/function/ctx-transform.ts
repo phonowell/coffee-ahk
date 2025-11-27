@@ -161,19 +161,17 @@ const transformFunctions = (
         didInit = false
 
         const p = params.get(funcName) ?? []
+        const _scope = item.scope.toArray()
         out.push(item)
+        // λ := "" - optional parameter to allow .Call() without arguments
         out.push(
-          new Item({
-            type: 'identifier',
-            value: CTX,
-            scope: item.scope.toArray(),
-          }),
+          new Item({ type: 'identifier', value: CTX, scope: _scope }),
+          new Item({ type: 'sign', value: '=', scope: _scope }),
+          new Item({ type: 'string', value: '""', scope: _scope }),
         )
-        if (p.length > 0) {
-          out.push(
-            new Item({ type: 'sign', value: ',', scope: item.scope.toArray() }),
-          )
-        }
+        if (p.length > 0)
+          out.push(new Item({ type: 'sign', value: ',', scope: _scope }))
+
         continue
       }
     }

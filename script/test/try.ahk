@@ -11,7 +11,7 @@ try {
   3
 }
 global fn := Func("ahk_1")
-ahk_1(λ) {
+ahk_1(λ := "") {
   if (!λ) λ := {}
   try {
     λ.alert.Call(1)
