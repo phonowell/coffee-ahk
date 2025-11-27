@@ -1,6 +1,20 @@
 import Scope from './Scope.js'
 
-import type { ItemType } from './ItemType.js'
+import type { ItemType, ItemTypeMap } from './ItemType.js'
+import type { ScopeType } from './ScopeType.js'
+
+type ScopeArg = Scope | ScopeType[]
+
+/** Strict item options - type and value must match */
+type StrictItemOptions<T extends ItemType> = {
+  type: T
+  value: ItemTypeMap[T]
+  scope?: ScopeArg
+  comment?: string[]
+}
+
+/** Item constructor options - distributive union ensures type-value correlation */
+export type ItemOptions = { [K in ItemType]: StrictItemOptions<K> }[ItemType]
 
 /** An item of the AST */
 class Item {
@@ -9,29 +23,19 @@ class Item {
   type: ItemType
   value: string
 
-  /** Creates a new item with type, value, and scope, or clones from another Item. */
-  constructor(
-    ...args:
-      | [
-          type?: Item['type'],
-          value?: Item['value'],
-          scope?: ConstructorParameters<typeof Scope>[0],
-        ]
-      | [Item]
-  ) {
-    if (args[0] instanceof Item) {
-      const item = args[0]
-      this.type = item.type
-      this.value = item.value
-      this.scope = new Scope(item.scope)
-      if (item.comment) this.comment = [...item.comment]
+  constructor(options: ItemOptions | Item) {
+    if (options instanceof Item) {
+      this.type = options.type
+      this.value = options.value
+      this.scope = new Scope(options.scope)
+      if (options.comment) this.comment = [...options.comment]
       return
     }
 
-    const [type, value, scope] = args
-    this.type = type ?? 'void'
-    this.value = value ?? type ?? ''
-    this.scope = new Scope(scope)
+    this.type = options.type
+    this.value = options.value
+    this.scope = new Scope(options.scope)
+    if (options.comment) this.comment = [...options.comment]
   }
 
   /** Clones the item. */
@@ -40,7 +44,10 @@ class Item {
   }
 
   /** Checks if the item is of a certain type and value. */
-  is(expectedType: ItemType, expectedValue?: string): boolean {
+  is<T extends ItemType>(
+    expectedType: T,
+    expectedValue?: ItemTypeMap[T],
+  ): boolean {
     if (expectedType !== this.type) return false
     if (typeof expectedValue === 'undefined') return true
     return expectedValue === this.value

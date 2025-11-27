@@ -12,7 +12,7 @@ const handleCommaInScope = (
   if (['array', 'call', 'object', 'parameter'].includes(scope.last)) {
     if (!content.at(-1)?.is('sign', ',')) {
       if (content.at(-1)?.is('new-line')) content.pop()
-      content.push('sign', ',')
+      content.push({ type: 'sign', value: ',' })
     }
     return true
   }
@@ -26,7 +26,7 @@ const handleNewLine = (ctx: Context): boolean => {
 
   if (handleCommaInScope(content, scope)) return true
 
-  content.push('new-line', ctx.indent.toString())
+  content.push({ type: 'new-line', value: ctx.indent.toString() })
   return true
 }
 
@@ -34,7 +34,7 @@ const handleSemicolon = (ctx: Context): boolean => {
   const { content } = ctx
 
   handleClosingBracket(content)
-  content.push('new-line', ctx.indent.toString())
+  content.push({ type: 'new-line', value: ctx.indent.toString() })
   return true
 }
 

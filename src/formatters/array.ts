@@ -5,13 +5,13 @@ const main = (ctx: Context) => {
 
   if (type === '[') {
     scope.push('array')
-    content.push('edge', 'array-start')
+    content.push({ type: 'edge', value: 'array-start' })
     return true
   }
 
   if (type === ']') {
     scope.pop()
-    content.push('edge', 'array-end')
+    content.push({ type: 'edge', value: 'array-end' })
     return true
   }
 

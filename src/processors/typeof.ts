@@ -13,7 +13,9 @@ const main = (ctx: Context) => {
   content.toArray().forEach((item, i) => {
     if (item.is('edge', 'typeof-start')) {
       typeofScope = new Scope([...item.scope.toArray(), 'call'])
-      listContent.push(new Item('edge', 'call-start', typeofScope))
+      listContent.push(
+        new Item({ type: 'edge', value: 'call-start', scope: typeofScope }),
+      )
       return
     }
 
@@ -51,7 +53,9 @@ const main = (ctx: Context) => {
       const isEndOfExpr = isTerminator || (isBracketClose && !isContinuation)
 
       if (isEndOfExpr) {
-        listContent.push(new Item('edge', 'call-end', typeofScope))
+        listContent.push(
+          new Item({ type: 'edge', value: 'call-end', scope: typeofScope }),
+        )
         typeofScope = null
       }
       return

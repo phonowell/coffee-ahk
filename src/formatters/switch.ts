@@ -5,13 +5,13 @@ const main = (ctx: Context) => {
 
   if (type === 'switch') {
     scope.push('switch')
-    content.push('if', 'switch')
+    content.push({ type: 'if', value: 'switch' })
     return true
   }
 
   if (type === 'leading_when') {
     scope.push('case')
-    content.push('if', 'case')
+    content.push({ type: 'if', value: 'case' })
     return true
   }
 

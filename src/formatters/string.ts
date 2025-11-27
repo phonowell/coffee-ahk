@@ -4,19 +4,22 @@ const main = (ctx: Context): boolean => {
   const { content, token, type, value } = ctx
 
   if (type === 'string') {
-    content.push('string', transAlias(value, token[1].quote ?? ''))
+    content.push({
+      type: 'string',
+      value: transAlias(value, token[1].quote ?? ''),
+    })
     return true
   }
 
   // "xxx#{xxx}xxx"
 
   if (type === 'interpolation_start') {
-    content.push('edge', 'interpolation-start')
+    content.push({ type: 'edge', value: 'interpolation-start' })
     return true
   }
 
   if (type === 'interpolation_end') {
-    content.push('edge', 'interpolation-end')
+    content.push({ type: 'edge', value: 'interpolation-end' })
     return true
   }
 

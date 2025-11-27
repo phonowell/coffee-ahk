@@ -16,8 +16,8 @@ const handleBlockStartScopes = (ctx: Context): void => {
 
   if (['case', 'for', 'function', 'switch'].includes(last)) {
     if (!['catch', 'class', 'else', 'if', 'while'].includes(scope.next)) {
-      if (last === 'case') content.push('sign', ':')
-      content.push('edge', 'block-start')
+      if (last === 'case') content.push({ type: 'sign', value: ':' })
+      content.push({ type: 'edge', value: 'block-start' })
     }
   }
 }
@@ -29,15 +29,17 @@ const handleNextScopes = (ctx: Context): void => {
     const _next = scope.next
     scope.next = ''
     scope.push(_next)
-    content.push('edge', 'block-start')
+    content.push({ type: 'edge', value: 'block-start' })
   }
 
   if (['if', 'while'].includes(scope.next)) {
-    content.push('edge', 'expression-end')
     const _next = scope.next
     scope.next = ''
     scope.push(_next)
-    content.push('edge', 'block-start')
+    content.push(
+      { type: 'edge', value: 'expression-end' },
+      { type: 'edge', value: 'block-start' },
+    )
   }
 }
 
@@ -47,7 +49,7 @@ const handleIndent = (ctx: Context): void => {
   ctx.indent++
   handleBlockStartScopes(ctx)
   handleNextScopes(ctx)
-  ctx.content.push('new-line', ctx.indent.toString())
+  ctx.content.push({ type: 'new-line', value: ctx.indent.toString() })
 }
 
 const handleOutdent = (ctx: Context): void => {
@@ -65,7 +67,10 @@ const handleOutdent = (ctx: Context): void => {
 
   if (!scope.length) return
 
-  content.push('new-line', ctx.indent.toString()).push('edge', 'block-end')
+  content.push(
+    { type: 'new-line', value: ctx.indent.toString() },
+    { type: 'edge', value: 'block-end' },
+  )
   scope.pop()
 }
 

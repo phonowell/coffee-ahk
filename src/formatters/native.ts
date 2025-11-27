@@ -4,7 +4,7 @@ const main = (ctx: Context): boolean => {
   const { content, type, value } = ctx
 
   if (type === 'js') {
-    content.push('native', value)
+    content.push({ type: 'native', value })
     return true
   }
 

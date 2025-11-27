@@ -31,7 +31,7 @@ export const pickItem = (
   // last one
   item.type = 'native'
   item.value = `Func("${ctx.options.salt}_${count}")`
-  listResult.push(new Item('new-line', '0', scope))
+  listResult.push(new Item({ type: 'new-line', value: '0', scope }))
 
   // reset indent
   const newLineIdx = findIndex(listResult, { type: 'new-line' })

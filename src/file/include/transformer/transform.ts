@@ -1,6 +1,7 @@
 import { getExtname, read, run } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
+import { MODULE_PREFIX } from '../../../constants.js'
 import { getCache as fetchCache, getCacheSalt as fetchSalt } from '../cache.js'
 import { pickImport as resolveImport } from '../source-resolver.js'
 import { closureCoffee as wrapClosure } from '../utils.js'
@@ -162,7 +163,7 @@ const handleCoffee = async (
   const closureBody = wrapClosure(codeLines.join('\n'))
   const result = [
     exportDefault.length || exportNamed.length
-      ? `__${salt}_module_${meta.id}__ = do ->`
+      ? `${MODULE_PREFIX}_${salt}_${meta.id} = do ->`
       : 'do ->',
     closureBody,
   ].join('\n')
@@ -179,7 +180,7 @@ const handleJsonOrYaml = (
 ) => {
   // JSON is valid CoffeeScript syntax, use directly
   const jsonStr = JSON.stringify(JSON.parse(text))
-  const result = `__${salt}_module_${meta.id}__ = ${jsonStr}`
+  const result = `${MODULE_PREFIX}_${salt}_${meta.id} = ${jsonStr}`
   cache.set(file, { ...meta, content: result, dependencies: deps })
 }
 

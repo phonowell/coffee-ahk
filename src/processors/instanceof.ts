@@ -14,7 +14,13 @@ const main = (ctx: Context) => {
     // Convert identifier after marker to string literal
     const prev = content.at(i - 1)
     if (prev?.is('edge', 'instanceof-class') && item.type === 'identifier') {
-      listContent.push(new Item('string', `"${item.value}"`, item.scope))
+      listContent.push(
+        new Item({
+          type: 'string',
+          value: `"${item.value}"`,
+          scope: item.scope,
+        }),
+      )
       return
     }
 

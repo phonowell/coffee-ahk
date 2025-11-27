@@ -12,12 +12,16 @@ import type { Context } from '../types'
 const getBuiltin = (functionName: string): Item[] => {
   if (functionName === 'changeIndex') {
     return [
-      new Item('native', changeIndex_ahk, []),
-      new Item('new-line', '0', []),
+      new Item({ type: 'native', value: changeIndex_ahk, scope: [] }),
+      new Item({ type: 'new-line', value: '0', scope: [] }),
     ]
   }
-  if (functionName === 'typeof')
-    return [new Item('native', typeof_ahk, []), new Item('new-line', '0', [])]
+  if (functionName === 'typeof') {
+    return [
+      new Item({ type: 'native', value: typeof_ahk, scope: [] }),
+      new Item({ type: 'new-line', value: '0', scope: [] }),
+    ]
+  }
 
   return []
 }

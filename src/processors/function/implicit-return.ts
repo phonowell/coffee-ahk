@@ -24,10 +24,16 @@ const main = (ctx: Context) => {
     if (i === flag.i) {
       if (flag.isObjectWithoutBrackets) {
         listContent.push(
-          new Item('new-line', flag.scope.length.toString(), flag.scope),
+          new Item({
+            type: 'new-line',
+            value: flag.scope.length.toString(),
+            scope: flag.scope,
+          }),
         )
       }
-      listContent.push(new Item('statement', 'return', flag.scope))
+      listContent.push(
+        new Item({ type: 'statement', value: 'return', scope: flag.scope }),
+      )
       return
     }
 

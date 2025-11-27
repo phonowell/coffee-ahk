@@ -29,7 +29,7 @@ const main = (ctx: Context) => {
     // ignore
     if (countIgnore) {
       setCountIgnore(countIgnore - 1)
-      listContent.push(new Item('void', '', []))
+      listContent.push(new Item({ type: 'void', value: '', scope: [] }))
       return
     }
 
@@ -71,7 +71,7 @@ const pick = (ctx: Context, item: Item, i: number): boolean => {
   const listContent = getListContent()
   const listParam = getListParam()
 
-  listContent.push(new Item('void'))
+  listContent.push(new Item({ type: 'void', value: '' }))
   listParam.push(pickItem(ctx, itNext, i + 1))
   const lastParam = listParam.at(-1)
   setCountIgnore(lastParam?.length ?? 0)

@@ -16,8 +16,8 @@ export const formatSuper = (ctx: Context) => {
     const scope2 = next.scope.toArray()
 
     listContent.push(
-      new Item('.', '.', scope2),
-      new Item('property', '__New', scope2),
+      new Item({ type: '.', value: '.', scope: scope2 }),
+      new Item({ type: 'property', value: '__New', scope: scope2 }),
     )
   })
 

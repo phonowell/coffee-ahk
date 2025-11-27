@@ -50,15 +50,23 @@ export const arrow = (ctx: Context, type: string) => {
   // fn = -> xxx
   if (!content.at(-1)?.is('edge', 'parameter-end')) {
     if (!content.at(-2)?.is('property', 'constructor'))
-      content.push('identifier', 'anonymous')
+      content.push({ type: 'identifier', value: 'anonymous' })
 
     scope.push('parameter')
-    content.push('edge', 'parameter-start')
 
     // Use ℓthis parameter for => outside class method definitions
-    if (type === '=>' && !isClassMethod) content.push('identifier', THIS)
-
-    content.push('edge', 'parameter-end')
+    if (type === '=>' && !isClassMethod) {
+      content.push(
+        { type: 'edge', value: 'parameter-start' },
+        { type: 'identifier', value: THIS },
+        { type: 'edge', value: 'parameter-end' },
+      )
+    } else {
+      content.push(
+        { type: 'edge', value: 'parameter-start' },
+        { type: 'edge', value: 'parameter-end' },
+      )
+    }
     scope.pop()
   } else if (type === '=>' && !isClassMethod) {
     // Use ℓthis parameter for => outside class method definitions
@@ -68,8 +76,8 @@ export const arrow = (ctx: Context, type: string) => {
       .splice(
         findEdge(ctx) + 1,
         0,
-        new Item('identifier', THIS, scp2),
-        new Item('sign', ',', scp2),
+        new Item({ type: 'identifier', value: THIS, scope: scp2 }),
+        new Item({ type: 'sign', value: ',', scope: scp2 }),
       )
   }
 

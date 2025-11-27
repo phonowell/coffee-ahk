@@ -58,16 +58,16 @@ export const cache = (ctx: Context, item: Item, i: number) => {
       it.scope.reload(newScope)
       listItem.push(it)
     }
-    listItem.push(new Item('sign', ',', scp[1]))
+    listItem.push(new Item({ type: 'sign', value: ',', scope: scp[1] }))
   }
   listItem.pop()
 
   listItem = [
-    new Item('.', '.', scp[0]),
-    new Item('identifier', 'Bind', scp[0]),
-    new Item('edge', 'call-start', scp[1]),
+    new Item({ type: '.', value: '.', scope: scp[0] }),
+    new Item({ type: 'identifier', value: 'Bind', scope: scp[0] }),
+    new Item({ type: 'edge', value: 'call-start', scope: scp[1] }),
     ...listItem,
-    new Item('edge', 'call-end', scp[1]),
+    new Item({ type: 'edge', value: 'call-end', scope: scp[1] }),
   ]
 
   listCache.push([findIndex(ctx, item, i) + 1, listItem])

@@ -17,12 +17,12 @@ const identifierFormatter = (context: Context): boolean => {
       }
 
       context.cache.classNames.add(value)
-      content.push('identifier', value)
+      content.push({ type: 'identifier', value })
       return true
     }
 
     context.cache.identifiers.add(value)
-    content.push('identifier', value)
+    content.push({ type: 'identifier', value })
     return true
   }
 

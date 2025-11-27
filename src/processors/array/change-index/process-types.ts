@@ -31,7 +31,7 @@ export const processSimpleIndex = (
   scope: Scope,
   update: (range: Range, list: Item[]) => void,
 ) => {
-  update(range, [new Item('number', String(index + 1), scope)])
+  update(range, [new Item({ type: 'number', value: String(index + 1), scope })])
 }
 
 /**
@@ -62,11 +62,15 @@ export const processIndexWithHelper = (
   const scpCall = new Scope([...scp.toArray(), 'call'])
 
   update(range, [
-    new Item('identifier', `${CI}_${ctx.options.salt}`, scp),
-    new Item('edge', 'call-start', scpCall),
+    new Item({
+      type: 'identifier',
+      value: `${CI}_${ctx.options.salt}`,
+      scope: scp,
+    }),
+    new Item({ type: 'edge', value: 'call-start', scope: scpCall }),
     ...arrayItems.map((it) => it.clone()),
-    new Item('sign', ',', scpCall),
+    new Item({ type: 'sign', value: ',', scope: scpCall }),
     ...list,
-    new Item('edge', 'call-end', scpCall),
+    new Item({ type: 'edge', value: 'call-end', scope: scpCall }),
   ])
 }

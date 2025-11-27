@@ -4,7 +4,7 @@ const main = (ctx: Context): boolean => {
   const { content, type } = ctx
 
   if (type === 'do' || type === 'do_iife') {
-    content.push('native', '__mark:do__')
+    content.push({ type: 'native', value: '__mark:do__' })
     return true
   }
 

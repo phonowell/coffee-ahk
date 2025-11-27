@@ -17,7 +17,7 @@ const collectVariables = (
   checkIndex++
 
   // Collect all identifiers separated by commas
-  while (checkIndex < content.toArray().length) {
+  while (checkIndex < content.length) {
     currentItem = content.at(checkIndex)
     if (!currentItem) return null
     if (currentItem.is('bracket', '}')) break
@@ -70,12 +70,23 @@ export const reverseDeconstruct = (ctx: Context) => {
     if (!firstVar) return
 
     variables.forEach((variable, index) => {
-      if (index > 0)
-        listContent.push(new Item('sign', ',', firstVar.scope.toArray()))
+      if (index > 0) {
+        listContent.push(
+          new Item({
+            type: 'sign',
+            value: ',',
+            scope: firstVar.scope.toArray(),
+          }),
+        )
+      }
 
       listContent.push(
-        new Item('sign', ':', firstVar.scope.toArray()),
-        new Item('identifier', variable, firstVar.scope.toArray()),
+        new Item({ type: 'sign', value: ':', scope: firstVar.scope.toArray() }),
+        new Item({
+          type: 'identifier',
+          value: variable,
+          scope: firstVar.scope.toArray(),
+        }),
       )
     })
   })

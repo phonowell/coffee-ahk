@@ -4,7 +4,7 @@ const main = (ctx: Context): boolean => {
   const { content, type } = ctx
 
   if (['nan', 'null', 'undefined'].includes(type)) {
-    content.push('string', '""')
+    content.push({ type: 'string', value: '""' })
     return true
   }
 

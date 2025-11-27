@@ -24,8 +24,12 @@ export const deconstruct2 = (ctx: Context) => {
     if (!(next.is('bracket', '}') || next.is('sign', ','))) return
 
     listContent.push(
-      new Item('sign', ':', item.scope.toArray()),
-      new Item('identifier', item.value, item.scope.toArray()),
+      new Item({ type: 'sign', value: ':', scope: item.scope.toArray() }),
+      new Item({
+        type: 'identifier',
+        value: item.value,
+        scope: item.scope.toArray(),
+      }),
     )
   })
 

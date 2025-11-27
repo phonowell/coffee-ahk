@@ -17,7 +17,7 @@ export const next = (ctx: Context, count = 1) => {
   const it = content.at(i)
   if (!it) {
     throw new Error(
-      `ahk/internal: function/anonymous: missing anonymous function at expected index (content length: ${content.toArray().length})`,
+      `ahk/internal: function/anonymous: missing anonymous function at expected index (content length: ${content.length})`,
     )
   }
   it.value = `${ctx.options.salt}_${count}`

@@ -41,7 +41,7 @@ const checkDestructuringAssignment = (ctx: Context, i: number): void => {
   if (!(prev?.is('sign', ',') || prev?.is('bracket', '['))) return
 
   // 简单检查：向前查找是否有 ] = 模式
-  for (let j = i + 1; j < Math.min(i + 10, content.toArray().length); j++) {
+  for (let j = i + 1; j < Math.min(i + 10, content.length); j++) {
     const current = content.at(j)
     const nextItem = content.at(j + 1)
 

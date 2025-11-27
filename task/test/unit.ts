@@ -14,7 +14,7 @@ const tests: UnitTest[] = [
   {
     name: 'Item: create with basic properties',
     test: () => {
-      const item = new Item('identifier', 'foo', new Scope())
+      const item = new Item({ type: 'identifier', value: 'foo', scope: new Scope() })
       if (item.type !== 'identifier') throw new Error('Item type mismatch')
       if (item.value !== 'foo') throw new Error('Item value mismatch')
     },
@@ -22,7 +22,7 @@ const tests: UnitTest[] = [
   {
     name: 'Item: clone creates independent copy',
     test: () => {
-      const original = new Item('identifier', 'original', new Scope())
+      const original = new Item({ type: 'identifier', value: 'original', scope: new Scope() })
       const cloned = original.clone()
 
       if (original === cloned) throw new Error('Clone is same reference')
@@ -36,7 +36,7 @@ const tests: UnitTest[] = [
   {
     name: 'Item: is() method checks type and value',
     test: () => {
-      const item = new Item('identifier', 'foo', new Scope())
+      const item = new Item({ type: 'identifier', value: 'foo', scope: new Scope() })
 
       if (!item.is('identifier')) throw new Error('is() type check failed')
       if (!item.is('identifier', 'foo')) throw new Error('is() type+value check failed')
@@ -47,7 +47,7 @@ const tests: UnitTest[] = [
   {
     name: 'Item: comment property is optional',
     test: () => {
-      const item = new Item('identifier', 'foo', new Scope())
+      const item = new Item({ type: 'identifier', value: 'foo', scope: new Scope() })
       if (item.comment !== undefined) throw new Error('Comment should be undefined by default')
 
       item.comment = ['// test comment']
@@ -67,8 +67,8 @@ const tests: UnitTest[] = [
     name: 'Content: push() adds items',
     test: () => {
       const content = new Content(new Scope())
-      content.push('identifier', 'foo')
-      content.push('identifier', 'bar')
+      content.push({ type: 'identifier', value: 'foo' })
+      content.push({ type: 'identifier', value: 'bar' })
 
       if (content.toArray().length !== 2) throw new Error('Content should have 2 items')
       if (content.at(0)?.value !== 'foo') throw new Error('First item value mismatch')
@@ -79,8 +79,8 @@ const tests: UnitTest[] = [
     name: 'Content: at() returns item by index',
     test: () => {
       const content = new Content(new Scope())
-      content.push('identifier', 'foo')
-      content.push('identifier', 'bar')
+      content.push({ type: 'identifier', value: 'foo' })
+      content.push({ type: 'identifier', value: 'bar' })
 
       if (content.at(0)?.value !== 'foo') throw new Error('at(0) failed')
       if (content.at(1)?.value !== 'bar') throw new Error('at(1) failed')
@@ -92,11 +92,11 @@ const tests: UnitTest[] = [
     name: 'Content: reload() replaces all items',
     test: () => {
       const content = new Content(new Scope())
-      content.push('identifier', 'old')
+      content.push({ type: 'identifier', value: 'old' })
 
       const newItems = [
-        new Item('identifier', 'new1', new Scope()),
-        new Item('identifier', 'new2', new Scope()),
+        new Item({ type: 'identifier', value: 'new1', scope: new Scope() }),
+        new Item({ type: 'identifier', value: 'new2', scope: new Scope() }),
       ]
       content.reload(newItems)
 
@@ -212,14 +212,14 @@ const tests: UnitTest[] = [
       const content = new Content(scope)
 
       scope.push('class')
-      content.push('identifier', 'foo')
+      content.push({ type: 'identifier', value: 'foo' })
 
       if (content.at(-1)?.scope.last !== 'class') {
         throw new Error('Item should capture current scope')
       }
 
       scope.push('function')
-      content.push('identifier', 'bar')
+      content.push({ type: 'identifier', value: 'bar' })
 
       if (content.at(0)?.scope.last !== 'class') {
         throw new Error('First item scope should still be class')

@@ -54,12 +54,12 @@ const main = (ctx: Context) => {
     listCache.unshift([
       index + 1,
       [
-        new Item('new-line', indent, scope),
-        new Item('identifier', name, scope),
-        new Item('sign', '=', scope),
-        new Item('identifier', name, scope),
-        new Item('math', '-', scope),
-        new Item('number', '1', scope),
+        new Item({ type: 'new-line', value: indent, scope }),
+        new Item({ type: 'identifier', value: name, scope }),
+        new Item({ type: 'sign', value: '=', scope }),
+        new Item({ type: 'identifier', value: name, scope }),
+        new Item({ type: 'math', value: '-', scope }),
+        new Item({ type: 'number', value: '1', scope }),
       ],
     ])
   })

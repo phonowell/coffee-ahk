@@ -15,7 +15,9 @@ const main = (ctx: Context) => {
     // If this is a compare and we had a previous compare with a middle operand
     if (item.type === 'compare' && prevCompareIdx !== -1 && middleOperand) {
       // Insert && and clone of middle operand before this compare
-      listContent.push(new Item('logical-operator', '&&', item.scope))
+      listContent.push(
+        new Item({ type: 'logical-operator', value: '&&', scope: item.scope }),
+      )
       listContent.push(middleOperand.clone())
     }
 

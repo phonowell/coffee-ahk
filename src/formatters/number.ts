@@ -22,7 +22,7 @@ const main = (ctx: Context): boolean => {
       if (pre && sub) value2 = `${pre}${'0'.repeat(parseInt(sub, 10))}`
     }
 
-    content.push('number', value2)
+    content.push({ type: 'number', value: value2 })
     return true
   }
 

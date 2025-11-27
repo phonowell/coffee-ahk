@@ -18,7 +18,7 @@ export const pickContext = (ctx: Context, i: number, item: Item) => {
   const it = content.at(i)
 
   // 边界检查：防止无限递归
-  if (!it || i >= content.toArray().length) return
+  if (!it || i >= content.length) return
 
   if (
     it.is('edge', 'block-end') &&
@@ -53,7 +53,7 @@ export const pickParameter = (ctx: Context, i: number, item: Item) => {
   const it = content.at(i)
 
   // 边界检查：防止无限递归
-  if (!it || i >= content.toArray().length) return
+  if (!it || i >= content.length) return
 
   if (it.is('edge', 'parameter-end') && it.scope.isEqual(item.scope)) return
 

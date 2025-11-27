@@ -10,7 +10,7 @@ const main = (ctx: Context): boolean => {
         `ahk/forbidden (line ${line}): spread operator '...' is only allowed in function calls or parameter lists. Context: ${scope.last}`,
       )
     }
-    content.push('sign', '...')
+    content.push({ type: 'sign', value: '...' })
   }
 
   if (type === '=') {
@@ -21,21 +21,21 @@ const main = (ctx: Context): boolean => {
         `ahk/class-case (line ${line}): cannot assign to class name '${prev.value}'. Please use a different identifier for variables.`,
       )
     }
-    content.push('sign', '=')
+    content.push({ type: 'sign', value: '=' })
     return true
   }
 
   if (type === ',') {
-    content.push('sign', ',')
+    content.push({ type: 'sign', value: ',' })
     return true
   }
 
   if (type === ':') {
     if (scope.last === 'class') {
-      content.push('sign', '=')
+      content.push({ type: 'sign', value: '=' })
       return true
     }
-    content.push('sign', ':')
+    content.push({ type: 'sign', value: ':' })
     return true
   }
 

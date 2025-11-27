@@ -21,13 +21,20 @@ const main = (ctx: Context) => {
       const scope2: ScopeType[] = [...item.scope.toArray(), 'call']
       listContent.push(
         // add `()` for type-checking
-        new Item('bracket', ')', item.scope),
-        new Item('edge', 'call-start', scope2),
+        new Item({ type: 'bracket', value: ')', scope: item.scope }),
+        new Item({ type: 'edge', value: 'call-start', scope: scope2 }),
       )
       // Pass this if fat arrow (=>) function
-      if (isFatArrow) listContent.push(new Item('this', 'this', scope2))
+      if (isFatArrow) {
+        listContent.push(
+          new Item({ type: 'this', value: 'this', scope: scope2 }),
+        )
+      }
 
-      listContent.push(new Item('edge', 'call-end', scope2), item)
+      listContent.push(
+        new Item({ type: 'edge', value: 'call-end', scope: scope2 }),
+        item,
+      )
       isFatArrow = false
       return
     }
@@ -45,7 +52,9 @@ const main = (ctx: Context) => {
     isFatArrow = isDoFat
 
     // add `()` for type-checking
-    listContent.push(new Item('bracket', '(', item.scope))
+    listContent.push(
+      new Item({ type: 'bracket', value: '(', scope: item.scope }),
+    )
   })
 
   content.reload(listContent)

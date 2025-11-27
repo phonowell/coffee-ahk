@@ -5,25 +5,30 @@ const main = (ctx: Context) => {
 
   if (type === 'loop') {
     scope.next = 'while'
-    content
-      .push('while')
-      .push('edge', 'expression-start')
-      .push('boolean', 'true')
+    content.push(
+      { type: 'while', value: 'while' },
+      { type: 'edge', value: 'expression-start' },
+      { type: 'boolean', value: 'true' },
+    )
     return true
   }
 
   if (type === 'while') {
     scope.next = 'while'
-    content.push('while').push('edge', 'expression-start')
+    content.push(
+      { type: 'while', value: 'while' },
+      { type: 'edge', value: 'expression-start' },
+    )
     return true
   }
 
   if (type === 'until') {
     scope.next = 'while'
-    content
-      .push('while')
-      .push('logical-operator', '!')
-      .push('edge', 'expression-start')
+    content.push(
+      { type: 'while', value: 'while' },
+      { type: 'logical-operator', value: '!' },
+      { type: 'edge', value: 'expression-start' },
+    )
     return true
   }
 

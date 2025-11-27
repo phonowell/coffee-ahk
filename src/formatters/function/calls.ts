@@ -7,7 +7,7 @@ export const handleCallStart = (ctx: Context) => {
   scope.next = ''
   scope.push('call')
   scope.next = next
-  ctx.content.push('edge', 'call-start')
+  ctx.content.push({ type: 'edge', value: 'call-start' })
   return true
 }
 
@@ -30,12 +30,12 @@ export const handleCallEnd = (ctx: Context) => {
       .substring(1, value.length - 1)
       .replace(/`%/g, '%')
       .replace(/""/g, '"')
-    content.push('void', 'call-end')
+    content.push({ type: 'void', value: 'call-end' })
     scope.pop()
     return true
   }
 
-  content.push('edge', 'call-end')
+  content.push({ type: 'edge', value: 'call-end' })
   scope.pop()
   return true
 }

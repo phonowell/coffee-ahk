@@ -55,7 +55,7 @@ const collectParams = (ctx: Context): Map<string, string[]> => {
   let collecting = false
   let scope: Item['scope'] | null = null
 
-  for (let i = 0; i < content.toArray().length; i++) {
+  for (let i = 0; i < content.length; i++) {
     const item = content.at(i)
     if (!item) continue
 
@@ -101,34 +101,34 @@ const collectParams = (ctx: Context): Map<string, string[]> => {
 
 /** Generate ctx init items: if (!λ) λ := {} */
 const genCtxInit = (scope: ScopeType[]): Item[] => [
-  new Item('if', 'if', scope),
-  new Item('edge', 'expression-start', scope),
-  new Item('logical-operator', '!', scope),
-  new Item('identifier', CTX, scope),
-  new Item('edge', 'expression-end', scope),
-  new Item('native', ' ', scope),
-  new Item('identifier', CTX, scope),
-  new Item('sign', '=', scope),
-  new Item('edge', 'object-start', scope),
-  new Item('edge', 'object-end', scope),
+  new Item({ type: 'if', value: 'if', scope }),
+  new Item({ type: 'edge', value: 'expression-start', scope }),
+  new Item({ type: 'logical-operator', value: '!', scope }),
+  new Item({ type: 'identifier', value: CTX, scope }),
+  new Item({ type: 'edge', value: 'expression-end', scope }),
+  new Item({ type: 'native', value: ' ', scope }),
+  new Item({ type: 'identifier', value: CTX, scope }),
+  new Item({ type: 'sign', value: '=', scope }),
+  new Item({ type: 'edge', value: 'object-start', scope }),
+  new Item({ type: 'edge', value: 'object-end', scope }),
 ]
 
 /** Generate param assignment: λ.param := param */
 const genParamAssign = (param: string, scope: ScopeType[]): Item[] => [
-  new Item('new-line', '1', scope),
-  new Item('identifier', CTX, scope),
-  new Item('.', '.', scope),
-  new Item('identifier', param, scope),
-  new Item('sign', '=', scope),
-  new Item('identifier', param, scope),
+  new Item({ type: 'new-line', value: '1', scope }),
+  new Item({ type: 'identifier', value: CTX, scope }),
+  new Item({ type: '.', value: '.', scope }),
+  new Item({ type: 'identifier', value: param, scope }),
+  new Item({ type: 'sign', value: '=', scope }),
+  new Item({ type: 'identifier', value: param, scope }),
 ]
 
 /** Generate this alias: this := ℓthis */
 const genThisAlias = (scope: ScopeType[]): Item[] => [
-  new Item('new-line', '1', scope),
-  new Item('this', 'this', scope),
-  new Item('sign', '=', scope),
-  new Item('identifier', THIS, scope),
+  new Item({ type: 'new-line', value: '1', scope }),
+  new Item({ type: 'this', value: 'this', scope }),
+  new Item({ type: 'sign', value: '=', scope }),
+  new Item({ type: 'identifier', value: THIS, scope }),
 ]
 
 /** Transform function definitions - add λ param and init */
@@ -146,7 +146,7 @@ const transformFunctions = (
   let funcName = ''
   let didInit = false
 
-  for (let i = 0; i < content.toArray().length; i++) {
+  for (let i = 0; i < content.length; i++) {
     const item = content.at(i)
     if (!item) continue
 
@@ -161,8 +161,18 @@ const transformFunctions = (
 
         const p = params.get(funcName) ?? []
         out.push(item)
-        out.push(new Item('identifier', CTX, item.scope.toArray()))
-        if (p.length > 0) out.push(new Item('sign', ',', item.scope.toArray()))
+        out.push(
+          new Item({
+            type: 'identifier',
+            value: CTX,
+            scope: item.scope.toArray(),
+          }),
+        )
+        if (p.length > 0) {
+          out.push(
+            new Item({ type: 'sign', value: ',', scope: item.scope.toArray() }),
+          )
+        }
         continue
       }
     }
@@ -185,7 +195,7 @@ const transformFunctions = (
       const hasThis = allParams.includes(THIS)
       const p = allParams.filter((x) => x !== 'this' && x !== THIS)
 
-      out.push(new Item('new-line', '1', scope))
+      out.push(new Item({ type: 'new-line', value: '1', scope }))
       out.push(...genCtxInit(scope))
 
       // Add this := __this__ if function has __this__ parameter
@@ -222,7 +232,7 @@ const collectCatchVars = (ctx: Context): Set<string> => {
   const { content } = ctx
   const result = new Set<string>()
 
-  for (let i = 0; i < content.toArray().length; i++) {
+  for (let i = 0; i < content.length; i++) {
     const item = content.at(i)
     if (!item) continue
     const prev = content.at(i - 1)
@@ -234,20 +244,97 @@ const collectCatchVars = (ctx: Context): Set<string> => {
   return result
 }
 
+/** Collect for loop variable names and their block-start positions */
+const collectForVars = (
+  ctx: Context,
+): { vars: Set<string>; blockStarts: Map<number, string[]> } => {
+  const { content } = ctx
+  const vars = new Set<string>()
+  const blockStarts = new Map<number, string[]>()
+  const len = content.length
+
+  for (let i = 0; i < len; i++) {
+    const item = content.at(i)
+    if (!item?.is('for', 'for')) continue
+    if (!item.scope.includes('function')) continue
+
+    // Collect variables between 'for' and 'in'
+    const loopVars: string[] = []
+    for (let j = i + 1; j < len; j++) {
+      const it = content.at(j)
+      if (!it) break
+      if (it.is('for-in', 'in')) break
+      if (it.type === 'identifier') {
+        const v = it.value
+        // Skip internal variables (ℓxxx) and global variables
+        if (v.startsWith('ℓ')) continue
+        if (ctx.cache.global.has(v)) continue
+        vars.add(v)
+        loopVars.push(v)
+      }
+    }
+
+    // Find block-start for this for loop (only if we have vars to transform)
+    if (loopVars.length === 0) continue
+    for (let j = i + 1; j < len; j++) {
+      const it = content.at(j)
+      if (!it) break
+      if (it.is('edge', 'block-start') && it.scope.at(-1) === 'for') {
+        blockStarts.set(j, loopVars)
+        break
+      }
+    }
+  }
+
+  return { vars, blockStarts }
+}
+
 /** Transform variable access: identifier -> λ.identifier */
 const transformVars = (ctx: Context, skip: Set<number>) => {
   const { content } = ctx
   const out: Item[] = []
   const catchVars = collectCatchVars(ctx)
+  const { vars: forVars, blockStarts: forBlockStarts } = collectForVars(ctx)
 
-  for (let i = 0; i < content.toArray().length; i++) {
+  // Track for scope depth to skip for-declaration variables
+  let inForDecl = false
+
+  for (let i = 0; i < content.length; i++) {
     const item = content.at(i)
     if (!item) continue
     const prev = content.at(i - 1)
     const next = content.at(i + 1)
 
+    // Track for declaration region (between 'for' and 'in')
+    if (item.is('for', 'for')) inForDecl = true
+    if (item.is('for-in', 'in')) inForDecl = false
+
+    // Insert λ.xxx := xxx after for block-start
+    if (forBlockStarts.has(i)) {
+      out.push(item)
+      const loopVars = forBlockStarts.get(i) ?? []
+      const nextItem = content.at(i + 1)
+      const indent = nextItem?.type === 'new-line' ? nextItem.value : '1'
+      const scope = item.scope.toArray()
+      for (const v of loopVars) {
+        out.push(new Item({ type: 'new-line', value: indent, scope }))
+        out.push(new Item({ type: 'identifier', value: CTX, scope }))
+        out.push(new Item({ type: '.', value: '.', scope }))
+        out.push(new Item({ type: 'identifier', value: v, scope }))
+        out.push(new Item({ type: 'sign', value: '=', scope }))
+        out.push(new Item({ type: 'identifier', value: v, scope }))
+      }
+      continue
+    }
+
     // Skip catch variables (both declaration and usage)
     if (catchVars.has(item.value) && item.scope.includes('catch')) {
+      out.push(item)
+      continue
+    }
+
+    // Skip for loop variables in declaration (for x, y in ...)
+    if (inForDecl && forVars.has(item.value)) {
       out.push(item)
       continue
     }
@@ -258,8 +345,8 @@ const transformVars = (ctx: Context, skip: Set<number>) => {
     }
 
     const scope = item.scope.toArray()
-    out.push(new Item('identifier', CTX, scope))
-    out.push(new Item('.', '.', scope))
+    out.push(new Item({ type: 'identifier', value: CTX, scope }))
+    out.push(new Item({ type: '.', value: '.', scope }))
     out.push(item.clone())
   }
 
@@ -271,7 +358,7 @@ const addBind = (ctx: Context) => {
   const { content } = ctx
   const out: Item[] = []
 
-  for (let i = 0; i < content.toArray().length; i++) {
+  for (let i = 0; i < content.length; i++) {
     const item = content.at(i)
     if (!item) continue
     out.push(item)
@@ -293,11 +380,21 @@ const addBind = (ctx: Context) => {
       continue
 
     const scope = item.scope.toArray()
-    out.push(new Item('.', '.', scope))
-    out.push(new Item('identifier', 'Bind', scope))
-    out.push(new Item('edge', 'call-start', [...scope, 'call']))
-    out.push(new Item('identifier', CTX, [...scope, 'call']))
-    out.push(new Item('edge', 'call-end', [...scope, 'call']))
+    out.push(new Item({ type: '.', value: '.', scope }))
+    out.push(new Item({ type: 'identifier', value: 'Bind', scope }))
+    out.push(
+      new Item({
+        type: 'edge',
+        value: 'call-start',
+        scope: [...scope, 'call'],
+      }),
+    )
+    out.push(
+      new Item({ type: 'identifier', value: CTX, scope: [...scope, 'call'] }),
+    )
+    out.push(
+      new Item({ type: 'edge', value: 'call-end', scope: [...scope, 'call'] }),
+    )
   }
 
   content.reload(out)

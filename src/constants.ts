@@ -20,3 +20,4 @@ export const ARRAY = 'ℓarray' // array deconstruct temp
 export const OBJECT = 'ℓobject' // object deconstruct temp
 export const INDEX_FOR = 'ℓi' // for loop index
 export const KEY_FOR = 'ℓk' // for loop key
+export const MODULE_PREFIX = 'ℓm' // module variable prefix

@@ -39,13 +39,17 @@ export const deconstruct = (ctx: Context) => {
         listContent = [
           ...listContent,
           // \n xxx = token[xxx]
-          new Item('new-line', indent.toString(), _scope),
-          new Item('identifier', preItem, _scope),
-          new Item('sign', '=', _scope),
-          new Item('identifier', token, _scope),
-          new Item('edge', 'index-start', _scope),
-          new Item('string', `"${preItem}"`, _scope),
-          new Item('edge', 'index-end', _scope),
+          new Item({
+            type: 'new-line',
+            value: indent.toString(),
+            scope: _scope,
+          }),
+          new Item({ type: 'identifier', value: preItem, scope: _scope }),
+          new Item({ type: 'sign', value: '=', scope: _scope }),
+          new Item({ type: 'identifier', value: token, scope: _scope }),
+          new Item({ type: 'edge', value: 'index-start', scope: _scope }),
+          new Item({ type: 'string', value: `"${preItem}"`, scope: _scope }),
+          new Item({ type: 'edge', value: 'index-end', scope: _scope }),
         ]
       }
 
@@ -69,8 +73,8 @@ export const deconstruct = (ctx: Context) => {
 
     listContent = [
       ...listContent,
-      new Item('identifier', token, item.scope),
-      new Item('sign', '=', item.scope),
+      new Item({ type: 'identifier', value: token, scope: item.scope }),
+      new Item({ type: 'sign', value: '=', scope: item.scope }),
     ]
   })
 

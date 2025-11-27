@@ -124,6 +124,7 @@ const mapMethod: Record<string, string | ((ctx: Context) => string)> = {
   negative: negative2,
   sign: sign2,
   statement: statement2,
+  prototype: 'prototype',
   super: 'base',
   try: try2,
   void: '',

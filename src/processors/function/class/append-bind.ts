@@ -31,12 +31,20 @@ export const appendBind = (ctx: Context) => {
 
     const scopeArr = item.scope.toArray()
     const scope2: [ScopeType[], ScopeType[]] = [scopeArr, [...scopeArr, 'call']]
-    listContent.push(new Item('.', '.', scope2[0]))
-    listContent.push(new Item('identifier', 'Bind', scope2[0]))
-    listContent.push(new Item('edge', 'call-start', scope2[1]))
+    listContent.push(new Item({ type: '.', value: '.', scope: scope2[0] }))
+    listContent.push(
+      new Item({ type: 'identifier', value: 'Bind', scope: scope2[0] }),
+    )
+    listContent.push(
+      new Item({ type: 'edge', value: 'call-start', scope: scope2[1] }),
+    )
     // Keep 'this' in .Bind(this) call - this is a value, not parameter name
-    listContent.push(new Item('this', 'this', scope2[1]))
-    listContent.push(new Item('edge', 'call-end', scope2[1]))
+    listContent.push(
+      new Item({ type: 'this', value: 'this', scope: scope2[1] }),
+    )
+    listContent.push(
+      new Item({ type: 'edge', value: 'call-end', scope: scope2[1] }),
+    )
   })
 
   content.reload(listContent)

@@ -1,6 +1,8 @@
-import Item from './Item.js'
+import Item, { type ItemOptions } from './Item.js'
 
 import type Scope from './Scope'
+
+type ItemArg = ItemOptions | Item
 
 /** A collection of items of the AST. */
 class Content {
@@ -32,10 +34,12 @@ class Content {
   }
 
   /** Adds one or more items to the end of the content. */
-  push(...args: ConstructorParameters<typeof Item>): this {
-    const newItem = new Item(...args)
-    if (!newItem.scope.length) newItem.scope.reload(this.scope)
-    this.#list.push(newItem)
+  push(...args: ItemArg[]): this {
+    for (const arg of args) {
+      const newItem = arg instanceof Item ? arg : new Item(arg)
+      if (!newItem.scope.length) newItem.scope.reload(this.scope)
+      this.#list.push(newItem)
+    }
     return this
   }
 
@@ -51,10 +55,12 @@ class Content {
   }
 
   /** Adds one or more items to the beginning of the content. */
-  unshift(...args: ConstructorParameters<typeof Item>): this {
-    const newItem = new Item(...args)
-    if (!newItem.scope.length) newItem.scope.reload(this.scope)
-    this.#list.unshift(newItem)
+  unshift(...args: ItemArg[]): this {
+    for (const arg of args.reverse()) {
+      const newItem = arg instanceof Item ? arg : new Item(arg)
+      if (!newItem.scope.length) newItem.scope.reload(this.scope)
+      this.#list.unshift(newItem)
+    }
     return this
   }
 }

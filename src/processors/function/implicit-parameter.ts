@@ -43,15 +43,10 @@ const main = (ctx: Context) => {
       if (firstChar && firstChar.toLowerCase() !== firstChar) return // like `Xxx`
 
       listContent.push(
-        ...[
-          ['identifier', name],
-          ['sign', '='],
-          ['identifier', name],
-          ['sign', ','],
-        ].map(
-          (args) =>
-            new Item(args[0] as Item['type'], args[1] ?? '', item.scope),
-        ),
+        new Item({ type: 'identifier', value: name, scope: item.scope }),
+        new Item({ type: 'sign', value: '=', scope: item.scope }),
+        new Item({ type: 'identifier', value: name, scope: item.scope }),
+        new Item({ type: 'sign', value: ',', scope: item.scope }),
       )
     })
   })

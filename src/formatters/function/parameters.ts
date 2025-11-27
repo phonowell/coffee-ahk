@@ -5,15 +5,15 @@ export const handleParamStart = (ctx: Context) => {
   const { content, scope } = ctx
 
   if (!content.at(-2)?.is('property', 'constructor'))
-    content.push('identifier', 'anonymous')
+    content.push({ type: 'identifier', value: 'anonymous' })
 
   scope.push('parameter')
-  content.push('edge', 'parameter-start')
+  content.push({ type: 'edge', value: 'parameter-start' })
   return true
 }
 
 export const handleParamEnd = (ctx: Context) => {
-  ctx.content.push('edge', 'parameter-end')
+  ctx.content.push({ type: 'edge', value: 'parameter-end' })
   ctx.scope.pop()
   return true
 }

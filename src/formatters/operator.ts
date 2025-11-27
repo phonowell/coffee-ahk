@@ -1,5 +1,6 @@
 import { TYPEOF } from '../constants.js'
 
+import type { ItemTypeMap } from '../models/ItemType'
 import type { Context } from '../types'
 
 const handlePlusOperator = (ctx: Context): boolean => {
@@ -10,12 +11,12 @@ const handlePlusOperator = (ctx: Context): boolean => {
 
     if (last?.type === 'math' || last?.type === 'negative') {
       if (last.type === 'negative') last.type = 'math'
-      content.push('negative', '+')
+      content.push({ type: 'negative', value: '+' })
       return true
     }
   }
 
-  content.push('math', '+')
+  content.push({ type: 'math', value: '+' })
   return true
 }
 
@@ -27,12 +28,12 @@ const handleMinusOperator = (ctx: Context): boolean => {
 
     if (last && !['identifier', 'math'].includes(last.type)) {
       if (last.type === 'negative') last.type = 'math'
-      content.push('negative', '-')
+      content.push({ type: 'negative', value: '-' })
       return true
     }
   }
 
-  content.push('math', '-')
+  content.push({ type: 'math', value: '-' })
   return true
 }
 
@@ -43,8 +44,10 @@ const handleUnaryOperator = (ctx: Context): boolean => {
 
   if (type === 'unary' && value === 'typeof') {
     ctx.flag.isTypeofUsed = true
-    content.push('identifier', `${TYPEOF}_${ctx.options.salt}`)
-    content.push('edge', 'typeof-start')
+    content.push(
+      { type: 'identifier', value: `${TYPEOF}_${ctx.options.salt}` },
+      { type: 'edge', value: 'typeof-start' },
+    )
     return true
   }
 
@@ -55,13 +58,13 @@ const handleUnaryOperator = (ctx: Context): boolean => {
   }
 
   if (type === 'unary' && value === '!') {
-    content.push('logical-operator', '!')
+    content.push({ type: 'logical-operator', value: '!' })
     return true
   }
 
   // Bitwise NOT (~)
   if (type === 'unary_math') {
-    content.push('math', '~')
+    content.push({ type: 'math', value: '~' })
     return true
   }
 
@@ -74,24 +77,27 @@ const main = (ctx: Context): boolean => {
   if (type === '+') return handlePlusOperator(ctx)
   if (type === '-') return handleMinusOperator(ctx)
   if (type === '++') {
-    content.push('++')
+    content.push({ type: '++', value: '++' })
     return true
   }
   if (type === '--') {
-    content.push('--')
+    content.push({ type: '--', value: '--' })
     return true
   }
   if (type === '**') {
-    content.push('math', '**')
+    content.push({ type: 'math', value: '**' })
     return true
   }
   if (type === '&&' || type === '||') {
-    content.push('logical-operator', value)
+    content.push({
+      type: 'logical-operator',
+      value: value as ItemTypeMap['logical-operator'],
+    })
     return true
   }
   if (type === 'unary' || type === 'unary_math') return handleUnaryOperator(ctx)
   if (type === 'compare') {
-    content.push('compare', value)
+    content.push({ type: 'compare', value: value as ItemTypeMap['compare'] })
     return true
   }
   if (type === 'compound_assign') {
@@ -110,7 +116,7 @@ const main = (ctx: Context): boolean => {
         `ahk/forbidden (line ${getLine(ctx)}): modulo assignment '%%=' is not supported. Use 'x := Mod(x, b)' instead.`,
       )
     }
-    content.push('math', value)
+    content.push({ type: 'math', value: value as ItemTypeMap['math'] })
     return true
   }
   if (type === 'math') {
@@ -126,22 +132,24 @@ const main = (ctx: Context): boolean => {
         `ahk/forbidden (line ${getLine(ctx)}): modulo '%%' is not supported. Use 'Mod(a, b)' instead.`,
       )
     }
-    content.push('math', value)
+    content.push({ type: 'math', value: value as ItemTypeMap['math'] })
     return true
   }
 
   // Bitwise operators: &, |, ^, <<, >>
   if (type === '&' || type === '|' || type === '^' || type === 'shift') {
-    content.push('math', value)
+    content.push({ type: 'math', value: value as ItemTypeMap['math'] })
     return true
   }
 
   // instanceof: obj instanceof Class → obj.__Class == "Class"
   if (type === 'relation' && value === 'instanceof') {
-    content.push('.', '.')
-    content.push('property', '__Class')
-    content.push('compare', '==')
-    content.push('edge', 'instanceof-class') // marker for processor to convert next identifier to string
+    content.push(
+      { type: '.', value: '.' },
+      { type: 'property', value: '__Class' },
+      { type: 'compare', value: '==' },
+      { type: 'edge', value: 'instanceof-class' }, // marker for processor to convert next identifier to string
+    )
     return true
   }
 

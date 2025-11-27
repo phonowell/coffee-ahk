@@ -1,3 +1,4 @@
+import { MODULE_PREFIX } from '../../../constants.js'
 import { getCache, getCacheSalt, getNextModuleId } from '../cache.js'
 import { pickImport } from '../source-resolver.js'
 
@@ -33,14 +34,16 @@ export const replaceAnchor = async (source: string, content: string) => {
     // 生成 default 导入赋值
     if (defaultImport) {
       listResult.push(
-        `${defaultImport} = __${cacheSalt}_module_${meta.id}__.default`,
+        `${defaultImport} = ${MODULE_PREFIX}_${cacheSalt}_${meta.id}.default`,
       )
     }
 
     // 生成 named 导入赋值
     for (const named of namedImports) {
       const key = (named.split(':')[0] ?? '').trim()
-      listResult.push(`${named} = __${cacheSalt}_module_${meta.id}__.${key}`)
+      listResult.push(
+        `${named} = ${MODULE_PREFIX}_${cacheSalt}_${meta.id}.${key}`,
+      )
     }
   }
 

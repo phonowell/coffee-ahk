@@ -39,7 +39,7 @@ const main = (ctx: Context) => {
     listContent.splice(
       listContent.length - 2,
       0,
-      new Item('native', 'global ', item.scope),
+      new Item({ type: 'native', value: 'global ', scope: item.scope }),
     )
   })
 

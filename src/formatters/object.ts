@@ -9,7 +9,7 @@ const main = (ctx: Context): boolean => {
     if (content.at(-1)?.is('new-line') && token.generated) content.pop()
 
     scope.push('object')
-    content.push('bracket', '{')
+    content.push({ type: 'bracket', value: '{' })
     return true
   }
 
@@ -17,8 +17,8 @@ const main = (ctx: Context): boolean => {
     if (scope.last === 'class') return true
 
     if (token.generated && typeof token.origin?.indentSize === 'number')
-      content.push('bracket', '}-')
-    else content.push('bracket', '}')
+      content.push({ type: 'bracket', value: '}-' })
+    else content.push({ type: 'bracket', value: '}' })
     scope.pop()
     return true
   }

@@ -1,9 +1,9 @@
 (Func("ahk_7")).Call()
-global __ahk_module_2__ := (Func("ahk_5")).Call()
-global __ahk_module_3__ := (Func("ahk_3")).Call()
-global plus := __ahk_module_2__.default
-global m := __ahk_module_3__.default
-global minus := __ahk_module_3__.minus
+global ℓm_ahk_2 := (Func("ahk_5")).Call()
+global ℓm_ahk_3 := (Func("ahk_3")).Call()
+global plus := ℓm_ahk_2.default
+global m := ℓm_ahk_3.default
+global minus := ℓm_ahk_3.minus
 ahk_1(λ, a, b) {
   if (!λ) λ := {}
   λ.a := a

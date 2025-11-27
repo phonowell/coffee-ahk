@@ -29,11 +29,13 @@ export const prependThis = (ctx: Context) => {
 
     const scope2 = item.scope.toArray()
     // Use ℓthis as parameter name since 'this' is reserved in AHK v1
-    listContent.push(new Item('identifier', THIS, scope2))
+    listContent.push(
+      new Item({ type: 'identifier', value: THIS, scope: scope2 }),
+    )
 
     const it = content.at(i + 1)
     if (it?.is('edge', 'parameter-end')) return
-    listContent.push(new Item('sign', ',', scope2))
+    listContent.push(new Item({ type: 'sign', value: ',', scope: scope2 }))
   })
 
   content.reload(listContent)

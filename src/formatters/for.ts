@@ -1,5 +1,6 @@
 import { INDEX_FOR, KEY_FOR } from '../constants.js'
 
+import type { ItemTypeMap } from '../models/ItemType'
 import type { Context } from '../types'
 
 const main = (ctx: Context) => {
@@ -7,7 +8,7 @@ const main = (ctx: Context) => {
 
   if (type === 'for') {
     scope.push('for')
-    content.push('for')
+    content.push({ type: 'for', value: 'for' })
     return true
   }
 
@@ -29,11 +30,12 @@ const main = (ctx: Context) => {
 
     if (list.length === 1) list.unshift(type === 'forin' ? INDEX_FOR : KEY_FOR)
 
-    content
-      .push('identifier', list[0] ?? '')
-      .push('sign', ',')
-      .push('identifier', list[1] ?? '')
-      .push('for-in', value)
+    content.push(
+      { type: 'identifier', value: list[0] ?? '' },
+      { type: 'sign', value: ',' },
+      { type: 'identifier', value: list[1] ?? '' },
+      { type: 'for-in', value: value as ItemTypeMap['for-in'] },
+    )
     return true
   }
 
