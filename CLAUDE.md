@@ -159,7 +159,16 @@ fn = (a) ->               ahk_2(a) {
 
 **跳过 ctx**: 全局变量 | `this` | `ℓxxx` | 首字母大写 | 非函数作用域 | `salt='salt'` 编译段落
 
-**关键文件**: `src/processors/function/ctx-transform.ts`
+**ctx-transform.ts** (412行，已稳定，非必要勿读):
+
+| 函数 | 功能 |
+|------|------|
+| `shouldUseCtx` | 判断标识符是否需要转为 `λ.xxx` |
+| `collectParams` | 收集用户函数的参数列表 |
+| `transformFunctions` | 函数定义加 `λ` 参数、初始化 `if(!λ)λ:={}` |
+| `collectCatchVars/ForVars` | 收集 catch/for 变量（跳过 ctx 转换） |
+| `transformVars` | `identifier` → `λ.identifier` |
+| `addBind` | `Func("xxx")` → `Func("xxx").Bind(λ)` |
 
 ## Class 与 Export
 
@@ -189,19 +198,3 @@ fn = (a) ->               ahk_2(a) {
 2. `pnpm lint` — 0 errors
 3. 新功能有测试
 4. **重要发现已更新到本文件**
-
-## 问题记录
-
-** 解决之后移除 **
-
-```ahk
-for ℓi, add_arg in λ.args {
-  λ.add_arg := add_arg
-  ℓi := ℓi - 1
-  λ.add_result := λ.add_result + λ.add_arg
-}
-```
-
-add_arg只在for内有效，外层无法访问，无需使用`λ.`前缀。
-
-需要一并检查类似问题。

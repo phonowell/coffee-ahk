@@ -86,6 +86,7 @@ const collectParams = (ctx: Context): Map<string, string[]> => {
     if (!item.is('identifier') && item.type !== 'this') continue
 
     const next = content.at(i + 1)
+    // Detect parameter: followed by , or ) or ... or = or . (for destructuring like {a.b})
     const isParam =
       next?.is('sign', ',') === true ||
       next?.is('edge', 'parameter-end') === true ||
