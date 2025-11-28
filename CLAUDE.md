@@ -158,18 +158,17 @@ fn = (a) ->               ahk_2(a) {
 
 **跳过 ctx**: 全局变量 | `this` | `ℓxxx` | 首字母大写 | 非函数作用域 | `salt='salt'` 编译段落
 
-**ctx-transform.ts** (513行，已稳定，非必要勿读):
+**ctx-transform/** 目录结构（已稳定）:
 
-| 函数                       | 功能                                                 |
-| -------------------------- | ---------------------------------------------------- |
-| `shouldUseCtx`             | 判断标识符是否需要转为 `λ.xxx`                       |
-| `shouldVarUseCtxInNative`  | Native 变量判断（跳过大写开头、AHK 关键字）          |
-| `transformNativeString`    | Native 字符串变量转换（`%x%`→`% λ.x`、`x`→`λ.x`）    |
-| `collectParams`            | 收集用户函数的参数列表                               |
-| `transformFunctions`       | 函数定义加 `λ` 参数、参数赋值 `λ.param := param`     |
-| `collectCatchVars/ForVars` | 收集 catch/for 变量（跳过 ctx 转换）                 |
-| `transformVars`            | `identifier` → `λ.identifier`（含 Native 处理）     |
-| `addBind`                  | `Func("xxx")` → `.Bind(λ)` 函数内 / `.Bind({})` 顶层 |
+| 文件                     | 行数 | 功能                                                  |
+| ------------------------ | ---- | ----------------------------------------------------- |
+| `index.ts`               | 23   | 主入口                                                |
+| `utils.ts`               | 89   | `shouldUseCtx`, `isUserFunc`, `AHK_KEYWORDS`          |
+| `native.ts`              | 204  | Native 变量中转（`λ_var` 桥接）+ `processNativeBlock` |
+| `params.ts`              | 83   | `collectParams`, `genParamAssign`, `genThisAlias`     |
+| `transform-functions.ts` | 102  | 函数定义加 `λ` 参数、参数赋值                         |
+| `transform-vars.ts`      | 156  | `identifier` → `λ.identifier`、catch/for 变量收集     |
+| `bind.ts`                | 62   | `Func()` → `.Bind(λ)` / `.Bind({})`                   |
 
 ## Class 与 Export
 
@@ -188,7 +187,7 @@ fn = (a) ->               ahk_2(a) {
 | callback 参数    | 所有 `Func()` 自动加 `.Bind({})` 或 `.Bind(λ)`                                       |
 | `if var is Type` | AHK v1 特殊语法，**必须换行写大括号**，不支持 `if(var is Type)`                      |
 | 控制结构括号     | if/else/for/while/switch/case/try/catch/function/class **必须始终写 `{}`**，禁止省略 |
-| Native 变量引用  | 函数内 Native 自动转换小写开头变量为 `λ.xxx`；大写开头、AHK 关键字跳过 |
+| Native 变量引用  | 函数内 Native 自动用 `λ_var` 临时变量中转，块前取出、块后写回                        |
 
 ## 已知限制
 
@@ -214,7 +213,7 @@ fn = (a) ->               ahk_2(a) {
 - **2025-11-25**: 链式负索引 `nested[0][-1]`、`collectArrayExpression()` 回溯
 - **2025-11-26**: Content/Scope API 统一、闭包 λ 实现、class/export 分离方案
 - **2025-11-27**: Item 类型系统重构（严格 type-value 约束）、`::` 输出为 `prototype`、Content.push/unshift 多参数优化
-- **2025-11-28**: 所有 `Func()` 自动 `.Bind()`、移除冗余的 `λ := ""` 和 `if(!λ){λ:={}}`；修复 `for...of` 垃圾代码（`for-in` type 同时处理 `in`/`of`）；修复 `$xxx` 变量跳过 ctx 转换（大写检查只匹配 A-Z）；补充闭包测试用例；添加 `>>>`/`await`/`yield`/for循环解构/嵌套解构 编译器告警；修复内置函数 `ℓci`/`ℓtype` 参数错位（添加 `λ` 首参数）；修复 `!!` 被误转为 `~~`（`UNARY_MATH` 需检查 value 是 `~` 还是 `!`）
+- **2025-11-28**: 所有 `Func()` 自动 `.Bind()`、移除冗余的 `λ := ""` 和 `if(!λ){λ:={}}`；修复 `for...of` 垃圾代码（`for-in` type 同时处理 `in`/`of`）；修复 `$xxx` 变量跳过 ctx 转换（大写检查只匹配 A-Z）；补充闭包测试用例；添加 `>>>`/`await`/`yield`/for循环解构/嵌套解构 编译器告警；修复内置函数 `ℓci`/`ℓtype` 参数错位（添加 `λ` 首参数）；修复 `!!` 被误转为 `~~`（`UNARY_MATH` 需检查 value 是 `~` 还是 `!`）；实现 Native 变量桥接（`λ_var` 临时变量模式）；拆分 `ctx-transform.ts` 为 7 个模块文件
 
 ## 提交检查
 
