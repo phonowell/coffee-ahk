@@ -173,14 +173,19 @@ const transformFunctions = (
         const p = params.get(funcName) ?? []
         const _scope = item.scope.toArray()
         out.push(item)
-        // λ := "" - optional parameter to allow .Call() without arguments
-        out.push(
-          new Item({ type: 'identifier', value: CTX, scope: _scope }),
-          new Item({ type: 'sign', value: '=', scope: _scope }),
-          new Item({ type: 'string', value: '""', scope: _scope }),
-        )
-        if (p.length > 0)
+        // λ - only add default value when no user params (AHK requires all
+        // params after an optional one to also be optional)
+        out.push(new Item({ type: 'identifier', value: CTX, scope: _scope }))
+        if (p.length === 0) {
+          // No user params: λ := "" allows .Call() without arguments
+          out.push(
+            new Item({ type: 'sign', value: '=', scope: _scope }),
+            new Item({ type: 'string', value: '""', scope: _scope }),
+          )
+        } else {
+          // Has user params: λ must be required (no default value)
           out.push(new Item({ type: 'sign', value: ',', scope: _scope }))
+        }
 
         continue
       }

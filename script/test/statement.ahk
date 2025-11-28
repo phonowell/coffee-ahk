@@ -4,7 +4,7 @@ global obj := new MyClass()
 class Ｄog extends Animal {
   bark := Func("ahk_1").Bind(this)
 }
-ahk_1(λ := "", ℓthis) {
+ahk_1(λ, ℓthis) {
   if (!λ) {
     λ := {}
   }

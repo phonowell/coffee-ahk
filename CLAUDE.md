@@ -186,8 +186,9 @@ fn = (a) ->               ahk_2(a) {
 | 对象键名表达式  | `shouldUseCtx` 跳过 object scope 后跟 `:` 的    |
 | catch 变量      | `collectCatchVars` 在 catch scope 跳过 ctx      |
 | `do => @a` this | `arrow.ts` 标记，`do.ts` 在 `.Call()` 传 `this` |
-| `Func.Call()`   | `λ := ""` 可选参数，避免动态调用静默失败        |
+| `Func.Call()`   | 无用户参数时 `λ := ""`，有参数时 `λ` 必需       |
 | 单行 if 异常    | `if(!λ)λ:={}` 改为 `if(!λ){λ:={}}` 多行格式     |
+| 可选参数顺序    | AHK 要求可选参数后全为可选，故有参数时 `λ` 必需 |
 
 ## 历史修复记录
 
@@ -195,7 +196,7 @@ fn = (a) ->               ahk_2(a) {
 - **2025-11-25**: 链式负索引 `nested[0][-1]`、`collectArrayExpression()` 回溯
 - **2025-11-26**: Content/Scope API 统一、闭包 λ 实现、class/export 分离方案
 - **2025-11-27**: Item 类型系统重构（严格 type-value 约束）、`::` 输出为 `prototype`、Content.push/unshift 多参数优化
-- **2025-11-28**: `λ` 改为可选参数修复 `Func.Call()` 静默失败、单行 if 改多行花括号格式
+- **2025-11-28**: 单行 if 改多行花括号、`λ` 条件可选（无用户参数时 `λ := ""`，有参数时 `λ` 必需）
 
 ## 提交检查
 

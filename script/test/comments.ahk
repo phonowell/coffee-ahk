@@ -5,7 +5,7 @@ global fn := Func("ahk_2")
 class Ａ {
   m := Func("ahk_1").Bind(this)
 }
-ahk_1(λ := "", ℓthis) {
+ahk_1(λ, ℓthis) {
   if (!λ) {
     λ := {}
   }

@@ -1,7 +1,7 @@
 global fn1 := Func("ahk_3")
 global fn2 := Func("ahk_2")
 global fn3 := Func("ahk_1")
-ahk_1(λ := "", a) {
+ahk_1(λ, a) {
   if (!λ) {
     λ := {}
   }
