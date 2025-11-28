@@ -1,4 +1,4 @@
-ℓtype_SALT_PLACEHOLDER = (ℓv) ->
+ℓtype_SALT_PLACEHOLDER = (λ, ℓv) ->
   if ℓv == ""
     return "undefined"
   Native 'if ℓv is Number'

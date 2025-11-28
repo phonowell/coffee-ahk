@@ -1,5 +1,5 @@
 ﻿global ℓtype_SALT_PLACEHOLDER := Func("salt_1").Bind({})
-salt_1(ℓv) {
+salt_1(λ, ℓv) {
   if (ℓv == "") {
     return "undefined"
   }

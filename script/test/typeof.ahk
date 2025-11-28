@@ -1,5 +1,5 @@
 global ℓtype_ahk := Func("ahk_typeof").Bind({})
-ahk_typeof(ℓv) {
+ahk_typeof(λ, ℓv) {
   if (ℓv == "") {
     return "undefined"
   }

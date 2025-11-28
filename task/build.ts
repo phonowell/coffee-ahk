@@ -26,6 +26,7 @@ export default async () => {
 
   const changeIndexAhk = await read('./script/segment/changeIndex.ahk')
   const typeofAhk = await read('./script/segment/typeof.ahk')
+
   await write(
     './src/processors/builtins.gen.ts',
     [
