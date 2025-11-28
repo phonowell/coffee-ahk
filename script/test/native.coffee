@@ -1,20 +1,78 @@
 # Native AHK code injection
+# Test strategy: top-level vs function, simple vs closure
 
-# Backtick syntax (inline raw AHK)
-alert = -> `msgbox, % msg`
+# === Top-level (no ctx transform) ===
 
-# Native() function call
-alert2 = -> Native 'msgbox, % msg'
+# Top-level Native - variables NOT transformed (顶层不转换)
+`StringUpper, result, input`
+Native 'StringLower, result, input'
 
-# Multi-line native block
-showInfo = ->
+# === Function context (ctx transform) ===
+
+# Simple function - direct variable reference
+fn1 = ->
+  `StringUpper, $result, ipt`
+
+# Expression mode with %
+fn2 = ->
+  Native 'msgbox, % msg'
+
+# Traditional %name% syntax
+fn3 = ->
+  Native 'return %myVar%'
+
+# Multiple variables in one Native
+fn4 = ->
+  `Format, output, {1} + {2} = {3}, a, b, c`
+
+# === Closure context ===
+
+# Closure - inner function uses outer variable
+fn5 = ->
+  prefix = 'hello'
+  inner = ->
+    `StringUpper, prefix, prefix`
+  inner()
+
+# === Variables that should NOT be transformed ===
+
+# Global variables (ctx.cache.global)
+globalVar = 'test'
+fn6 = ->
+  `msgbox, % globalVar`
+
+# this reference
+fn7 = ->
+  `msgbox, % this.name`
+
+# Uppercase identifiers (class names)
+fn8 = ->
+  `msgbox, % MyClass.value`
+
+# AHK keywords from forbidden.json
+fn9 = ->
   `
-  gui, add, text,, Hello World
-  gui, show
+  if (x) {
+    return y
+  }
   `
 
-# Native in expression context
-getValue = -> Native 'return %myVar%'
+# Property access (after dot)
+fn10 = ->
+  `msgbox, % obj.prop`
 
-# Note: Native code is passed through verbatim
-# No transformation or validation is performed
+# Function calls (followed by parenthesis)
+fn11 = ->
+  `result := GetValue()`
+
+# Internal variables (ℓ prefix)
+fn12 = ->
+  `msgbox, % ℓidx`
+
+# Multi-line with mixed variables
+fn13 = ->
+  localVar = 1
+  `
+  StringUpper, localVar, localVar
+  msgbox, % localVar
+  `

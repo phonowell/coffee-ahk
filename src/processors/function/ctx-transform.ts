@@ -5,11 +5,110 @@
  * Inner functions can read AND modify outer function variables via shared λ.
  * Using λ (U+03BB) as it semantically represents closures and saves 6 chars vs __ctx__.
  */
+import forbidden from '../../../data/forbidden.json' with { type: 'json' }
 import { CTX, THIS } from '../../constants.js'
 import Item from '../../models/Item.js'
 
 import type { ScopeType } from '../../models/ScopeType.js'
 import type { Context } from '../../types'
+
+/**
+ * AHK keywords set (lowercase) for Native string variable detection.
+ * Built from forbidden.json - excludes A_ variables (already skipped by shouldVarUseCtx).
+ */
+const AHK_KEYWORDS = new Set(
+  forbidden
+    .filter((x): x is string => typeof x === 'string')
+    .filter((x) => !x.startsWith('A_'))
+    .map((x) => x.toLowerCase()),
+)
+
+/** Check if a variable name should use ctx based on simple rules */
+const shouldVarUseCtx = (
+  ctx: Context,
+  varName: string,
+  inFunction: boolean,
+): boolean => {
+  if (!inFunction) return false
+  if (ctx.cache.global.has(varName)) return false
+  if (varName.startsWith('__') && varName.endsWith('__')) return false
+  if (varName === 'this') return false
+  if (varName === CTX) return false
+  const first = varName[0]
+  if (first && /^[A-Z]$/.test(first)) return false
+  if (varName.startsWith('ℓ')) return false
+  return true
+}
+
+/** Check if a variable name should use ctx in Native strings */
+const shouldVarUseCtxInNative = (
+  ctx: Context,
+  varName: string,
+  inFunction: boolean,
+): boolean => {
+  // First apply basic rules
+  if (!shouldVarUseCtx(ctx, varName, inFunction)) return false
+  // Skip uppercase-starting variables (class names, AHK commands)
+  const first = varName[0]
+  if (first && /^[A-Z]$/.test(first)) return false
+  // Then check AHK keywords (case-insensitive)
+  if (AHK_KEYWORDS.has(varName.toLowerCase())) return false
+  return true
+}
+
+/** Transform Native string - replace variable references with λ.xxx */
+const transformNativeString = (
+  ctx: Context,
+  value: string,
+  inFunction: boolean,
+): string => {
+  if (!inFunction) return value
+
+  // Identifier pattern: starts with letter, underscore, or $
+  // Must match the full identifier including $ prefix
+  const idPattern = /\$?[a-z_][a-z0-9_$]*/gi
+
+  // First: transform %name% to % λ.name format
+  let result = value.replace(/%([a-z_$][a-z0-9_$]*)%/gi, (match, varName) => {
+    if (shouldVarUseCtxInNative(ctx, varName, inFunction))
+      return `% ${CTX}.${varName}`
+
+    return match
+  })
+
+  // Second: transform all identifiers in one pass
+  // Use a single regex that handles all cases
+  result = result.replace(idPattern, (match, offset) => {
+    // Skip λ itself
+    if (match === CTX) return match
+
+    // Check what's before this match
+    const charBefore = offset > 0 ? result[offset - 1] : ''
+
+    // Skip if preceded by dot (property access like obj.prop or λ.var)
+    if (charBefore === '.') return match
+
+    // Skip if preceded by ℓ (internal variable prefix like ℓidx, ℓarr)
+    if (charBefore === 'ℓ') return match
+
+    // Skip if preceded by % and space (already in expression mode from %name% transform)
+    // This case is handled: "% λ.xxx" - the λ is skipped above, and xxx is after dot
+
+    // Check what's after this match
+    const afterPos = offset + match.length
+    const charAfter = afterPos < result.length ? result[afterPos] : ''
+
+    // Skip if followed by ( - it's a function call
+    if (charAfter === '(') return match
+
+    if (shouldVarUseCtxInNative(ctx, match, inFunction))
+      return `${CTX}.${match}`
+
+    return match
+  })
+
+  return result
+}
 
 /** Check if identifier should use ctx (local variable inside function) */
 const shouldUseCtx = (
@@ -320,6 +419,23 @@ const transformVars = (ctx: Context, skip: Set<number>) => {
     // Skip for loop variables in declaration (for x, y in ...)
     if (inForDecl && forVars.has(item.value)) {
       out.push(item)
+      continue
+    }
+
+    // Transform Native strings - replace variable references with λ.xxx
+    if (item.type === 'native' && item.scope.includes('function')) {
+      const transformed = transformNativeString(
+        ctx,
+        item.value,
+        item.scope.includes('function'),
+      )
+      const newItem = new Item({
+        type: 'native',
+        value: transformed,
+        scope: item.scope.toArray(),
+      })
+      if (item.comment) newItem.comment = [...item.comment]
+      out.push(newItem)
       continue
     }
 

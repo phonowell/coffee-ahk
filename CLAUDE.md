@@ -158,15 +158,17 @@ fn = (a) ->               ahk_2(a) {
 
 **跳过 ctx**: 全局变量 | `this` | `ℓxxx` | 首字母大写 | 非函数作用域 | `salt='salt'` 编译段落
 
-**ctx-transform.ts** (412行，已稳定，非必要勿读):
+**ctx-transform.ts** (513行，已稳定，非必要勿读):
 
 | 函数                       | 功能                                                 |
 | -------------------------- | ---------------------------------------------------- |
 | `shouldUseCtx`             | 判断标识符是否需要转为 `λ.xxx`                       |
+| `shouldVarUseCtxInNative`  | Native 变量判断（跳过大写开头、AHK 关键字）          |
+| `transformNativeString`    | Native 字符串变量转换（`%x%`→`% λ.x`、`x`→`λ.x`）    |
 | `collectParams`            | 收集用户函数的参数列表                               |
 | `transformFunctions`       | 函数定义加 `λ` 参数、参数赋值 `λ.param := param`     |
 | `collectCatchVars/ForVars` | 收集 catch/for 变量（跳过 ctx 转换）                 |
-| `transformVars`            | `identifier` → `λ.identifier`                        |
+| `transformVars`            | `identifier` → `λ.identifier`（含 Native 处理）     |
 | `addBind`                  | `Func("xxx")` → `.Bind(λ)` 函数内 / `.Bind({})` 顶层 |
 
 ## Class 与 Export
@@ -186,6 +188,7 @@ fn = (a) ->               ahk_2(a) {
 | callback 参数    | 所有 `Func()` 自动加 `.Bind({})` 或 `.Bind(λ)`                                       |
 | `if var is Type` | AHK v1 特殊语法，**必须换行写大括号**，不支持 `if(var is Type)`                      |
 | 控制结构括号     | if/else/for/while/switch/case/try/catch/function/class **必须始终写 `{}`**，禁止省略 |
+| Native 变量引用  | 函数内 Native 自动转换小写开头变量为 `λ.xxx`；大写开头、AHK 关键字跳过 |
 
 ## 已知限制
 
