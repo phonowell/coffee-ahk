@@ -55,5 +55,5 @@
   "type": "module",
   "types": "./dist/index.d.ts",
   "url": "https://github.com/phonowell/coffee-ahk",
-  "version": "0.0.79"
+  "version": "0.0.80"
 }
