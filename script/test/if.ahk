@@ -27,16 +27,13 @@ if (a > 1) {
 } else {
   3
 }
-global fn := Func("ahk_1")
+global fn := Func("ahk_1").Bind({})
 if !(fn.Call(1)) {
   1
 } else {
   2
 }
-ahk_1(λ := "") {
-  if (!λ) {
-    λ := {}
-  }
+ahk_1(λ) {
   if !(1) {
     1
   } else {

@@ -1,6 +1,6 @@
 // This file is auto-generated during build. Do not edit manually.
 
-export const changeIndex_ahk = `global ℓci_SALT_PLACEHOLDER := Func("salt_1")
+export const changeIndex_ahk = `global ℓci_SALT_PLACEHOLDER := Func("salt_1").Bind({})
 salt_1(ℓarr, ℓidx) {
   if ℓidx is Number
     if (ℓidx < 0)
@@ -9,7 +9,7 @@ salt_1(ℓarr, ℓidx) {
   return ℓidx
 }`
 
-export const typeof_ahk = `global ℓtype_SALT_PLACEHOLDER := Func("salt_1")
+export const typeof_ahk = `global ℓtype_SALT_PLACEHOLDER := Func("salt_1").Bind({})
 salt_1(ℓv) {
   if (ℓv == "") {
     return "undefined"

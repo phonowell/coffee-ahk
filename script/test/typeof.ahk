@@ -1,4 +1,4 @@
-global ℓtype_ahk := Func("ahk_typeof")
+global ℓtype_ahk := Func("ahk_typeof").Bind({})
 ahk_typeof(ℓv) {
   if (ℓv == "") {
     return "undefined"

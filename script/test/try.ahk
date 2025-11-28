@@ -10,11 +10,8 @@ try {
 } finally {
   3
 }
-global fn := Func("ahk_1")
-ahk_1(λ := "") {
-  if (!λ) {
-    λ := {}
-  }
+global fn := Func("ahk_1").Bind({})
+ahk_1(λ) {
   try {
     λ.alert.Call(1)
   } catch e {

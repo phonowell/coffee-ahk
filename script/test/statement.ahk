@@ -1,25 +1,16 @@
-global fn := Func("ahk_3")
-global errorFn := Func("ahk_2")
+global fn := Func("ahk_3").Bind({})
+global errorFn := Func("ahk_2").Bind({})
 global obj := new MyClass()
 class Ｄog extends Animal {
   bark := Func("ahk_1").Bind(this)
 }
 ahk_1(λ, ℓthis) {
-  if (!λ) {
-    λ := {}
-  }
   this := ℓthis
   return "woof"
 }
-ahk_2(λ := "") {
-  if (!λ) {
-    λ := {}
-  }
+ahk_2(λ) {
   throw Exception("oops")
 }
-ahk_3(λ := "") {
-  if (!λ) {
-    λ := {}
-  }
+ahk_3(λ) {
   return 42
 }

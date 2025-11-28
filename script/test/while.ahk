@@ -3,7 +3,7 @@ while (a < 5) {
   a++
   1
 }
-global fn := Func("ahk_1")
+global fn := Func("ahk_1").Bind({})
 global b := 0
 while (b < 10) {
   b++
@@ -14,10 +14,7 @@ while (b < 10) {
     break
   }
 }
-ahk_1(λ := "") {
-  if (!λ) {
-    λ := {}
-  }
+ahk_1(λ) {
   while (a < 5) {
     a++
   }

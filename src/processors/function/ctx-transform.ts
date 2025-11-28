@@ -100,30 +100,6 @@ const collectParams = (ctx: Context): Map<string, string[]> => {
   return result
 }
 
-/** Generate ctx init items: if (!λ) { λ := {} } */
-const genCtxInit = (scope: ScopeType[]): Item[] => {
-  const innerScope = [...scope, 'if' as ScopeType]
-  // scope.length is base indent (e.g. 1 for function body)
-  // innerScope adds +1 for if block content
-  const innerIndent = String(innerScope.length)
-  const outerIndent = String(scope.length)
-  return [
-    new Item({ type: 'if', value: 'if', scope }),
-    new Item({ type: 'edge', value: 'expression-start', scope }),
-    new Item({ type: 'logical-operator', value: '!', scope }),
-    new Item({ type: 'identifier', value: CTX, scope }),
-    new Item({ type: 'edge', value: 'expression-end', scope }),
-    new Item({ type: 'edge', value: 'block-start', scope: innerScope }),
-    new Item({ type: 'new-line', value: innerIndent, scope: innerScope }),
-    new Item({ type: 'identifier', value: CTX, scope: innerScope }),
-    new Item({ type: 'sign', value: '=', scope: innerScope }),
-    new Item({ type: 'edge', value: 'object-start', scope: innerScope }),
-    new Item({ type: 'edge', value: 'object-end', scope: innerScope }),
-    new Item({ type: 'new-line', value: outerIndent, scope: innerScope }),
-    new Item({ type: 'edge', value: 'block-end', scope }),
-  ]
-}
-
 /** Generate param assignment: λ.param := param */
 const genParamAssign = (param: string, scope: ScopeType[]): Item[] => [
   new Item({ type: 'new-line', value: '1', scope }),
@@ -173,19 +149,10 @@ const transformFunctions = (
         const p = params.get(funcName) ?? []
         const _scope = item.scope.toArray()
         out.push(item)
-        // λ - only add default value when no user params (AHK requires all
-        // params after an optional one to also be optional)
+        // λ is always pre-bound via .Bind({}) or .Bind(λ), no default needed
         out.push(new Item({ type: 'identifier', value: CTX, scope: _scope }))
-        if (p.length === 0) {
-          // No user params: λ := "" allows .Call() without arguments
-          out.push(
-            new Item({ type: 'sign', value: '=', scope: _scope }),
-            new Item({ type: 'string', value: '""', scope: _scope }),
-          )
-        } else {
-          // Has user params: λ must be required (no default value)
+        if (p.length > 0)
           out.push(new Item({ type: 'sign', value: ',', scope: _scope }))
-        }
 
         continue
       }
@@ -199,7 +166,7 @@ const transformFunctions = (
       }
     }
 
-    // Start of function body - add ctx init
+    // Start of function body - add param assignments
     if (item.is('edge', 'block-start') && inFunc && !didInit) {
       out.push(item)
       didInit = true
@@ -209,11 +176,11 @@ const transformFunctions = (
       const hasThis = allParams.includes(THIS)
       const p = allParams.filter((x) => x !== 'this' && x !== THIS)
 
-      out.push(new Item({ type: 'new-line', value: '1', scope }))
-      out.push(...genCtxInit(scope))
-
       // Add this := __this__ if function has __this__ parameter
-      if (hasThis) out.push(...genThisAlias(scope))
+      if (hasThis) {
+        out.push(new Item({ type: 'new-line', value: '1', scope }))
+        out.push(...genThisAlias(scope).slice(1)) // skip leading new-line
+      }
 
       for (const param of p) {
         const items = genParamAssign(param, scope)
@@ -367,7 +334,7 @@ const transformVars = (ctx: Context, skip: Set<number>) => {
   content.reload(out)
 }
 
-/** Add .Bind(λ) after Func() calls inside functions */
+/** Add .Bind() after Func() calls - .Bind(λ) inside functions, .Bind({}) at top level */
 const addBind = (ctx: Context) => {
   const { content } = ctx
   const out: Item[] = []
@@ -378,7 +345,6 @@ const addBind = (ctx: Context) => {
     out.push(item)
 
     if (!item.is('edge', 'call-end')) continue
-    if (!item.scope.includes('function')) continue
 
     const prev1 = content.at(i - 1)
     const prev2 = content.at(i - 2)
@@ -394,21 +360,27 @@ const addBind = (ctx: Context) => {
       continue
 
     const scope = item.scope.toArray()
+    const inFunction = item.scope.includes('function')
+    const callScope = [...scope, 'call'] as ScopeType[]
+
     out.push(new Item({ type: '.', value: '.', scope }))
     out.push(new Item({ type: 'identifier', value: 'Bind', scope }))
-    out.push(
-      new Item({
-        type: 'edge',
-        value: 'call-start',
-        scope: [...scope, 'call'],
-      }),
-    )
-    out.push(
-      new Item({ type: 'identifier', value: CTX, scope: [...scope, 'call'] }),
-    )
-    out.push(
-      new Item({ type: 'edge', value: 'call-end', scope: [...scope, 'call'] }),
-    )
+    out.push(new Item({ type: 'edge', value: 'call-start', scope: callScope }))
+
+    if (inFunction) {
+      // Inside function: bind to current closure context λ
+      out.push(new Item({ type: 'identifier', value: CTX, scope: callScope }))
+    } else {
+      // Top level: bind to empty object {}
+      out.push(
+        new Item({ type: 'edge', value: 'object-start', scope: callScope }),
+      )
+      out.push(
+        new Item({ type: 'edge', value: 'object-end', scope: callScope }),
+      )
+    }
+
+    out.push(new Item({ type: 'edge', value: 'call-end', scope: callScope }))
   }
 
   content.reload(out)

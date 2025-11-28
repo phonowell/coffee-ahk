@@ -1,4 +1,4 @@
-global ℓci_ahk := Func("salt_1")
+global ℓci_ahk := Func("salt_1").Bind({})
 salt_1(ℓarr, ℓidx) {
   if ℓidx is Number
     if (ℓidx < 0)

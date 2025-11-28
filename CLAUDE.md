@@ -151,10 +151,7 @@ fn = (a) ->               ahk_2(a) {
   inner()                   λ.inner := Func("ahk_1").Bind(λ)
                             λ.inner.Call()
                           }
-                          ahk_1(λ := "") {
-                            if(!λ){
-                              λ:={}
-                            }
+                          ahk_1(λ) {
                             return λ.a + λ.b
                           }
 ```
@@ -167,10 +164,10 @@ fn = (a) ->               ahk_2(a) {
 |------|------|
 | `shouldUseCtx` | 判断标识符是否需要转为 `λ.xxx` |
 | `collectParams` | 收集用户函数的参数列表 |
-| `transformFunctions` | 函数定义加 `λ := ""` 参数、初始化 `if(!λ){λ:={}}` |
+| `transformFunctions` | 函数定义加 `λ` 参数、参数赋值 `λ.param := param` |
 | `collectCatchVars/ForVars` | 收集 catch/for 变量（跳过 ctx 转换） |
 | `transformVars` | `identifier` → `λ.identifier` |
-| `addBind` | `Func("xxx")` → `Func("xxx").Bind(λ)` |
+| `addBind` | `Func("xxx")` → `.Bind(λ)` 函数内 / `.Bind({})` 顶层 |
 
 ## Class 与 Export
 
@@ -186,9 +183,7 @@ fn = (a) ->               ahk_2(a) {
 | 对象键名表达式  | `shouldUseCtx` 跳过 object scope 后跟 `:` 的    |
 | catch 变量      | `collectCatchVars` 在 catch scope 跳过 ctx      |
 | `do => @a` this | `arrow.ts` 标记，`do.ts` 在 `.Call()` 传 `this` |
-| `Func.Call()`   | 无用户参数时 `λ := ""`，有参数时 `λ` 必需       |
-| 单行 if 异常    | `if(!λ)λ:={}` 改为 `if(!λ){λ:={}}` 多行格式     |
-| 可选参数顺序    | AHK 要求可选参数后全为可选，故有参数时 `λ` 必需 |
+| callback 参数   | 所有 `Func()` 自动加 `.Bind({})` 或 `.Bind(λ)`  |
 
 ## 历史修复记录
 
@@ -196,7 +191,7 @@ fn = (a) ->               ahk_2(a) {
 - **2025-11-25**: 链式负索引 `nested[0][-1]`、`collectArrayExpression()` 回溯
 - **2025-11-26**: Content/Scope API 统一、闭包 λ 实现、class/export 分离方案
 - **2025-11-27**: Item 类型系统重构（严格 type-value 约束）、`::` 输出为 `prototype`、Content.push/unshift 多参数优化
-- **2025-11-28**: 单行 if 改多行花括号、`λ` 条件可选（无用户参数时 `λ := ""`，有参数时 `λ` 必需）
+- **2025-11-28**: 所有 `Func()` 自动 `.Bind()`、移除冗余的 `λ := ""` 和 `if(!λ){λ:={}}`
 
 ## 提交检查
 
