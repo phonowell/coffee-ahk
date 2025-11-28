@@ -6,11 +6,15 @@ class Ａ {
   m := Func("ahk_1").Bind(this)
 }
 ahk_1(λ := "", ℓthis) {
-  if (!λ) λ := {}
+  if (!λ) {
+    λ := {}
+  }
   this := ℓthis
   return 1
 }
 ahk_2(λ := "") {
-  if (!λ) λ := {}
+  if (!λ) {
+    λ := {}
+  }
   return 1
 }

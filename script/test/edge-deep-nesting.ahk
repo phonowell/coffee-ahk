@@ -15,26 +15,38 @@ a[ℓci_ahk.Call(a, b[ℓci_ahk.Call(b, c[ℓci_ahk.Call(c, d)])])]
 a.b.c.d.e
 fn.Call().Call().Call()
 ahk_1(λ := "") {
-  if (!λ) λ := {}
+  if (!λ) {
+    λ := {}
+  }
   return 42
 }
 ahk_2(λ := "") {
-  if (!λ) λ := {}
+  if (!λ) {
+    λ := {}
+  }
   return (Func("ahk_1").Bind(λ)).Call()
 }
 ahk_3(λ := "") {
-  if (!λ) λ := {}
+  if (!λ) {
+    λ := {}
+  }
   return (Func("ahk_2").Bind(λ)).Call()
 }
 ahk_4(λ := "") {
-  if (!λ) λ := {}
+  if (!λ) {
+    λ := {}
+  }
   return 1
 }
 ahk_5(λ := "") {
-  if (!λ) λ := {}
+  if (!λ) {
+    λ := {}
+  }
   return Func("ahk_4").Bind(λ)
 }
 ahk_6(λ := "") {
-  if (!λ) λ := {}
+  if (!λ) {
+    λ := {}
+  }
   return Func("ahk_5").Bind(λ)
 }

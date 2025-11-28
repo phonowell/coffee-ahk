@@ -152,7 +152,9 @@ fn = (a) ->               ahk_2(a) {
                             λ.inner.Call()
                           }
                           ahk_1(λ := "") {
-                            if(!λ)λ:={}
+                            if(!λ){
+                              λ:={}
+                            }
                             return λ.a + λ.b
                           }
 ```
@@ -165,7 +167,7 @@ fn = (a) ->               ahk_2(a) {
 |------|------|
 | `shouldUseCtx` | 判断标识符是否需要转为 `λ.xxx` |
 | `collectParams` | 收集用户函数的参数列表 |
-| `transformFunctions` | 函数定义加 `λ` 参数、初始化 `if(!λ)λ:={}` |
+| `transformFunctions` | 函数定义加 `λ := ""` 参数、初始化 `if(!λ){λ:={}}` |
 | `collectCatchVars/ForVars` | 收集 catch/for 变量（跳过 ctx 转换） |
 | `transformVars` | `identifier` → `λ.identifier` |
 | `addBind` | `Func("xxx")` → `Func("xxx").Bind(λ)` |
@@ -185,13 +187,15 @@ fn = (a) ->               ahk_2(a) {
 | catch 变量      | `collectCatchVars` 在 catch scope 跳过 ctx      |
 | `do => @a` this | `arrow.ts` 标记，`do.ts` 在 `.Call()` 传 `this` |
 | `Func.Call()`   | `λ := ""` 可选参数，避免动态调用静默失败        |
+| 单行 if 异常    | `if(!λ)λ:={}` 改为 `if(!λ){λ:={}}` 多行格式     |
 
 ## 历史修复记录
 
 - **2025-11-24**: Export 解析空行中断 (`!nextLine` → `=== undefined`)、类型注释干扰
 - **2025-11-25**: 链式负索引 `nested[0][-1]`、`collectArrayExpression()` 回溯
 - **2025-11-26**: Content/Scope API 统一、闭包 λ 实现、class/export 分离方案
-- **2025-11-27**: Item 类型系统重构（严格 type-value 约束）、`::` 输出为 `prototype`、Content.push/unshift 多参数优化、`λ` 改为可选参数修复 `Func.Call()` 静默失败
+- **2025-11-27**: Item 类型系统重构（严格 type-value 约束）、`::` 输出为 `prototype`、Content.push/unshift 多参数优化
+- **2025-11-28**: `λ` 改为可选参数修复 `Func.Call()` 静默失败、单行 if 改多行花括号格式
 
 ## 提交检查
 

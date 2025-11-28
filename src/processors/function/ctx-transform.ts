@@ -100,19 +100,29 @@ const collectParams = (ctx: Context): Map<string, string[]> => {
   return result
 }
 
-/** Generate ctx init items: if (!λ) λ := {} */
-const genCtxInit = (scope: ScopeType[]): Item[] => [
-  new Item({ type: 'if', value: 'if', scope }),
-  new Item({ type: 'edge', value: 'expression-start', scope }),
-  new Item({ type: 'logical-operator', value: '!', scope }),
-  new Item({ type: 'identifier', value: CTX, scope }),
-  new Item({ type: 'edge', value: 'expression-end', scope }),
-  new Item({ type: 'native', value: ' ', scope }),
-  new Item({ type: 'identifier', value: CTX, scope }),
-  new Item({ type: 'sign', value: '=', scope }),
-  new Item({ type: 'edge', value: 'object-start', scope }),
-  new Item({ type: 'edge', value: 'object-end', scope }),
-]
+/** Generate ctx init items: if (!λ) { λ := {} } */
+const genCtxInit = (scope: ScopeType[]): Item[] => {
+  const innerScope = [...scope, 'if' as ScopeType]
+  // scope.length is base indent (e.g. 1 for function body)
+  // innerScope adds +1 for if block content
+  const innerIndent = String(innerScope.length)
+  const outerIndent = String(scope.length)
+  return [
+    new Item({ type: 'if', value: 'if', scope }),
+    new Item({ type: 'edge', value: 'expression-start', scope }),
+    new Item({ type: 'logical-operator', value: '!', scope }),
+    new Item({ type: 'identifier', value: CTX, scope }),
+    new Item({ type: 'edge', value: 'expression-end', scope }),
+    new Item({ type: 'edge', value: 'block-start', scope: innerScope }),
+    new Item({ type: 'new-line', value: innerIndent, scope: innerScope }),
+    new Item({ type: 'identifier', value: CTX, scope: innerScope }),
+    new Item({ type: 'sign', value: '=', scope: innerScope }),
+    new Item({ type: 'edge', value: 'object-start', scope: innerScope }),
+    new Item({ type: 'edge', value: 'object-end', scope: innerScope }),
+    new Item({ type: 'new-line', value: outerIndent, scope: innerScope }),
+    new Item({ type: 'edge', value: 'block-end', scope }),
+  ]
+}
 
 /** Generate param assignment: λ.param := param */
 const genParamAssign = (param: string, scope: ScopeType[]): Item[] => [

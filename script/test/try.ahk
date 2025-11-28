@@ -12,7 +12,9 @@ try {
 }
 global fn := Func("ahk_1")
 ahk_1(λ := "") {
-  if (!λ) λ := {}
+  if (!λ) {
+    λ := {}
+  }
   try {
     λ.alert.Call(1)
   } catch e {
