@@ -7,9 +7,9 @@ class Ａ extends B {
     base.a.Call()
     (Func("ahk_5").Bind(λ)).Call(this)
   }
-  d := Func("ahk_4").Bind(this)
-  e := Func("ahk_3").Bind(this)
-  f := Func("ahk_2").Bind(this)
+  d := Func("ahk_4").Bind({}, this)
+  e := Func("ahk_3").Bind({}, this)
+  f := Func("ahk_2").Bind({}, this)
 }
 global b := new Ａ()
 ahk_1(λ, ℓthis) {

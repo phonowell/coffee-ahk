@@ -185,6 +185,7 @@ fn = (a) ->               ahk_2(a) {
 | catch 变量       | `collectCatchVars` 在 catch scope 跳过 ctx                                           |
 | `do => @a` this  | `arrow.ts` 标记，`do.ts` 在 `.Call()` 传 `this`                                      |
 | callback 参数    | 所有 `Func()` 自动加 `.Bind({})` 或 `.Bind(λ)`                                       |
+| 类方法绑定       | `.Bind({}, this)` 同时绑定 `λ` 和 `ℓthis`，避免参数错位                              |
 | `if var is Type` | AHK v1 特殊语法，**必须换行写大括号**，不支持 `if(var is Type)`                      |
 | 控制结构括号     | if/else/for/while/switch/case/try/catch/function/class **必须始终写 `{}`**，禁止省略 |
 | Native 变量引用  | 函数内 Native 自动用 `λ_var` 临时变量中转，块前取出、块后写回                        |
@@ -213,7 +214,7 @@ fn = (a) ->               ahk_2(a) {
 - **2025-11-25**: 链式负索引 `nested[0][-1]`、`collectArrayExpression()` 回溯
 - **2025-11-26**: Content/Scope API 统一、闭包 λ 实现、class/export 分离方案
 - **2025-11-27**: Item 类型系统重构（严格 type-value 约束）、`::` 输出为 `prototype`、Content.push/unshift 多参数优化
-- **2025-11-28**: 所有 `Func()` 自动 `.Bind()`、移除冗余的 `λ := ""` 和 `if(!λ){λ:={}}`；修复 `for...of` 垃圾代码（`for-in` type 同时处理 `in`/`of`）；修复 `$xxx` 变量跳过 ctx 转换（大写检查只匹配 A-Z）；补充闭包测试用例；添加 `>>>`/`await`/`yield`/for循环解构/嵌套解构 编译器告警；修复内置函数 `ℓci`/`ℓtype` 参数错位（添加 `λ` 首参数）；修复 `!!` 被误转为 `~~`（`UNARY_MATH` 需检查 value 是 `~` 还是 `!`）；实现 Native 变量桥接（`λ_var` 临时变量模式）；拆分 `ctx-transform.ts` 为 7 个模块文件
+- **2025-11-28**: 所有 `Func()` 自动 `.Bind()`、移除冗余的 `λ := ""` 和 `if(!λ){λ:={}}`；修复 `for...of` 垃圾代码（`for-in` type 同时处理 `in`/`of`）；修复 `$xxx` 变量跳过 ctx 转换（大写检查只匹配 A-Z）；补充闭包测试用例；添加 `>>>`/`await`/`yield`/for循环解构/嵌套解构 编译器告警；修复内置函数 `ℓci`/`ℓtype` 参数错位（添加 `λ` 首参数）；修复 `!!` 被误转为 `~~`（`UNARY_MATH` 需检查 value 是 `~` 还是 `!`）；实现 Native 变量桥接（`λ_var` 临时变量模式）；拆分 `ctx-transform.ts` 为 7 个模块文件；修复类方法 `.Bind(this)` 参数错位（改为 `.Bind({}, this)`）
 
 ## 提交检查
 

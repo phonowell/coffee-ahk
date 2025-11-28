@@ -38,7 +38,14 @@ export const appendBind = (ctx: Context) => {
     listContent.push(
       new Item({ type: 'edge', value: 'call-start', scope: scope2[1] }),
     )
-    // Keep 'this' in .Bind(this) call - this is a value, not parameter name
+    // Bind({}, this) - {} for λ context, this for ℓthis parameter
+    listContent.push(
+      new Item({ type: 'edge', value: 'object-start', scope: scope2[1] }),
+    )
+    listContent.push(
+      new Item({ type: 'edge', value: 'object-end', scope: scope2[1] }),
+    )
+    listContent.push(new Item({ type: 'sign', value: ',', scope: scope2[1] }))
     listContent.push(
       new Item({ type: 'this', value: 'this', scope: scope2[1] }),
     )
