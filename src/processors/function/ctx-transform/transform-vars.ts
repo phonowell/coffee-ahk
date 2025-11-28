@@ -7,7 +7,7 @@ import { CTX } from '../../../constants.js'
 import Item from '../../../models/Item.js'
 
 import { processNativeBlock } from './native.js'
-import { shouldUseCtx } from './utils.js'
+import { isUserFunc, shouldUseCtx } from './utils.js'
 
 import type { Context } from '../../../types'
 
@@ -31,16 +31,40 @@ export const collectCatchVars = (ctx: Context): Set<string> => {
 /** Collect for loop variable names and their block-start positions */
 export const collectForVars = (
   ctx: Context,
+  classMethods: Set<string>,
 ): { vars: Set<string>; blockStarts: Map<number, string[]> } => {
   const { content } = ctx
+  const salt = ctx.options.salt ?? ''
   const vars = new Set<string>()
   const blockStarts = new Map<number, string[]>()
   const len = content.length
 
+  // Track current function to skip class methods
+  let currentFunc = ''
+
   for (let i = 0; i < len; i++) {
     const item = content.at(i)
-    if (!item?.is('for', 'for')) continue
+    if (!item) continue
+
+    // Track current function
+    if (item.type === 'function' && isUserFunc(item.value, salt)) {
+      currentFunc = item.value
+      continue
+    }
+    if (
+      item.is('edge', 'block-end') &&
+      currentFunc &&
+      !item.scope.includes('function')
+    ) {
+      currentFunc = ''
+      continue
+    }
+
+    if (!item.is('for', 'for')) continue
     if (!item.scope.includes('function')) continue
+
+    // Skip for loops inside class methods
+    if (classMethods.has(currentFunc)) continue
 
     // Collect variables between 'for' and 'in'/'of'
     const loopVars: string[] = []
@@ -74,14 +98,24 @@ export const collectForVars = (
 }
 
 /** Transform variable access: identifier -> λ.identifier */
-export const transformVars = (ctx: Context, skip: Set<number>) => {
+export const transformVars = (
+  ctx: Context,
+  skip: Set<number>,
+  classMethods: Set<string>,
+) => {
   const { content } = ctx
+  const salt = ctx.options.salt ?? ''
   const out: Item[] = []
   const catchVars = collectCatchVars(ctx)
-  const { vars: forVars, blockStarts: forBlockStarts } = collectForVars(ctx)
+  const { vars: forVars, blockStarts: forBlockStarts } = collectForVars(
+    ctx,
+    classMethods,
+  )
 
   // Track for scope depth to skip for-declaration variables
   let inForDecl = false
+  // Track current extracted function to skip class methods
+  let currentFunc = ''
 
   for (let i = 0; i < content.length; i++) {
     const item = content.at(i)
@@ -89,12 +123,23 @@ export const transformVars = (ctx: Context, skip: Set<number>) => {
     const prev = content.at(i - 1)
     const next = content.at(i + 1)
 
+    // Track current extracted function
+    if (item.type === 'function' && isUserFunc(item.value, salt))
+      currentFunc = item.value
+
+    if (
+      item.is('edge', 'block-end') &&
+      currentFunc &&
+      !item.scope.includes('function')
+    )
+      currentFunc = ''
+
     // Track for declaration region (between 'for' and 'in'/'of')
     if (item.is('for', 'for')) inForDecl = true
     if (item.type === 'for-in') inForDecl = false // handles both 'in' and 'of'
 
-    // Insert λ.xxx := xxx after for block-start
-    if (forBlockStarts.has(i)) {
+    // Insert λ.xxx := xxx after for block-start (only for non-class-methods)
+    if (forBlockStarts.has(i) && !classMethods.has(currentFunc)) {
       out.push(item)
       const loopVars = forBlockStarts.get(i) ?? []
       const nextItem = content.at(i + 1)
@@ -123,8 +168,12 @@ export const transformVars = (ctx: Context, skip: Set<number>) => {
       continue
     }
 
-    // Handle Native blocks
-    if (item.type === 'native' && item.scope.includes('function')) {
+    // Handle Native blocks (skip for class methods)
+    if (
+      item.type === 'native' &&
+      item.scope.includes('function') &&
+      !classMethods.has(currentFunc)
+    ) {
       processNativeBlock(ctx, content, i, item, out)
       // Find end of native block
       let j = i + 1
@@ -138,6 +187,12 @@ export const transformVars = (ctx: Context, skip: Set<number>) => {
         break
       }
       i = j - 1
+      continue
+    }
+
+    // Skip variables inside class methods (extracted functions with ℓthis param)
+    if (classMethods.has(currentFunc)) {
+      out.push(item)
       continue
     }
 

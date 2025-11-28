@@ -9,13 +9,15 @@ import Item from '../../../models/Item.js'
 import { genParamAssign, genThisAlias } from './params.js'
 import { isUserFunc } from './utils.js'
 
+import type { ParamsInfo } from './params.js'
 import type { Context } from '../../../types'
 
 /** Transform function definitions - add λ param and init */
 export const transformFunctions = (
   ctx: Context,
-  params: Map<string, string[]>,
+  paramsInfo: ParamsInfo,
 ): Set<number> => {
+  const { params, classMethods } = paramsInfo
   const { content } = ctx
   const salt = ctx.options.salt ?? ''
   const out: Item[] = []
@@ -67,13 +69,17 @@ export const transformFunctions = (
       const scope = item.scope.toArray()
       const allParams = params.get(funcName) ?? []
       const hasThis = allParams.includes(THIS)
-      const p = allParams.filter((x) => x !== 'this' && x !== THIS)
 
-      // Add this := __this__ if function has __this__ parameter
+      // Add this := ℓthis if function has ℓthis parameter (both class methods and closures)
       if (hasThis) {
         out.push(new Item({ type: 'new-line', value: '1', scope }))
         out.push(...genThisAlias(scope).slice(1)) // skip leading new-line
       }
+
+      // Skip param assignments for class methods - they don't need ctx transformation
+      if (classMethods.has(funcName)) continue
+
+      const p = allParams.filter((x) => x !== 'this' && x !== THIS)
 
       for (const param of p) {
         const items = genParamAssign(param, scope)

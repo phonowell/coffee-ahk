@@ -51,6 +51,15 @@ export const shouldVarUseCtxInNative = (
   return true
 }
 
+/** Check if function is a class method (function directly under class scope) */
+export const isClassMethod = (scope: Item['scope']): boolean => {
+  const arr = scope.toArray()
+  const funcIndex = arr.lastIndexOf('function')
+  if (funcIndex === -1) return false
+  // Check if the scope element before function is 'class'
+  return arr[funcIndex - 1] === 'class'
+}
+
 /** Check if identifier should use ctx (local variable inside function) */
 export const shouldUseCtx = (
   ctx: Context,
@@ -60,6 +69,8 @@ export const shouldUseCtx = (
 ): boolean => {
   if (item.type !== 'identifier') return false
   if (!item.scope.includes('function')) return false
+  // Skip class methods - they don't need ctx transformation
+  if (isClassMethod(item.scope)) return false
   if (ctx.cache.global.has(item.value)) return false
   if (prev?.type === '.') return false
   if (item.value.startsWith('__') && item.value.endsWith('__')) return false

@@ -9,11 +9,18 @@ import { isUserFunc } from './utils.js'
 import type { ScopeType } from '../../../models/ScopeType.js'
 import type { Context } from '../../../types'
 
+/** Result of collectParams - includes params and class method markers */
+export type ParamsInfo = {
+  params: Map<string, string[]>
+  classMethods: Set<string> // Functions extracted from class methods (have ℓthis param)
+}
+
 /** Collect parameters for each extracted function */
-export const collectParams = (ctx: Context): Map<string, string[]> => {
+export const collectParams = (ctx: Context): ParamsInfo => {
   const { content } = ctx
   const salt = ctx.options.salt ?? ''
-  const result = new Map<string, string[]>()
+  const params = new Map<string, string[]>()
+  const classMethods = new Set<string>()
 
   let func = ''
   let collecting = false
@@ -25,7 +32,7 @@ export const collectParams = (ctx: Context): Map<string, string[]> => {
 
     if (item.type === 'function' && isUserFunc(item.value, salt)) {
       func = item.value
-      result.set(func, [])
+      params.set(func, [])
       continue
     }
 
@@ -58,10 +65,14 @@ export const collectParams = (ctx: Context): Map<string, string[]> => {
       next?.is('sign', '=') === true ||
       next?.is('.', '.') === true
 
-    if (isParam) result.get(func)?.push(item.value)
+    if (isParam) {
+      params.get(func)?.push(item.value)
+      // Mark as class method if it has ℓthis parameter
+      if (item.value === THIS) classMethods.add(func)
+    }
   }
 
-  return result
+  return { params, classMethods }
 }
 
 /** Generate param assignment: λ.param := param */

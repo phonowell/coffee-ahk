@@ -14,9 +14,9 @@ import type { Context } from '../../../types'
 
 /** Main processor */
 const main = (ctx: Context) => {
-  const params = collectParams(ctx)
-  const skip = transformFunctions(ctx, params)
-  transformVars(ctx, skip)
+  const paramsInfo = collectParams(ctx)
+  const skip = transformFunctions(ctx, paramsInfo)
+  transformVars(ctx, skip, paramsInfo.classMethods)
   addBind(ctx)
 }
 
