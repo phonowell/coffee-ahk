@@ -62,9 +62,12 @@ const handleUnaryOperator = (ctx: Context): boolean => {
     return true
   }
 
-  // Bitwise NOT (~)
+  // Bitwise NOT (~) or Logical NOT (!)
   if (type === 'unary_math') {
-    content.push({ type: 'math', value: '~' })
+    if (value === '~') content.push({ type: 'math', value: '~' })
+    else if (value === '!')
+      content.push({ type: 'logical-operator', value: '!' })
+
     return true
   }
 

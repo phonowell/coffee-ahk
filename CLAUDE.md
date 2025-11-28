@@ -160,14 +160,14 @@ fn = (a) ->               ahk_2(a) {
 
 **ctx-transform.ts** (412行，已稳定，非必要勿读):
 
-| 函数 | 功能 |
-|------|------|
-| `shouldUseCtx` | 判断标识符是否需要转为 `λ.xxx` |
-| `collectParams` | 收集用户函数的参数列表 |
-| `transformFunctions` | 函数定义加 `λ` 参数、参数赋值 `λ.param := param` |
-| `collectCatchVars/ForVars` | 收集 catch/for 变量（跳过 ctx 转换） |
-| `transformVars` | `identifier` → `λ.identifier` |
-| `addBind` | `Func("xxx")` → `.Bind(λ)` 函数内 / `.Bind({})` 顶层 |
+| 函数                       | 功能                                                 |
+| -------------------------- | ---------------------------------------------------- |
+| `shouldUseCtx`             | 判断标识符是否需要转为 `λ.xxx`                       |
+| `collectParams`            | 收集用户函数的参数列表                               |
+| `transformFunctions`       | 函数定义加 `λ` 参数、参数赋值 `λ.param := param`     |
+| `collectCatchVars/ForVars` | 收集 catch/for 变量（跳过 ctx 转换）                 |
+| `transformVars`            | `identifier` → `λ.identifier`                        |
+| `addBind`                  | `Func("xxx")` → `.Bind(λ)` 函数内 / `.Bind({})` 顶层 |
 
 ## Class 与 Export
 
@@ -177,29 +177,29 @@ fn = (a) ->               ahk_2(a) {
 
 ## AHK v1 兼容修复
 
-| 问题            | 方案                                            |
-| --------------- | ----------------------------------------------- |
-| `this` 作参数名 | 用 `ℓthis`，函数体加 `this := ℓthis`            |
-| 对象键名表达式  | `shouldUseCtx` 跳过 object scope 后跟 `:` 的    |
-| catch 变量      | `collectCatchVars` 在 catch scope 跳过 ctx      |
-| `do => @a` this | `arrow.ts` 标记，`do.ts` 在 `.Call()` 传 `this` |
-| callback 参数   | 所有 `Func()` 自动加 `.Bind({})` 或 `.Bind(λ)`  |
-| `if var is Type`| AHK v1 特殊语法，**必须换行写大括号**，不支持 `if(var is Type)` |
-| 控制结构括号    | if/else/for/while/switch/case/try/catch/function/class **必须始终写 `{}`**，禁止省略 |
+| 问题             | 方案                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| `this` 作参数名  | 用 `ℓthis`，函数体加 `this := ℓthis`                                                 |
+| 对象键名表达式   | `shouldUseCtx` 跳过 object scope 后跟 `:` 的                                         |
+| catch 变量       | `collectCatchVars` 在 catch scope 跳过 ctx                                           |
+| `do => @a` this  | `arrow.ts` 标记，`do.ts` 在 `.Call()` 传 `this`                                      |
+| callback 参数    | 所有 `Func()` 自动加 `.Bind({})` 或 `.Bind(λ)`                                       |
+| `if var is Type` | AHK v1 特殊语法，**必须换行写大括号**，不支持 `if(var is Type)`                      |
+| 控制结构括号     | if/else/for/while/switch/case/try/catch/function/class **必须始终写 `{}`**，禁止省略 |
 
 ## 已知限制
 
-| 限制 | 说明 | Workaround | 告警 |
-|------|------|-----------|------|
-| for 循环解构 | `for [a, b] in arr` | `for pair in arr` 后 `[a, b] = pair` | ✅ |
-| 嵌套解构 | `[a, [b, c]] = x` | 手动展开 | ✅ |
-| `>>>` 无符号右移 | AHK 不支持 | 用 `>>` | ✅ |
-| `await`/`yield` | AHK 无异步/生成器 | 同步代码 | ✅ |
-| do 块隐式返回函数 | `do -> x = 1; -> x` 未 return | 显式 `return -> x` | ❌ bug |
+| 限制             | 说明                | Workaround                           | 告警 |
+| ---------------- | ------------------- | ------------------------------------ | ---- |
+| for 循环解构     | `for [a, b] in arr` | `for pair in arr` 后 `[a, b] = pair` | ✅   |
+| 嵌套解构         | `[a, [b, c]] = x`   | 手动展开                             | ✅   |
+| `>>>` 无符号右移 | AHK 不支持          | 用 `>>`                              | ✅   |
+| `await`/`yield`  | AHK 无异步/生成器   | 同步代码                             | ✅   |
 
 ## 测试策略
 
 测试用例需覆盖两个维度：
+
 1. **顶层 vs 函数内部** — 顶层代码不涉及 ctx 转换，函数内部需要 `λ.xxx`
 2. **简单 vs 闭包** — 内层函数修改外层变量是 ctx 转换的核心场景
 
@@ -211,7 +211,7 @@ fn = (a) ->               ahk_2(a) {
 - **2025-11-25**: 链式负索引 `nested[0][-1]`、`collectArrayExpression()` 回溯
 - **2025-11-26**: Content/Scope API 统一、闭包 λ 实现、class/export 分离方案
 - **2025-11-27**: Item 类型系统重构（严格 type-value 约束）、`::` 输出为 `prototype`、Content.push/unshift 多参数优化
-- **2025-11-28**: 所有 `Func()` 自动 `.Bind()`、移除冗余的 `λ := ""` 和 `if(!λ){λ:={}}`；修复 `for...of` 垃圾代码（`for-in` type 同时处理 `in`/`of`）；修复 `$xxx` 变量跳过 ctx 转换（大写检查只匹配 A-Z）；补充闭包测试用例；添加 `>>>`/`await`/`yield`/for循环解构/嵌套解构 编译器告警；修复内置函数 `ℓci`/`ℓtype` 参数错位（添加 `λ` 首参数）
+- **2025-11-28**: 所有 `Func()` 自动 `.Bind()`、移除冗余的 `λ := ""` 和 `if(!λ){λ:={}}`；修复 `for...of` 垃圾代码（`for-in` type 同时处理 `in`/`of`）；修复 `$xxx` 变量跳过 ctx 转换（大写检查只匹配 A-Z）；补充闭包测试用例；添加 `>>>`/`await`/`yield`/for循环解构/嵌套解构 编译器告警；修复内置函数 `ℓci`/`ℓtype` 参数错位（添加 `λ` 首参数）；修复 `!!` 被误转为 `~~`（`UNARY_MATH` 需检查 value 是 `~` 还是 `!`）
 
 ## 提交检查
 
