@@ -58,3 +58,57 @@ obj.items[0] = first
 obj.items[i] = value
 
 # Note: Negative index assignment is in negative-index.coffee
+
+# === Function context tests ===
+
+# Index access in function
+fn1 = ->
+  arr = [10, 20, 30]
+  return arr[1]
+
+# Index with closure variable
+fn2 = ->
+  arr = [1, 2, 3, 4, 5]
+  idx = 2
+  getter = ->
+    return arr[idx]
+  return getter()
+
+# Index write in closure
+fn3 = ->
+  arr = [1, 2, 3]
+  setter = (i, v) ->
+    arr[i] = v
+  setter 0, 99
+  return arr
+
+# Computed index in closure
+fn4 = ->
+  arr = [10, 20, 30, 40]
+  offset = 1
+  getAt = (base) ->
+    return arr[base + offset]
+  return getAt 1
+
+# Chained index in function
+fn5 = ->
+  matrix = [[1, 2], [3, 4]]
+  inner = ->
+    return matrix[0][1]
+  return inner()
+
+# String key access in function
+fn6 = ->
+  obj = {a: 1, b: 2}
+  key = 'a'
+  getter = ->
+    return obj[key]
+  return getter()
+
+# Index with this-property
+fn7 = ->
+  data = [100, 200, 300]
+  idx = 1
+  reader = ->
+    return data[idx]
+  return reader()

@@ -15,7 +15,7 @@ const main = async (source: string, salt: string) => {
   const content = await read<string>(source)
   if (!content) {
     throw new Error(
-      `ahk/file: include failed, source file not found or empty: '${source}'`,
+      `Coffee-AHK/file: include failed, source file not found or empty: '${source}'`,
     )
   }
 

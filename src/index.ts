@@ -103,7 +103,7 @@ const transpileAsFile = async (
   const [source2] = (await glob(listSource)).filter((item) =>
     item.endsWith('.coffee'),
   )
-  if (!source2) throw new Error(`ahk/file: invalid source '${source}'`)
+  if (!source2) throw new Error(`Coffee-AHK/file: invalid source '${source}'`)
 
   const content = await read(source2, options.salt)
 

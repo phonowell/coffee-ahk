@@ -25,7 +25,7 @@ const checkSimpleAssignment = (ctx: Context, i: number): void => {
 
   if (isVariableForbidden(item.value)) {
     throw new Error(
-      `ahk/forbidden: variable '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
+      `Coffee-AHK/forbidden: variable '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
     )
   }
 }
@@ -48,7 +48,7 @@ const checkDestructuringAssignment = (ctx: Context, i: number): void => {
     if (current?.is('bracket', ']') && nextItem?.is('sign', '=')) {
       if (isVariableForbidden(item.value)) {
         throw new Error(
-          `ahk/forbidden: destructuring target '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
+          `Coffee-AHK/forbidden: destructuring target '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
         )
       }
       break
@@ -81,7 +81,7 @@ const checkFunctionParameters = (ctx: Context, i: number): void => {
   if (isAfterParameterStart || isAfterCommaInParameters) {
     if (isVariableForbidden(item.value)) {
       throw new Error(
-        `ahk/forbidden: parameter '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
+        `Coffee-AHK/forbidden: parameter '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
       )
     }
   }

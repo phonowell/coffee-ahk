@@ -9,7 +9,7 @@ const main = async (source: string, salt: string): Promise<string> => {
   const content = await include(src, salt)
   if (!content) {
     throw new Error(
-      `ahk/file: include failed, source file not found or empty: '${src}'`,
+      `Coffee-AHK/file: include failed, source file not found or empty: '${src}'`,
     )
   }
 

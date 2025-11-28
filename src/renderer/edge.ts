@@ -46,7 +46,7 @@ export const edge2 = (ctx: Context): string => {
     const prev = content.at(i - 1)
     if (!prev) {
       throw new Error(
-        `ahk/internal: edge2: missing function name before call-start (token index: ${i})`,
+        `Coffee-AHK/internal: edge2: missing function name before call-start (token index: ${i})`,
       )
     }
 

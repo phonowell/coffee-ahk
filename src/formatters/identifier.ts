@@ -12,7 +12,7 @@ const identifierFormatter = (context: Context): boolean => {
       // 检查首字母是否为大写字母
       if (!/^[A-Z]/.test(value)) {
         throw new Error(
-          `ahk/class-case (line ${line}): class name '${value}' must start with an uppercase letter.`,
+          `Coffee-AHK/class-case (line ${line}): class name '${value}' must start with an uppercase letter.`,
         )
       }
 

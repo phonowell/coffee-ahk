@@ -53,7 +53,7 @@ const handleUnaryOperator = (ctx: Context): boolean => {
 
   if (type === 'unary' && value === 'delete') {
     throw new Error(
-      `ahk/forbidden (line ${getLine(ctx)}): 'delete' is not supported in AHK.`,
+      `Coffee-AHK/forbidden (line ${getLine(ctx)}): 'delete' is not supported in AHK.`,
     )
   }
 
@@ -103,17 +103,17 @@ const main = (ctx: Context): boolean => {
   if (type === 'compound_assign') {
     if (value === '||=' || value === '?=' || value === '&&=') {
       throw new Error(
-        `ahk/forbidden (line ${getLine(ctx)}): compound assignment '${value}' is not supported. Only standard assignments are allowed.`,
+        `Coffee-AHK/forbidden (line ${getLine(ctx)}): compound assignment '${value}' is not supported. Only standard assignments are allowed.`,
       )
     }
     if (value === '//=') {
       throw new Error(
-        `ahk/forbidden (line ${getLine(ctx)}): floor division assignment '//=' is not supported (conflicts with AHK comments).`,
+        `Coffee-AHK/forbidden (line ${getLine(ctx)}): floor division assignment '//=' is not supported (conflicts with AHK comments).`,
       )
     }
     if (value === '%%=') {
       throw new Error(
-        `ahk/forbidden (line ${getLine(ctx)}): modulo assignment '%%=' is not supported. Use 'x := Mod(x, b)' instead.`,
+        `Coffee-AHK/forbidden (line ${getLine(ctx)}): modulo assignment '%%=' is not supported. Use 'x := Mod(x, b)' instead.`,
       )
     }
     content.push({ type: 'math', value: value as ItemTypeMap['math'] })
@@ -123,13 +123,13 @@ const main = (ctx: Context): boolean => {
     // // is floor division in CoffeeScript but comment in AHK
     if (value === '//') {
       throw new Error(
-        `ahk/forbidden (line ${getLine(ctx)}): floor division '//' is not supported (conflicts with AHK comments). Use 'Math.floor(a / b)' instead.`,
+        `Coffee-AHK/forbidden (line ${getLine(ctx)}): floor division '//' is not supported (conflicts with AHK comments). Use 'Math.floor(a / b)' instead.`,
       )
     }
     // %% is modulo in CoffeeScript but not supported in AHK
     if (value === '%%') {
       throw new Error(
-        `ahk/forbidden (line ${getLine(ctx)}): modulo '%%' is not supported. Use 'Mod(a, b)' instead.`,
+        `Coffee-AHK/forbidden (line ${getLine(ctx)}): modulo '%%' is not supported. Use 'Mod(a, b)' instead.`,
       )
     }
     content.push({ type: 'math', value: value as ItemTypeMap['math'] })
@@ -138,6 +138,12 @@ const main = (ctx: Context): boolean => {
 
   // Bitwise operators: &, |, ^, <<, >>
   if (type === '&' || type === '|' || type === '^' || type === 'shift') {
+    // Unsigned right shift is not supported in AHK
+    if (value === '>>>' || value === '>>>=') {
+      throw new Error(
+        `Coffee-AHK/unsupported (line ${getLine(ctx)}): unsigned right shift '${value}' is not supported in AHK. Use '>>' instead.`,
+      )
+    }
     content.push({ type: 'math', value: value as ItemTypeMap['math'] })
     return true
   }

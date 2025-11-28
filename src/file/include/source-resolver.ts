@@ -27,14 +27,17 @@ export const getSource = async (
   )
   if (!pkg?.main) {
     throw new Error(
-      `ahk/file: package.json missing 'main' field for '${source}'`,
+      `Coffee-AHK/file: package.json missing 'main' field for '${source}'`,
     )
   }
 
   const listResult2 = await glob(`./node_modules/${path}/${pkg.main}`)
   const secondResult = listResult2[0]
-  if (!secondResult)
-    throw new Error(`ahk/file: resolved package main not found: '${source}'`)
+  if (!secondResult) {
+    throw new Error(
+      `Coffee-AHK/file: resolved package main not found: '${source}'`,
+    )
+  }
 
   return secondResult
 }

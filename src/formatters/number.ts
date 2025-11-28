@@ -9,7 +9,7 @@ const main = (ctx: Context): boolean => {
 
     if (value.includes('n')) {
       throw new Error(
-        `ahk/forbidden (line ${line}): 'BigInt' literal is not supported in AHK v1. Offending value: '${value}'`,
+        `Coffee-AHK/forbidden (line ${line}): 'BigInt' literal is not supported in AHK v1. Offending value: '${value}'`,
       )
     }
 

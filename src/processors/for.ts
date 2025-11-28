@@ -22,7 +22,7 @@ const main = (ctx: Context) => {
       const next = content.at(i + 1)
       if (!next) {
         throw new Error(
-          `ahk/internal: for: missing variable name after for/in keyword (token index ${i})`,
+          `Coffee-AHK/internal: for: missing variable name after for/in keyword (token index ${i})`,
         )
       }
       return next.value
@@ -44,7 +44,7 @@ const main = (ctx: Context) => {
     const next = content.at(index + 1)
     if (!next) {
       throw new Error(
-        `ahk/internal: for: missing block-start after for/in statement (token index ${index})`,
+        `Coffee-AHK/internal: for: missing block-start after for/in statement (token index ${index})`,
       )
     }
 

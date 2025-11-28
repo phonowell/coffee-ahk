@@ -61,9 +61,12 @@ await c2a("./script/toolkit/index.coffee", {
 - No true boolean type in AHK; `true`, `false`, `on`, and `off` are syntactic sugar
 - Character and number distinction is blurred in AHK; `'0'` is falsy
 - `NaN`, `null`, and `undefined` are converted to the empty string `''`
-- Optional chaining (`?`) is not supported
-- Unsigned right shift (`>>>`) is not supported
-- Floor division (`//`) and modulo (`%%`) operators conflict with AHK syntax
+- Optional chaining (`?`) is not supported (compiler error)
+- Unsigned right shift (`>>>`) is not supported (compiler error)
+- `async`/`await` and generators (`yield`) are not supported (compiler error)
+- For-loop destructuring (`for [a, b] in arr`) is not supported (compiler error). Workaround: `for item in arr` then `[a, b] = item`
+- Nested array destructuring (`[a, [b, c]] = x`) is not supported (compiler error). Workaround: flatten manually
+- Floor division (`//`) and modulo (`%%`) operators conflict with AHK syntax (compiler error)
 - Avoid using `=>` outside classes; pure functions in AHK lack `this`
 - `.coffee` files must be UTF-8; `.ahk` files must be UTF-8 with BOM
 - Import/export and npm package management are incomplete
@@ -121,6 +124,8 @@ await c2a("./script/toolkit/index.coffee", {
 | `async`/`await`                         |      ✅      |          ❌           |     ❌     |
 | Generator/`yield`                       |      ✅      |          ❌           |     ❌     |
 | `Map`/`Set`/`Symbol`                    |      ✅      |          ❌           |     ❌     |
+
+Note: Features marked ❌ in the coffee-ahk column will produce a **compiler error** with a helpful message.
 
 Legend:
 ✅ Supported & equivalent  🟡 Partially supported / limited  ⚠️ Supported with caveats  ❌ Not supported

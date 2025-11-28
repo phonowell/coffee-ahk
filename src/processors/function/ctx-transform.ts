@@ -27,7 +27,10 @@ const shouldUseCtx = (
   if (item.value === CTX) return false // skip λ itself
 
   const first = item.value[0]
-  if (first && first === first.toUpperCase()) return false
+  // Skip uppercase identifiers (class names, etc.) - only check if first char is A-Z
+  if (first && /^[A-Z]$/.test(first)) return false
+  // Skip internal variables (ℓxxx)
+  if (item.value.startsWith('ℓ')) return false
 
   // Skip object key names (identifier followed by : in object scope)
   if (next?.is('sign', ':') && item.scope.includes('object')) return false
@@ -239,12 +242,12 @@ const collectForVars = (
     if (!item?.is('for', 'for')) continue
     if (!item.scope.includes('function')) continue
 
-    // Collect variables between 'for' and 'in'
+    // Collect variables between 'for' and 'in'/'of'
     const loopVars: string[] = []
     for (let j = i + 1; j < len; j++) {
       const it = content.at(j)
       if (!it) break
-      if (it.is('for-in', 'in')) break
+      if (it.type === 'for-in') break // handles both 'in' and 'of'
       if (it.type === 'identifier') {
         const v = it.value
         // Skip internal variables (ℓxxx) and global variables
@@ -286,9 +289,9 @@ const transformVars = (ctx: Context, skip: Set<number>) => {
     const prev = content.at(i - 1)
     const next = content.at(i + 1)
 
-    // Track for declaration region (between 'for' and 'in')
+    // Track for declaration region (between 'for' and 'in'/'of')
     if (item.is('for', 'for')) inForDecl = true
-    if (item.is('for-in', 'in')) inForDecl = false
+    if (item.type === 'for-in') inForDecl = false // handles both 'in' and 'of'
 
     // Insert λ.xxx := xxx after for block-start
     if (forBlockStarts.has(i)) {

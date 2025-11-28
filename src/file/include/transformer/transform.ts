@@ -123,7 +123,7 @@ const handleCoffee = async (
 
   if (hasClass && hasExport) {
     throw new Error(
-      `ahk/file: module contains both class and export: '${file}'`,
+      `Coffee-AHK/file: module contains both class and export: '${file}'`,
     )
   }
 
@@ -240,7 +240,7 @@ const processFile = async (
     return
   }
   throw new Error(
-    `ahk/file: unsupported file type for transformation: '${file}'`,
+    `Coffee-AHK/file: unsupported file type for transformation: '${file}'`,
   )
 }
 

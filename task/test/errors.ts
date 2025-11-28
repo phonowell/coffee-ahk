@@ -12,27 +12,27 @@ const errorTests: ErrorTest[] = [
   {
     name: 'Optional chaining (?.) is forbidden',
     code: 'x = obj?.prop',
-    expectedError: /ahk\/forbidden.*\?\..*not supported/i,
+    expectedError: /Coffee-AHK\/forbidden.*\?\..*not supported/i,
   },
   {
     name: 'Existential operator (bin?) is forbidden',
     code: 'if bin? then 1',
-    expectedError: /ahk\/forbidden.*\?.*not supported/i, // CoffeeScript tokenizes as '?'
+    expectedError: /Coffee-AHK\/forbidden.*\?.*not supported/i, // CoffeeScript tokenizes as '?'
   },
   {
     name: 'Range operator (..) is forbidden',
     code: 'arr = [1..10]',
-    expectedError: /ahk\/forbidden.*\.\..*not supported/i,
+    expectedError: /Coffee-AHK\/forbidden.*\.\..*not supported/i,
   },
   {
     name: 'Post-if syntax is forbidden',
     code: 'return 1 if condition',
-    expectedError: /ahk\/forbidden.*post-if/i,
+    expectedError: /Coffee-AHK\/forbidden.*post-if/i,
   },
   {
     name: 'Question mark operator (?) is forbidden',
     code: 'x = a ? b : c',
-    expectedError: /ahk\/forbidden.*\?.*not supported/i,
+    expectedError: /Coffee-AHK\/forbidden.*\?.*not supported/i,
   },
 
   // Operator forbidden tests (CoffeeScript rejects undeclared variable first)
@@ -49,70 +49,70 @@ const errorTests: ErrorTest[] = [
   {
     name: 'Logical OR assignment (||=) is forbidden even when declared',
     code: 'x = 0\nx ||= 1',
-    expectedError: /ahk\/forbidden.*\|\|=/i,
+    expectedError: /Coffee-AHK\/forbidden.*\|\|=/i,
   },
   {
     name: 'Existential assignment (?=) is forbidden even when declared',
     code: 'x = 0\nx ?= 1',
-    expectedError: /ahk\/forbidden.*\?=/i,
+    expectedError: /Coffee-AHK\/forbidden.*\?=/i,
   },
   {
     name: 'Logical AND assignment (&&=) is forbidden',
     code: 'x = 1\nx &&= 2',
-    expectedError: /ahk\/forbidden.*&&=/i,
+    expectedError: /Coffee-AHK\/forbidden.*&&=/i,
   },
   {
     name: 'Floor division (//) is forbidden',
     code: 'x = 10 // 3',
-    expectedError: /ahk\/forbidden.*\/\/.*comment/i,
+    expectedError: /Coffee-AHK\/forbidden.*\/\/.*comment/i,
   },
   {
     name: 'Floor division assignment (//=) is forbidden',
     code: 'x = 10\nx //= 3',
-    expectedError: /ahk\/forbidden.*\/\/=.*comment/i,
+    expectedError: /Coffee-AHK\/forbidden.*\/\/=.*comment/i,
   },
   {
     name: 'Modulo (%%) is forbidden',
     code: 'x = 10 %% 3',
-    expectedError: /ahk\/forbidden.*%%.*not supported/i,
+    expectedError: /Coffee-AHK\/forbidden.*%%.*not supported/i,
   },
   {
     name: 'Modulo assignment (%%=) is forbidden',
     code: 'x = 10\nx %%= 3',
-    expectedError: /ahk\/forbidden.*%%=.*not supported/i,
+    expectedError: /Coffee-AHK\/forbidden.*%%=.*not supported/i,
   },
 
   // Relation operators forbidden (only 'in' is forbidden, instanceof is supported)
   {
     name: 'in operator is forbidden',
     code: 'x = 1 in [1,2,3]',
-    expectedError: /ahk\/forbidden.*in.*not supported/i,
+    expectedError: /Coffee-AHK\/forbidden.*in.*not supported/i,
   },
   {
     name: 'delete operator is forbidden',
     code: 'delete obj.key',
-    expectedError: /ahk\/forbidden.*delete.*not supported/i,
+    expectedError: /Coffee-AHK\/forbidden.*delete.*not supported/i,
   },
 
   // Number forbidden tests
   {
     name: 'BigInt literal is forbidden',
     code: 'n = 123n',
-    expectedError: /ahk\/forbidden.*BigInt/i,
+    expectedError: /Coffee-AHK\/forbidden.*BigInt/i,
   },
 
   // Sign forbidden tests (spread in wrong context)
   {
     name: 'Spread operator in object literal is forbidden',
     code: 'obj = { ...other }',
-    expectedError: /ahk\/forbidden.*spread operator/i,
+    expectedError: /Coffee-AHK\/forbidden.*spread operator/i,
   },
 
   // Variable name validation
   {
     name: 'Reserved class name is forbidden',
     code: 'class Class\n  a: 1',
-    expectedError: /ahk\/forbidden.*class name.*reserved/i,
+    expectedError: /Coffee-AHK\/forbidden.*class name.*reserved/i,
   },
   {
     name: 'Reserved variable name (CoffeeScript error)',
@@ -122,7 +122,7 @@ const errorTests: ErrorTest[] = [
   {
     name: 'A_ prefix variable name is forbidden',
     code: 'A_Custom = 1',
-    expectedError: /ahk\/forbidden.*a_.*prefix.*reserved/i,
+    expectedError: /Coffee-AHK\/forbidden.*a_.*prefix.*reserved/i,
   },
   {
     name: 'Reserved parameter name (CoffeeScript error)',
@@ -133,6 +133,33 @@ const errorTests: ErrorTest[] = [
     name: 'Reserved name in destructuring (CoffeeScript error)',
     code: '[return, break] = [1, 2]',
     expectedError: /unexpected|reserved/i,
+  },
+
+  // Unsupported language features
+  {
+    name: 'Unsigned right shift (>>>) is not supported',
+    code: 'x = 10 >>> 2',
+    expectedError: /Coffee-AHK\/unsupported.*>>>.*not supported/i,
+  },
+  {
+    name: 'await is not supported',
+    code: "fn = -> await fetch('url')",
+    expectedError: /Coffee-AHK\/unsupported.*await.*not supported/i,
+  },
+  {
+    name: 'yield is not supported',
+    code: 'fn = -> yield 1',
+    expectedError: /Coffee-AHK\/unsupported.*yield.*not supported/i,
+  },
+  {
+    name: 'for loop destructuring is not supported',
+    code: 'for [a, b] in arr\n  a + b',
+    expectedError: /Coffee-AHK\/unsupported.*for loop destructuring/i,
+  },
+  {
+    name: 'nested array destructuring is not supported',
+    code: '[a, [b, c]] = [1, [2, 3]]',
+    expectedError: /Coffee-AHK\/unsupported.*nested array destructuring/i,
   },
 ]
 

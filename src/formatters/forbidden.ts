@@ -19,13 +19,13 @@ const main = (ctx: Context) => {
 
   if (listForbidden.includes(type)) {
     throw new Error(
-      `ahk/forbidden (line ${line}): token type '${type}' is not supported in CoffeeScript→AHK transpilation.`,
+      `Coffee-AHK/forbidden (line ${line}): token type '${type}' is not supported in CoffeeScript→AHK transpilation.`,
     )
   }
 
   if (type === 'post_if') {
     throw new Error(
-      `ahk/forbidden (line ${line}): post-if syntax is not supported. Use standard if/else.`,
+      `Coffee-AHK/forbidden (line ${line}): post-if syntax is not supported. Use standard if/else.`,
     )
   }
 
@@ -34,9 +34,23 @@ const main = (ctx: Context) => {
     const { value } = ctx
     if (value === 'in') {
       throw new Error(
-        `ahk/forbidden (line ${line}): 'in' operator is not supported. Use 'for...in' for iteration.`,
+        `Coffee-AHK/forbidden (line ${line}): 'in' operator is not supported. Use 'for...in' for iteration.`,
       )
     }
+  }
+
+  // async/await is not supported in AHK
+  if (type === 'await') {
+    throw new Error(
+      `Coffee-AHK/unsupported (line ${line}): 'await' is not supported. AHK v1 has no async/await support.`,
+    )
+  }
+
+  // Generator/yield is not supported in AHK
+  if (type === 'yield') {
+    throw new Error(
+      `Coffee-AHK/unsupported (line ${line}): 'yield' is not supported. AHK v1 has no generator support.`,
+    )
   }
 
   return false

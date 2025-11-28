@@ -102,7 +102,7 @@ export const processContent = (content: string): string => {
     const line = lines[i]
     if (line && line.length > MAX_LINE_LENGTH) {
       throw new Error(
-        `ahk/file: line too long at line ${i + 1} (max ${MAX_LINE_LENGTH} chars):\n${line.slice(0, 80)}...`,
+        `Coffee-AHK/file: line too long at line ${i + 1} (max ${MAX_LINE_LENGTH} chars):\n${line.slice(0, 80)}...`,
       )
     }
   }

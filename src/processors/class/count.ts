@@ -10,7 +10,7 @@ const main = (ctx: Context) => {
     const it = content.at(i + 1)
     if (!it) {
       throw new Error(
-        `ahk/internal: class/count: missing identifier after class keyword (token index ${i})`,
+        `Coffee-AHK/internal: class/count: missing identifier after class keyword (token index ${i})`,
       )
     }
 

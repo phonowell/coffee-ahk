@@ -7,7 +7,7 @@ const main = (ctx: Context): boolean => {
   if (type === '...') {
     if (!['call', 'parameter'].includes(scope.last)) {
       throw new Error(
-        `ahk/forbidden (line ${line}): spread operator '...' is only allowed in function calls or parameter lists. Context: ${scope.last}`,
+        `Coffee-AHK/forbidden (line ${line}): spread operator '...' is only allowed in function calls or parameter lists. Context: ${scope.last}`,
       )
     }
     content.push({ type: 'sign', value: '...' })
@@ -18,7 +18,7 @@ const main = (ctx: Context): boolean => {
     const prev = content.at(-1)
     if (prev?.type === 'identifier' && ctx.cache.classNames.has(prev.value)) {
       throw new Error(
-        `ahk/class-case (line ${line}): cannot assign to class name '${prev.value}'. Please use a different identifier for variables.`,
+        `Coffee-AHK/class-case (line ${line}): cannot assign to class name '${prev.value}'. Please use a different identifier for variables.`,
       )
     }
     content.push({ type: 'sign', value: '=' })

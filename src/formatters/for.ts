@@ -4,7 +4,7 @@ import type { ItemTypeMap } from '../models/ItemType'
 import type { Context } from '../types'
 
 const main = (ctx: Context) => {
-  const { content, scope, type, value } = ctx
+  const { content, scope, type, value, token } = ctx
 
   if (type === 'for') {
     scope.push('for')
@@ -16,6 +16,12 @@ const main = (ctx: Context) => {
     const list: string[] = []
 
     const last = content.pop()
+    if (last?.is('edge', 'array-end')) {
+      const line = token[2].first_line + 1
+      throw new Error(
+        `Coffee-AHK/unsupported (line ${line}): for loop destructuring 'for [a, b] in arr' is not supported. Use 'for item in arr' then '[a, b] = item'.`,
+      )
+    }
     if (last) list.push(last.value)
 
     const last2 = content.at(-1)

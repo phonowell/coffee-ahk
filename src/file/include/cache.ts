@@ -77,7 +77,9 @@ export const sortModules = (): string[] => {
   const cycle = detectCycle(deps)
   if (cycle) {
     const cycleStr = cycle.map((p) => `  → ${p}`).join('\n')
-    throw new Error(`ahk/file: circular dependency detected:\n${cycleStr}`)
+    throw new Error(
+      `Coffee-AHK/file: circular dependency detected:\n${cycleStr}`,
+    )
   }
 
   // Build reverse graph: source -> modules that depend on it

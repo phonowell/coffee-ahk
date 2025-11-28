@@ -18,6 +18,13 @@ export const pickPre = (
 
   if (it.is('edge', 'array-start')) return listResult
 
+  // Detect nested array destructuring [a, [b, c]] = ...
+  if (it.is('edge', 'array-end')) {
+    throw new Error(
+      `Coffee-AHK/unsupported: nested array destructuring '[a, [b, c]] = x' is not supported. Flatten the destructuring manually.`,
+    )
+  }
+
   if (it.is('sign', ',')) listResult.push([])
   else last.unshift(it)
 
