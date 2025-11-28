@@ -1,9 +1,12 @@
 global ℓci_ahk := Func("salt_1").Bind({})
 salt_1(λ, ℓarr, ℓidx) {
   if ℓidx is Number
-    if (ℓidx < 0)
+  {
+    if (ℓidx < 0) {
       return ℓarr.Length() + ℓidx + 1
+    }
     return ℓidx + 1
+  }
   return ℓidx
 }
 global a := {a: 1}

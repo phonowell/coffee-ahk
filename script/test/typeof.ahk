@@ -4,7 +4,9 @@ ahk_typeof(λ, ℓv) {
     return "undefined"
   }
   if ℓv is Number
+  {
     return "number"
+  }
   if (IsObject(ℓv)) {
     if (IsFunc(ℓv)) {
       return "function"

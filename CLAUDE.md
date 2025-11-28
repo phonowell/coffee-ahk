@@ -184,6 +184,8 @@ fn = (a) ->               ahk_2(a) {
 | catch 变量      | `collectCatchVars` 在 catch scope 跳过 ctx      |
 | `do => @a` this | `arrow.ts` 标记，`do.ts` 在 `.Call()` 传 `this` |
 | callback 参数   | 所有 `Func()` 自动加 `.Bind({})` 或 `.Bind(λ)`  |
+| `if var is Type`| AHK v1 特殊语法，**必须换行写大括号**，不支持 `if(var is Type)` |
+| 控制结构括号    | if/else/for/while/switch/case/try/catch/function/class **必须始终写 `{}`**，禁止省略 |
 
 ## 已知限制
 
