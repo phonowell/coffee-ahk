@@ -1,6 +1,6 @@
-import type { PartialOptions } from '../index'
-import type Content from '../models/Content'
-import type Scope from '../models/Scope'
+import type { PartialOptions } from './options.js'
+import type Content from '../models/Content.js'
+import type Scope from '../models/Scope.js'
 import type cs from 'coffeescript'
 
 export type Cache = {

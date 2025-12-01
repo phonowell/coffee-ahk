@@ -11,32 +11,23 @@ import { isUserFunc, shouldUseCtx } from './utils.js'
 
 import type { Context } from '../../../types'
 
-/** Collect catch variable names */
-export const collectCatchVars = (ctx: Context): Set<string> => {
-  const { content } = ctx
-  const result = new Set<string>()
-
-  for (let i = 0; i < content.length; i++) {
-    const item = content.at(i)
-    if (!item) continue
-    const prev = content.at(i - 1)
-
-    if (item.type === 'identifier' && prev?.is('try', 'catch'))
-      result.add(item.value)
-  }
-
-  return result
-}
-
-/** Collect for loop variable names and their block-start positions */
-export const collectForVars = (
+/**
+ * Collect all variable information in a single pass.
+ * Optimized to reduce Content traversal from 2 passes to 1 pass.
+ */
+const collectAllVars = (
   ctx: Context,
   classMethods: Set<string>,
-): { vars: Set<string>; blockStarts: Map<number, string[]> } => {
+): {
+  catchVars: Set<string>
+  forVars: Set<string>
+  forBlockStarts: Map<number, string[]>
+} => {
   const { content } = ctx
   const salt = ctx.options.salt ?? ''
-  const vars = new Set<string>()
-  const blockStarts = new Map<number, string[]>()
+  const catchVars = new Set<string>()
+  const forVars = new Set<string>()
+  const forBlockStarts = new Map<number, string[]>()
   const len = content.length
 
   // Track current function to skip class methods
@@ -45,6 +36,11 @@ export const collectForVars = (
   for (let i = 0; i < len; i++) {
     const item = content.at(i)
     if (!item) continue
+    const prev = content.at(i - 1)
+
+    // Collect catch variables
+    if (item.type === 'identifier' && prev?.is('try', 'catch'))
+      catchVars.add(item.value)
 
     // Track current function
     if (item.type === 'function' && isUserFunc(item.value, salt)) {
@@ -60,10 +56,9 @@ export const collectForVars = (
       continue
     }
 
+    // Collect for loop variables
     if (!item.is('for', 'for')) continue
     if (!item.scope.includes('function')) continue
-
-    // Skip for loops inside class methods
     if (classMethods.has(currentFunc)) continue
 
     // Collect variables between 'for' and 'in'/'of'
@@ -77,7 +72,7 @@ export const collectForVars = (
         // Skip internal variables (ℓxxx) and global variables
         if (v.startsWith('ℓ')) continue
         if (ctx.cache.global.has(v)) continue
-        vars.add(v)
+        forVars.add(v)
         loopVars.push(v)
       }
     }
@@ -88,13 +83,13 @@ export const collectForVars = (
       const it = content.at(j)
       if (!it) break
       if (it.is('edge', 'block-start') && it.scope.at(-1) === 'for') {
-        blockStarts.set(j, loopVars)
+        forBlockStarts.set(j, loopVars)
         break
       }
     }
   }
 
-  return { vars, blockStarts }
+  return { catchVars, forVars, forBlockStarts }
 }
 
 /** Transform variable access: identifier -> λ.identifier */
@@ -106,8 +101,9 @@ export const transformVars = (
   const { content } = ctx
   const salt = ctx.options.salt ?? ''
   const out: Item[] = []
-  const catchVars = collectCatchVars(ctx)
-  const { vars: forVars, blockStarts: forBlockStarts } = collectForVars(
+
+  // Collect all variable info in a single pass (optimized from 2 passes)
+  const { catchVars, forVars, forBlockStarts } = collectAllVars(
     ctx,
     classMethods,
   )

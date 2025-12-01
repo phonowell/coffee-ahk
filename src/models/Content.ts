@@ -19,6 +19,11 @@ class Content {
     return this.#list.length
   }
 
+  /** Iterator support for for-of loops (zero-copy traversal) */
+  *[Symbol.iterator](): IterableIterator<Item> {
+    yield* this.#list
+  }
+
   /** Returns a shallow copy of the items array. */
   toArray(): Item[] {
     return [...this.#list]

@@ -1,0 +1,22 @@
+import type { Context } from '../types'
+
+/**
+ * Unified error class for Coffee-AHK transpilation errors.
+ * Automatically formats error messages with line numbers.
+ */
+export class TranspileError extends Error {
+  constructor(ctx: Context, type: string, message: string) {
+    const locationData = ctx.token[2]
+    const lineInfo = locationData
+      ? ` (line ${locationData.first_line + 1})`
+      : ''
+    super(`Coffee-AHK/${type}${lineInfo}: ${message}`)
+    this.name = 'TranspileError'
+  }
+}
+
+/**
+ * Create a TranspileError without Context (for file-level errors).
+ */
+export const createFileError = (type: string, message: string): Error =>
+  new Error(`Coffee-AHK/${type}: ${message}`)

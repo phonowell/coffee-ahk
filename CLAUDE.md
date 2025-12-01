@@ -79,14 +79,17 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 
 **流程** (`src/file/include/`): import → export 解析 → 拓扑排序 → 组装
 
-| 文件                            | 功能                     |
-| ------------------------------- | ------------------------ |
-| `cache.ts`                      | 缓存、循环依赖检测、Kahn |
-| `source-resolver.ts`            | 路径解析                 |
-| `transformer/transform.ts`      | export 解析、闭包包装    |
-| `transformer/replace-anchor.ts` | import → 变量赋值        |
+| 文件                            | 功能                                  |
+| ------------------------------- | ------------------------------------- |
+| `cache.ts`                      | 缓存、循环依赖检测、Kahn              |
+| `source-resolver.ts`            | 路径解析                              |
+| `transformer/transform.ts`      | 文件转换协调器（149行，已模块化）     |
+| `transformer/parse-exports.ts`  | export 解析（92行）                   |
+| `transformer/detect-class.ts`   | class 检测和校验（25行）              |
+| `transformer/wrap-closure.ts`   | 闭包包装和 return 语句生成（83行）    |
+| `transformer/replace-anchor.ts` | import → 变量赋值                     |
 
-**注意**: 遍历行时用 `line === undefined` 判断结束（空字符串是 falsy）
+**注意**: 遍历行时，`for...of` 循环可以用 `!line` 跳过空字符串；但判断数组结束必须用 `line === undefined`
 
 ## 代码规范
 
@@ -112,15 +115,15 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 
 ## 常见陷阱
 
-| 错误                        | 解决                       |
-| --------------------------- | -------------------------- |
-| Formatter 未返回 `true`     | 消费后返回 `true`          |
-| 直接改 `toArray()` 返回值   | 用 `.reload()` / `.push()` |
-| Processor 顺序错            | 按序号插入                 |
-| 测试前未 build              | `pnpm build && pnpm test`  |
-| `new Item()` 不用 `clone()` | 用 `clone()`               |
-| `!line` 判断空行            | 用 `line === undefined`    |
-| post-if (`y if x`)          | 用 `if x then y`           |
+| 错误                        | 解决                                            |
+| --------------------------- | ----------------------------------------------- |
+| Formatter 未返回 `true`     | 消费后返回 `true`                               |
+| 直接改 `toArray()` 返回值   | 用 `.reload()` / `.push()`                      |
+| Processor 顺序错            | 按序号插入                                      |
+| 测试前未 build              | `pnpm build && pnpm test`                       |
+| `new Item()` 不用 `clone()` | 用 `clone()`                                    |
+| `!line` vs `=== undefined`  | `for...of` 用 `!line`；判断数组结束用 `=== undefined` |
+| post-if (`y if x`)          | 用 `if x then y`                                |
 
 ## 新功能开发
 
@@ -160,15 +163,15 @@ fn = (a) ->               ahk_2(a) {
 
 **ctx-transform/** 目录结构（已稳定）:
 
-| 文件                     | 行数 | 功能                                                  |
-| ------------------------ | ---- | ----------------------------------------------------- |
-| `index.ts`               | 23   | 主入口                                                |
-| `utils.ts`               | 89   | `shouldUseCtx`, `isUserFunc`, `AHK_KEYWORDS`          |
-| `native.ts`              | 204  | Native 变量中转（`λ_var` 桥接）+ `processNativeBlock` |
-| `params.ts`              | 83   | `collectParams`, `genParamAssign`, `genThisAlias`     |
-| `transform-functions.ts` | 102  | 函数定义加 `λ` 参数、参数赋值                         |
-| `transform-vars.ts`      | 156  | `identifier` → `λ.identifier`、catch/for 变量收集     |
-| `bind.ts`                | 62   | `Func()` → `.Bind(λ)` / `.Bind({})`                   |
+| 文件                     | 行数 | 功能                                                     |
+| ------------------------ | ---- | -------------------------------------------------------- |
+| `index.ts`               | 23   | 主入口                                                   |
+| `utils.ts`               | 89   | `shouldUseCtx`, `isUserFunc`, `AHK_KEYWORDS`             |
+| `native.ts`              | 169  | Native 变量中转（`λ_var` 桥接）+ 合并收集转换（1次遍历） |
+| `params.ts`              | 83   | `collectParams`, `genParamAssign`, `genThisAlias`        |
+| `transform-functions.ts` | 102  | 函数定义加 `λ` 参数、参数赋值                            |
+| `transform-vars.ts`      | 131  | `identifier` → `λ.identifier`、合并变量收集（2→1次遍历）  |
+| `bind.ts`                | 62   | `Func()` → `.Bind(λ)` / `.Bind({})`                      |
 
 ## Class 与 Export
 
@@ -208,6 +211,28 @@ fn = (a) ->               ahk_2(a) {
 2. **简单 vs 闭包** — 内层函数修改外层变量是 ctx 转换的核心场景
 
 **变量命名**: 函数内测试用例应避免与顶层全局变量同名（CoffeeScript 无 `let`，同名会引用全局）
+
+## 性能优化记录
+
+**2025-12-01 架构优化**（全部测试通过 93/93）:
+
+1. **循环依赖消除** — 提取 `src/types/options.ts` 打破 `index.ts` ↔ `types/index.ts` 循环
+2. **错误处理基础设施** — 新增 `src/utils/error.ts`（`TranspileError` + `createFileError`）
+3. **模块拆分** — `transformer/transform.ts` (257→149行) 拆分为 4 个文件：
+   - `parse-exports.ts` (92行) — export 语句解析
+   - `detect-class.ts` (25行) — class 检测和校验
+   - `wrap-closure.ts` (83行) — 闭包包装和 return 生成
+4. **ctx-transform 遍历优化** — 减少 33% 遍历次数：
+   - `transform-vars.ts`: 合并 `collectCatchVars` + `collectForVars` → `collectAllVars`（3→2 次遍历）
+5. **Native 处理优化** — 减少 50% 字符串正则处理：
+   - `native.ts`: 合并 `collectNativeVars` + `transformNativeString` → `collectAndTransformNative`（2→1 次遍历）
+6. **Content 迭代器** — 添加 `*[Symbol.iterator]()` 支持零拷贝 `for-of` 遍历
+7. **文档完善** — `Scope.pop()` 添加详细注释说明返回值 `undefined` 的安全性
+8. **WeakSet 设计验证** — 确认 `array/change-index.ts` 的 WeakSet 使用正确（简单索引不触发 reload）
+
+**待增量迁移**（修改相关文件时一并更新）:
+- [ ] 错误处理统一 — 使用 `TranspileError`/`createFileError` 替换直接 `throw new Error()`
+- [ ] Content 迭代器应用 — 用 `for (const item of content)` 替换 `for (let i = 0; i < content.length; i++)`
 
 ## 历史修复记录
 

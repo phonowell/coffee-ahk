@@ -12,62 +12,29 @@ import { shouldVarUseCtxInNative } from './utils.js'
 import type { Context } from '../../../types'
 
 /**
- * Collect variables from Native string that need ctx transformation.
- * Returns a Set of variable names found in the Native string.
+ * Collect and transform Native string in a single pass (optimized).
+ * Returns both the transformed string and the set of variables found.
  */
-export const collectNativeVars = (
+export const collectAndTransformNative = (
   ctx: Context,
   value: string,
   inFunction: boolean,
-): Set<string> => {
+): { transformed: string; vars: Set<string> } => {
   const vars = new Set<string>()
-  if (!inFunction) return vars
+  if (!inFunction) return { transformed: value, vars }
 
   const idPattern = /\$?[a-z_][a-z0-9_$]*/gi
 
-  // Collect from %name% syntax
-  value.replace(/%([a-z_$][a-z0-9_$]*)%/gi, (_, varName) => {
-    if (shouldVarUseCtxInNative(ctx, varName, inFunction)) vars.add(varName)
-    return ''
-  })
-
-  // Collect from direct identifiers
-  value.replace(idPattern, (match, offset) => {
-    if (match === CTX) return ''
-    const charBefore = offset > 0 ? value[offset - 1] : ''
-    if (charBefore === '.') return ''
-    if (charBefore === 'ℓ') return ''
-    const afterPos = offset + match.length
-    const charAfter = afterPos < value.length ? value[afterPos] : ''
-    if (charAfter === '(') return ''
-    if (shouldVarUseCtxInNative(ctx, match, inFunction)) vars.add(match)
-    return ''
-  })
-
-  return vars
-}
-
-/**
- * Transform Native string - replace variable references with λ_xxx format.
- * This allows AHK commands to use simple variables instead of object properties.
- */
-export const transformNativeString = (
-  ctx: Context,
-  value: string,
-  inFunction: boolean,
-): string => {
-  if (!inFunction) return value
-
-  const idPattern = /\$?[a-z_][a-z0-9_$]*/gi
-
-  // First: transform %name% to %λ_name% format
+  // First pass: transform %name% to %λ_name% format and collect vars
   let result = value.replace(/%([a-z_$][a-z0-9_$]*)%/gi, (match, varName) => {
-    if (shouldVarUseCtxInNative(ctx, varName, inFunction))
+    if (shouldVarUseCtxInNative(ctx, varName, inFunction)) {
+      vars.add(varName)
       return `%${CTX}_${varName}%`
+    }
     return match
   })
 
-  // Second: transform all identifiers to λ_xxx format
+  // Second pass: transform all identifiers to λ_xxx format and collect vars
   result = result.replace(idPattern, (match, offset) => {
     if (match === CTX) return match
 
@@ -79,7 +46,6 @@ export const transformNativeString = (
       return match
 
     // Skip if inside %xxx% that was already transformed to %λ_xxx%
-    // Check if we're between % signs with λ_ prefix
     if (
       charBefore === '%' ||
       (charBefore === '_' && offset >= 3 && result[offset - 3] === '%')
@@ -89,16 +55,17 @@ export const transformNativeString = (
     const afterPos = offset + match.length
     const charAfter = afterPos < result.length ? result[afterPos] : ''
     if (charAfter === '(') return match
-    // Skip if followed by % (inside %xxx%)
     if (charAfter === '%') return match
 
-    if (shouldVarUseCtxInNative(ctx, match, inFunction))
+    if (shouldVarUseCtxInNative(ctx, match, inFunction)) {
+      vars.add(match)
       return `${CTX}_${match}`
+    }
 
     return match
   })
 
-  return result
+  return { transformed: result, vars }
 }
 
 /** Process a native block - collect consecutive natives, transform vars, add assignments */
@@ -106,51 +73,53 @@ export const processNativeBlock = (
   ctx: Context,
   content: Context['content'],
   startIdx: number,
-  firstItem: Item,
+  _firstItem: Item,
   out: Item[],
 ) => {
-  const nativeBlock: Item[] = [firstItem]
+  // Collect all consecutive natives and their transformations in one pass
+  const nativeBlock: Array<{ item: Item; transformed: string }> = []
   const allVars = new Set<string>()
-  let j = startIdx + 1
+  let j = startIdx
 
-  // Collect vars from first native
-  for (const v of collectNativeVars(
-    ctx,
-    firstItem.value,
-    firstItem.scope.includes('function'),
-  ))
-    allVars.add(v)
-
-  // Look ahead for consecutive natives (may have new-lines between)
+  // Process all consecutive native items
   while (j < content.length) {
-    const nextItem = content.at(j)
-    if (!nextItem) break
-    if (nextItem.type === 'new-line') {
-      nativeBlock.push(nextItem)
-      j++
-      continue
-    }
-    if (nextItem.type === 'native') {
-      nativeBlock.push(nextItem)
-      for (const v of collectNativeVars(
+    const item = content.at(j)
+    if (!item) break
+
+    if (item.type === 'native') {
+      const { transformed, vars } = collectAndTransformNative(
         ctx,
-        nextItem.value,
-        nextItem.scope.includes('function'),
-      ))
-        allVars.add(v)
+        item.value,
+        item.scope.includes('function'),
+      )
+      nativeBlock.push({ item, transformed })
+      for (const v of vars) allVars.add(v)
       j++
       continue
     }
-    break
+
+    // Allow new-lines between natives
+    if (item.type === 'new-line' && nativeBlock.length > 0) {
+      nativeBlock.push({ item, transformed: item.value })
+      j++
+      continue
+    }
+
+    // Stop at first non-native, non-newline item
+    if (nativeBlock.length > 0) break
+    j++
   }
 
   // If no vars need transformation, just push original items
   if (allVars.size === 0) {
-    for (const nativeItem of nativeBlock) out.push(nativeItem)
+    for (const { item } of nativeBlock) out.push(item)
     return
   }
 
-  const scope = firstItem.scope.toArray()
+  const firstNative = nativeBlock.find((n) => n.item.type === 'native')
+  if (!firstNative) return
+
+  const scope = firstNative.item.scope.toArray()
 
   // Insert λ_var := λ.var before native block
   for (const v of allVars) {
@@ -164,22 +133,17 @@ export const processNativeBlock = (
     )
   }
 
-  // Transform and push native items
-  for (const nativeItem of nativeBlock) {
-    if (nativeItem.type === 'native') {
-      const transformed = transformNativeString(
-        ctx,
-        nativeItem.value,
-        nativeItem.scope.includes('function'),
-      )
+  // Push transformed native items
+  for (const { item, transformed } of nativeBlock) {
+    if (item.type === 'native') {
       const newItem = new Item({
         type: 'native',
         value: transformed,
-        scope: nativeItem.scope.toArray(),
+        scope: item.scope.toArray(),
       })
-      if (nativeItem.comment) newItem.comment = [...nativeItem.comment]
+      if (item.comment) newItem.comment = [...item.comment]
       out.push(newItem)
-    } else out.push(nativeItem)
+    } else out.push(item)
   }
 
   // Insert λ.var := λ_var after native block

@@ -5,11 +5,13 @@ import { version } from '../package.json'
 import start from './entry/index.js'
 import { processContent, read, write } from './file/index.js'
 import log from './logger/index.js'
+import { createFileError } from './utils/error.js'
 
-type Options = typeof DEFAULT_OPTIONS
-export type PartialOptions = Partial<Options>
+import type { Options, PartialOptions } from './types/options.js'
 
-const DEFAULT_OPTIONS = {
+export type { Options, PartialOptions }
+
+const DEFAULT_OPTIONS: Options = {
   /** Generate AST output */
   ast: false,
   /** Show CoffeeScript AST */
@@ -103,7 +105,7 @@ const transpileAsFile = async (
   const [source2] = (await glob(listSource)).filter((item) =>
     item.endsWith('.coffee'),
   )
-  if (!source2) throw new Error(`Coffee-AHK/file: invalid source '${source}'`)
+  if (!source2) throw createFileError('file', `invalid source '${source}'`)
 
   const content = await read(source2, options.salt)
 

@@ -47,6 +47,12 @@ class Scope {
     return this.#list.includes(value)
   }
 
+  /**
+   * Removes and returns the last scope value.
+   * Returns undefined if the scope is empty.
+   * Note: All current usage is in paired push/pop operations (formatters),
+   * so undefined should never occur in practice.
+   */
   pop(): ScopeType | undefined {
     return this.#list.pop()
   }

@@ -2,11 +2,17 @@ import { getExtname, read, run } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
 import { MODULE_PREFIX } from '../../../constants.js'
+import { createFileError } from '../../../utils/error.js'
 import { getCache as fetchCache, getCacheSalt as fetchSalt } from '../cache.js'
 import { pickImport as resolveImport } from '../source-resolver.js'
-import { closureCoffee as wrapClosure } from '../utils.js'
 
+import {
+  hasClassDeclaration,
+  validateClassExportConflict,
+} from './detect-class.js'
+import { parseExportsFromCoffee } from './parse-exports.js'
 import { replaceAnchor as replaceMark } from './replace-anchor.js'
+import { wrapInClosureAndAssign } from './wrap-closure.js'
 
 type Cache = ReturnType<typeof fetchCache>
 type Meta = Cache extends Map<unknown, infer V> ? V : never
@@ -22,88 +28,6 @@ const handleAhk = (
   cache.set(file, { ...meta, content: result, dependencies: deps })
 }
 
-/**
- * Parse and extract export statements from CoffeeScript source.
- * Returns exportDefault, exportNamed arrays and remaining codeLines.
- */
-export const parseExportsFromCoffee = (replaced: string) => {
-  const exportDefault: string[] = []
-  const exportNamed: string[] = []
-  const codeLines: string[] = []
-
-  const lines = replaced.split('\n')
-  let i = 0
-  while (i < lines.length) {
-    const line = lines[i]
-    if (!line) {
-      i++
-      continue
-    }
-    const trimmed = line.trim()
-    // 只处理 export 开头的行
-    if (!trimmed.startsWith('export ')) {
-      // Skip type annotation comments (###* ... ###) immediately before export
-      // They will be handled with the export they annotate
-      if (trimmed.match(/^###\*.*###$/)) {
-        // Peek ahead to see if next non-empty line is export
-        let nextIdx = i + 1
-        while (nextIdx < lines.length && !lines[nextIdx]?.trim()) nextIdx++
-
-        if (lines[nextIdx]?.trim().startsWith('export ')) {
-          // Skip this type comment, it belongs to the export
-          i++
-          continue
-        }
-      }
-
-      codeLines.push(line)
-      i++
-      continue
-    }
-
-    // export default foo 或 export default ->
-    const exportDefaultMatch = /^export\s+default\s+(.+)/.exec(trimmed)
-    if (exportDefaultMatch?.[1]) {
-      // 判断是否为多行缩进块
-      const exportLineIndent = RegExp(/^(\s*)/).exec(line)?.[1] ?? ''
-      const exportBody = [exportDefaultMatch[1]]
-      let j = i + 1
-      while (j < lines.length) {
-        const nextLine = lines[j]
-        // Check for undefined (end of array), not empty string
-        if (nextLine === undefined) break
-        if (
-          nextLine.trim() === '' ||
-          nextLine.startsWith(`${exportLineIndent} `) ||
-          nextLine.startsWith(`${exportLineIndent}\t`)
-        ) {
-          exportBody.push(nextLine.slice(exportLineIndent.length))
-          j++
-        } else break
-      }
-      exportDefault.push(exportBody.join('\n').trim())
-      i = j
-      continue
-    }
-
-    // export {a, b} or export {a: foo()}
-    const exportNamedMatch = /^export\s*{(.+)}/.exec(trimmed)
-    if (exportNamedMatch?.[1]) {
-      exportNamedMatch[1].split(',').forEach((pair) => {
-        const seg = pair.trim()
-        if (!seg) return
-        exportNamed.push(seg)
-      })
-      i++
-      continue
-    }
-
-    // 其他 export 忽略
-    i++
-  }
-  return { exportDefault, exportNamed, codeLines }
-}
-
 const handleCoffee = async (
   file: string,
   text: string,
@@ -116,57 +40,26 @@ const handleCoffee = async (
   const { exportDefault, exportNamed, codeLines } =
     parseExportsFromCoffee(replaced)
 
-  // 检查是否有 class 声明
   const codeBody = codeLines.join('\n')
-  const hasClass = /^\s*class\s+\w+/m.test(codeBody)
+  const hasClass = hasClassDeclaration(codeBody)
   const hasExport = exportDefault.length > 0 || exportNamed.length > 0
 
-  if (hasClass && hasExport) {
-    throw new Error(
-      `Coffee-AHK/file: module contains both class and export: '${file}'`,
-    )
-  }
+  validateClassExportConflict(file, hasClass, hasExport)
 
+  // Class-only modules: output class code directly
   if (hasClass && !hasExport) {
-    // 仅有 class，直接输出 class 代码
     cache.set(file, { ...meta, content: codeBody, dependencies: deps })
     return
   }
 
-  // 组装 return 语句
-  const returnLine = run(() => {
-    // default 和命名导出共存
-    if (exportDefault.length && exportNamed.length) {
-      const namedObj = exportNamed
-        .map((s) => (s.includes(':') ? s : `${s}: ${s}`))
-        .join(', ')
-      return `return { default: ${exportDefault[0]}, ${namedObj} }`
-    }
-
-    // 只导出 default
-    if (exportDefault.length) return `return { default: ${exportDefault[0]} }`
-
-    if (exportNamed.length) {
-      const namedObj = exportNamed
-        .map((s) => (s.includes(':') ? s : `${s}: ${s}`))
-        .join(', ')
-      return `return { ${namedObj} }`
-    }
-
-    // 没有任何导出
-    return ''
-  })
-
-  if (returnLine) codeLines.push(returnLine)
-
-  // 保证 return 语句缩进与模块体一致
-  const closureBody = wrapClosure(codeLines.join('\n'))
-  const result = [
-    exportDefault.length || exportNamed.length
-      ? `${MODULE_PREFIX}_${salt}_${meta.id} = do ->`
-      : 'do ->',
-    closureBody,
-  ].join('\n')
+  // Modules with exports: wrap in closure
+  const result = wrapInClosureAndAssign(
+    codeLines,
+    exportDefault,
+    exportNamed,
+    meta,
+    salt,
+  )
   cache.set(file, { ...meta, content: result, dependencies: deps })
 }
 
@@ -239,8 +132,9 @@ const processFile = async (
     handleJsonOrYaml(file, text, meta, cache, salt, deps)
     return
   }
-  throw new Error(
-    `Coffee-AHK/file: unsupported file type for transformation: '${file}'`,
+  throw createFileError(
+    'file',
+    `unsupported file type for transformation: '${file}'`,
   )
 }
 
@@ -255,3 +149,6 @@ export const transformAll = async () => {
   // 递归处理未完成的项
   if ([...cache].some(([, meta]) => !meta.content)) await transformAll()
 }
+
+// Re-export for backward compatibility
+export { parseExportsFromCoffee } from './parse-exports.js'

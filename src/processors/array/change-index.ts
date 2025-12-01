@@ -80,7 +80,10 @@ const main = (ctx: Context) => {
   const { content } = ctx
   const token = `${CI}_${ctx.options.salt}`
   const countIgnore = { value: 0 }
-  // Track processed simple indices by Item reference (stable across content reloads)
+  // Track processed simple indices by Item reference.
+  // Note: WeakSet works here because simple indices don't trigger content.reload(),
+  // they only modify items in place via update(). Complex indices that use ℓci
+  // helper do trigger reload and aren't tracked here.
   const processedItems = new WeakSet<Item>()
 
   const update = (range: Range, list: Item[]) => {
