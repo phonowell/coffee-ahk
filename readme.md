@@ -2,7 +2,9 @@
 
 Translate `coffeescript` to `ahk`.
 
-[Documentation](./doc/documentation.md) | [文档](./doc/cn/documentation.md)
+[Documentation](./doc/documentation.md) | [文档](./doc/cn/documentation.md) | [AI Agent 使用指南](./USAGE.md)
+
+> **For AI Agents**: See [USAGE.md](./USAGE.md) for a comprehensive guide on writing CoffeeScript for AHK transpilation. The document is in Chinese, but AI agents can read and understand it without issues.
 
 ## Features
 
