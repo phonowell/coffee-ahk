@@ -1,6 +1,4 @@
-/**
- * Parameter collection and assignment generation for ctx-transform
- */
+/** Parameter collection and assignment generation for ctx-transform */
 import { CTX, THIS } from '../../../constants.js'
 import Item from '../../../models/Item.js'
 

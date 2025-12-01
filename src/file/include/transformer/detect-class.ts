@@ -1,12 +1,8 @@
-/**
- * Class detection and validation logic.
- */
+/** Class detection and validation logic. */
 
 import { createFileError } from '../../../utils/error.js'
 
-/**
- * Check if code contains class declarations.
- */
+/** Check if code contains class declarations. */
 export const hasClassDeclaration = (code: string): boolean =>
   /^\s*class\s+\w+/m.test(code)
 

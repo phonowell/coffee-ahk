@@ -64,9 +64,7 @@ const collectArrayExpression = (
 const isStringIndex = (listUnwrap: Item[]): boolean =>
   listUnwrap.some((it) => it.type === 'string')
 
-/**
- * Find all index-start positions in content.
- */
+/** Find all index-start positions in content. */
 const findAllIndexStarts = (content: Context['content']): number[] => {
   const positions: number[] = []
   for (let i = 0; i < content.length; i++) {

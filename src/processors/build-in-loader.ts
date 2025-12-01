@@ -6,9 +6,7 @@ import { changeIndex_ahk, typeof_ahk } from './builtins.gen.js'
 
 import type { Context } from '../types'
 
-/**
- * 获取内置函数内容（静态集成版）
- */
+/** 获取内置函数内容（静态集成版） */
 const getBuiltin = (functionName: string): Item[] => {
   if (functionName === 'changeIndex') {
     return [

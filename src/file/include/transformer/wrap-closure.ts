@@ -1,6 +1,4 @@
-/**
- * Closure wrapping logic for module exports.
- */
+/** Closure wrapping logic for module exports. */
 
 import { run } from 'fire-keeper'
 
@@ -9,9 +7,7 @@ import { closureCoffee as wrapClosure } from '../utils.js'
 
 type Meta = { content: string; dependencies: string[]; id: number }
 
-/**
- * Generate return statement for module exports.
- */
+/** Generate return statement for module exports. */
 export const generateReturnStatement = (
   exportDefault: string[],
   exportNamed: string[],
@@ -39,9 +35,7 @@ export const generateReturnStatement = (
     return ''
   })
 
-/**
- * Wrap code in closure and generate module assignment.
- */
+/** Wrap code in closure and generate module assignment. */
 export const wrapInClosureAndAssign = (
   codeLines: string[],
   exportDefault: string[],

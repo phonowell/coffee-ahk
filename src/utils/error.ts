@@ -15,8 +15,6 @@ export class TranspileError extends Error {
   }
 }
 
-/**
- * Create a TranspileError without Context (for file-level errors).
- */
+/** Create a TranspileError without Context (for file-level errors). */
 export const createFileError = (type: string, message: string): Error =>
   new Error(`Coffee-AHK/${type}: ${message}`)

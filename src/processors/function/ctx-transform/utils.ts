@@ -1,6 +1,4 @@
-/**
- * Utility functions for ctx-transform
- */
+/** Utility functions for ctx-transform */
 import forbidden from '../../../../data/forbidden.json' with { type: 'json' }
 import { CTX } from '../../../constants.js'
 
