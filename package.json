@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "coffeescript": "^2.7.0",
-    "fire-keeper": "^0.0.230",
+    "fire-keeper": "^0.0.231",
     "iconv-lite": "^0.7.0",
     "radash": "^12.1.1"
   },
@@ -13,17 +13,17 @@
   "devDependencies": {
     "@types/cson": "^7.20.3",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^24.10.0",
-    "@typescript-eslint/eslint-plugin": "^8.46.4",
-    "@typescript-eslint/parser": "^8.46.4",
+    "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.48.1",
+    "@typescript-eslint/parser": "^8.48.1",
     "esbuild": "^0.27.0",
     "eslint": "^9.39.1",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-unused-imports": "^4.3.0",
     "globals": "^16.5.0",
-    "prettier": "^3.6.2",
-    "tsx": "^4.20.6",
+    "prettier": "^3.7.3",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "files": [

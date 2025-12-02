@@ -6,7 +6,7 @@ import { version } from '../../package.json'
 import type { PartialOptions } from '..'
 import type Item from '../models/Item'
 
-const MAX_LINE_LENGTH = 200
+const MAX_LINE_LENGTH = 2000
 
 const generateVersion = () => {
   const group = version.split('.').map(Number)

@@ -79,15 +79,15 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 
 **流程** (`src/file/include/`): import → export 解析 → 拓扑排序 → 组装
 
-| 文件                            | 功能                                  |
-| ------------------------------- | ------------------------------------- |
-| `cache.ts`                      | 缓存、循环依赖检测、Kahn              |
-| `source-resolver.ts`            | 路径解析                              |
-| `transformer/transform.ts`      | 文件转换协调器（149行，已模块化）     |
-| `transformer/parse-exports.ts`  | export 解析（92行）                   |
-| `transformer/detect-class.ts`   | class 检测和校验（25行）              |
-| `transformer/wrap-closure.ts`   | 闭包包装和 return 语句生成（83行）    |
-| `transformer/replace-anchor.ts` | import → 变量赋值                     |
+| 文件                            | 功能                               |
+| ------------------------------- | ---------------------------------- |
+| `cache.ts`                      | 缓存、循环依赖检测、Kahn           |
+| `source-resolver.ts`            | 路径解析                           |
+| `transformer/transform.ts`      | 文件转换协调器（149行，已模块化）  |
+| `transformer/parse-exports.ts`  | export 解析（92行）                |
+| `transformer/detect-class.ts`   | class 检测和校验（25行）           |
+| `transformer/wrap-closure.ts`   | 闭包包装和 return 语句生成（83行） |
+| `transformer/replace-anchor.ts` | import → 变量赋值                  |
 
 **注意**: 遍历行时，`for...of` 循环可以用 `!line` 跳过空字符串；但判断数组结束必须用 `line === undefined`
 
@@ -105,7 +105,7 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 | 约束      | 说明                                          |
 | --------- | --------------------------------------------- | --- | ------------------------------------------------- |
 | 大小写    | AHK 不敏感；类名用全角 (`Animal` → `Ａnimal`) |
-| 行长      | 最大 200 字符，`splitAtCommas()` 自动换行     |
+| 行长      | 最大 2000 字符，`splitAtCommas()` 自动换行    |
 | 编码      | UTF-8 with BOM                                |
 | 禁止语法  | `?.` `??` `                                   |     | =` `&&=` `//` `%%` `in` `delete`—`forbidden.yaml` |
 | 测试 salt | 必须固定 `salt: 'ahk'`                        |
@@ -115,15 +115,15 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 
 ## 常见陷阱
 
-| 错误                        | 解决                                            |
-| --------------------------- | ----------------------------------------------- |
-| Formatter 未返回 `true`     | 消费后返回 `true`                               |
-| 直接改 `toArray()` 返回值   | 用 `.reload()` / `.push()`                      |
-| Processor 顺序错            | 按序号插入                                      |
-| 测试前未 build              | `pnpm build && pnpm test`                       |
-| `new Item()` 不用 `clone()` | 用 `clone()`                                    |
+| 错误                        | 解决                                                  |
+| --------------------------- | ----------------------------------------------------- |
+| Formatter 未返回 `true`     | 消费后返回 `true`                                     |
+| 直接改 `toArray()` 返回值   | 用 `.reload()` / `.push()`                            |
+| Processor 顺序错            | 按序号插入                                            |
+| 测试前未 build              | `pnpm build && pnpm test`                             |
+| `new Item()` 不用 `clone()` | 用 `clone()`                                          |
 | `!line` vs `=== undefined`  | `for...of` 用 `!line`；判断数组结束用 `=== undefined` |
-| post-if (`y if x`)          | 用 `if x then y`                                |
+| post-if (`y if x`)          | 用 `if x then y`                                      |
 
 ## 新功能开发
 
@@ -170,7 +170,7 @@ fn = (a) ->               ahk_2(a) {
 | `native.ts`              | 169  | Native 变量中转（`λ_var` 桥接）+ 合并收集转换（1次遍历） |
 | `params.ts`              | 83   | `collectParams`, `genParamAssign`, `genThisAlias`        |
 | `transform-functions.ts` | 102  | 函数定义加 `λ` 参数、参数赋值                            |
-| `transform-vars.ts`      | 131  | `identifier` → `λ.identifier`、合并变量收集（2→1次遍历）  |
+| `transform-vars.ts`      | 131  | `identifier` → `λ.identifier`、合并变量收集（2→1次遍历） |
 | `bind.ts`                | 62   | `Func()` → `.Bind(λ)` / `.Bind({})`                      |
 
 ## Class 与 Export
@@ -231,6 +231,7 @@ fn = (a) ->               ahk_2(a) {
 8. **WeakSet 设计验证** — 确认 `array/change-index.ts` 的 WeakSet 使用正确（简单索引不触发 reload）
 
 **待增量迁移**（修改相关文件时一并更新）:
+
 - [ ] 错误处理统一 — 使用 `TranspileError`/`createFileError` 替换直接 `throw new Error()`
 - [ ] Content 迭代器应用 — 用 `for (const item of content)` 替换 `for (let i = 0; i < content.length; i++)`
 
