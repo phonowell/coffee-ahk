@@ -22,7 +22,7 @@ ahk_3(λ) {
 ahk_4(λ) {
   λ.fn1 := Func("ahk_3").Bind(λ)
   λ.fn2 := Func("ahk_2").Bind(λ)
-  λ.fn3 := Func("ahk_1").Bind(λ)
+  return λ.fn3 := Func("ahk_1").Bind(λ)
 }
 ahk_5(λ) {
   return λ.a + λ.b + λ.c
@@ -45,7 +45,7 @@ ahk_9(λ, a, b, c) {
   λ.c := c
   λ.a
   λ.b.Call()
-  λ.c.Call(λ.a)
+  return λ.c.Call(λ.a)
 }
 ahk_10(λ, a := 1, b := 2) {
   λ.a := a

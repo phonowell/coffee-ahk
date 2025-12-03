@@ -9,5 +9,5 @@ ahk_1(λ, val) {
   λ.count := λ.val ? λ.val : 42
   λ.name := λ.val ? λ.val : "test"
   λ.other := λ.val || λ.fallback
-  {count: λ.count, name: λ.name, other: λ.other}
+  return {count: λ.count, name: λ.name, other: λ.other}
 }

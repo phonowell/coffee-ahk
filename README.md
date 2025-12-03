@@ -62,7 +62,11 @@ await c2a("./script/toolkit/index.coffee", {
   - Class names must start with an uppercase letter.
   - All class identifiers are rendered with uppercase letters replaced by full-width Unicode for AHK v1 case simulation (e.g., `Animal` → `Ａnimal`).
 - No support for getter/setter
-- Implicit return is supported in common cases (functions, object methods); complex control flows (for/while/if/switch/try) still require explicit `return`
+- **Implicit return is limited**:
+  - Maximum 2 newlines (3 lines of code) for regular functions
+  - Maximum 1 newline (2 lines) for object literals without braces
+  - Functions with `for`/`if`/`while`/`try` as last statement require explicit `return`
+  - Exceeding these limits requires explicit `return` statement
 - No true boolean type in AHK; `true`, `false`, `on`, and `off` are syntactic sugar
 - Character and number distinction is blurred in AHK; `'0'` is falsy
 - `NaN`, `null`, and `undefined` are converted to the empty string `''`

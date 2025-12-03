@@ -3,6 +3,8 @@
  * Extracts export default and export named from CoffeeScript source.
  */
 
+import { createFileError } from '../../../utils/error.js'
+
 export type ParsedExports = {
   exportDefault: string[]
   exportNamed: string[]
@@ -13,7 +15,10 @@ export type ParsedExports = {
  * Parse and extract export statements from CoffeeScript source.
  * Returns exportDefault, exportNamed arrays and remaining codeLines.
  */
-export const parseExportsFromCoffee = (replaced: string): ParsedExports => {
+export const parseExportsFromCoffee = (
+  replaced: string,
+  filePath?: string,
+): ParsedExports => {
   const exportDefault: string[] = []
   const exportNamed: string[] = []
   const codeLines: string[] = []
@@ -85,8 +90,26 @@ export const parseExportsFromCoffee = (replaced: string): ParsedExports => {
       continue
     }
 
-    // 其他 export 忽略
-    i++
+    // 检测不支持的 export 语法
+    const fileInfo = filePath ? ` in '${filePath}'` : ''
+    if (/^export\s+(const|let|var|function|class)\s+/.test(trimmed)) {
+      throw createFileError(
+        'export',
+        `unsupported syntax "export const/let/var/function/class"${fileInfo}\n  Line: ${trimmed}\n  Use "export { name }" or "export default" instead`,
+      )
+    }
+    if (/^export\s+\*/.test(trimmed)) {
+      throw createFileError(
+        'export',
+        `unsupported syntax "export *"${fileInfo}\n  Line: ${trimmed}\n  Use "export { name1, name2 }" instead`,
+      )
+    }
+
+    // 其他未识别的 export 语法
+    throw createFileError(
+      'export',
+      `unrecognized export syntax${fileInfo}\n  Line: ${trimmed}\n  Supported: "export default <expr>", "export { a, b }", "export { a: expr() }"`,
+    )
   }
   return { exportDefault, exportNamed, codeLines }
 }

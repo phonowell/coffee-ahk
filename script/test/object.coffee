@@ -17,7 +17,7 @@ fn = ->
     b:
       a: 1
       b: 2
-  d = 1
+  return d = 1
 
 {a, b, c} =
   a: 1

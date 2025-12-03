@@ -37,8 +37,10 @@ const handleCoffee = async (
   deps: string[],
 ) => {
   const replaced = await replaceMark(file, text)
-  const { exportDefault, exportNamed, codeLines } =
-    parseExportsFromCoffee(replaced)
+  const { exportDefault, exportNamed, codeLines } = parseExportsFromCoffee(
+    replaced,
+    file,
+  )
 
   const codeBody = codeLines.join('\n')
   const hasClass = hasClassDeclaration(codeBody)

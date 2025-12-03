@@ -30,7 +30,7 @@ fn4 = ->
   a = 1
   b = 2
   c = 3
-  `Format, output, {1} + {2} = {3}, a, b, c`
+  return `Format, output, {1} + {2} = {3}, a, b, c`
 
 # === Consecutive Native blocks (merged handling) ===
 

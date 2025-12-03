@@ -24,4 +24,4 @@ calc = (x) ->
 test = ->
   a = if flag1 then "a" else "b"
   b = if flag2 then 10 else 20
-  { a, b }
+  return { a, b }

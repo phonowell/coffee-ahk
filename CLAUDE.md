@@ -105,7 +105,7 @@ import { plus, minus } from './module'
 import m, { plus, minus } from './module'
 ```
 
-**不支持**: `import * as m from './x'` | `import { foo as bar }` （别名导入）
+**不支持**（编译时错误）: `import * as m from './x'` | `import { foo as bar }` （别名导入）
 
 **支持的导出语法**:
 
@@ -132,7 +132,13 @@ export default { plus, minus }
 export { plus, minus }
 ```
 
-**不支持**: `export const foo = 1` | `export * from './x'` | `export function fn() {}`
+**不支持**（编译时错误）: `export const foo = 1` | `export * from './x'` | `export function fn() {}`
+
+**错误提示** (v0.0.94+):
+
+- 不支持的语法会在编译时抛出清晰错误，包含具体行号和建议的替代方案
+- Import 错误位置：[source-resolver.ts:46-62](src/file/include/source-resolver.ts#L46-L62)
+- Export 错误位置：[parse-exports.ts:93-112](src/file/include/transformer/parse-exports.ts#L93-L112)
 
 **注意**: 遍历行时，`for...of` 循环可以用 `!line` 跳过空字符串；但判断数组结束必须用 `line === undefined`
 
@@ -262,10 +268,48 @@ fn = (a) ->               ahk_2(a) {
 
 | 限制             | 说明                | Workaround                           | 告警 |
 | ---------------- | ------------------- | ------------------------------------ | ---- |
+| 隐式 return      | 最多 2 个换行（3行）| 超过限制需显式 `return`              | ❌   |
 | for 循环解构     | `for [a, b] in arr` | `for pair in arr` 后 `[a, b] = pair` | ✅   |
 | 嵌套解构         | `[a, [b, c]] = x`   | 手动展开                             | ✅   |
 | `>>>` 无符号右移 | AHK 不支持          | 用 `>>`                              | ✅   |
 | `await`/`yield`  | AHK 无异步/生成器   | 同步代码                             | ✅   |
+
+**隐式 return 限制详情**（`src/processors/function/implicit-return.ts:52-56`）：
+
+- **普通函数**：函数体最多包含 2 个换行符（即最多 3 行代码）
+  ```coffee
+  # ✅ 支持（2个换行）
+  fn = ->
+    x = 1
+    x + 1
+
+  # ❌ 不支持（3个换行）
+  fn = ->
+    x = 1
+    y = 2
+    x + y  # 需要显式 return
+  ```
+
+- **返回对象无括号**：最多 1 个换行符（即最多 2 行代码）
+  ```coffee
+  # ✅ 支持（1个换行）
+  fn = ->
+    a: 1
+    b: 2
+
+  # ❌ 不支持（2个换行）
+  fn = ->
+    a: 1
+    b: 2
+    c: 3  # 需要显式 return
+  ```
+
+- **忽略的语句**：最后一行是以下语句时，不会添加隐式 return（见 `ignore.ts`）：
+  - `for` / `if` / `while` / `try` 控制结构
+  - `native` 代码块（除 `do` / `do-fat` 标记）
+  - `statement`（除 `new`）
+
+- **解决方案**：超过限制时，在最后一行前加 `return` 关键字
 
 ## 测试策略
 

@@ -8,7 +8,7 @@ global test := Func("ahk_1").Bind({})
 ahk_1(λ) {
   a := λ.flag1 ? "a" : "b"
   λ.b := λ.flag2 ? 10 : 20
-  {a: a, b: λ.b}
+  return {a: a, b: λ.b}
 }
 ahk_2(λ, x) {
   λ.x := x

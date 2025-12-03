@@ -2,6 +2,8 @@
 import { getDirname, glob, read } from 'fire-keeper'
 import { trim } from 'radash'
 
+import { createFileError } from '../../utils/error.js'
+
 import { listExt } from './utils.js'
 
 export const getSource = async (
@@ -46,6 +48,20 @@ export const pickImport = async (
   source: string,
   line: string,
 ): Promise<{ default: string; named: string[]; path: string }> => {
+  // 检测不支持的 import 语法
+  if (/import\s+\*\s+as\s+/.test(line)) {
+    throw createFileError(
+      'import',
+      `unsupported syntax "import * as" in '${source}'\n  Line: ${line}\n  Use named imports instead: import { foo, bar } from './module'`,
+    )
+  }
+  if (/{\s*\w+\s+as\s+\w+/.test(line)) {
+    throw createFileError(
+      'import',
+      `unsupported syntax "import { foo as bar }" in '${source}'\n  Line: ${line}\n  Use direct names without aliases: import { foo } from './module'`,
+    )
+  }
+
   // 支持 import m, { a, b } from ... 以及原有语法
   let defaultImport = ''
   let namedImports: string[] = []

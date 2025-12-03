@@ -18,4 +18,4 @@ fn = (val) ->
   # Should NOT convert
   other = val || fallback
 
-  {count, name, other}
+  return {count, name, other}

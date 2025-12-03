@@ -13,7 +13,7 @@ fn fn fn
 fn = (a, b, c) ->
   a
   b()
-  c a
+  return c a
 fn = ->
   a = 1
   return do (b = 2) -> do ->
@@ -22,4 +22,4 @@ fn = ->
 do ->
   fn1 = -> a + b
   fn2 = (a) -> a + b
-  fn3 = (a, b) -> a + b
+  return fn3 = (a, b) -> a + b

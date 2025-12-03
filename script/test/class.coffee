@@ -9,7 +9,7 @@ class A extends B
   constructor: ->
     super()
     super.a()
-    do => @a
+    return do => @a
 
   d: -> 1
   e: (n) -> @a + n

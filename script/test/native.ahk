@@ -72,7 +72,7 @@ ahk_10(λ) {
   λ.a := 1
   λ.b := 2
   λ.c := 3
-  λ_output := λ.output
+  return λ_output := λ.output
   λ_a := λ.a
   λ_b := λ.b
   λ_c := λ.c

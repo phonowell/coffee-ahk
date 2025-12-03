@@ -5,7 +5,7 @@ class Ａ extends B {
   __New() {
     base.__New()
     base.a.Call()
-    (Func("ahk_16").Bind(λ)).Call(this)
+    return (Func("ahk_16").Bind(λ)).Call(this)
   }
   d := Func("ahk_15").Bind({}, this)
   e := Func("ahk_14").Bind({}, this)
