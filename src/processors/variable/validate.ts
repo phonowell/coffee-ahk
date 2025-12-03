@@ -1,20 +1,9 @@
-import data from '../../../data/forbidden.json'
+import {
+  getForbiddenReason,
+  isVariableForbidden,
+} from '../../utils/forbidden.js'
 
 import type { Context } from '../../types'
-
-const listForbidden = data
-  .filter((item): item is string => typeof item === 'string')
-  .map((item) => item.toLowerCase())
-
-const isVariableForbidden = (name: string): boolean => {
-  const v = name.toLowerCase()
-  return v.startsWith('a_') || listForbidden.includes(v)
-}
-
-const getForbiddenReason = (name: string): string =>
-  name.toLowerCase().startsWith('a_')
-    ? 'A_ prefix is reserved for AHK built-in variables'
-    : 'name is in forbidden list'
 
 const checkSimpleAssignment = (ctx: Context, i: number): void => {
   const { content } = ctx
@@ -87,6 +76,60 @@ const checkFunctionParameters = (ctx: Context, i: number): void => {
   }
 }
 
+const checkCatchVariable = (ctx: Context, i: number): void => {
+  const { content } = ctx
+  const item = content.at(i)
+  const prev = content.at(i - 1)
+
+  if (!item?.is('identifier')) return
+  if (!prev?.is('try', 'catch')) return
+
+  if (isVariableForbidden(item.value)) {
+    throw new Error(
+      `Coffee-AHK/forbidden: catch variable '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
+    )
+  }
+}
+
+const checkForLoopVariables = (ctx: Context, i: number): void => {
+  const { content } = ctx
+  const item = content.at(i)
+
+  if (!item?.is('for', 'for')) return
+
+  // 收集 'for' 和 'in'/'of' 之间的所有 identifier
+  for (let j = i + 1; j < Math.min(i + 20, content.length); j++) {
+    const current = content.at(j)
+    if (!current) break
+    if (current.type === 'for-in') break // 到达 'in' 或 'of'，停止
+
+    if (current.type === 'identifier') {
+      if (isVariableForbidden(current.value)) {
+        throw new Error(
+          `Coffee-AHK/forbidden: for loop variable '${current.value}' cannot be used (${getForbiddenReason(current.value)}).`,
+        )
+      }
+    }
+  }
+}
+
+const checkObjectKeys = (ctx: Context, i: number): void => {
+  const { content } = ctx
+  const item = content.at(i)
+
+  if (!item?.is('property')) return
+
+  // Only forbid A_ prefix for object keys/class properties
+  // Other forbidden names are allowed as they don't pollute global namespace
+  // Note: This also handles object destructuring keys like {A_Index: idx}
+  // because formatters convert them to 'property' type
+  if (item.value.toLowerCase().startsWith('a_')) {
+    throw new Error(
+      `Coffee-AHK/forbidden: object key or class property '${item.value}' cannot be used (A_ prefix is reserved for AHK built-in variables).`,
+    )
+  }
+}
+
 const main = (ctx: Context) => {
   const { content } = ctx
 
@@ -94,6 +137,9 @@ const main = (ctx: Context) => {
     checkSimpleAssignment(ctx, i)
     checkDestructuringAssignment(ctx, i)
     checkFunctionParameters(ctx, i)
+    checkCatchVariable(ctx, i)
+    checkForLoopVariables(ctx, i)
+    checkObjectKeys(ctx, i)
   })
 }
 

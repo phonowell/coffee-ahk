@@ -1,5 +1,9 @@
 import { ARRAY } from '../../constants.js'
 import Item from '../../models/Item.js'
+import {
+  getForbiddenReason,
+  isVariableForbidden,
+} from '../../utils/forbidden.js'
 
 import { pickIndent } from './deconstruct/pick-indent.js'
 import { pickPre } from './deconstruct/pick-pre.js'
@@ -71,6 +75,18 @@ const main = (ctx: Context) => {
     //    ^1 ^2
     // 1 is what you need, and 2 is where you are, so minus 2
     listPre = pickPre(ctx, i - 2, listContent)
+
+    // Validate array destructuring targets
+    listPre.forEach((preItems) => {
+      preItems.forEach((it) => {
+        if (it.type === 'identifier' && isVariableForbidden(it.value)) {
+          throw new Error(
+            `Coffee-AHK/forbidden: array destructuring target '${it.value}' cannot be used (${getForbiddenReason(it.value)}).`,
+          )
+        }
+      })
+    })
+
     listContent = listContent.slice(0, listContent.length - 2)
 
     listContent = [

@@ -1,6 +1,6 @@
 import esbuild from "esbuild";
 
-esbuild
+await esbuild
   .build({
     entryPoints: ["src/index.ts"],
     bundle: true,

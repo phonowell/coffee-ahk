@@ -9,12 +9,16 @@ import newLineProcessor from './new-line.js'
 import objectProcessor from './object.js'
 import typeofProcessor from './typeof.js'
 import variableProcessor from './variable/index.js'
+import validate from './variable/validate.js'
 
 import type { Context } from '../types'
 
 /** Process AST transformations */
 const processAst = (context: Context) => {
   newLineProcessor(context) // have to be first
+
+  // Run validation early before destructuring transformations
+  validate(context)
 
   forProcessor(context)
   arrayProcessor(context)

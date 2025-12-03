@@ -115,6 +115,11 @@ const errorTests: ErrorTest[] = [
     expectedError: /Coffee-AHK\/forbidden.*class name.*reserved/i,
   },
   {
+    name: 'AHK built-in function as class name is forbidden',
+    code: 'class InStr\n  value: 1',
+    expectedError: /Coffee-AHK\/forbidden.*class name.*forbidden/i,
+  },
+  {
     name: 'Reserved variable name (CoffeeScript error)',
     code: 'return = 1',
     expectedError: /keyword.*can't be assigned|reserved/i,
@@ -125,14 +130,79 @@ const errorTests: ErrorTest[] = [
     expectedError: /Coffee-AHK\/forbidden.*a_.*prefix.*reserved/i,
   },
   {
+    name: 'AHK built-in variable in assignment is forbidden',
+    code: 'A_Index = 5',
+    expectedError: /Coffee-AHK\/forbidden.*A_Index.*a_.*prefix/i,
+  },
+  {
+    name: 'AHK built-in function in assignment is forbidden',
+    code: 'InStr = myFunc',
+    expectedError: /Coffee-AHK\/forbidden.*InStr.*forbidden list/i,
+  },
+  {
     name: 'Reserved parameter name (CoffeeScript error)',
     code: 'fn = (return) -> 1',
     expectedError: /unexpected|reserved/i,
   },
   {
+    name: 'AHK built-in function as parameter is forbidden',
+    code: 'fn = (InStr) -> InStr(a, b)',
+    expectedError: /Coffee-AHK\/forbidden.*parameter.*InStr/i,
+  },
+  {
+    name: 'A_ prefix as parameter is forbidden',
+    code: 'fn = (A_Index) -> A_Index + 1',
+    expectedError: /Coffee-AHK\/forbidden.*parameter.*A_Index/i,
+  },
+  {
     name: 'Reserved name in destructuring (CoffeeScript error)',
     code: '[return, break] = [1, 2]',
     expectedError: /unexpected|reserved/i,
+  },
+  {
+    name: 'AHK built-in function in array destructuring is forbidden',
+    code: '[InStr, x] = arr',
+    expectedError: /Coffee-AHK\/forbidden.*array destructuring target.*InStr.*forbidden list/i,
+  },
+  {
+    name: 'A_ prefix in array destructuring is forbidden',
+    code: '[A_Index, x] = arr',
+    expectedError: /Coffee-AHK\/forbidden.*array destructuring target.*A_Index.*a_.*prefix/i,
+  },
+  {
+    name: 'AHK built-in function as catch variable is forbidden',
+    code: 'try\n  x = 1\ncatch InStr\n  console.log(InStr)',
+    expectedError: /Coffee-AHK\/forbidden.*catch variable.*InStr/i,
+  },
+  {
+    name: 'A_ prefix as catch variable is forbidden',
+    code: 'try\n  x = 1\ncatch A_Index\n  console.log(A_Index)',
+    expectedError: /Coffee-AHK\/forbidden.*catch variable.*A_Index/i,
+  },
+  {
+    name: 'AHK built-in function as for loop variable is forbidden',
+    code: 'for InStr in arr\n  console.log(InStr)',
+    expectedError: /Coffee-AHK\/forbidden.*for loop variable.*InStr/i,
+  },
+  {
+    name: 'A_ prefix as for loop key is forbidden',
+    code: 'for A_Index, value in obj\n  console.log(A_Index)',
+    expectedError: /Coffee-AHK\/forbidden.*for loop variable.*A_Index/i,
+  },
+  {
+    name: 'A_ prefix as object key is forbidden',
+    code: 'obj = {A_Index: 5}',
+    expectedError: /Coffee-AHK\/forbidden.*object key.*property.*A_Index.*a_.*prefix/i,
+  },
+  {
+    name: 'A_ prefix as class method name is forbidden',
+    code: 'class Animal\n  A_Index: -> 1',
+    expectedError: /Coffee-AHK\/forbidden.*object key.*property.*A_Index.*a_.*prefix/i,
+  },
+  {
+    name: 'A_ prefix as destructuring object key is forbidden',
+    code: '{A_Index: idx} = obj',
+    expectedError: /Coffee-AHK\/forbidden.*(destructuring object key|object key.*property).*A_Index.*a_.*prefix/i,
   },
 
   // Unsupported language features

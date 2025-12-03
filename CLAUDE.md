@@ -111,6 +111,23 @@ TypeScript 严格模式: `noImplicitAny`, `noUncheckedIndexedAccess`
 | 测试 salt | 必须固定 `salt: 'ahk'`                        |
 | 数组/对象 | AHK v1 无法区分，`[a,b]` 等同于 `{1:a, 2:b}`  |
 
+**禁用字策略** (v0.0.92+):
+
+- **完全禁止**: 赋值、函数参数、catch 变量、for 循环变量、数组解构目标、类名
+  - 禁用范围：AHK 内置函数/变量（`data/forbidden.yaml`）+ `A_` 前缀
+  - 示例：`InStr = fn` ❌ | `fn = (A_Index) -> ...` ❌ | `[StrLen, x] = arr` ❌
+- **仅禁止 A\_ 前缀**: 对象键名、类属性/方法、对象解构键名
+  - 示例：`{A_Index: 5}` ❌ | `{InStr: 1}` ✅
+- **完全允许**: 读取使用、函数调用
+  - 示例：`x = A_Index` ✅ | `len = InStr("a", "b")` ✅
+
+**实现位置**:
+
+- `src/processors/index.ts:21` — 早期验证（在解构转换前）
+- `src/processors/class/validate.ts` — 类名检查
+- `src/processors/variable/validate.ts` — 变量/参数/catch/for/对象键检查
+- `src/processors/array/deconstruct.ts` — 数组解构目标检查
+
 **索引限制**: `ℓci` 假设数组用数字索引、对象用字符串索引。`obj[0]` 会被转换为 `obj[1]`（可能错误）— 用 `obj["0"]` 访问字符串键。
 
 ## 常见陷阱
@@ -242,6 +259,7 @@ fn = (a) ->               ahk_2(a) {
 - **2025-11-26**: Content/Scope API 统一、闭包 λ 实现、class/export 分离方案
 - **2025-11-27**: Item 类型系统重构（严格 type-value 约束）、`::` 输出为 `prototype`、Content.push/unshift 多参数优化
 - **2025-11-28**: 所有 `Func()` 自动 `.Bind()`、移除冗余的 `λ := ""` 和 `if(!λ){λ:={}}`；修复 `for...of` 垃圾代码（`for-in` type 同时处理 `in`/`of`）；修复 `$xxx` 变量跳过 ctx 转换（大写检查只匹配 A-Z）；补充闭包测试用例；添加 `>>>`/`await`/`yield`/for循环解构/嵌套解构 编译器告警；修复内置函数 `ℓci`/`ℓtype` 参数错位（添加 `λ` 首参数）；修复 `!!` 被误转为 `~~`（`UNARY_MATH` 需检查 value 是 `~` 还是 `!`）；实现 Native 变量桥接（`λ_var` 临时变量模式）；拆分 `ctx-transform.ts` 为 7 个模块文件；修复类方法 `.Bind(this)` 参数错位（改为 `.Bind({}, this)`）；修复类方法参数被错误转换为 `λ.param`（通过 `ℓthis` 参数识别类方法，跳过 ctx 转换）
+- **2025-12-03**: 修复 `pnpm build` 后立即 `pnpm test` 失败的竞态条件 — `esbuild.config.js` 中 `esbuild.build()` 缺少 `await`，导致 node 进程在 esbuild 写完文件前退出，测试读取到不完整文件
 
 ## 提交检查
 

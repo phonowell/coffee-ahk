@@ -6,11 +6,8 @@ import type { Context } from '../types'
  */
 export class TranspileError extends Error {
   constructor(ctx: Context, type: string, message: string) {
-    const locationData = ctx.token[2]
-    const lineInfo = locationData
-      ? ` (line ${locationData.first_line + 1})`
-      : ''
-    super(`Coffee-AHK/${type}${lineInfo}: ${message}`)
+    const line = ctx.token[2].first_line + 1
+    super(`Coffee-AHK/${type} (line ${line}): ${message}`)
     this.name = 'TranspileError'
   }
 }

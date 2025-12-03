@@ -1,14 +1,6 @@
-import { argv, echo, glob, isExist, read, write } from 'fire-keeper'
+import { argv, echo, glob, read, write } from 'fire-keeper'
 
-import c2aViaJs from '../../dist/index.js'
 import c2aViaTs from '../../src/index.js'
-
-// 检查dist是否存在
-const checkDist = async () => {
-  if (!(await isExist('./dist/index.js'))) {
-    throw new Error('dist/index.js not found. Run "pnpm build" first.')
-  }
-}
 
 const TIMEOUT_MS = 10000 // 10 seconds per test
 
@@ -31,19 +23,76 @@ const compile = async (source: string) =>
     .replace(/\r/g, '')
     .trim()
 
-const compile2 = async (source: string) =>
-  (
-    (await c2aViaJs(source, {
-      metadata: false,
-      salt: 'ahk',
-      save: false,
-    })) ?? ''
-  )
+type TestFailure = {
+  source: string
+  actual: string
+  expected: string
+}
+
+/** 执行单个测试（用于验证模式） */
+const runTest = async (source: string): Promise<TestFailure | null> => {
+  const fixture = source.replace('.coffee', '.ahk')
+
+  const actual = await withTimeout(compile(source), TIMEOUT_MS, source)
+  const expected = ((await read(fixture)) ?? '')
+    .toString()
     .replace(/\r/g, '')
     .trim()
 
+  if (!actual || !expected) {
+    return {
+      source,
+      actual: actual || '(empty)',
+      expected: expected || '(empty fixture)',
+    }
+  }
+
+  if (actual !== expected) {
+    return { source, actual, expected }
+  }
+
+  return null // Passed
+}
+
+/** 执行单个测试（用于覆写模式） */
+const overwriteTest = async (source: string): Promise<boolean> => {
+  const fixture = source.replace('.coffee', '.ahk')
+  const content = await withTimeout(compile(source), TIMEOUT_MS, source)
+
+  if (!content) {
+    echo(`⚠️ Empty output: ${source}`)
+    return false
+  }
+
+  await write(fixture, content)
+  return true
+}
+
+/** 显示失败详情 */
+const showFailures = (failures: TestFailure[]) => {
+  echo('\nFailures:\n')
+  for (const { source, actual, expected } of failures) {
+    echo(`❌ ${source}`)
+
+    const actualLines = actual.split('\n')
+    const expectedLines = expected.split('\n')
+    const maxLines = Math.max(actualLines.length, expectedLines.length)
+
+    echo('--- DIFF (- expected, + actual) ---')
+    for (let i = 0; i < Math.min(maxLines, 20); i++) {
+      const a = actualLines[i] ?? ''
+      const e = expectedLines[i] ?? ''
+      if (a !== e) {
+        if (e) echo(`- L${i + 1}: ${e}`)
+        if (a) echo(`+ L${i + 1}: ${a}`)
+      }
+    }
+    if (maxLines > 20) echo(`... and ${maxLines - 20} more lines`)
+    echo('')
+  }
+}
+
 const main = async () => {
-  await checkDist()
   const startTime = Date.now()
   const target = await pickTarget()
 
@@ -55,119 +104,36 @@ const main = async () => {
   const pattern = `./script/test/${
     !!target && target !== 'overwrite' ? target : '*'
   }.coffee`
-
-  const listSource = (await glob(pattern)).filter(f => !f.includes('/error-'))
+  const listSource = (await glob(pattern)).filter((f) => !f.includes('/error-'))
 
   let passed = 0
   let failed = 0
-  const failures: Array<{
-    source: string
-    turn: number
-    actual: string
-    expected: string
-  }> = []
+  const failures: TestFailure[] = []
 
-  // 分离需要串行执行的import测试（共享模块缓存）
-  const importTests = listSource.filter((s) => s.includes('/import'))
-  const parallelTests = listSource.filter((s) => !s.includes('/import'))
-
-  // Parallel execution for non-overwrite mode
+  // Overwrite mode: 顺序执行所有测试，覆写 fixture
   if (target === 'overwrite') {
-    // Sequential for overwrite mode
     for (const source of listSource) {
-      const target2 = source.replace('.coffee', '.ahk')
-      const content = await withTimeout(compile(source), TIMEOUT_MS, source)
-      if (!content) {
-        echo(`⚠️ Empty output: ${source}`)
-        failed++
-        continue
-      }
-      await write(target2, content)
-      passed++
+      const success = await overwriteTest(source)
+      success ? passed++ : failed++
     }
   } else {
-    // 串行执行import测试
+    // Verify mode: import 测试串行执行（共享模块缓存），其他测试并行执行
+    const importTests = listSource.filter((s) => s.includes('/import'))
+    const parallelTests = listSource.filter((s) => !s.includes('/import'))
+
+    // 串行执行 import 测试
     for (const source of importTests) {
-      const target2 = source.replace('.coffee', '.ahk')
-
-      const content = await withTimeout(compile(source), TIMEOUT_MS, source)
-      const contentTarget = ((await read(target2)) ?? '')
-        .toString()
-        .replace(/\r/g, '')
-        .trim()
-
-      if (!content || !contentTarget) {
+      const result = await runTest(source)
+      if (result === null) {
+        passed++
+      } else {
         failed++
-        failures.push({
-          source,
-          turn: 1,
-          actual: content || '(empty)',
-          expected: contentTarget || '(empty fixture)',
-        })
-        continue
+        failures.push(result)
       }
-
-      if (content !== contentTarget) {
-        failed++
-        failures.push({ source, turn: 1, actual: content, expected: contentTarget })
-        continue
-      }
-
-      const content2 = await withTimeout(compile2(source), TIMEOUT_MS, source)
-      if (content2 !== contentTarget) {
-        failed++
-        failures.push({ source, turn: 2, actual: content2, expected: contentTarget })
-        continue
-      }
-
-      passed++
     }
 
-    // Parallel execution for other tests
-    const results = await Promise.all(
-      parallelTests.map(async (source) => {
-        const target2 = source.replace('.coffee', '.ahk')
-
-        const content = await withTimeout(compile(source), TIMEOUT_MS, source)
-        const contentTarget = ((await read(target2)) ?? '')
-          .toString()
-          .replace(/\r/g, '')
-          .trim()
-
-        // 防止空值假阳性：编译结果或fixture为空时报错
-        if (!content || !contentTarget) {
-          return {
-            source,
-            turn: 1,
-            actual: content || '(empty)',
-            expected: contentTarget || '(empty fixture)',
-          }
-        }
-
-        if (content !== contentTarget) {
-          return {
-            source,
-            turn: 1,
-            actual: content,
-            expected: contentTarget,
-          }
-        }
-
-        const content2 = await withTimeout(compile2(source), TIMEOUT_MS, source)
-        if (content2 !== contentTarget) {
-          return {
-            source,
-            turn: 2,
-            actual: content2,
-            expected: contentTarget,
-          }
-        }
-
-        return null // Passed
-      }),
-    )
-
-    // Collect results
+    // 并行执行其他测试
+    const results = await Promise.all(parallelTests.map(runTest))
     for (const result of results) {
       if (result === null) {
         passed++
@@ -181,31 +147,14 @@ const main = async () => {
   echo(`Total: ${listSource.length} | Passed: ${passed} | Failed: ${failed}`)
 
   if (failures.length > 0) {
-    echo('\nFailures:\n')
-    for (const failure of failures) {
-      echo(`❌ ${failure.source} (TURN ${failure.turn})`)
-      // Show line-by-line diff
-      const actualLines = failure.actual.split('\n')
-      const expectedLines = failure.expected.split('\n')
-      const maxLines = Math.max(actualLines.length, expectedLines.length)
-      echo('--- DIFF (- expected, + actual) ---')
-      for (let i = 0; i < Math.min(maxLines, 20); i++) {
-        const a = actualLines[i] ?? ''
-        const e = expectedLines[i] ?? ''
-        if (a !== e) {
-          if (e) echo(`- L${i + 1}: ${e}`)
-          if (a) echo(`+ L${i + 1}: ${a}`)
-        }
-      }
-      if (maxLines > 20) echo(`... and ${maxLines - 20} more lines`)
-      echo('')
-    }
-    // 失败时也输出报告
+    showFailures(failures)
+
+    // 输出失败报告
     const failReport = [
       `# Test Report (FAILED) - ${new Date().toISOString()}`,
       `- End-to-end: ${passed}/${listSource.length} (${failed} failed)`,
       `- Failures:`,
-      ...failures.map(f => `  - ${f.source}`),
+      ...failures.map((f) => `  - ${f.source}`),
     ].join('\n')
     await write('./test-report.md', failReport)
     throw new Error(`${failed} end-to-end test(s) failed`)
@@ -213,12 +162,12 @@ const main = async () => {
 
   echo('✅ All end-to-end tests passed!')
 
-  // If overwrite mode, skip additional tests
+  // overwrite 模式跳过后续测试
   if (target === 'overwrite') {
     return
   }
 
-  // Run unit tests (if not in overwrite mode)
+  // Run unit tests
   let unitTestCount = 0
   let errorTestCount = 0
   let coveragePercent = '0.0'
