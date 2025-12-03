@@ -68,6 +68,21 @@ class Content {
     }
     return this
   }
+
+  /** Returns a shallow copy of a portion of the content into a new array. */
+  slice(start?: number, end?: number): Item[] {
+    return this.#list.slice(start, end)
+  }
+
+  /** Changes the contents by removing or replacing existing items and/or adding new items. */
+  splice(start: number, deleteCount: number = 0, ...items: ItemArg[]): Item[] {
+    const newItems = items.map((arg) => {
+      const newItem = arg instanceof Item ? arg : new Item(arg)
+      if (!newItem.scope.length) newItem.scope.reload(this.scope)
+      return newItem
+    })
+    return this.#list.splice(start, deleteCount, ...newItems)
+  }
 }
 
 export default Content

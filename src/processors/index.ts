@@ -4,7 +4,9 @@ import chainedCompareProcessor from './chained-compare.js'
 import classProcessor from './class/index.js'
 import forProcessor from './for.js'
 import functionProcessor from './function/index.js'
+import ifExpressionProcessor from './if-expression.js'
 import instanceofProcessor from './instanceof.js'
+import logicalOrProcessor from './logical-or.js'
 import newLineProcessor from './new-line.js'
 import objectProcessor from './object.js'
 import typeofProcessor from './typeof.js'
@@ -23,6 +25,8 @@ const processAst = (context: Context) => {
   forProcessor(context)
   arrayProcessor(context)
   objectProcessor(context)
+  logicalOrProcessor(context) // convert || to ternary for default values
+  ifExpressionProcessor(context) // convert if-then-else to ternary
   chainedCompareProcessor(context) // expand 1<y<10 → 1<y && y<10
   typeofProcessor(context) // before variable to handle typeof identifiers
   instanceofProcessor(context) // convert class name to string

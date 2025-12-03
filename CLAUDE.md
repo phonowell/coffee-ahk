@@ -43,7 +43,7 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 | Processors | `src/processors/` | `(ctx) => void`    | 批量改写，**顺序敏感**     |
 | Renderer   | `src/renderer/`   | -                  | Item→AHK，`mapMethod`映射  |
 
-**Processor 顺序**: newLine(#1) → for(#2) → array(#3) → object(#4) → typeof(#5) → instanceof(#6) → variable(#7) → builtIn(#8) → class(#9) → function(#10)
+**Processor 顺序**: newLine(#1) → for(#2) → array(#3) → object(#4) → logicalOr(#5) → **ifExpression(#6)** → chainedCompare(#7) → typeof(#8) → instanceof(#9) → variable(#10) → builtIn(#11) → class(#12) → function(#13)
 
 ### 核心数据结构
 
@@ -88,6 +88,51 @@ CoffeeScript → tokens → Formatters(token→Item) → Processors(结构重写
 | `transformer/detect-class.ts`   | class 检测和校验（25行）           |
 | `transformer/wrap-closure.ts`   | 闭包包装和 return 语句生成（83行） |
 | `transformer/replace-anchor.ts` | import → 变量赋值                  |
+
+**支持的导入语法**:
+
+```coffee
+# 1. 副作用导入（不提取值，仅执行）
+import './module'
+
+# 2. default 导入
+import math from './module'
+
+# 3. named 导入
+import { plus, minus } from './module'
+
+# 4. 混合导入（default + named）
+import m, { plus, minus } from './module'
+```
+
+**不支持**: `import * as m from './x'` | `import { foo as bar }` （别名导入）
+
+**支持的导出语法**:
+
+```coffee
+# 1. export default 单行表达式
+export default (a, b) -> a + b
+
+# 2. export default 多行缩进块
+export default ->
+  result = calculate()
+  result * 2
+
+# 3. export default 对象
+export default { plus, minus }
+
+# 4. export 命名导出
+export { plus, minus }
+
+# 5. export 命名导出（键值对）
+export { foo: bar() }
+
+# 6. 同时使用 default + named
+export default { plus, minus }
+export { plus, minus }
+```
+
+**不支持**: `export const foo = 1` | `export * from './x'` | `export function fn() {}`
 
 **注意**: 遍历行时，`for...of` 循环可以用 `!line` 跳过空字符串；但判断数组结束必须用 `line === undefined`
 
@@ -198,9 +243,11 @@ fn = (a) ->               ahk_2(a) {
 
 ## AHK v1 兼容修复
 
-| 问题             | 方案                                                                                 |
-| ---------------- | ------------------------------------------------------------------------------------ |
-| `this` 作参数名  | 用 `ℓthis`，函数体加 `this := ℓthis`                                                 |
+| 问题                  | 方案                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------ |
+| `||` 默认值语法       | AHK v1 的 `\|\|` 返回布尔值（0/1），非首个真值。`logical-or.ts` 自动转换 `a = b \|\| 2` → `a := b ? b : 2`（仅非布尔字面量） |
+| `if-then-else` 表达式 | `if-expression.ts` 自动转换 `a = if b then c else d` → `a := b ? c : d`（仅赋值表达式；嵌套 if 暂不支持） |
+| `this` 作参数名       | 用 `ℓthis`，函数体加 `this := ℓthis`                                                 |
 | 对象键名表达式   | `shouldUseCtx` 跳过 object scope 后跟 `:` 的                                         |
 | catch 变量       | `collectCatchVars` 在 catch scope 跳过 ctx                                           |
 | `do => @a` this  | `arrow.ts` 标记，`do.ts` 在 `.Call()` 传 `this`                                      |
@@ -228,38 +275,6 @@ fn = (a) ->               ahk_2(a) {
 2. **简单 vs 闭包** — 内层函数修改外层变量是 ctx 转换的核心场景
 
 **变量命名**: 函数内测试用例应避免与顶层全局变量同名（CoffeeScript 无 `let`，同名会引用全局）
-
-## 性能优化记录
-
-**2025-12-01 架构优化**（全部测试通过 93/93）:
-
-1. **循环依赖消除** — 提取 `src/types/options.ts` 打破 `index.ts` ↔ `types/index.ts` 循环
-2. **错误处理基础设施** — 新增 `src/utils/error.ts`（`TranspileError` + `createFileError`）
-3. **模块拆分** — `transformer/transform.ts` (257→149行) 拆分为 4 个文件：
-   - `parse-exports.ts` (92行) — export 语句解析
-   - `detect-class.ts` (25行) — class 检测和校验
-   - `wrap-closure.ts` (83行) — 闭包包装和 return 生成
-4. **ctx-transform 遍历优化** — 减少 33% 遍历次数：
-   - `transform-vars.ts`: 合并 `collectCatchVars` + `collectForVars` → `collectAllVars`（3→2 次遍历）
-5. **Native 处理优化** — 减少 50% 字符串正则处理：
-   - `native.ts`: 合并 `collectNativeVars` + `transformNativeString` → `collectAndTransformNative`（2→1 次遍历）
-6. **Content 迭代器** — 添加 `*[Symbol.iterator]()` 支持零拷贝 `for-of` 遍历
-7. **文档完善** — `Scope.pop()` 添加详细注释说明返回值 `undefined` 的安全性
-8. **WeakSet 设计验证** — 确认 `array/change-index.ts` 的 WeakSet 使用正确（简单索引不触发 reload）
-
-**待增量迁移**（修改相关文件时一并更新）:
-
-- [ ] 错误处理统一 — 使用 `TranspileError`/`createFileError` 替换直接 `throw new Error()`
-- [ ] Content 迭代器应用 — 用 `for (const item of content)` 替换 `for (let i = 0; i < content.length; i++)`
-
-## 历史修复记录
-
-- **2025-11-24**: Export 解析空行中断 (`!nextLine` → `=== undefined`)、类型注释干扰
-- **2025-11-25**: 链式负索引 `nested[0][-1]`、`collectArrayExpression()` 回溯
-- **2025-11-26**: Content/Scope API 统一、闭包 λ 实现、class/export 分离方案
-- **2025-11-27**: Item 类型系统重构（严格 type-value 约束）、`::` 输出为 `prototype`、Content.push/unshift 多参数优化
-- **2025-11-28**: 所有 `Func()` 自动 `.Bind()`、移除冗余的 `λ := ""` 和 `if(!λ){λ:={}}`；修复 `for...of` 垃圾代码（`for-in` type 同时处理 `in`/`of`）；修复 `$xxx` 变量跳过 ctx 转换（大写检查只匹配 A-Z）；补充闭包测试用例；添加 `>>>`/`await`/`yield`/for循环解构/嵌套解构 编译器告警；修复内置函数 `ℓci`/`ℓtype` 参数错位（添加 `λ` 首参数）；修复 `!!` 被误转为 `~~`（`UNARY_MATH` 需检查 value 是 `~` 还是 `!`）；实现 Native 变量桥接（`λ_var` 临时变量模式）；拆分 `ctx-transform.ts` 为 7 个模块文件；修复类方法 `.Bind(this)` 参数错位（改为 `.Bind({}, this)`）；修复类方法参数被错误转换为 `λ.param`（通过 `ℓthis` 参数识别类方法，跳过 ctx 转换）
-- **2025-12-03**: 修复 `pnpm build` 后立即 `pnpm test` 失败的竞态条件 — `esbuild.config.js` 中 `esbuild.build()` 缺少 `await`，导致 node 进程在 esbuild 写完文件前退出，测试读取到不完整文件
 
 ## 提交检查
 

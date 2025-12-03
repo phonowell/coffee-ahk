@@ -1,6 +1,6 @@
 import { argv, echo, glob, read, write } from 'fire-keeper'
 
-import c2aViaTs from '../../src/index.js'
+import c2aViaTs from '../../dist/index.js'
 
 const TIMEOUT_MS = 10000 // 10 seconds per test
 
@@ -94,16 +94,14 @@ const showFailures = (failures: TestFailure[]) => {
 
 const main = async () => {
   const startTime = Date.now()
-  const target = await pickTarget()
+  const { target, isOverwrite } = await pickTarget()
 
   // Run end-to-end tests
   echo('\n' + '='.repeat(60))
   echo('1️⃣  END-TO-END TESTS')
   echo('='.repeat(60))
 
-  const pattern = `./script/test/${
-    !!target && target !== 'overwrite' ? target : '*'
-  }.coffee`
+  const pattern = `./script/test/${target ? target : '*'}.coffee`
   const listSource = (await glob(pattern)).filter((f) => !f.includes('/error-'))
 
   let passed = 0
@@ -111,30 +109,15 @@ const main = async () => {
   const failures: TestFailure[] = []
 
   // Overwrite mode: 顺序执行所有测试，覆写 fixture
-  if (target === 'overwrite') {
+  if (isOverwrite) {
     for (const source of listSource) {
       const success = await overwriteTest(source)
       success ? passed++ : failed++
     }
   } else {
-    // Verify mode: import 测试串行执行（共享模块缓存），其他测试并行执行
-    const importTests = listSource.filter((s) => s.includes('/import'))
-    const parallelTests = listSource.filter((s) => !s.includes('/import'))
-
-    // 串行执行 import 测试
-    for (const source of importTests) {
+    // Verify mode: 串行执行所有测试
+    for (const source of listSource) {
       const result = await runTest(source)
-      if (result === null) {
-        passed++
-      } else {
-        failed++
-        failures.push(result)
-      }
-    }
-
-    // 并行执行其他测试
-    const results = await Promise.all(parallelTests.map(runTest))
-    for (const result of results) {
       if (result === null) {
         passed++
       } else {
@@ -163,7 +146,7 @@ const main = async () => {
   echo('✅ All end-to-end tests passed!')
 
   // overwrite 模式跳过后续测试
-  if (target === 'overwrite') {
+  if (isOverwrite) {
     return
   }
 
@@ -234,9 +217,14 @@ const main = async () => {
   await write('./test-report.md', report)
 }
 
-const pickTarget = async () => {
+const pickTarget = async (): Promise<{ target?: string; isOverwrite: boolean }> => {
   const a = await argv()
-  return a._[1] ?? a.target
+  const args = [a._[1], a.target, a.overwrite].filter(Boolean) as string[]
+
+  const isOverwrite = args.includes('overwrite')
+  const target = args.find((arg) => arg !== 'overwrite')
+
+  return { target, isOverwrite }
 }
 
 export default main

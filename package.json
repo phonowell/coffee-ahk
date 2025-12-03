@@ -27,7 +27,11 @@
     "typescript": "^5.9.3"
   },
   "files": [
-    "dist/**"
+    "dist/**",
+    "README.md",
+    "USAGE.md",
+    "license.md",
+    "docs/**/*.md"
   ],
   "homepage": "https://github.com/phonowell/coffee-ahk",
   "keywords": [

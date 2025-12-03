@@ -2,7 +2,7 @@
 
 Translate `coffeescript` to `ahk`.
 
-[Documentation](./doc/documentation.md) | [文档](./doc/cn/documentation.md) | [AI Agent 使用指南](./USAGE.md)
+[Documentation](./docs/documentation.md) | [文档](./docs/cn/documentation.md) | [AI Agent 使用指南](./USAGE.md)
 
 > **For AI Agents**: See [USAGE.md](./USAGE.md) for a comprehensive guide on writing CoffeeScript for AHK transpilation. The document is in Chinese, but AI agents can read and understand it without issues.
 
@@ -11,13 +11,16 @@ Translate `coffeescript` to `ahk`.
 - Transpiles CoffeeScript to AutoHotkey v1 scripts
 - Supports class syntax, inheritance, and method binding
 - Import/export syntax for modules (including `.coffee`, `.ahk`, `.json`, `.yaml`)
-- Recursive import resolution and namespace isolation
+  - `import './module'` (side-effect), `import m from './module'` (default), `import { a, b } from './module'` (named), `import m, { a } from './module'` (mixed)
+  - `export default` (single expression, multiline block, or object literal)
+  - `export { named, exports }` (named exports with optional key-value pairs)
+  - Recursive import resolution and namespace isolation
 - Partial npm package management support (install and import local/third-party modules)
 - Functional programming support; functions are first-class citizens
 - Arrow functions (`->`, `=>`) and `this` binding
 - Function parameter binding, default values, and rest parameters
 - Destructuring assignment for arrays and objects
-- Supports various syntactic sugar, such as destructuring, splats, chained comparisons, and negative indexing
+- Supports various syntactic sugar, such as destructuring, splats, chained comparisons, negative indexing, and if-then-else expressions
 - Try/catch/finally error handling
 - Chained and implicit function calls
 - Anonymous and higher-order functions
@@ -68,6 +71,7 @@ await c2a("./script/toolkit/index.coffee", {
 - `async`/`await` and generators (`yield`) are not supported (compiler error)
 - For-loop destructuring (`for [a, b] in arr`) is not supported (compiler error). Workaround: `for item in arr` then `[a, b] = item`
 - Nested array destructuring (`[a, [b, c]] = x`) is not supported (compiler error). Workaround: flatten manually
+- Nested if-then-else expressions (`if a then (if b then c else d) else e`) are not supported (compiler error). Workaround: use temporary variables or separate statements
 - Floor division (`//`) and modulo (`%%`) operators conflict with AHK syntax (compiler error)
 - Avoid using `=>` outside classes; pure functions in AHK lack `this`
 - `.coffee` files must be UTF-8; `.ahk` files must be UTF-8 with BOM
@@ -120,6 +124,7 @@ await c2a("./script/toolkit/index.coffee", {
 | `instanceof`                            |      ✅      |          ❌           |     ✅     |
 | Chained comparison (`1<y<10`)           |      ✅      |          ❌           |     ✅     |
 | Negative indexing (`arr[-1]`)           |      ✅      |          ❌           |     ✅     |
+| If-then-else expr (`if a then b else c`)|      ✅      |          ❌           |     ✅     |
 | **Not Supported**                       |
 | Optional chaining (`?.`)                |      ✅      |          ❌           |     ❌     |
 | Nullish coalescing (`??`)               |      ✅      |          ❌           |     ❌     |

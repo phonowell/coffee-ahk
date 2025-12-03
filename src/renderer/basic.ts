@@ -31,8 +31,27 @@ export const newLine2 = (ctx: Context): string => {
 }
 
 export const sign2 = (ctx: Context): string => {
-  const { value } = ctx.it
-  if ([',', ':'].includes(value)) return commaLike2(ctx)
+  const { i, it } = ctx
+  const { value } = it
+
+  // Handle ternary operator
+  if (value === '?') return ' ? '
+
+  // Distinguish ternary ':' from object literal ':'
+  if (value === ':') {
+    // Look backward for '?' to detect ternary context
+    for (let j = i - 1; j >= 0; j--) {
+      const prev = ctx.content.at(j)
+      if (!prev) break
+      if (prev.type === 'sign' && prev.value === '?') return ' : '
+      // Stop at statement boundaries
+      if (prev.type === 'new-line' || prev.type === 'edge') break
+    }
+    // Object literal context
+    return commaLike2(ctx)
+  }
+
+  if (value === ',') return commaLike2(ctx)
   if (value === '=') return ' := '
   if (value === '...') return '*'
   return value

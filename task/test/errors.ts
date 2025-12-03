@@ -231,6 +231,11 @@ const errorTests: ErrorTest[] = [
     code: '[a, [b, c]] = [1, [2, 3]]',
     expectedError: /Coffee-AHK\/unsupported.*nested array destructuring/i,
   },
+  {
+    name: 'nested if-then-else expressions are not supported',
+    code: 'y = if x > 0 then (if x > 10 then "big" else "small") else "negative"',
+    expectedError: /Coffee-AHK\/unsupported.*Nested if-then-else/i,
+  },
 ]
 
 const main = async () => {
