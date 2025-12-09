@@ -162,10 +162,15 @@ export default (ctx: Context): void => {
 
     if (hasNestedIf(thenBranch) || hasNestedIf(elseBranch)) {
       throw new Error(
-        `Coffee-AHK/unsupported: Nested if-then-else expressions are not supported. Use separate statements or temporary variables instead.\n` +
-          `Example workaround:\n` +
+        `Coffee-AHK/unsupported: Nested if-then-else expressions are not supported.\n\n` +
+          `Workaround 1 - Use temporary variables:\n` +
           `  temp = if inner then a else b\n` +
-          `  result = if outer then temp else c`,
+          `  result = if outer then temp else c\n\n` +
+          `Workaround 2 - Use IIFE with early return:\n` +
+          `  result = do ->\n` +
+          `    if condition1 then return x\n` +
+          `    if condition2 then return y\n` +
+          `    z`,
       )
     }
 

@@ -1,10 +1,16 @@
 # CLAUDE.md
 
-> **元原则**：中文文档 · 100行限制 · 节省 Tokens · 代码优先 · 渐进式披露 · 任务完成后更新重要发现
+> **元原则**：中文文档 · AI友好 · 代码>文档 · **任务完成后更新重要发现** · **本文件≤100行** · **所有代码文件≤200行**
 
-## 项目
+## 核心约束
 
-CoffeeScript → AutoHotkey v1 转译器。入口 [src/index.ts:18](src/index.ts#L18)。
+**效率优先**: 直接工具优于 Task（Read/Glob/Grep > subagent）· 并行任务≤3个 · 合并相关探索 · 明确任务避免开放式
+**代码规范**: `array.at(i)` 非 `array[i]` · 模板字符串 非 拼接 · `x?.is("a") === true` 非 `||` 链
+**文件行数**: 所有代码文件≤200行（用 `cloc` 检查）- 超出时优先**简化逻辑**（删冗余/合并重复）其次**拆分文件**
+
+## 项目概览
+
+CoffeeScript → AutoHotkey v1 转译器 - 入口 [src/index.ts:18](src/index.ts#L18)
 
 ## 命令
 
@@ -24,12 +30,7 @@ node -e "require('./dist/index.js').default('/tmp/test.coffee', { salt: 'test' }
 | Processors | [src/processors/](src/processors/)     | 结构重写，**顺序敏感**（见 index.ts） |
 | Renderer   | [src/renderer/](src/renderer/)       | Item→AHK                              |
 
-**核心数据**（见 [src/types/](src/types/)）:
-- `Item`: 不可变，**必须 `clone()` 复制**
-- `Content`: Item 集合，支持 `push(...items)` 多参数
-- `Scope`: 缩进栈
-
-**内部变量** ([src/constants.ts](src/constants.ts)): `λ` 闭包 | `ℓci` 索引 | `ℓtype` typeof | `ℓthis` this
+**核心数据** ([types/](src/types/)): `Item` 不可变必须 `clone()` · `Content` 支持 `push(...items)` 多参数 · `Scope` 缩进栈
 
 ## 模块系统
 
@@ -38,27 +39,13 @@ node -e "require('./dist/index.js').default('/tmp/test.coffee', { salt: 'test' }
 **支持**: `import x from './m'` | `import {a,b}` | `export default` | `export {a,b}`
 **不支持**: `import * as` | `import {x as y}` | `export const` — 错误信息见 [source-resolver.ts:46](src/file/include/source-resolver.ts#L46) 和 [parse-exports.ts:93](src/file/include/transformer/parse-exports.ts#L93)
 
-## 规范与约束
+## 关键约束
 
-**文件行数**: ≤200 行，超出需拆分或优化。检查方法：`cloc <file>`
-
-**代码风格**:
-```typescript
-// ✅ array.at(i) + 空值检查 | 模板字符串 | x?.is("a") === true
-// ❌ array[i] as Item | a + b 拼字符串 | x?.is("a") || x?.is("b")
-```
-
-**禁用字** ([data/forbidden.yaml](data/forbidden.yaml) + `A_` 前缀):
-- **完全禁止**: 赋值/参数/catch/for/解构目标/类名（AHK 内置 + `A_`）
-- **仅禁 `A_`**: 对象键/类属性/解构键
-- **完全允许**: 读取/调用
-- 实现位置见 [src/processors/variable/](src/processors/variable/)
-
-**AHK 约束**:
-- 类名全角（[src/processors/class/](src/processors/class/)）
-- 索引 0→1-based（[script/segment/changeIndex.coffee](script/segment/changeIndex.coffee)）
-- UTF-8 with BOM
-- 控制结构必须写 `{}`
+| 类别 | 规则 | 参考 |
+|------|------|------|
+| 禁用字 | AHK内置 + `A_` 前缀禁止赋值/参数/catch/for/解构目标/类名 | [data/forbidden.yaml](data/forbidden.yaml) + [variable/](src/processors/variable/) |
+| AHK输出 | 类名全角 · 索引1-based · UTF-8 BOM · 控制结构带 `{}` | [class/](src/processors/class/) · [changeIndex.coffee](script/segment/changeIndex.coffee) |
+| 内部变量 | `λ` 闭包 · `ℓci` 索引 · `ℓtype` typeof · `ℓthis` this | [constants.ts](src/constants.ts) |
 
 ## 闭包实现
 
@@ -87,14 +74,13 @@ fn = (a) -> (b = 1; inner = -> a + b; inner())
 | for 循环解构     | 分两步                       | -                                                        |
 | 嵌套解构         | 手动展开                     | -                                                        |
 
-## 开发
+## 开发与集成
 
-**新功能**: 单 token → Formatter；多行重写 → Processor（按序插入 [src/processors/index.ts](src/processors/index.ts)）
+**新功能**: 单 token → Formatter · 多行重写 → Processor（按序插入 [processors/index.ts](src/processors/index.ts)）
+**测试**: 覆盖 顶层/函数内 × 简单/闭包 · 盐固定 `salt: 'ahk'`
 
-**测试**: 覆盖 顶层/函数内 × 简单/闭包。盐固定 `salt: 'ahk'`
-
-**提交检查**:
-1. `pnpm build && pnpm test && pnpm lint` 全过
-2. 新功能有测试
-3. 文件 ≤200 行
-4. **重要发现已更新到本文件**
+**提交检查清单**:
+- [ ] `pnpm build && pnpm test && pnpm lint` 全过
+- [ ] 新功能有测试
+- [ ] 所有文件 ≤200 行
+- [ ] **重要发现已更新到本文件**
