@@ -1,16 +1,16 @@
 # CLAUDE.md
 
-> **元原则**：中文文档 · AI友好 · 代码>文档 · **任务完成后更新重要发现** · **本文件≤100行** · **所有代码文件≤200行**
-
-## 核心约束
-
-**效率优先**: 直接工具优于 Task（Read/Glob/Grep > subagent）· 并行任务≤3个 · 合并相关探索 · 明确任务避免开放式
-**代码规范**: `array.at(i)` 非 `array[i]` · 模板字符串 非 拼接 · `x?.is("a") === true` 非 `||` 链
-**文件行数**: 所有代码文件≤200行（用 `cloc` 检查）- 超出时优先**简化逻辑**（删冗余/合并重复）其次**拆分文件**
+> **元原则**：中文文档 · AI友好 · 代码>文档 · **人工要求的信息不可移除** · **所有文件≤200行** · **本文件≤100行**
+> **效率优先**：直接工具优于 subagent（Read/Glob/Grep > Task）· 并行任务≤3个 · 合并相关探索 · 明确任务避免开放式
 
 ## 项目概览
 
-CoffeeScript → AutoHotkey v1 转译器 - 入口 [src/index.ts:18](src/index.ts#L18)
+**CoffeeScript → AutoHotkey v1 转译器** - 入口 [src/index.ts:18](src/index.ts#L18)
+
+## 核心规范
+
+**代码约束**: `array.at(i)` 非 `array[i]` · 模板字符串 非 拼接 · `x?.is("a") === true` 非 `||` 链
+**文件行数**: 所有代码文件≤200行（用 `cloc` 检查）- 超出时优先**简化逻辑**（删冗余/合并重复）其次**拆分文件**
 
 ## 命令
 
@@ -34,10 +34,10 @@ node -e "require('./dist/index.js').default('/tmp/test.coffee', { salt: 'test' }
 
 ## 模块系统
 
-**位置**: [src/file/include/](src/file/include/) — import/export 解析 → 拓扑排序 → 组装
+**位置**: [src/file/include/](src/file/include/) - import/export 解析 → 拓扑排序 → 组装
 
 **支持**: `import x from './m'` | `import {a,b}` | `export default` | `export {a,b}`
-**不支持**: `import * as` | `import {x as y}` | `export const` — 错误信息见 [source-resolver.ts:46](src/file/include/source-resolver.ts#L46) 和 [parse-exports.ts:93](src/file/include/transformer/parse-exports.ts#L93)
+**不支持**: `import * as` | `import {x as y}` | `export const` - 错误见 [source-resolver.ts:46](src/file/include/source-resolver.ts#L46) 和 [parse-exports.ts:93](src/file/include/transformer/parse-exports.ts#L93)
 
 ## 关键约束
 
@@ -83,4 +83,3 @@ fn = (a) -> (b = 1; inner = -> a + b; inner())
 - [ ] `pnpm build && pnpm test && pnpm lint` 全过
 - [ ] 新功能有测试
 - [ ] 所有文件 ≤200 行
-- [ ] **重要发现已更新到本文件**
