@@ -76,10 +76,5 @@ fn = (a) -> (b = 1; inner = -> a + b; inner())
 
 ## 开发与集成
 
-**新功能**: 单 token → Formatter · 多行重写 → Processor（按序插入 [processors/index.ts](src/processors/index.ts)）
-**测试**: 覆盖 顶层/函数内 × 简单/闭包 · 盐固定 `salt: 'ahk'`
-
-**提交检查清单**:
-- [ ] `pnpm build && pnpm test && pnpm lint` 全过
-- [ ] 新功能有测试
-- [ ] 所有文件 ≤200 行
+**新功能**: 单 token → 使用 `formatter-creator` skill · 多行重写 → 使用 `processor-creator` skill
+**调试**: 使用 `transpile-debugger` skill 快速测试转译输出
