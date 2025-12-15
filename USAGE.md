@@ -1,83 +1,46 @@
 # coffee-ahk 使用指南
 
-> 面向 AI Agent 的 CoffeeScript → AHK v1 编写指南
-
-## 快速开始
+> AI Agent：CoffeeScript → AHK v1 编写指南
 
 ```bash
 pnpm build
 node -e "require('./dist/index.js').default('/path/to/file.coffee', { salt: 'ahk' }).then(console.log)"
 ```
 
-## 核心约束
+## 约束
 
-### AHK v1 特性
+**AHK v1**：大小写不敏感·数组索引从1开始·数组/对象本质相同`{1:a,2:b}`
 
-- **大小写不敏感**：`Foo` 和 `foo` 是同一变量
-- **数组索引从 1 开始**：`arr[0]` 自动转为 `arr[1]`
-- **数组/对象本质相同**：`[a,b]` 等同于 `{1:a, 2:b}`
+**禁止语法**（编译报错）：
+- `?.` / `?` 可选链·`[1..10]` 范围·`return x if y` 后置if·`x in [1,2]` 关系in·`>>>`/`await`/`yield`
 
-### 禁止语法
-
-以下语法会导致转译错误：
-
-- `x?.y` / `x?` — 可选链/存在检查
-- `[1..10]` — 范围操作符
-- `return 1 if condition` — 后置 if（用 `if condition then 1`）
-- `x in [1, 2, 3]` — 关系操作符 in（只支持 `for...in`）
-- `x >>> 2` / `await` / `yield` — 无符号右移/异步/生成器
-
-## 语法速查
-
-### 变量与解构
-
-```coffee
-x = 1
-arr = [1, 2, 3]
-obj = {a: 1, b: 2}
-[a, b] = [1, 2]
-{name, age} = person
-```
+## 语法
 
 ### 函数
 
 ```coffee
-fn = -> 1                           # 无参数
-fn = (a, b) -> a + b                # 有参数
+fn = (a, b) -> a + b                # 基本
 fn = (a = 1) -> a                   # 默认参数
 fn = (first, rest...) -> rest[0]    # 剩余参数
 do -> x = 1                         # IIFE
 
-# 隐式 return（最多 2 个换行 / 3 行代码）
-fn = ->
-  x = 1
-  x + 1                             # ✅ 自动 return
-
-# 超过限制需显式 return
-fn = ->
-  x = 1
-  y = 2
-  return x + y                      # ❌ 必须显式 return
+# 隐式return：≤3行（2个换行）
+fn = -> x = 1; x + 1                # ✅
+fn = -> x = 1; y = 2; return x + y  # ❌ 超限需显式return
 ```
 
-### 条件与循环
+### 控制流
 
 ```coffee
-if x > 1 then doSomething()         # 单行 if
-unless done then continue()         # unless
-
+if x > 1 then doSth()               # 单行if
+unless done then continue()
 for item in [1, 2, 3]               # for...in
-  console.log item
-
-for item, index in array            # 带索引
-for key, value of object            # for...of
-
+for item, i in array                # 带索引
+for key, val of object              # for...of
 while count < 10
   count++
-
-switch value
+switch val
   when 1 then "one"
-  when 2, 3 then "two or three"
   else "other"
 ```
 
@@ -85,220 +48,112 @@ switch value
 
 ```coffee
 class Animal
-  name: ""
   constructor: (name) -> @name = name
   speak: -> "#{@name} says hello"
 
 class Dog extends Animal
-  constructor: (name, breed) ->
-    super(name)
-    @breed = breed
+  constructor: (name, breed) -> super(name); @breed = breed
   speak: -> "#{super.speak()}, woof!"
-
-dog = new Dog("Rex", "German Shepherd")
 ```
 
 ### 模块
 
-#### 导入语法
-
 ```coffee
-import './animal'                       # 1. 副作用导入（class 文件必须用这种方式）
-import plus from './math'               # 2. 默认导入
-import { add, subtract } from './utils' # 3. 命名导入
-import math, { PI } from './math'       # 4. 混合导入
+# 导入
+import './animal'                       # 副作用（class必用）
+import plus from './math'               # 默认
+import { add, sub } from './utils'      # 命名
+import math, { PI } from './math'       # 混合
+# 不支持：import * as / import { x as y }
+
+# 导出
+export default (a, b) -> a + b          # 单行
+export { plus, minus }                  # 命名
+export { foo: bar() }                   # 键值对
+# 不支持：export const / export * from / export function
+# ⚠️ class文件不能export，用副作用导入
 ```
 
-**不支持**：`import * as m` / `import { foo as bar }`
-
-#### 导出语法
+### 其他
 
 ```coffee
-export default (a, b) -> a + b          # 1. 单行表达式
-export default { plus, minus }          # 2. 对象字面量
-export { plus, minus }                  # 3. 命名导出
-export { foo: bar() }                   # 4. 键值对
-export default { plus, minus }          # 5. default + named
-export { plus, minus }
+# 字符串
+str = "Hello, #{name}!"         # 插值
+str = """multiline #{x}"""      # 多行插值
+
+# 操作符
+1 < x < 10                      # 链式比较
+obj instanceof ClassName        # instanceof
+
+# 索引
+arr[0]      # → arr[1] (自动+1)
+arr[-1]     # 最后元素
+obj["0"]    # 字符串键不转换
 ```
 
-**不支持**：`export const foo = 1` / `export * from` / `export function fn()`
+## 限制
 
-**重要**：包含 class 的文件不能使用 export，必须用副作用导入。
+### 隐式return
 
-### 字符串与操作符
+函数体≤3行（2个换行）·对象字面量无括号≤2行（1个换行）
 
 ```coffee
-str = 'hello'                   # 单引号（无插值）
-str = "Hello, #{name}!"         # 双引号（插值）
-str = '''multiline'''           # 多行字符串
-str = """Hello #{name}"""       # 多行带插值
+# ✅ 正常
+fn = -> x = 1; x + 1
+fn = -> a: 1; b: 2
 
-# 比较: == != < > <= >=
-# 逻辑: and or not
-# 数学: + - * / % **
-# 位运算: & | ^ ~ << >>
-# 链式比较: 1 < x < 10
-# instanceof: obj instanceof ClassName
+# ❌ 超限
+fn = -> x = 1; y = 2; x + y  # 不会return
+fn = -> a: 1; b: 2; c: 3
+
+# ✅ 显式return
+fn = -> x = 1; y = 2; return x + y
+fn = -> return {a: 1, b: 2, c: 3}
 ```
 
-### 数组索引
+### 解构/Class
 
 ```coffee
-arr[0]      # → arr[1] (自动 +1)
-arr[-1]     # 最后一个元素
-obj["key"]  # 字符串键不转换
-```
-
-## 已知限制
-
-### 隐式 return 限制
-
-**限制**：函数体最多包含 2 个换行符（即最多 3 行代码），超过则需显式 `return`。
-
-```coffee
-# ✅ 支持（2个换行）
-fn = ->
-  x = 1
-  x + 1
-
-# ❌ 不支持（3个换行）
-fn = ->
-  x = 1
-  y = 2
-  x + y  # 不会自动 return
-
-# ✅ 解决方案
-fn = ->
-  x = 1
-  y = 2
-  return x + y
-```
-
-**特殊情况**：返回对象无括号时，最多 1 个换行符（2 行代码）。
-
-```coffee
-# ✅ 支持
-fn = ->
-  a: 1
-  b: 2
-
-# ❌ 不支持
-fn = ->
-  a: 1
-  b: 2
-  c: 3
-
-# ✅ 解决方案
-fn = ->
-  return
-    a: 1
-    b: 2
-    c: 3
-```
-
-### for 循环解构不支持
-
-```coffee
-# ❌ 不支持
-for [a, b] in pairs
-  console.log a, b
-
-# ✅ 解决方案
+# ❌ for解构 → ✅ 分步
 for pair in pairs
   [a, b] = pair
-```
 
-### 嵌套解构不支持
-
-```coffee
-# ❌ 不支持
-[a, [b, c]] = nested
-
-# ✅ 解决方案
+# ❌ 嵌套解构 → ✅ 展开
 [a, inner] = nested
 [b, c] = inner
+
+# ❌ export class → ✅ 分离文件
+# animal.coffee: class Animal
+# main.coffee: import './animal'
+
+# ❌ 对象禁用数字键
+obj[0]     # 禁止
+obj["key"] # ✅ 仅用字符串键
 ```
 
-### Class 与 Export 冲突
+## 闭包/调试
 
-```coffee
-# ❌ class 文件不能 export
-export class Animal  # 错误！
+**闭包**：自动处理引用，循环捕获变量用 `do (i) -> fns.push -> i`
 
-# ✅ 分离文件
-# animal.coffee（不用 export）
-class Animal
-  ...
-
-# main.coffee（副作用导入）
-import './animal'
-dog = new Animal()
-```
-
-### 对象的数字键
-
-```coffee
-# 注意：obj[0] 会被转换为 obj[1]
-# 如果需要字符串 "0" 作为键：
-obj["0"]  # 不转换
-```
-
-## 闭包与调试
-
-### 闭包最佳实践
-
-coffee-ahk 自动处理闭包引用：
-
-```coffee
-makeCounter = ->
-  count = 0
-  return ->
-    count++
-    return count
-
-# 循环中捕获变量
-fns = []
-for i in [1, 2, 3]
-  do (i) -> fns.push -> i
-```
-
-### 调试技巧
-
+**调试**：
 ```bash
-# 查看转译输出
 node -e "require('./dist/index.js').default('/tmp/test.coffee', { salt: 'test' }).then(console.log)"
-
-# 启用调试信息
-DEBUG_COFFEE=1 node -e "require('./dist/index.js').default('/tmp/test.coffee', { salt: 'test' }).then(console.log)"
 ```
 
-## 完整示例
+## 示例
 
 ```coffee
 # utils.coffee
 add = (a, b) -> a + b
-multiply = (a, b) -> a * b
-factorial = (n) -> if n <= 1 then 1 else n * factorial(n - 1)
-export { add, multiply, factorial }
-```
+export { add }
 
-```coffee
-# counter.coffee
+# counter.coffee（class不export）
 class Counter
   constructor: (initial = 0) -> @value = initial
   increment: -> @value++; this
-  decrement: -> @value--; this
-  getValue: -> @value
-# 不用 export，其他文件用 import './counter'
-```
 
-```coffee
 # main.coffee
 import './counter'
 import { add } from './utils'
-
-counter = new Counter(10)
-counter.increment().increment()
-result = add(counter.getValue(), 5)  # result = 17
+result = add(new Counter(10).increment().increment().value, 5)  # 17
 ```

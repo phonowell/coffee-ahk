@@ -5,19 +5,19 @@
   },
   "dependencies": {
     "coffeescript": "^2.7.0",
-    "fire-keeper": "^0.0.231",
-    "iconv-lite": "^0.7.0",
+    "fire-keeper": "^0.0.233",
+    "iconv-lite": "^0.7.1",
     "radash": "^12.1.1"
   },
   "description": "coffeescript -> ahk",
   "devDependencies": {
     "@types/cson": "^7.20.3",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^24.10.2",
+    "@types/node": "^25.0.2",
     "@typescript-eslint/eslint-plugin": "^8.49.0",
     "@typescript-eslint/parser": "^8.49.0",
     "esbuild": "^0.27.1",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-unused-imports": "^4.3.0",
