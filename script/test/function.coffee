@@ -20,6 +20,6 @@ fn = ->
     c = 3
     return do -> a + b + c
 do ->
-  fn1 = -> a + b
-  fn2 = (a) -> a + b
-  return fn3 = (a, b) -> a + b
+  fn1 = -> aGlobal + bGlobal
+  fn2 = (aParam) -> aParam + bGlobal
+  return fn3 = (aFn3, bFn3) -> aFn3 + bFn3

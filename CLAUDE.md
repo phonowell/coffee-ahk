@@ -54,6 +54,9 @@ fn = (a) -> (b = 1; inner = -> a + b; inner())
 
 **跳过 ctx**: 全局|`this`|`ℓxxx`|首字母大写|非函数作用域
 
+**处理顺序**: collectParams → transformFunctions → transformVars → addBind
+**冲突检测**: `collectParams` 中检测 `Func("child").Bind(λ)` 模式建立层级·排除 `ℓ` 前缀·函数提取后都在顶层靠 `scope.includes('function')` 判断嵌套
+
 ## 陷阱/限制
 
 | 问题                       | 解决                                | 位置                                                                    |
@@ -64,3 +67,4 @@ fn = (a) -> (b = 1; inner = -> a + b; inner())
 | 隐式 return ≤3行           | 显式 `return`                       | [implicit-return.ts:52](src/processors/function/implicit-return.ts#L52) |
 | for 循环解构/嵌套解构      | 分步/手动展开                       | -                                                                       |
 | 对象用数字键               | 禁止，仅用字符串键                  | -                                                                       |
+| 嵌套闭包同名参数           | 使用不同参数名避免 `λ` 冲突         | [params.ts:18](src/processors/function/ctx-transform/params.ts#L18)     |

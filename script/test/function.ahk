@@ -7,17 +7,17 @@ fn.Call(fn.Call(fn))
 fn := Func("ahk_9").Bind({})
 fn := Func("ahk_8").Bind({})
 (Func("ahk_4").Bind({})).Call()
-ahk_1(λ, a, b) {
-  λ.a := a
-  λ.b := b
-  return λ.a + λ.b
+ahk_1(λ, aFn3, bFn3) {
+  λ.aFn3 := aFn3
+  λ.bFn3 := bFn3
+  return λ.aFn3 + λ.bFn3
 }
-ahk_2(λ, a) {
-  λ.a := a
-  return λ.a + λ.b
+ahk_2(λ, aParam) {
+  λ.aParam := aParam
+  return λ.aParam + λ.bGlobal
 }
 ahk_3(λ) {
-  return λ.a + λ.b
+  return λ.aGlobal + λ.bGlobal
 }
 ahk_4(λ) {
   λ.fn1 := Func("ahk_3").Bind(λ)

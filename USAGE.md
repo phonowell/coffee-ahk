@@ -135,6 +135,22 @@ obj["key"] # ✅ 仅用字符串键
 
 **闭包**：自动处理引用，循环捕获变量用 `do (i) -> fns.push -> i`
 
+**⚠️ 嵌套闭包参数冲突**：
+```coffee
+# ❌ 同名参数共享 λ 对象存储
+outer = (args...) ->
+  inner = (args...) -> console.log args...  # args 被覆盖
+  inner(1, 2)    # 打印 1, 2
+  args[0]        # BUG: 读到 1 而非外层参数
+
+# ✅ 使用不同参数名
+outer = (argsOuter...) ->
+  inner = (argsInner...) -> console.log argsInner...
+  inner(1, 2)
+  argsOuter[0]   # 正确读取外层参数
+```
+编译器会检测冲突并报错，要求使用独特名称。
+
 **调试**：
 ```bash
 node -e "require('./dist/index.js').default('/tmp/test.coffee', { salt: 'test' }).then(console.log)"
