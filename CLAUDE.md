@@ -1,19 +1,22 @@
 # CLAUDE.md
 
-> **haiku 优先简单任务** · **输出 tokens 5x 价格惜字如金** · 中文 · **≤200行/文件≤100行/本文** · **人工信息禁删**
-> Read/Glob/Grep > Task · 并行≤3 · 合并探索 · 避免开放式
+> **haiku 简单任务** · **输出 5x 价格** · 中文 · **≤200行/文件≤100行/本文** · **人工信息禁删**
+> Read/Glob/Grep > Task · 并行≤3 · 避免开放式 · **Skill 调用需等待完成** · **TodoWrite ≥3步必建**
+
+> **输出约束**: 禁预告("让我..."/"现在...") · 状态符号(✓/✗/→) · 批量Edit · 数据优先省略叙述("根据分析..."/"我发现...") · 工具结果直达结论 · 禁确认语("好的"/"明白了") · 工具间隔零输出 · 错误格式`✗ {位置}:{类型}` · 代码块零注释 · ≥2条信息用列表 · 路径缩写(`.`项目根 · `~`主目录) · 禁总结性重复("我已经...") · 进度`{当前}/{总数}` · 提问单刀直入
 
 **CoffeeScript → AutoHotkey v1** - 入口 [src/index.ts:18](src/index.ts#L18)
 
+**精简冗余 · 冲突信代码 · 客观诚实 · 不主观评价 · 不因情绪转移立场 · 不编造事实 · 立刻暴露不确定信息**
+
 ## 规范
 
-**代码**: `array.at(i)` 非 `[]` · 模板字符串 · `x?.is("a") === true` 非 `||` 链
-**行数**: ≤200行（`cloc`）超限→简化逻辑→拆分
+**代码**: `array.at(i)` 非 `[]` · 模板字符串 · `x?.is("a") === true` 非 `||` 链 · ≤200行(`cloc`)超限→拆分
 
 ```bash
-pnpm build && pnpm test           # 先构建
+pnpm build && pnpm test
 pnpm test -- <name>
-node -e "require('./dist/index.js').default('/tmp/test.coffee', { salt: 'test' }).then(console.log)"
+node -e "require('./dist/index.js').default('/tmp/test.coffee',{salt:'test'}).then(console.log)"
 ```
 
 ## 架构
@@ -30,10 +33,10 @@ node -e "require('./dist/index.js').default('/tmp/test.coffee', { salt: 'test' }
 
 ## 模块
 
-[src/file/include/](src/file/include/) - import/export 解析 → 拓扑排序 → 组装
+[src/file/include/](src/file/include/) - import/export → 拓扑排序 → 组装
 
 **支持**: `import x from './m'` | `import {a,b}` | `export default` | `export {a,b}`
-**禁止**: `import * as` | `import {x as y}` | `export const` - [source-resolver.ts:46](src/file/include/source-resolver.ts#L46) · [parse-exports.ts:93](src/file/include/transformer/parse-exports.ts#L93)
+**禁止**: `import * as` | `import {x as y}` | `export const` - [source-resolver.ts:46](src/file/include/source-resolver.ts#L46) [parse-exports.ts:93](src/file/include/transformer/parse-exports.ts#L93)
 
 ## 约束
 
@@ -52,19 +55,18 @@ fn = (a) -> (b = 1; inner = -> a + b; inner())
 # → ahk_2(a) { λ:={a:a}; λ.b:=1; λ.inner:=Func("ahk_1").Bind(λ); ... }
 ```
 
-**跳过 ctx**: 全局|`this`|`ℓxxx`|首字母大写|非函数作用域
+**跳过**: 全局|`this`|`ℓxxx`|首字母大写|非函数作用域
+**顺序**: collectParams → transformFunctions → transformVars → addBind
+**冲突检测**: `collectParams` 检测 `Func("child").Bind(λ)` 建立层级 · 排除 `ℓ` · `scope.includes('function')` 判断嵌套
 
-**处理顺序**: collectParams → transformFunctions → transformVars → addBind
-**冲突检测**: `collectParams` 中检测 `Func("child").Bind(λ)` 模式建立层级·排除 `ℓ` 前缀·函数提取后都在顶层靠 `scope.includes('function')` 判断嵌套
-
-## 陷阱/限制
+## 陷阱
 
 | 问题                       | 解决                                | 位置                                                                    |
 | -------------------------- | ----------------------------------- | ----------------------------------------------------------------------- |
 | Formatter 未返 `true`      | 消费后返回                          | -                                                                       |
-| 改 `toArray()` 返回值      | 用 `.reload()`/`.push()`            | -                                                                       |
+| 改 `toArray()` 返回值      | `.reload()`/`.push()`               | -                                                                       |
 | `!line` vs `=== undefined` | 跳空行`!line` 判结束`=== undefined` | -                                                                       |
 | 隐式 return ≤3行           | 显式 `return`                       | [implicit-return.ts:52](src/processors/function/implicit-return.ts#L52) |
 | for 循环解构/嵌套解构      | 分步/手动展开                       | -                                                                       |
-| 对象用数字键               | 禁止，仅用字符串键                  | -                                                                       |
-| 嵌套闭包同名参数           | 使用不同参数名避免 `λ` 冲突         | [params.ts:18](src/processors/function/ctx-transform/params.ts#L18)     |
+| 对象数字键                 | 禁止·仅字符串键                     | -                                                                       |
+| 嵌套闭包同名参数           | 不同参数名避免 `λ` 冲突             | [params.ts:18](src/processors/function/ctx-transform/params.ts#L18)     |
