@@ -236,6 +236,35 @@ const errorTests: ErrorTest[] = [
     code: 'y = if x > 0 then (if x > 10 then "big" else "small") else "negative"',
     expectedError: /Coffee-AHK\/unsupported.*Nested if-then-else/i,
   },
+
+  // Single-letter class name validation
+  {
+    name: 'Single-letter class name is forbidden',
+    code: 'class A\n  a: 1',
+    expectedError: /Coffee-AHK\/class-single-letter.*class name.*A.*single letter/i,
+  },
+  {
+    name: 'Single-letter class name (Z)',
+    code: 'class Z\n  value: 42',
+    expectedError: /Coffee-AHK\/class-single-letter.*class name.*Z.*single letter/i,
+  },
+
+  // Constructor parameter validation
+  {
+    name: 'Using @property in constructor parameters creates invalid AHK',
+    code: 'class Animal\n  constructor: (@name) ->',
+    expectedError: /Coffee-AHK\/invalid-syntax.*this\.name.*constructor parameters/i,
+  },
+  {
+    name: 'Multiple @ properties in constructor parameters are forbidden',
+    code: 'class Person\n  constructor: (@name, @age) ->',
+    expectedError: /Coffee-AHK\/invalid-syntax.*this\.(name|age).*constructor parameters/i,
+  },
+  {
+    name: 'Mixed constructor parameters with @property are forbidden',
+    code: 'class Data\n  constructor: (id, @value, @name) ->',
+    expectedError: /Coffee-AHK\/invalid-syntax.*this\..*constructor parameters/i,
+  },
 ]
 
 const main = async () => {

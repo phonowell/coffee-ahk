@@ -56,6 +56,12 @@ class Dog extends Animal
   speak: -> "#{super.speak()}, woof!"
 ```
 
+**⚠️ 类名禁止单字母**：
+```coffee
+class A            # ❌ 单字母类名在 AHK v1 中有问题
+class Bb           # ✅ 至少两个字符
+```
+
 ### 模块
 
 ```coffee

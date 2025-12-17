@@ -1,5 +1,7 @@
 # Basic class with inheritance
-class A extends B
+class Bb
+  a: -> 42
+class Aa extends Bb
 
   a: 0
   b: {}
@@ -15,7 +17,7 @@ class A extends B
   e: (n) -> @a + n
   f: -> do => @a
 
-b = new A()
+b = new Aa()
 
 # Class with constructor parameters
 class Person

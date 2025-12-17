@@ -16,6 +16,13 @@ const identifierFormatter = (context: Context): boolean => {
         )
       }
 
+      // 检查单字母类名（AHK v1 限制）
+      if (value.length === 1) {
+        throw new Error(
+          `Coffee-AHK/class-single-letter (line ${line}): class name '${value}' is a single letter, which is forbidden in AHK v1. Class names must be at least 2 characters.`,
+        )
+      }
+
       context.cache.classNames.add(value)
       content.push({ type: 'identifier', value })
       return true

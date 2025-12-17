@@ -2,10 +2,10 @@
 
 # 1. Variable names with special prefixes
 fn1 = ->
-  $dollar = 1
+  dollar = 1
   _underscore = 2
-  $result = $dollar + _underscore
-  return $result
+  result = dollar + _underscore
+  return result
 
 # 2. Variable names that look like internal vars
 fn2 = ->

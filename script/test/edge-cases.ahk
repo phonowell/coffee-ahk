@@ -168,8 +168,8 @@ ahk_28(λ) {
   return λ.result + λ.idx
 }
 ahk_29(λ) {
-  λ.$dollar := 1
+  λ.dollar := 1
   λ._underscore := 2
-  λ.$result := λ.$dollar + λ._underscore
-  return λ.$result
+  λ.result := λ.dollar + λ._underscore
+  return λ.result
 }

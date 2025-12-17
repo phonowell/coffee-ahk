@@ -109,7 +109,7 @@ const processFile = async (
 
   const text = run(() => {
     if (raw instanceof Buffer)
-      return iconv.decode(raw, 'utf8', { addBOM: true })
+      return iconv.decode(raw, 'utf8', { stripBOM: true })
     if (typeof raw === 'string') return raw
     return JSON.stringify(raw)
   })

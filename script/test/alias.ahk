@@ -1,6 +1,6 @@
 class Ａnimal {
-  __New(this.name) {
-    
+  __New(name) {
+    this.name := name
   }
   speak := Func("ahk_1").Bind({}, this)
 }

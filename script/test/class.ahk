@@ -1,4 +1,7 @@
-class Ａ extends B {
+class Ｂb {
+  a := Func("ahk_17").Bind({}, this)
+}
+class Ａa extends Ｂb {
   a := 0
   b := {}
   c := {a: 1}
@@ -11,7 +14,7 @@ class Ａ extends B {
   e := Func("ahk_14").Bind({}, this)
   f := Func("ahk_13").Bind({}, this)
 }
-global b := new Ａ()
+global b := new Ａa()
 class Ｐerson {
   __New(name, age) {
     this.name := name
@@ -110,4 +113,8 @@ ahk_15(λ, ℓthis) {
 ahk_16(λ, ℓthis) {
   this := ℓthis
   return this.a
+}
+ahk_17(λ, ℓthis) {
+  this := ℓthis
+  return 42
 }

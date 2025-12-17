@@ -15,6 +15,6 @@ c = 3
 fn = -> # Function comment
   1  # Return value comment
 
-class A  # Class comment
+class Ac  # Class comment
   # Method comment
   m: -> 1

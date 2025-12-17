@@ -1,6 +1,7 @@
 # Alias test
 # @ -> this
 class Animal
-  constructor: (@name) ->
+  constructor: (name) ->
+    @name = name
 
   speak: -> @name
