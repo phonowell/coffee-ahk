@@ -1,3 +1,5 @@
+import { createTranspileError } from '../utils/error.js'
+
 import include from './include.js'
 
 const main = async (source: string, salt: string): Promise<string> => {
@@ -8,8 +10,9 @@ const main = async (source: string, salt: string): Promise<string> => {
 
   const content = await include(src, salt)
   if (!content) {
-    throw new Error(
-      `Coffee-AHK/file: include failed, source file not found or empty: '${src}'`,
+    throw createTranspileError(
+      'file',
+      `include failed, source file not found or empty: '${src}'`,
     )
   }
 

@@ -71,6 +71,21 @@ fn = (a) -> (b = 1; inner = -> a + b; inner())
 | 对象数字键                 | 禁止·仅字符串键                     | -                                                                       |
 | 嵌套闭包同名参数           | 不同参数名避免 `λ` 冲突             | [params.ts:18](src/processors/function/ctx-transform/params.ts#L18)     |
 
+## 错误处理
+
+**抛错类型** [src/utils/error.ts](src/utils/error.ts):
+- `TranspileError(ctx, type, msg)` - 有 Context·展示行号+上下文
+- `createTranspileError(type, msg)` - 无 Context·文件/批量验证错误
+
+**使用场景**:
+- Formatters/Processors 当前 token 错误 → `TranspileError`
+- 文件不存在·循环依赖·闭包冲突汇总 → `createTranspileError`
+
+**行号映射** [src/file/include.ts:40](src/file/include.ts#L40):
+- import/include 合并时构建映射 `{file, line, content}[]` 存 `global.__fileMapping`
+- 错误时 [src/index.ts:51](src/index.ts#L51) 从映射定位原始文件+行号
+- 展示格式: `📍 {文件}:{行号}` + 上下2行原始代码
+
 ## mimo-v2-flash 陷阱
 
 **低智力模型** · 转义计算错误 · 复杂字符串拼接失败 · 无感知失败能力

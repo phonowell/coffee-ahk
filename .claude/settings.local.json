@@ -6,7 +6,10 @@
       "Bash(node:*)",
       "Bash(ls:*)",
       "Bash(pnpm test:*)",
-      "Skill(optimize-claude-md)"
+      "Skill(optimize-claude-md)",
+      "Skill(plan-implementation)",
+      "Bash(pnpm build:ts:*)",
+      "Bash(cloc:*)"
     ]
   }
 }

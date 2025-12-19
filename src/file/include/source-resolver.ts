@@ -2,7 +2,7 @@
 import { getDirname, glob, read } from 'fire-keeper'
 import { trim } from 'radash'
 
-import { createFileError } from '../../utils/error.js'
+import { createTranspileError } from '../../utils/error.js'
 
 import { listExt } from './utils.js'
 
@@ -28,16 +28,18 @@ export const getSource = async (
     `./node_modules/${path}/package.json`,
   )
   if (!pkg?.main) {
-    throw new Error(
-      `Coffee-AHK/file: package.json missing 'main' field for '${source}'`,
+    throw createTranspileError(
+      'file',
+      `package.json missing 'main' field for '${source}'`,
     )
   }
 
   const listResult2 = await glob(`./node_modules/${path}/${pkg.main}`)
   const secondResult = listResult2[0]
   if (!secondResult) {
-    throw new Error(
-      `Coffee-AHK/file: resolved package main not found: '${source}'`,
+    throw createTranspileError(
+      'file',
+      `resolved package main not found: '${source}'`,
     )
   }
 
@@ -50,13 +52,13 @@ export const pickImport = async (
 ): Promise<{ default: string; named: string[]; path: string }> => {
   // 检测不支持的 import 语法
   if (/import\s+\*\s+as\s+/.test(line)) {
-    throw createFileError(
+    throw createTranspileError(
       'import',
       `unsupported syntax "import * as" in '${source}'\n  Line: ${line}\n  Use named imports instead: import { foo, bar } from './module'`,
     )
   }
   if (/{\s*\w+\s+as\s+\w+/.test(line)) {
-    throw createFileError(
+    throw createTranspileError(
       'import',
       `unsupported syntax "import { foo as bar }" in '${source}'\n  Line: ${line}\n  Use direct names without aliases: import { foo } from './module'`,
     )

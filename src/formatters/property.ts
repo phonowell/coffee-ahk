@@ -1,7 +1,9 @@
+import { TranspileError } from '../utils/error.js'
+
 import type { Context } from '../types'
 
 const main = (ctx: Context): boolean => {
-  const { content, type, value, scope, token } = ctx
+  const { content, type, value, scope } = ctx
 
   if (type === '.') {
     content.push({ type: '.', value: '.' })
@@ -28,10 +30,10 @@ const main = (ctx: Context): boolean => {
       scope.includes('class') &&
       scope.includes('parameter')
     ) {
-      const line = token[2].first_line + 1
-      throw new Error(
-        `Coffee-AHK/invalid-syntax (line ${line}): ` +
-          `Using 'this.${value}' in constructor parameters creates invalid AHK syntax. ` +
+      throw new TranspileError(
+        ctx,
+        'invalid-syntax',
+        `Using 'this.${value}' in constructor parameters creates invalid AHK syntax. ` +
           `AHK function parameters must be simple variable names, not property accesses. ` +
           `Solution: Use constructor: (name) -> @name = name instead.`,
       )

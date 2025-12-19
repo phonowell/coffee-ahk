@@ -1,4 +1,5 @@
 import Item from '../models/Item.js'
+import { TranspileError } from '../utils/error.js'
 
 import type { Context } from '../types'
 
@@ -21,8 +22,10 @@ const main = (ctx: Context) => {
     if (it.is('for', 'for')) {
       const next = content.at(i + 1)
       if (!next) {
-        throw new Error(
-          `Coffee-AHK/internal: for: missing variable name after for/in keyword (token index ${i})`,
+        throw new TranspileError(
+          ctx,
+          'internal',
+          `for: missing variable name after for/in keyword`,
         )
       }
       return next.value
@@ -43,8 +46,10 @@ const main = (ctx: Context) => {
 
     const next = content.at(index + 1)
     if (!next) {
-      throw new Error(
-        `Coffee-AHK/internal: for: missing block-start after for/in statement (token index ${index})`,
+      throw new TranspileError(
+        ctx,
+        'internal',
+        `for: missing block-start after for/in statement`,
       )
     }
 

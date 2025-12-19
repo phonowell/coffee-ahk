@@ -1,6 +1,8 @@
 // Edge handling for rendering
 import { trim } from 'radash'
 
+import { TranspileError } from '../utils/error.js'
+
 import type Item from '../models/Item.js'
 import type { Context as Context2 } from '../types'
 
@@ -45,8 +47,10 @@ export const edge2 = (ctx: Context): string => {
   if (value === 'call-start') {
     const prev = content.at(i - 1)
     if (!prev) {
-      throw new Error(
-        `Coffee-AHK/internal: edge2: missing function name before call-start (token index: ${i})`,
+      throw new TranspileError(
+        ctx,
+        'internal',
+        `edge2: missing function name before call-start (token index: ${i})`,
       )
     }
 

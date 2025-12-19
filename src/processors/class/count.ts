@@ -1,3 +1,5 @@
+import { TranspileError } from '../../utils/error.js'
+
 import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
@@ -9,8 +11,10 @@ const main = (ctx: Context) => {
 
     const it = content.at(i + 1)
     if (!it) {
-      throw new Error(
-        `Coffee-AHK/internal: class/count: missing identifier after class keyword (token index ${i})`,
+      throw new TranspileError(
+        ctx,
+        'internal',
+        `class/count: missing identifier after class keyword`,
       )
     }
 

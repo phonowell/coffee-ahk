@@ -1,6 +1,13 @@
 /** Class detection and validation logic. */
 
-import { createFileError } from '../../../utils/error.js'
+import { TranspileError } from '../../../utils/error.js'
+
+import type { Context } from '../../../types/index.js'
+
+/** Create minimal Context for class/export conflict errors */
+const createFileContext = (): Pick<Context, 'token'> => ({
+  token: ['', '', { first_line: 0, last_line: 0 }] as Context['token'],
+})
 
 /** Check if code contains class declarations. */
 export const hasClassDeclaration = (code: string): boolean =>
@@ -16,7 +23,8 @@ export const validateClassExportConflict = (
   hasExport: boolean,
 ): void => {
   if (hasClass && hasExport) {
-    throw createFileError(
+    throw new TranspileError(
+      createFileContext() as Context,
       'file',
       `module contains both class and export: '${file}'`,
     )

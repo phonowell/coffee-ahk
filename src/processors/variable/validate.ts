@@ -1,3 +1,4 @@
+import { TranspileError } from '../../utils/error.js'
 import {
   getForbiddenReason,
   isVariableForbidden,
@@ -13,8 +14,10 @@ const checkSimpleAssignment = (ctx: Context, i: number): void => {
   if (!item?.is('identifier') || !next?.is('sign', '=')) return
 
   if (isVariableForbidden(item.value)) {
-    throw new Error(
-      `Coffee-AHK/forbidden: variable '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
+    throw new TranspileError(
+      ctx,
+      'forbidden',
+      `variable '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
     )
   }
 }
@@ -36,8 +39,10 @@ const checkDestructuringAssignment = (ctx: Context, i: number): void => {
 
     if (current?.is('bracket', ']') && nextItem?.is('sign', '=')) {
       if (isVariableForbidden(item.value)) {
-        throw new Error(
-          `Coffee-AHK/forbidden: destructuring target '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
+        throw new TranspileError(
+          ctx,
+          'forbidden',
+          `destructuring target '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
         )
       }
       break
@@ -69,8 +74,10 @@ const checkFunctionParameters = (ctx: Context, i: number): void => {
 
   if (isAfterParameterStart || isAfterCommaInParameters) {
     if (isVariableForbidden(item.value)) {
-      throw new Error(
-        `Coffee-AHK/forbidden: parameter '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
+      throw new TranspileError(
+        ctx,
+        'forbidden',
+        `parameter '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
       )
     }
   }
@@ -85,8 +92,10 @@ const checkCatchVariable = (ctx: Context, i: number): void => {
   if (!prev?.is('try', 'catch')) return
 
   if (isVariableForbidden(item.value)) {
-    throw new Error(
-      `Coffee-AHK/forbidden: catch variable '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
+    throw new TranspileError(
+      ctx,
+      'forbidden',
+      `catch variable '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
     )
   }
 }
@@ -105,8 +114,10 @@ const checkForLoopVariables = (ctx: Context, i: number): void => {
 
     if (current.type === 'identifier') {
       if (isVariableForbidden(current.value)) {
-        throw new Error(
-          `Coffee-AHK/forbidden: for loop variable '${current.value}' cannot be used (${getForbiddenReason(current.value)}).`,
+        throw new TranspileError(
+          ctx,
+          'forbidden',
+          `for loop variable '${current.value}' cannot be used (${getForbiddenReason(current.value)}).`,
         )
       }
     }
@@ -124,8 +135,10 @@ const checkObjectKeys = (ctx: Context, i: number): void => {
   // Note: This also handles object destructuring keys like {A_Index: idx}
   // because formatters convert them to 'property' type
   if (item.value.toLowerCase().startsWith('a_')) {
-    throw new Error(
-      `Coffee-AHK/forbidden: object key or class property '${item.value}' cannot be used (A_ prefix is reserved for AHK built-in variables).`,
+    throw new TranspileError(
+      ctx,
+      'forbidden',
+      `object key or class property '${item.value}' cannot be used (A_ prefix is reserved for AHK built-in variables).`,
     )
   }
 }

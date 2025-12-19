@@ -6,7 +6,7 @@ import type { Context } from '../../types'
 const main = (ctx: Context) => {
   // list all classes
   const setClass = count(ctx)
-  validate(setClass)
+  validate(setClass, ctx)
 }
 
 export default main

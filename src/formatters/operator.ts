@@ -1,4 +1,5 @@
 import { TYPEOF } from '../constants.js'
+import { TranspileError } from '../utils/error.js'
 
 import type { ItemTypeMap } from '../models/ItemType'
 import type { Context } from '../types'
@@ -37,8 +38,6 @@ const handleMinusOperator = (ctx: Context): boolean => {
   return true
 }
 
-const getLine = (ctx: Context): number => ctx.token[2].first_line + 1
-
 const handleUnaryOperator = (ctx: Context): boolean => {
   const { content, type, value } = ctx
 
@@ -52,8 +51,10 @@ const handleUnaryOperator = (ctx: Context): boolean => {
   }
 
   if (type === 'unary' && value === 'delete') {
-    throw new Error(
-      `Coffee-AHK/forbidden (line ${getLine(ctx)}): 'delete' is not supported in AHK.`,
+    throw new TranspileError(
+      ctx,
+      'forbidden',
+      `'delete' is not supported in AHK.`,
     )
   }
 
@@ -105,18 +106,24 @@ const main = (ctx: Context): boolean => {
   }
   if (type === 'compound_assign') {
     if (value === '||=' || value === '?=' || value === '&&=') {
-      throw new Error(
-        `Coffee-AHK/forbidden (line ${getLine(ctx)}): compound assignment '${value}' is not supported. Only standard assignments are allowed.`,
+      throw new TranspileError(
+        ctx,
+        'forbidden',
+        `compound assignment '${value}' is not supported. Only standard assignments are allowed.`,
       )
     }
     if (value === '//=') {
-      throw new Error(
-        `Coffee-AHK/forbidden (line ${getLine(ctx)}): floor division assignment '//=' is not supported (conflicts with AHK comments).`,
+      throw new TranspileError(
+        ctx,
+        'forbidden',
+        `floor division assignment '//=' is not supported (conflicts with AHK comments).`,
       )
     }
     if (value === '%%=') {
-      throw new Error(
-        `Coffee-AHK/forbidden (line ${getLine(ctx)}): modulo assignment '%%=' is not supported. Use 'x := Mod(x, b)' instead.`,
+      throw new TranspileError(
+        ctx,
+        'forbidden',
+        `modulo assignment '%%=' is not supported. Use 'x := Mod(x, b)' instead.`,
       )
     }
     content.push({ type: 'math', value: value as ItemTypeMap['math'] })
@@ -125,14 +132,18 @@ const main = (ctx: Context): boolean => {
   if (type === 'math') {
     // // is floor division in CoffeeScript but comment in AHK
     if (value === '//') {
-      throw new Error(
-        `Coffee-AHK/forbidden (line ${getLine(ctx)}): floor division '//' is not supported (conflicts with AHK comments). Use 'Math.floor(a / b)' instead.`,
+      throw new TranspileError(
+        ctx,
+        'forbidden',
+        `floor division '//' is not supported (conflicts with AHK comments). Use 'Math.floor(a / b)' instead.`,
       )
     }
     // %% is modulo in CoffeeScript but not supported in AHK
     if (value === '%%') {
-      throw new Error(
-        `Coffee-AHK/forbidden (line ${getLine(ctx)}): modulo '%%' is not supported. Use 'Mod(a, b)' instead.`,
+      throw new TranspileError(
+        ctx,
+        'forbidden',
+        `modulo '%%' is not supported. Use 'Mod(a, b)' instead.`,
       )
     }
     content.push({ type: 'math', value: value as ItemTypeMap['math'] })
@@ -143,8 +154,10 @@ const main = (ctx: Context): boolean => {
   if (type === '&' || type === '|' || type === '^' || type === 'shift') {
     // Unsigned right shift is not supported in AHK
     if (value === '>>>' || value === '>>>=') {
-      throw new Error(
-        `Coffee-AHK/unsupported (line ${getLine(ctx)}): unsigned right shift '${value}' is not supported in AHK. Use '>>' instead.`,
+      throw new TranspileError(
+        ctx,
+        'unsupported',
+        `unsigned right shift '${value}' is not supported in AHK. Use '>>' instead.`,
       )
     }
     content.push({ type: 'math', value: value as ItemTypeMap['math'] })

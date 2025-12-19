@@ -1,3 +1,5 @@
+import { TranspileError } from '../utils/error.js'
+
 import type { Context } from '../types'
 
 const listForbidden = [
@@ -14,18 +16,21 @@ const listForbidden = [
 ]
 
 const main = (ctx: Context) => {
-  const { type, token } = ctx
-  const line = token[2].first_line + 1
+  const { type } = ctx
 
   if (listForbidden.includes(type)) {
-    throw new Error(
-      `Coffee-AHK/forbidden (line ${line}): token type '${type}' is not supported in CoffeeScript→AHK transpilation.`,
+    throw new TranspileError(
+      ctx,
+      'forbidden',
+      `token type '${type}' is not supported in CoffeeScript→AHK transpilation.`,
     )
   }
 
   if (type === 'post_if') {
-    throw new Error(
-      `Coffee-AHK/forbidden (line ${line}): post-if syntax is not supported. Use standard if/else.`,
+    throw new TranspileError(
+      ctx,
+      'forbidden',
+      `post-if syntax is not supported. Use standard if/else.`,
     )
   }
 
@@ -33,23 +38,29 @@ const main = (ctx: Context) => {
   if (type === 'relation') {
     const { value } = ctx
     if (value === 'in') {
-      throw new Error(
-        `Coffee-AHK/forbidden (line ${line}): 'in' operator is not supported. Use 'for...in' for iteration.`,
+      throw new TranspileError(
+        ctx,
+        'forbidden',
+        `'in' operator is not supported. Use 'for...in' for iteration.`,
       )
     }
   }
 
   // async/await is not supported in AHK
   if (type === 'await') {
-    throw new Error(
-      `Coffee-AHK/unsupported (line ${line}): 'await' is not supported. AHK v1 has no async/await support.`,
+    throw new TranspileError(
+      ctx,
+      'unsupported',
+      `'await' is not supported. AHK v1 has no async/await support.`,
     )
   }
 
   // Generator/yield is not supported in AHK
   if (type === 'yield') {
-    throw new Error(
-      `Coffee-AHK/unsupported (line ${line}): 'yield' is not supported. AHK v1 has no generator support.`,
+    throw new TranspileError(
+      ctx,
+      'unsupported',
+      `'yield' is not supported. AHK v1 has no generator support.`,
     )
   }
 

@@ -1,9 +1,10 @@
+import { TranspileError } from '../utils/error.js'
+
 import type { Context } from '../types'
 
 /** Format identifier tokens */
 const identifierFormatter = (context: Context): boolean => {
-  const { content, token, type, value } = context
-  const line = token[2].first_line + 1
+  const { content, type, value } = context
 
   // 收集 class 名称与检测冲突和命名规范
   if (type === 'identifier') {
@@ -11,15 +12,19 @@ const identifierFormatter = (context: Context): boolean => {
     if (prev?.type === 'class') {
       // 检查首字母是否为大写字母
       if (!/^[A-Z]/.test(value)) {
-        throw new Error(
-          `Coffee-AHK/class-case (line ${line}): class name '${value}' must start with an uppercase letter.`,
+        throw new TranspileError(
+          context,
+          'class-case',
+          `class name '${value}' must start with an uppercase letter.`,
         )
       }
 
       // 检查单字母类名（AHK v1 限制）
       if (value.length === 1) {
-        throw new Error(
-          `Coffee-AHK/class-single-letter (line ${line}): class name '${value}' is a single letter, which is forbidden in AHK v1. Class names must be at least 2 characters.`,
+        throw new TranspileError(
+          context,
+          'class-single-letter',
+          `class name '${value}' is a single letter, which is forbidden in AHK v1. Class names must be at least 2 characters.`,
         )
       }
 

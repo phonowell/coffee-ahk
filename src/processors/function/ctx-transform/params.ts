@@ -1,7 +1,7 @@
 /** Parameter collection and assignment generation for ctx-transform */
 import { CTX, THIS } from '../../../constants.js'
 import Item from '../../../models/Item.js'
-import { createFileError } from '../../../utils/error.js'
+import { TranspileError } from '../../../utils/error.js'
 
 import { isUserFunc } from './utils.js'
 
@@ -19,6 +19,7 @@ const detectParamCollisions = (
   params: Map<string, string[]>,
   content: Item[],
   salt: string,
+  ctx: Context,
 ): void => {
   // Build function hierarchy by detecting Func("name") calls inside function bodies
   const funcParent = new Map<string, string>()
@@ -83,7 +84,7 @@ const detectParamCollisions = (
   }
 
   if (errors.length > 0)
-    throw createFileError('closure-collision', errors.join('\n'))
+    throw new TranspileError(ctx, 'closure-collision', errors.join('\n'))
 }
 
 /** Collect parameters for each extracted function */
@@ -144,7 +145,7 @@ export const collectParams = (ctx: Context): ParamsInfo => {
   }
 
   // Detect parameter collisions before returning
-  detectParamCollisions(params, content.toArray(), salt)
+  detectParamCollisions(params, content.toArray(), salt, ctx)
 
   return { params, classMethods }
 }

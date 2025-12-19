@@ -1,13 +1,16 @@
+import { TranspileError } from '../utils/error.js'
+
 import type { Context } from '../types'
 
 const main = (ctx: Context): boolean => {
-  const { content, scope, token, type } = ctx
-  const line = token[2].first_line + 1
+  const { content, scope, type } = ctx
 
   if (type === '...') {
     if (!['call', 'parameter'].includes(scope.last)) {
-      throw new Error(
-        `Coffee-AHK/forbidden (line ${line}): spread operator '...' is only allowed in function calls or parameter lists. Context: ${scope.last}`,
+      throw new TranspileError(
+        ctx,
+        'forbidden',
+        `spread operator '...' is only allowed in function calls or parameter lists. Context: ${scope.last}`,
       )
     }
     content.push({ type: 'sign', value: '...' })
@@ -17,8 +20,10 @@ const main = (ctx: Context): boolean => {
     // 检查左值是否与 class 名冲突
     const prev = content.at(-1)
     if (prev?.type === 'identifier' && ctx.cache.classNames.has(prev.value)) {
-      throw new Error(
-        `Coffee-AHK/class-case (line ${line}): cannot assign to class name '${prev.value}'. Please use a different identifier for variables.`,
+      throw new TranspileError(
+        ctx,
+        'class-case',
+        `cannot assign to class name '${prev.value}'. Please use a different identifier for variables.`,
       )
     }
     content.push({ type: 'sign', value: '=' })

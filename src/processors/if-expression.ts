@@ -7,7 +7,9 @@
  * 2. Check if it's in expression context (after := or = assignment)
  * 3. Extract condition, then-branch, and else-branch
  * 4. Convert to ternary: condition ? then : else
- *
+ */
+import { TranspileError } from '../utils/error.js'
+/**
  * Note: In processor stage, INDENT/OUTDENT tokens have been converted to edges:
  * - INDENT → new-line + block-start edge
  * - OUTDENT → new-line + block-end edge
@@ -161,8 +163,10 @@ export default (ctx: Context): void => {
       branch.some((item) => item.type === 'if' && item.value === 'if')
 
     if (hasNestedIf(thenBranch) || hasNestedIf(elseBranch)) {
-      throw new Error(
-        `Coffee-AHK/unsupported: Nested if-then-else expressions are not supported.\n\n` +
+      throw new TranspileError(
+        ctx,
+        'unsupported',
+        `Nested if-then-else expressions are not supported.\n\n` +
           `Workaround 1 - Use temporary variables:\n` +
           `  temp = if inner then a else b\n` +
           `  result = if outer then temp else c\n\n` +

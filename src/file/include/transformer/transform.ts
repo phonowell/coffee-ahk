@@ -2,9 +2,14 @@ import { getExtname, read, run } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
 import { MODULE_PREFIX } from '../../../constants.js'
-import { createFileError } from '../../../utils/error.js'
+import { TranspileError } from '../../../utils/error.js'
 import { getCache as fetchCache, getCacheSalt as fetchSalt } from '../cache.js'
 import { pickImport as resolveImport } from '../source-resolver.js'
+
+/** Create minimal Context for file type errors */
+const createFileTypeContext = (): Pick<Context, 'token'> => ({
+  token: ['', '', { first_line: 0, last_line: 0 }] as Context['token'],
+})
 
 import {
   hasClassDeclaration,
@@ -13,6 +18,8 @@ import {
 import { parseExportsFromCoffee } from './parse-exports.js'
 import { replaceAnchor as replaceMark } from './replace-anchor.js'
 import { wrapInClosureAndAssign } from './wrap-closure.js'
+
+import type { Context } from '../../../types/index.js'
 
 type Cache = ReturnType<typeof fetchCache>
 type Meta = Cache extends Map<unknown, infer V> ? V : never
@@ -134,7 +141,8 @@ const processFile = async (
     handleJsonOrYaml(file, text, meta, cache, salt, deps)
     return
   }
-  throw createFileError(
+  throw new TranspileError(
+    createFileTypeContext(),
     'file',
     `unsupported file type for transformation: '${file}'`,
   )

@@ -159,39 +159,24 @@ const main = async () => {
   echo('2️⃣  UNIT TESTS (Core Models)')
   echo('='.repeat(60))
 
-  try {
-    const testUnit = await import('./unit.js')
-    unitTestCount = await testUnit.default()
-  } catch (error) {
-    echo('❌ Unit tests failed')
-    throw error
-  }
+  const testUnit = await import('./unit.js')
+  unitTestCount = await testUnit.default()
 
   // Run error tests
   echo('\n' + '='.repeat(60))
   echo('3️⃣  ERROR SCENARIO TESTS')
   echo('='.repeat(60))
 
-  try {
-    const testErrors = await import('./errors.js')
-    errorTestCount = await testErrors.default()
-  } catch (error) {
-    echo('❌ Error tests failed')
-    throw error
-  }
+  const testErrors = await import('./errors.js')
+  errorTestCount = await testErrors.default()
 
   // Run coverage analysis
   echo('\n' + '='.repeat(60))
   echo('4️⃣  COVERAGE ANALYSIS')
   echo('='.repeat(60))
 
-  try {
-    const testCoverage = await import('./coverage.js')
-    coveragePercent = await testCoverage.default()
-  } catch (error) {
-    echo('❌ Coverage analysis failed')
-    throw error
-  }
+  const testCoverage = await import('./coverage.js')
+  coveragePercent = await testCoverage.default()
 
   // Final summary
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(2)

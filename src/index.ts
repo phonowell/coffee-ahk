@@ -5,7 +5,7 @@ import { version } from '../package.json'
 import start from './entry/index.js'
 import { processContent, read, write } from './file/index.js'
 import log from './logger/index.js'
-import { createFileError } from './utils/error.js'
+import { createTranspileError } from './utils/error.js'
 
 import type { Options, PartialOptions } from './types/options.js'
 
@@ -47,15 +47,41 @@ const extractLineNumber = (message: string): number | null => {
   return match?.[1] ? parseInt(match[1], 10) : null
 }
 
-/** Show source context around error line */
+/** Show source context around error line with original file info */
 const showSourceContext = (source: string, lineNum: number) => {
-  const lines = source.split('\n')
-  const start = Math.max(0, lineNum - 3)
-  const end = Math.min(lines.length, lineNum + 2)
-  console.log('\n📍 Source context:')
+  const mapping = (
+    global as {
+      __fileMapping?: { file: string; line: number; content: string }[]
+    }
+  ).__fileMapping
+
+  if (!mapping) {
+    // Fallback: no import/include, show merged content
+    const lines = source.split('\n')
+    const start = Math.max(0, lineNum - 3)
+    const end = Math.min(lines.length, lineNum + 2)
+    console.log('\n📍 Source context:')
+    for (let i = start; i < end; i++) {
+      const marker = i === lineNum - 1 ? '→' : ' '
+      console.log(`  ${marker} ${i + 1} | ${lines[i]}`)
+    }
+    return
+  }
+
+  const errorEntry = mapping[lineNum - 1]
+  if (!errorEntry) return
+
+  const { file, line } = errorEntry
+  const fileEntries = mapping.filter((e) => e.file === file)
+  const start = Math.max(0, line - 3)
+  const end = Math.min(fileEntries.length, line + 2)
+
+  console.log(`\n📍 ${file}:${line}`)
   for (let i = start; i < end; i++) {
-    const marker = i === lineNum - 1 ? '→' : ' '
-    console.log(`  ${marker} ${i + 1} | ${lines[i]}`)
+    const entry = fileEntries[i]
+    if (!entry) continue
+    const marker = i === line - 1 ? '→' : ' '
+    console.log(`  ${marker} ${i + 1} | ${entry.content}`)
   }
 }
 
@@ -68,30 +94,17 @@ const rethrowWithContext = (e: unknown, source: string): never => {
 }
 
 /** Main transpilation function with top-level error handling */
-const transpile = async (source: string, options: PartialOptions = {}) => {
-  try {
-    const mergedOptions = {
-      ...DEFAULT_OPTIONS,
-      ...options,
-    }
-
-    // salt
-    if (!mergedOptions.salt) mergedOptions.salt = generateSalt()
-
-    if (mergedOptions.string)
-      return await transpileAsText(source, mergedOptions)
-    return await transpileAsFile(source, mergedOptions)
-  } catch (e) {
-    const error = e as Error
-
-    const divider = '-'.repeat(error.message.length + 4)
-
-    console.log(
-      [divider, error.message, divider, error.stack, divider].join('\n'),
-    )
-
-    return undefined
+const transpile = (source: string, options: PartialOptions = {}) => {
+  const mergedOptions = {
+    ...DEFAULT_OPTIONS,
+    ...options,
   }
+
+  // salt
+  if (!mergedOptions.salt) mergedOptions.salt = generateSalt()
+
+  if (mergedOptions.string) return transpileAsText(source, mergedOptions)
+  return transpileAsFile(source, mergedOptions)
 }
 
 const transpileAsFile = async (
@@ -105,7 +118,7 @@ const transpileAsFile = async (
   const [source2] = (await glob(listSource)).filter((item) =>
     item.endsWith('.coffee'),
   )
-  if (!source2) throw createFileError('file', `invalid source '${source}'`)
+  if (!source2) throw createTranspileError('file', `invalid source '${source}'`)
 
   const content = await read(source2, options.salt)
 

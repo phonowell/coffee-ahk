@@ -3,7 +3,18 @@
  * Extracts export default and export named from CoffeeScript source.
  */
 
-import { createFileError } from '../../../utils/error.js'
+import { TranspileError } from '../../../utils/error.js'
+
+import type { Context } from '../../../types/index.js'
+
+/** Create minimal Context for export parsing errors */
+const createExportContext = (lineNumber: number): Pick<Context, 'token'> => ({
+  token: [
+    '',
+    '',
+    { first_line: lineNumber - 1, last_line: lineNumber - 1 },
+  ] as Context['token'],
+})
 
 export type ParsedExports = {
   exportDefault: string[]
@@ -93,20 +104,23 @@ export const parseExportsFromCoffee = (
     // 检测不支持的 export 语法
     const fileInfo = filePath ? ` in '${filePath}'` : ''
     if (/^export\s+(const|let|var|function|class)\s+/.test(trimmed)) {
-      throw createFileError(
+      throw new TranspileError(
+        createExportContext(i + 1) as Context,
         'export',
         `unsupported syntax "export const/let/var/function/class"${fileInfo}\n  Line: ${trimmed}\n  Use "export { name }" or "export default" instead`,
       )
     }
     if (/^export\s+\*/.test(trimmed)) {
-      throw createFileError(
+      throw new TranspileError(
+        createExportContext(i + 1) as Context,
         'export',
         `unsupported syntax "export *"${fileInfo}\n  Line: ${trimmed}\n  Use "export { name1, name2 }" instead`,
       )
     }
 
     // 其他未识别的 export 语法
-    throw createFileError(
+    throw new TranspileError(
+      createExportContext(i + 1) as Context,
       'export',
       `unrecognized export syntax${fileInfo}\n  Line: ${trimmed}\n  Supported: "export default <expr>", "export { a, b }", "export { a: expr() }"`,
     )

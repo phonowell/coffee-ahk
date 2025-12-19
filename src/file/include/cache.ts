@@ -1,8 +1,11 @@
 // Cache and utility functions for include processing
+import { createTranspileError } from '../../utils/error.js'
 
 type ModuleMeta = {
   id: number
+  source: string
   content: string
+  originalContent: string
   dependencies: string[]
 }
 
@@ -65,6 +68,56 @@ const detectCycle = (graph: Map<string, string[]>): string[] | undefined => {
  * Topologically sort modules by dependencies
  * Throws descriptive error on circular dependency
  */
+/**
+ * Get line mapping: merged line number -> {file, line, content}
+ */
+export const getLineMapping = () => {
+  const mapping: { file: string; line: number; content: string }[] = []
+
+  // Build dependency graph
+  const deps = new Map<string, string[]>()
+  for (const [source, { dependencies }] of cache) {
+    const validDeps = dependencies.filter((dep) => cache.has(dep))
+    deps.set(source, validDeps)
+  }
+
+  // Sort modules
+  const dependents = new Map<string, string[]>()
+  for (const source of deps.keys()) dependents.set(source, [])
+  for (const [source, depList] of deps)
+    for (const dep of depList) dependents.get(dep)?.push(source)
+
+  const inDegree = new Map<string, number>()
+  for (const [source, depList] of deps) inDegree.set(source, depList.length)
+
+  const queue: string[] = []
+  for (const [source, degree] of inDegree) if (degree === 0) queue.push(source)
+
+  const sorted: string[] = []
+  while (queue.length > 0) {
+    const current = queue.shift()
+    if (!current) continue
+    sorted.push(current)
+    for (const dependent of dependents.get(current) ?? []) {
+      const newDegree = (inDegree.get(dependent) ?? 1) - 1
+      inDegree.set(dependent, newDegree)
+      if (newDegree === 0) queue.push(dependent)
+    }
+  }
+
+  // Build line mapping
+  for (const source of sorted) {
+    const meta = cache.get(source)
+    if (!meta) continue
+    const lines = meta.content.split('\n')
+    lines.forEach((line, i) => {
+      mapping.push({ file: meta.source, line: i + 1, content: line })
+    })
+  }
+
+  return mapping
+}
+
 export const sortModules = (): string[] => {
   // Build dependency graph: source -> modules it depends on
   const deps = new Map<string, string[]>()
@@ -77,8 +130,9 @@ export const sortModules = (): string[] => {
   const cycle = detectCycle(deps)
   if (cycle) {
     const cycleStr = cycle.map((p) => `  → ${p}`).join('\n')
-    throw new Error(
-      `Coffee-AHK/file: circular dependency detected:\n${cycleStr}`,
+    throw createTranspileError(
+      'file',
+      `circular dependency detected:\n${cycleStr}`,
     )
   }
 

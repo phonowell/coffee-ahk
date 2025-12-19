@@ -1,5 +1,7 @@
 import { at } from 'fire-keeper'
 
+import { TranspileError } from '../../../utils/error.js'
+
 import type Item from '../../../models/Item.js'
 import type { Context } from '../../../types'
 
@@ -20,8 +22,10 @@ export const pickPre = (
 
   // Detect nested array destructuring [a, [b, c]] = ...
   if (it.is('edge', 'array-end')) {
-    throw new Error(
-      `Coffee-AHK/unsupported: nested array destructuring '[a, [b, c]] = x' is not supported. Flatten the destructuring manually.`,
+    throw new TranspileError(
+      ctx,
+      'unsupported',
+      `nested array destructuring '[a, [b, c]] = x' is not supported. Flatten the destructuring manually.`,
     )
   }
 

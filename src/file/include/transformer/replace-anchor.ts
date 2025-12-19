@@ -25,6 +25,8 @@ export const replaceAnchor = async (source: string, content: string) => {
         content: '',
         dependencies: [],
         id: getNextModuleId(),
+        originalContent: '',
+        source: path,
       })
     }
 

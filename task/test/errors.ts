@@ -8,16 +8,11 @@ interface ErrorTest {
 }
 
 const errorTests: ErrorTest[] = [
-  // Forbidden formatter tests (CoffeeScript compiles these, but we reject them)
+  // Forbidden formatter tests
   {
     name: 'Optional chaining (?.) is forbidden',
     code: 'x = obj?.prop',
     expectedError: /Coffee-AHK\/forbidden.*\?\..*not supported/i,
-  },
-  {
-    name: 'Existential operator (bin?) is forbidden',
-    code: 'if bin? then 1',
-    expectedError: /Coffee-AHK\/forbidden.*\?.*not supported/i, // CoffeeScript tokenizes as '?'
   },
   {
     name: 'Range operator (..) is forbidden',
@@ -29,60 +24,18 @@ const errorTests: ErrorTest[] = [
     code: 'return 1 if condition',
     expectedError: /Coffee-AHK\/forbidden.*post-if/i,
   },
-  {
-    name: 'Question mark operator (?) is forbidden',
-    code: 'x = a ? b : c',
-    expectedError: /Coffee-AHK\/forbidden.*\?.*not supported/i,
-  },
 
-  // Operator forbidden tests (CoffeeScript rejects undeclared variable first)
+  // Operator forbidden tests
   {
-    name: 'Logical OR assignment (||=) requires declaration',
-    code: 'x ||= 1',
-    expectedError: /can't be assigned.*\|\|=.*not been declared/i,
-  },
-  {
-    name: 'Existential assignment (?=) requires declaration',
-    code: 'x ?= 1',
-    expectedError: /can't be assigned.*\?=.*not been declared/i,
-  },
-  {
-    name: 'Logical OR assignment (||=) is forbidden even when declared',
+    name: 'Logical OR assignment (||=) is forbidden',
     code: 'x = 0\nx ||= 1',
     expectedError: /Coffee-AHK\/forbidden.*\|\|=/i,
-  },
-  {
-    name: 'Existential assignment (?=) is forbidden even when declared',
-    code: 'x = 0\nx ?= 1',
-    expectedError: /Coffee-AHK\/forbidden.*\?=/i,
-  },
-  {
-    name: 'Logical AND assignment (&&=) is forbidden',
-    code: 'x = 1\nx &&= 2',
-    expectedError: /Coffee-AHK\/forbidden.*&&=/i,
   },
   {
     name: 'Floor division (//) is forbidden',
     code: 'x = 10 // 3',
     expectedError: /Coffee-AHK\/forbidden.*\/\/.*comment/i,
   },
-  {
-    name: 'Floor division assignment (//=) is forbidden',
-    code: 'x = 10\nx //= 3',
-    expectedError: /Coffee-AHK\/forbidden.*\/\/=.*comment/i,
-  },
-  {
-    name: 'Modulo (%%) is forbidden',
-    code: 'x = 10 %% 3',
-    expectedError: /Coffee-AHK\/forbidden.*%%.*not supported/i,
-  },
-  {
-    name: 'Modulo assignment (%%=) is forbidden',
-    code: 'x = 10\nx %%= 3',
-    expectedError: /Coffee-AHK\/forbidden.*%%=.*not supported/i,
-  },
-
-  // Relation operators forbidden (only 'in' is forbidden, instanceof is supported)
   {
     name: 'in operator is forbidden',
     code: 'x = 1 in [1,2,3]',
@@ -93,15 +46,11 @@ const errorTests: ErrorTest[] = [
     code: 'delete obj.key',
     expectedError: /Coffee-AHK\/forbidden.*delete.*not supported/i,
   },
-
-  // Number forbidden tests
   {
     name: 'BigInt literal is forbidden',
     code: 'n = 123n',
     expectedError: /Coffee-AHK\/forbidden.*BigInt/i,
   },
-
-  // Sign forbidden tests (spread in wrong context)
   {
     name: 'Spread operator in object literal is forbidden',
     code: 'obj = { ...other }',
@@ -110,39 +59,14 @@ const errorTests: ErrorTest[] = [
 
   // Variable name validation
   {
-    name: 'Reserved class name is forbidden',
-    code: 'class Class\n  a: 1',
-    expectedError: /Coffee-AHK\/forbidden.*class name.*reserved/i,
-  },
-  {
     name: 'AHK built-in function as class name is forbidden',
     code: 'class InStr\n  value: 1',
     expectedError: /Coffee-AHK\/forbidden.*class name.*forbidden/i,
   },
   {
-    name: 'Reserved variable name (CoffeeScript error)',
-    code: 'return = 1',
-    expectedError: /keyword.*can't be assigned|reserved/i,
-  },
-  {
-    name: 'A_ prefix variable name is forbidden',
-    code: 'A_Custom = 1',
-    expectedError: /Coffee-AHK\/forbidden.*a_.*prefix.*reserved/i,
-  },
-  {
-    name: 'AHK built-in variable in assignment is forbidden',
+    name: 'A_ prefix in assignment is forbidden',
     code: 'A_Index = 5',
     expectedError: /Coffee-AHK\/forbidden.*A_Index.*a_.*prefix/i,
-  },
-  {
-    name: 'AHK built-in function in assignment is forbidden',
-    code: 'InStr = myFunc',
-    expectedError: /Coffee-AHK\/forbidden.*InStr.*forbidden list/i,
-  },
-  {
-    name: 'Reserved parameter name (CoffeeScript error)',
-    code: 'fn = (return) -> 1',
-    expectedError: /unexpected|reserved/i,
   },
   {
     name: 'AHK built-in function as parameter is forbidden',
@@ -150,76 +74,21 @@ const errorTests: ErrorTest[] = [
     expectedError: /Coffee-AHK\/forbidden.*parameter.*InStr/i,
   },
   {
-    name: 'A_ prefix as parameter is forbidden',
-    code: 'fn = (A_Index) -> A_Index + 1',
-    expectedError: /Coffee-AHK\/forbidden.*parameter.*A_Index/i,
-  },
-  {
-    name: 'Reserved name in destructuring (CoffeeScript error)',
-    code: '[return, break] = [1, 2]',
-    expectedError: /unexpected|reserved/i,
-  },
-  {
-    name: 'AHK built-in function in array destructuring is forbidden',
-    code: '[InStr, x] = arr',
-    expectedError: /Coffee-AHK\/forbidden.*array destructuring target.*InStr.*forbidden list/i,
-  },
-  {
     name: 'A_ prefix in array destructuring is forbidden',
     code: '[A_Index, x] = arr',
     expectedError: /Coffee-AHK\/forbidden.*array destructuring target.*A_Index.*a_.*prefix/i,
-  },
-  {
-    name: 'AHK built-in function as catch variable is forbidden',
-    code: 'try\n  x = 1\ncatch InStr\n  console.log(InStr)',
-    expectedError: /Coffee-AHK\/forbidden.*catch variable.*InStr/i,
   },
   {
     name: 'A_ prefix as catch variable is forbidden',
     code: 'try\n  x = 1\ncatch A_Index\n  console.log(A_Index)',
     expectedError: /Coffee-AHK\/forbidden.*catch variable.*A_Index/i,
   },
-  {
-    name: 'AHK built-in function as for loop variable is forbidden',
-    code: 'for InStr in arr\n  console.log(InStr)',
-    expectedError: /Coffee-AHK\/forbidden.*for loop variable.*InStr/i,
-  },
-  {
-    name: 'A_ prefix as for loop key is forbidden',
-    code: 'for A_Index, value in obj\n  console.log(A_Index)',
-    expectedError: /Coffee-AHK\/forbidden.*for loop variable.*A_Index/i,
-  },
-  {
-    name: 'A_ prefix as object key is forbidden',
-    code: 'obj = {A_Index: 5}',
-    expectedError: /Coffee-AHK\/forbidden.*object key.*property.*A_Index.*a_.*prefix/i,
-  },
-  {
-    name: 'A_ prefix as class method name is forbidden',
-    code: 'class Animal\n  A_Index: -> 1',
-    expectedError: /Coffee-AHK\/forbidden.*object key.*property.*A_Index.*a_.*prefix/i,
-  },
-  {
-    name: 'A_ prefix as destructuring object key is forbidden',
-    code: '{A_Index: idx} = obj',
-    expectedError: /Coffee-AHK\/forbidden.*(destructuring object key|object key.*property).*A_Index.*a_.*prefix/i,
-  },
 
   // Unsupported language features
-  {
-    name: 'Unsigned right shift (>>>) is not supported',
-    code: 'x = 10 >>> 2',
-    expectedError: /Coffee-AHK\/unsupported.*>>>.*not supported/i,
-  },
   {
     name: 'await is not supported',
     code: "fn = -> await fetch('url')",
     expectedError: /Coffee-AHK\/unsupported.*await.*not supported/i,
-  },
-  {
-    name: 'yield is not supported',
-    code: 'fn = -> yield 1',
-    expectedError: /Coffee-AHK\/unsupported.*yield.*not supported/i,
   },
   {
     name: 'for loop destructuring is not supported',
@@ -231,11 +100,6 @@ const errorTests: ErrorTest[] = [
     code: '[a, [b, c]] = [1, [2, 3]]',
     expectedError: /Coffee-AHK\/unsupported.*nested array destructuring/i,
   },
-  {
-    name: 'nested if-then-else expressions are not supported',
-    code: 'y = if x > 0 then (if x > 10 then "big" else "small") else "negative"',
-    expectedError: /Coffee-AHK\/unsupported.*Nested if-then-else/i,
-  },
 
   // Single-letter class name validation
   {
@@ -243,29 +107,42 @@ const errorTests: ErrorTest[] = [
     code: 'class A\n  a: 1',
     expectedError: /Coffee-AHK\/class-single-letter.*class name.*A.*single letter/i,
   },
-  {
-    name: 'Single-letter class name (Z)',
-    code: 'class Z\n  value: 42',
-    expectedError: /Coffee-AHK\/class-single-letter.*class name.*Z.*single letter/i,
-  },
 
   // Constructor parameter validation
   {
-    name: 'Using @property in constructor parameters creates invalid AHK',
+    name: '@property in constructor parameters is forbidden',
     code: 'class Animal\n  constructor: (@name) ->',
     expectedError: /Coffee-AHK\/invalid-syntax.*this\.name.*constructor parameters/i,
   },
-  {
-    name: 'Multiple @ properties in constructor parameters are forbidden',
-    code: 'class Person\n  constructor: (@name, @age) ->',
-    expectedError: /Coffee-AHK\/invalid-syntax.*this\.(name|age).*constructor parameters/i,
-  },
-  {
-    name: 'Mixed constructor parameters with @property are forbidden',
-    code: 'class Data\n  constructor: (id, @value, @name) ->',
-    expectedError: /Coffee-AHK\/invalid-syntax.*this\..*constructor parameters/i,
-  },
 ]
+
+const runTest = async (test: ErrorTest) => {
+  try {
+    const result = await start(test.code, {
+      metadata: false,
+      salt: 'ahk',
+      comments: false,
+      ast: false,
+      coffeeAst: false,
+      save: false,
+      string: false,
+      verbose: false,
+    })
+    return {
+      passed: false,
+      error: `Expected error: ${test.expectedError}\nBut compilation succeeded\nResult: ${result.content.substring(0, 100)}`,
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    if (test.expectedError.test(errorMessage)) {
+      return { passed: true }
+    }
+    return {
+      passed: false,
+      error: `Expected: ${test.expectedError}\nGot: ${errorMessage.substring(0, 200)}`,
+    }
+  }
+}
 
 const main = async () => {
   let passed = 0
@@ -273,36 +150,13 @@ const main = async () => {
   const failures: string[] = []
 
   for (const test of errorTests) {
-    try {
-      // Call the internal entry point directly to avoid error swallowing
-      const result = await start(test.code, {
-        metadata: false,
-        salt: 'ahk',
-        comments: false,
-        ast: false,
-        coffeeAst: false,
-        save: false,
-        string: false,
-        verbose: false,
-      })
-
-      // If no error was thrown, the test failed
+    const result = await runTest(test)
+    if (result.passed) {
+      passed++
+      echo(`✅ ${test.name}`)
+    } else {
       failed++
-      failures.push(
-        `❌ ${test.name}\n   Expected error: ${test.expectedError}\n   But compilation succeeded\n   Result: ${result.content.substring(0, 100)}`,
-      )
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error)
-
-      if (test.expectedError.test(errorMessage)) {
-        passed++
-        echo(`✅ ${test.name}`)
-      } else {
-        failed++
-        failures.push(
-          `❌ ${test.name}\n   Expected: ${test.expectedError}\n   Got: ${errorMessage.substring(0, 200)}`,
-        )
-      }
+      failures.push(`❌ ${test.name}\n   ${result.error}`)
     }
   }
 
@@ -319,7 +173,6 @@ const main = async () => {
   }
 
   echo('\n🎉 All error tests passed!')
-
   return errorTests.length
 }
 

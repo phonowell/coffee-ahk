@@ -1,10 +1,11 @@
 import { INDEX_FOR, KEY_FOR } from '../constants.js'
+import { TranspileError } from '../utils/error.js'
 
 import type { ItemTypeMap } from '../models/ItemType'
 import type { Context } from '../types'
 
 const main = (ctx: Context) => {
-  const { content, scope, type, value, token } = ctx
+  const { content, scope, type, value } = ctx
 
   if (type === 'for') {
     scope.push('for')
@@ -17,9 +18,10 @@ const main = (ctx: Context) => {
 
     const last = content.pop()
     if (last?.is('edge', 'array-end')) {
-      const line = token[2].first_line + 1
-      throw new Error(
-        `Coffee-AHK/unsupported (line ${line}): for loop destructuring 'for [a, b] in arr' is not supported. Use 'for item in arr' then '[a, b] = item'.`,
+      throw new TranspileError(
+        ctx,
+        'unsupported',
+        `for loop destructuring 'for [a, b] in arr' is not supported. Use 'for item in arr' then '[a, b] = item'.`,
       )
     }
     if (last) list.push(last.value)

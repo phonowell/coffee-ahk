@@ -1,4 +1,5 @@
 import { findLastIndex } from '../../../utils/arrayHelpers.js'
+import { TranspileError } from '../../../utils/error.js'
 
 import { pickItem } from './pick-item.js'
 
@@ -16,8 +17,10 @@ export const next = (ctx: Context, count = 1) => {
 
   const it = content.at(i)
   if (!it) {
-    throw new Error(
-      `Coffee-AHK/internal: function/anonymous: missing anonymous function at expected index (content length: ${content.length})`,
+    throw new TranspileError(
+      ctx,
+      'internal',
+      `function/anonymous: missing anonymous function at expected index (content length: ${content.length})`,
     )
   }
   it.value = `${ctx.options.salt}_${count}`
