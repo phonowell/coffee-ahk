@@ -5,7 +5,8 @@
       "Bash(cat:*)",
       "Bash(node:*)",
       "Bash(ls:*)",
-      "Bash(pnpm test:*)"
+      "Bash(pnpm test:*)",
+      "Skill(optimize-claude-md)"
     ]
   }
 }
