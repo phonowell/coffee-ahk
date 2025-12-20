@@ -13,6 +13,7 @@ node -e "require('./dist/index.js').default('/path/to/file.coffee', { salt: 'ahk
 
 **禁止语法**（编译报错）：
 - `?.` / `?` 可选链·`[1..10]` 范围·`return x if y` 后置if·`x in [1,2]` 关系in·`>>>`/`await`/`yield`
+- `%` / `%%` 取模运算符→用 `Mod(a, b)` (AHK变量语法冲突)
 
 ## 语法
 

@@ -12,11 +12,11 @@
 ## 规范
 
 **代码**: `array.at(i)` 非 `[]` · 模板字符串 · `x?.is("a") === true` 非 `||` 链 · ≤200行(`cloc`)超限→拆分
+**测试**: 禁手动改 `script/test/*.ahk` → `pnpm test overwrite` 自动生成
 
 ```bash
 pnpm build && pnpm test
 pnpm test -- <name>
-node -e "require('./dist/index.js').default('/tmp/test.coffee',{salt:'test'}).then(console.log)"
 ```
 
 ## 架构
@@ -30,19 +30,14 @@ node -e "require('./dist/index.js').default('/tmp/test.coffee',{salt:'test'}).th
 | Renderer   | [src/renderer/](src/renderer/)     | Item→AHK                    |
 
 **数据** ([types/](src/types/)): `Item` 不可变用 `clone()` · `Content.push(...items)` 多参数 · `Scope` 缩进栈
-
-## 模块
-
-[src/file/include/](src/file/include/) - import/export → 拓扑排序 → 组装
-
-**支持**: `import x from './m'` | `import {a,b}` | `export default` | `export {a,b}`
-**禁止**: `import * as` | `import {x as y}` | `export const` - [source-resolver.ts:46](src/file/include/source-resolver.ts#L46) [parse-exports.ts:93](src/file/include/transformer/parse-exports.ts#L93)
+**模块** ([include/](src/file/include/)): import/export → 拓扑排序 → 组装 · 支持 `import x from './m'` | `import {a,b}` | `export default` | `export {a,b}` · 禁止 `import * as` | `import {x as y}` | `export const`
 
 ## 约束
 
 | 类别     | 规则                                              | 位置                                                                                      |
 | -------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | 禁用字   | AHK内置+`A_`前缀禁止赋值/参数/catch/for/解构/类名 | [data/forbidden.yaml](data/forbidden.yaml) · [variable/](src/processors/variable/)        |
+| 禁用符   | `%` 运算符禁用→ `Mod(a,b)` (AHK变量语法冲突) | [operator.ts:142](src/formatters/operator.ts#L142) |
 | AHK输出  | 类名全角·索引1-based·UTF-8 BOM·控制结构`{}`·单字母类名禁用 | [class/](src/processors/class/) · [changeIndex.coffee](script/segment/changeIndex.coffee) · [identifier.ts:17](src/formatters/identifier.ts#L17) |
 | 内部变量 | `λ`闭包·`ℓci`索引·`ℓtype`typeof·`ℓthis`this       | [constants.ts](src/constants.ts)                                                          |
 

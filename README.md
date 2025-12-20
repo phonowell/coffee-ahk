@@ -77,7 +77,7 @@ await c2a("./script/toolkit/index.coffee", {
 - For-loop destructuring (`for [a, b] in arr`) is not supported (compiler error). Workaround: `for item in arr` then `[a, b] = item`
 - Nested array destructuring (`[a, [b, c]] = x`) is not supported (compiler error). Workaround: flatten manually
 - Nested if-then-else expressions (`if a then (if b then c else d) else e`) are not supported (compiler error). Workaround: use temporary variables or separate statements
-- Floor division (`//`) and modulo (`%%`) operators conflict with AHK syntax (compiler error)
+- Floor division (`//`) and modulo (`%`, `%%`) operators conflict with AHK syntax (compiler error). Use `Mod(a, b)` instead
 - Avoid using `=>` outside classes; pure functions in AHK lack `this`
 - `.coffee` files must be UTF-8; `.ahk` files must be UTF-8 with BOM
 - Import/export and npm package management are incomplete

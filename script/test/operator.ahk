@@ -2,7 +2,7 @@ global a := 1 + 2
 global b := 3 - 4
 global c := 5 * 6
 global d := 7 / 8
-global e := 9 % 10
+global e := Mod(9, 10)
 global f := a > b
 global g := a < b
 global h := a >= b

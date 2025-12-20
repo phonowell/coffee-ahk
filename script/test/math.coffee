@@ -24,7 +24,7 @@ l = 10 / 2
 m = a * b / c
 
 # Modulo
-n = 10 % 3
+n = Mod(10, 3)
 
 # Note: hex/octal/binary literals are handled by CoffeeScript
 # 0xFF → 255, 0o77 → 63, 0b1010 → 10 (converted before transpiler)

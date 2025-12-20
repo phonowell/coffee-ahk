@@ -138,6 +138,14 @@ const main = (ctx: Context): boolean => {
         `floor division '//' is not supported (conflicts with AHK comments). Use 'Math.floor(a / b)' instead.`,
       )
     }
+    // % is modulo in CoffeeScript but conflicts with AHK variable syntax
+    if (value === '%') {
+      throw new TranspileError(
+        ctx,
+        'forbidden',
+        `modulo '%' is not supported (conflicts with AHK variable syntax). Use 'Mod(a, b)' instead.`,
+      )
+    }
     // %% is modulo in CoffeeScript but not supported in AHK
     if (value === '%%') {
       throw new TranspileError(

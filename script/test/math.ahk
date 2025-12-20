@@ -11,4 +11,4 @@ global j := (-1) + (-2)
 global k := 2 * 3
 global l := 10 / 2
 global m := a * b / c
-global n := 10 % 3
+global n := Mod(10, 3)
