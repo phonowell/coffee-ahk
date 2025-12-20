@@ -9,7 +9,8 @@
       "Skill(optimize-claude-md)",
       "Skill(plan-implementation)",
       "Bash(pnpm build:ts:*)",
-      "Bash(cloc:*)"
+      "Bash(cloc:*)",
+      "Bash(grep:*)"
     ]
   }
 }

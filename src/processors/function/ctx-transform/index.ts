@@ -16,7 +16,7 @@ import type { Context } from '../../../types'
 const main = (ctx: Context) => {
   const paramsInfo = collectParams(ctx)
   const skip = transformFunctions(ctx, paramsInfo)
-  transformVars(ctx, skip, paramsInfo.classMethods)
+  transformVars(ctx, skip)
   addBind(ctx)
 }
 

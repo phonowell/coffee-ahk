@@ -13,10 +13,16 @@
 
 **代码**: `array.at(i)` 非 `[]` · 模板字符串 · `x?.is("a") === true` 非 `||` 链 · ≤200行(`cloc`)超限→拆分
 **测试**: 禁手动改 `script/test/*.ahk` → `pnpm test overwrite` 自动生成
+**编译**: `pnpm build` → 项目根执行 | `node dist/index.js <file>` 编译单文件 | API 调用见下方
 
 ```bash
 pnpm build && pnpm test
 pnpm test -- <name>
+
+# 编译单个 .coffee 文件 (在文件所在目录或项目根执行)
+cd /path/to/file && node /path/to/coffee-ahk/dist/index.js file.coffee
+# API 调用 (返回字符串并写入 .ahk)
+node -e "import('path/to/dist/index.js').then(m=>m.default('file.coffee'))"
 ```
 
 ## 架构

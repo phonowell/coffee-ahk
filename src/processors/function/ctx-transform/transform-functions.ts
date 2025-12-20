@@ -17,7 +17,7 @@ export const transformFunctions = (
   ctx: Context,
   paramsInfo: ParamsInfo,
 ): Set<number> => {
-  const { params, classMethods } = paramsInfo
+  const { params } = paramsInfo
   const { content } = ctx
   const salt = ctx.options.salt ?? ''
   const out: Item[] = []
@@ -75,9 +75,6 @@ export const transformFunctions = (
         out.push(new Item({ type: 'new-line', value: '1', scope }))
         out.push(...genThisAlias(scope).slice(1)) // skip leading new-line
       }
-
-      // Skip param assignments for class methods - they don't need ctx transformation
-      if (classMethods.has(funcName)) continue
 
       const p = allParams.filter((x) => x !== 'this' && x !== THIS)
 

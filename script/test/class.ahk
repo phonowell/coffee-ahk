@@ -51,11 +51,13 @@ global counter := new Ｃounter()
 global greeter := new Ｇreeter("Info")
 ahk_1(λ, ℓthis, message) {
   this := ℓthis
-  return this.format.Call(message)
+  λ.message := message
+  return this.format.Call(λ.message)
 }
 ahk_2(λ, ℓthis, text) {
   this := ℓthis
-  return "" . (this.prefix) . ": " . (text) . ""
+  λ.text := text
+  return "" . (this.prefix) . ": " . (λ.text) . ""
 }
 ahk_3(λ, ℓthis) {
   this := ℓthis
@@ -75,16 +77,22 @@ ahk_6(λ, ℓthis) {
 }
 ahk_7(λ, ℓthis, n) {
   this := ℓthis
-  this.value := this.value + n
+  λ.n := n
+  this.value := this.value + λ.n
   
 }
 ahk_8(λ, ℓthis, a, b, c) {
   this := ℓthis
-  return a * b * c
+  λ.a := a
+  λ.b := b
+  λ.c := c
+  return λ.a * b * λ.c
 }
 ahk_9(λ, ℓthis, x, y) {
   this := ℓthis
-  return x + y
+  λ.x := x
+  λ.y := y
+  return λ.x + λ.y
 }
 ahk_10(λ, ℓthis) {
   this := ℓthis
@@ -92,7 +100,8 @@ ahk_10(λ, ℓthis) {
 }
 ahk_11(λ, ℓthis, greeting) {
   this := ℓthis
-  return "" . (greeting) . ", " . (this.name) . "!"
+  λ.greeting := greeting
+  return "" . (λ.greeting) . ", " . (this.name) . "!"
 }
 ahk_12(λ, ℓthis) {
   this := ℓthis
@@ -104,7 +113,8 @@ ahk_13(λ, ℓthis) {
 }
 ahk_14(λ, ℓthis, n) {
   this := ℓthis
-  return this.a + n
+  λ.n := n
+  return this.a + λ.n
 }
 ahk_15(λ, ℓthis) {
   this := ℓthis

@@ -67,7 +67,7 @@ export const shouldUseCtx = (
 ): boolean => {
   if (item.type !== 'identifier') return false
   if (!item.scope.includes('function')) return false
-  // Skip class methods - they don't need ctx transformation
+  // Skip constructor - it's not extracted and doesn't need ctx transformation
   if (isClassMethod(item.scope)) return false
   if (ctx.cache.global.has(item.value)) return false
   if (prev?.type === '.') return false

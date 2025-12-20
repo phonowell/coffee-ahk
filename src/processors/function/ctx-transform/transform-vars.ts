@@ -17,7 +17,6 @@ import type { Context } from '../../../types'
  */
 const collectAllVars = (
   ctx: Context,
-  classMethods: Set<string>,
 ): {
   catchVars: Set<string>
   forVars: Set<string>
@@ -59,7 +58,6 @@ const collectAllVars = (
     // Collect for loop variables
     if (!item.is('for', 'for')) continue
     if (!item.scope.includes('function')) continue
-    if (classMethods.has(currentFunc)) continue
 
     // Collect variables between 'for' and 'in'/'of'
     const loopVars: string[] = []
@@ -93,20 +91,13 @@ const collectAllVars = (
 }
 
 /** Transform variable access: identifier -> λ.identifier */
-export const transformVars = (
-  ctx: Context,
-  skip: Set<number>,
-  classMethods: Set<string>,
-) => {
+export const transformVars = (ctx: Context, skip: Set<number>) => {
   const { content } = ctx
   const salt = ctx.options.salt ?? ''
   const out: Item[] = []
 
   // Collect all variable info in a single pass (optimized from 2 passes)
-  const { catchVars, forVars, forBlockStarts } = collectAllVars(
-    ctx,
-    classMethods,
-  )
+  const { catchVars, forVars, forBlockStarts } = collectAllVars(ctx)
 
   // Track for scope depth to skip for-declaration variables
   let inForDecl = false
@@ -134,8 +125,8 @@ export const transformVars = (
     if (item.is('for', 'for')) inForDecl = true
     if (item.type === 'for-in') inForDecl = false // handles both 'in' and 'of'
 
-    // Insert λ.xxx := xxx after for block-start (only for non-class-methods)
-    if (forBlockStarts.has(i) && !classMethods.has(currentFunc)) {
+    // Insert λ.xxx := xxx after for block-start
+    if (forBlockStarts.has(i)) {
       out.push(item)
       const loopVars = forBlockStarts.get(i) ?? []
       const nextItem = content.at(i + 1)
@@ -164,12 +155,8 @@ export const transformVars = (
       continue
     }
 
-    // Handle Native blocks (skip for class methods)
-    if (
-      item.type === 'native' &&
-      item.scope.includes('function') &&
-      !classMethods.has(currentFunc)
-    ) {
+    // Handle Native blocks
+    if (item.type === 'native' && item.scope.includes('function')) {
       processNativeBlock(ctx, content, i, item, out)
       // Find end of native block
       let j = i + 1
@@ -183,12 +170,6 @@ export const transformVars = (
         break
       }
       i = j - 1
-      continue
-    }
-
-    // Skip variables inside class methods (extracted functions with ℓthis param)
-    if (classMethods.has(currentFunc)) {
-      out.push(item)
       continue
     }
 
