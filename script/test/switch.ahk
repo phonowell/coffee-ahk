@@ -1,12 +1,12 @@
 switch a {
   case 1: {
-    1
+    a++
   }
   case 2, 3: {
-    2
+    a--
   }
   default: {
-    3
+    a += 1
   }
 }
 global fn1 := Func("ahk_11").Bind({})

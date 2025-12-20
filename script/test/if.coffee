@@ -1,24 +1,24 @@
-if a > 1 then 1
-if a > 1 then 1 else 2
+if a > 1 then a++
+if a > 1 then a++ else a--
 unless a > 1
-  1
+  a++
 else
-  2
+  a--
 unless a > 1
-  1
+  a++
 else if a > 2
-  2
+  a--
 else
-  3
+  a += 1
 if a > 1
   if b > 1
-    1
+    a++
   else
-    2
+    a--
 else
-  3
-fn = -> unless 1 then 1 else 2
-unless fn 1 then 1 else 2
+  a += 1
+fn = -> unless 1 then a++ else a--
+unless fn 1 then a++ else a--
 
 # === Function context tests ===
 

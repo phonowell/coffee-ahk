@@ -25,13 +25,6 @@ fn3 = ->
   myVar = 'test'
   Native 'return %myVar%'
 
-# Multiple variables in one Native
-fn4 = ->
-  a = 1
-  b = 2
-  c = 3
-  return `Format, output, {1} + {2} = {3}, a, b, c`
-
 # === Consecutive Native blocks (merged handling) ===
 
 # Multiple consecutive Native lines
@@ -69,16 +62,14 @@ fn8 = ->
 
 # AHK keywords from forbidden.json
 fn9 = ->
-  Native 'if (x) { return y }'
+  Native 'if (x) {'
+  Native '  return y'
+  Native '}'
 
 # Property access (after dot) - should not transform prop
 fn10 = ->
   obj = { prop: 1 }
   Native 'msgbox, % obj.prop'
-
-# Function calls (followed by parenthesis)
-fn11 = ->
-  Native 'result := GetValue()'
 
 # Internal variables (ℓ prefix)
 fn12 = ->

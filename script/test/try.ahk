@@ -1,14 +1,14 @@
 try {
-  1
+  a++
 } catch {
-  2
+  a--
 }
 try {
-  1
+  a--
 } catch e {
-  2
+  a += 2
 } finally {
-  3
+  a += 3
 }
 global fn := Func("ahk_14").Bind({})
 global fn1 := Func("ahk_13").Bind({})

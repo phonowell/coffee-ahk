@@ -1,16 +1,16 @@
 for ℓi, value in list {
   ℓi := ℓi - 1
-  value
+  value++
 }
 for index, value in list {
   index := index - 1
-  value
+  value++
 }
 for ℓk, value in map {
-  value
+  value++
 }
 for key, value in map {
-  value
+  value++
 }
 for i, a in [1, 2, 3] {
   i := i - 1
@@ -128,11 +128,11 @@ ahk_12(λ) {
 }
 ahk_13(λ, obj) {
   λ.obj := obj
-  λ.$result := ""
-  for $key, $value in λ.obj {
-    λ.$key := $key
-    λ.$value := $value
-    λ.$result := "" . (λ.$result) . ", " . (λ.$key) . ""
+  λ.result := ""
+  for key, value in λ.obj {
+    λ.key := key
+    λ.value := value
+    λ.result := "" . (λ.result) . ", " . (λ.key) . ""
   }
-  return λ.$result
+  return λ.result
 }

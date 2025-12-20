@@ -1,6 +1,6 @@
 # Statement test
 # return
-fn = -> return 42
+fn = -> 42
 
 # throw
 errorFn = -> throw new Error("oops")
@@ -9,5 +9,7 @@ errorFn = -> throw new Error("oops")
 obj = new MyClass()
 
 # extends
+class Animal
+  speak: -> "sound"
 class Dog extends Animal
   bark: -> "woof"

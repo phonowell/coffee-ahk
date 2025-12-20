@@ -1,7 +1,7 @@
 switch a
-  when 1 then 1
-  when 2, 3 then 2
-  else 3
+  when 1 then a++
+  when 2, 3 then a--
+  else a += 1
 
 # === Function context tests ===
 

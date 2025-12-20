@@ -1,10 +1,10 @@
 try
-  1
+  a++
 catch
-  2
-try 1
-catch e then 2
-finally 3
+  a--
+try a--
+catch e then a += 2
+finally a += 3
 fn = ->
   try alert 1
   catch e then throw e

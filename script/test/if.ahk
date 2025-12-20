@@ -1,37 +1,37 @@
 if (a > 1) {
-  1
+  a++
 }
 if (a > 1) {
-  1
+  a++
 } else {
-  2
+  a--
 }
 if !(a > 1) {
-  1
+  a++
 } else {
-  2
+  a--
 }
 if !(a > 1) {
-  1
+  a++
 } else if (a > 2) {
-  2
+  a--
 } else {
-  3
+  a += 1
 }
 if (a > 1) {
   if (b > 1) {
-    1
+    a++
   } else {
-    2
+    a--
   }
 } else {
-  3
+  a += 1
 }
 global fn := Func("ahk_14").Bind({})
 if !(fn.Call(1)) {
-  1
+  a++
 } else {
-  2
+  a--
 }
 global fn1 := Func("ahk_13").Bind({})
 global fn2 := Func("ahk_12").Bind({})
@@ -136,8 +136,8 @@ ahk_13(λ) {
 }
 ahk_14(λ) {
   if !(1) {
-    1
+    λ.a++
   } else {
-    2
+    λ.a--
   }
 }

@@ -1,1 +1,2 @@
-变量不能以$开头。
+math
+operator

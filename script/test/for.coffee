@@ -1,11 +1,11 @@
 for value in list
-  value
+  value++
 for value, index in list
-  value
+  value++
 for value of map
-  value
+  value++
 for key, value of map
-  value
+  value++
 
 for a, i in [1, 2, 3]
   for b, j in [3, 2, 1]
@@ -19,10 +19,10 @@ for a in [1, 2, 3]
 
 # for...of inside function (ctx transform)
 fn1 = (obj) ->
-  $result = ''
-  for $key, $value of obj
-    $result = "#{$result}, #{$key}"
-  return $result
+  result = ''
+  for key, value of obj
+    result = "#{result}, #{key}"
+  return result
 
 # for-in modifying outer variable
 fn2 = ->
