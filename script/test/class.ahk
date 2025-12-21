@@ -8,7 +8,7 @@ class Ａa extends Ｂb {
   __New() {
     base.__New()
     base.a.Call()
-    return (Func("ahk_16").Bind(λ)).Call(this)
+    return (Func("ahk_16").Bind(λ, this)).Call(this)
   }
   d := Func("ahk_15").Bind({}, this)
   e := Func("ahk_14").Bind({}, this)
@@ -65,7 +65,7 @@ ahk_3(λ, ℓthis) {
 }
 ahk_4(λ, ℓthis) {
   this := ℓthis
-  return (Func("ahk_3").Bind(λ)).Call(this)
+  return (Func("ahk_3").Bind(λ, this)).Call(this)
 }
 ahk_5(λ, ℓthis) {
   this := ℓthis
@@ -73,7 +73,7 @@ ahk_5(λ, ℓthis) {
 }
 ahk_6(λ, ℓthis) {
   this := ℓthis
-  return (Func("ahk_5").Bind(λ)).Call(this)
+  return (Func("ahk_5").Bind(λ, this)).Call(this)
 }
 ahk_7(λ, ℓthis, n) {
   this := ℓthis
@@ -109,7 +109,7 @@ ahk_12(λ, ℓthis) {
 }
 ahk_13(λ, ℓthis) {
   this := ℓthis
-  return (Func("ahk_12").Bind(λ)).Call(this)
+  return (Func("ahk_12").Bind(λ, this)).Call(this)
 }
 ahk_14(λ, ℓthis, n) {
   this := ℓthis

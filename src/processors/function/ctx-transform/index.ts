@@ -17,7 +17,7 @@ const main = (ctx: Context) => {
   const paramsInfo = collectParams(ctx)
   const skip = transformFunctions(ctx, paramsInfo)
   transformVars(ctx, skip)
-  addBind(ctx)
+  addBind(ctx, paramsInfo)
 }
 
 export default main

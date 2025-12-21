@@ -8,6 +8,6 @@ ahk_1(λ, ℓthis) {
 ahk_2(λ, ℓthis, x) {
   this := ℓthis
   λ.x := x
-  λ.inner := Func("ahk_1").Bind(λ)
+  λ.inner := Func("ahk_1").Bind(λ, this)
   λ.inner.Call()
 }

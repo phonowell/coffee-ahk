@@ -2,16 +2,19 @@
  * Bind transformation for ctx-transform
  *
  * Adds .Bind() after Func() calls - .Bind(λ) inside functions, .Bind({}) at top level.
+ * For class method arrow functions, also passes `this` to bind ℓthis parameter.
  */
 import { CTX } from '../../../constants.js'
 import Item from '../../../models/Item.js'
 
+import type { ParamsInfo } from './params.js'
 import type { ScopeType } from '../../../models/ScopeType.js'
 import type { Context } from '../../../types'
 
 /** Add .Bind() after Func() calls - .Bind(λ) inside functions, .Bind({}) at top level */
-export const addBind = (ctx: Context) => {
+export const addBind = (ctx: Context, paramsInfo: ParamsInfo) => {
   const { content } = ctx
+  const { classMethods } = paramsInfo
   const out: Item[] = []
 
   for (let i = 0; i < content.length; i++) {
@@ -38,6 +41,10 @@ export const addBind = (ctx: Context) => {
     const inFunction = item.scope.includes('function')
     const callScope = [...scope, 'call'] as ScopeType[]
 
+    // Extract function name from string (e.g., "funcName" -> funcName)
+    const funcName = prev1.value.slice(1, -1)
+    const needsThis = classMethods.has(funcName)
+
     out.push(new Item({ type: '.', value: '.', scope }))
     out.push(new Item({ type: 'identifier', value: 'Bind', scope }))
     out.push(new Item({ type: 'edge', value: 'call-start', scope: callScope }))
@@ -45,6 +52,11 @@ export const addBind = (ctx: Context) => {
     if (inFunction) {
       // Inside function: bind to current closure context λ
       out.push(new Item({ type: 'identifier', value: CTX, scope: callScope }))
+      // If this is a class method arrow function, also pass `this` for ℓthis
+      if (needsThis) {
+        out.push(new Item({ type: 'sign', value: ',', scope: callScope }))
+        out.push(new Item({ type: 'this', value: 'this', scope: callScope }))
+      }
     } else {
       // Top level: bind to empty object {}
       out.push(
