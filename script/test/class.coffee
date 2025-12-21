@@ -44,7 +44,7 @@ class Calculator
 
   chain: (n) ->
     @value = @value + n
-    this
+    return this
 
 # Class with nested arrow function accessing this
 class Counter

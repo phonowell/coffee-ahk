@@ -1,5 +1,4 @@
 // Main function context processor
-import Item from '../../models/Item.js'
 
 import {
   cache,
@@ -12,6 +11,7 @@ import {
 } from './context/cache.js'
 import { pickItem } from './context/utils.js'
 
+import type Item from '../../models/Item.js'
 import type { Context } from '../../types'
 
 const main = (ctx: Context) => {
@@ -29,7 +29,6 @@ const main = (ctx: Context) => {
     // ignore
     if (countIgnore) {
       setCountIgnore(countIgnore - 1)
-      listContent.push(new Item({ type: 'void', value: '', scope: [] }))
       return
     }
 
@@ -68,10 +67,8 @@ const pick = (ctx: Context, item: Item, i: number): boolean => {
   if (!['identifier', 'this'].includes(itPrev.type)) return false
 
   // pick
-  const listContent = getListContent()
   const listParam = getListParam()
 
-  listContent.push(new Item({ type: 'void', value: '' }))
   listParam.push(pickItem(ctx, itNext, i + 1))
   const lastParam = listParam.at(-1)
   setCountIgnore(lastParam?.length ?? 0)

@@ -27,13 +27,8 @@ node -e "import('path/to/dist/index.js').then(m=>m.default('file.coffee'))"
 
 ## 架构
 
-**流水线**: CoffeeScript → tokens → Formatters → Processors → Renderer → AHK
-
-| 层         | 位置                               | 说明                        |
-| ---------- | ---------------------------------- | --------------------------- |
-| Formatters | [src/formatters/](src/formatters/) | token→Item 返回 `true` 消费 |
-| Processors | [src/processors/](src/processors/) | 结构重写 **顺序敏感**       |
-| Renderer   | [src/renderer/](src/renderer/)     | Item→AHK                    |
+**流程**: Formatters → Processors → Renderer · **编译/调试问题必须先调 `debug-coffee-ahk` skill**（禁止手动重复尝试命令）
+**Skill 维护**: 修改架构/执行顺序/关键文件职责/发现新陷阱时 → 同步更新 `debug-coffee-ahk` skill
 
 **数据** ([types/](src/types/)): `Item` 不可变用 `clone()` · `Content.push(...items)` 多参数 · `Scope` 缩进栈
 **模块** ([include/](src/file/include/)): import/export → 拓扑排序 → 组装 · 支持 `import x from './m'` | `import {a,b}` | `export default` | `export {a,b}` · 禁止 `import * as` | `import {x as y}` | `export const`
@@ -64,6 +59,7 @@ fn = (a) -> (b = 1; inner = -> a + b; inner())
 
 | 问题                       | 解决                                | 位置                                                                    |
 | -------------------------- | ----------------------------------- | ----------------------------------------------------------------------- |
+| 编译无输出/无错误          | **先调 `debug-coffee-ahk` skill** 或 `{verbose:true}` 查看流程 | [SKILL.md:70](.claude/skills/debug-coffee-ahk/SKILL.md#L70) |
 | Formatter 未返 `true`      | 消费后返回                          | -                                                                       |
 | 改 `toArray()` 返回值      | `.reload()`/`.push()`               | -                                                                       |
 | `!line` vs `=== undefined` | 跳空行`!line` 判结束`=== undefined` | -                                                                       |
@@ -71,6 +67,7 @@ fn = (a) -> (b = 1; inner = -> a + b; inner())
 | for 循环解构/嵌套解构      | 分步/手动展开                       | -                                                                       |
 | 对象数字键                 | 禁止·仅字符串键                     | -                                                                       |
 | 嵌套闭包同名参数           | 不同参数名避免 `λ` 冲突             | [params.ts:18](src/processors/function/ctx-transform/params.ts#L18)     |
+| void 不可移除              | anonymous 提取·pickItem 递归依赖原地标记 `item.type='void'` → reload() filter | 已优化 3/4 (calls/prepend-this/context 用 pop()) · [pick-item.ts:27](src/processors/function/anonymous/pick-item.ts#L27) |
 
 ## 错误处理
 
@@ -91,11 +88,5 @@ fn = (a) -> (b = 1; inner = -> a + b; inner())
 
 **低智力模型** · 转义计算错误 · 复杂字符串拼接失败 · 无感知失败能力
 
-**Edit 转义**: Read显示≠Edit匹配 · `od -c`验证原字节 · 2次失败→Node.js脚本
-
-```js
-// Edit失败→fs直接操作
-const fs=require('fs'), lines=fs.readFileSync(p,'utf8').split('\n');
-fs.writeFileSync(p,[...lines.slice(0,idx),...newLines,...lines.slice(idx)].join('\n'));
-```
+**Edit 转义**: Read显示≠Edit匹配 · `od -c`验证原字节 · 2次失败→fs直接操作
 

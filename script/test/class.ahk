@@ -79,7 +79,7 @@ ahk_7(λ, ℓthis, n) {
   this := ℓthis
   λ.n := n
   this.value := this.value + λ.n
-  
+  return this
 }
 ahk_8(λ, ℓthis, a, b, c) {
   this := ℓthis

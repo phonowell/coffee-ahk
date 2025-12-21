@@ -13,6 +13,11 @@ const main = (ctx: Context): boolean => {
     return true
   }
 
+  if (type === 'this') {
+    content.push({ type: 'this', value: 'this' })
+    return true
+  }
+
   if (type === 'throw') {
     content.push({ type: 'statement', value: 'throw' })
     return true

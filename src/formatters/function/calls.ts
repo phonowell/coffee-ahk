@@ -21,8 +21,9 @@ export const handleCallEnd = (ctx: Context) => {
     listItem[1]?.is('edge', 'call-start') &&
     listItem[2]?.is('string')
   ) {
-    listItem[0].type = 'void'
-    listItem[1].type = 'void'
+    content.pop()
+    content.pop()
+    content.pop()
     listItem[2].scope.pop()
     listItem[2].type = 'native'
     const { value } = listItem[2]
@@ -30,7 +31,7 @@ export const handleCallEnd = (ctx: Context) => {
       .substring(1, value.length - 1)
       .replace(/`%/g, '%')
       .replace(/""/g, '"')
-    content.push({ type: 'void', value: 'call-end' })
+    content.push(listItem[2])
     scope.pop()
     return true
   }

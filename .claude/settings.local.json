@@ -10,7 +10,10 @@
       "Skill(plan-implementation)",
       "Bash(pnpm build:ts:*)",
       "Bash(cloc:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Skill(review-dialogue-quality)",
+      "Skill(optimize-skill)",
+      "Skill(debug-coffee-ahk)"
     ]
   }
 }

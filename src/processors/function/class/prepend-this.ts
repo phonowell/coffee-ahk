@@ -9,13 +9,16 @@ export const prependThis = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
-  content.toArray().forEach((item, i) => {
-    listContent.push(item)
-    if (!item.is('edge', 'parameter-start')) return
+  content.toArray().forEach((item, i, arr) => {
+    if (!item.is('edge', 'parameter-start')) {
+      listContent.push(item)
+      return
+    }
 
-    if (at(listContent, -3)?.is('property', 'constructor')) {
-      const item2 = listContent.at(listContent.length - 2)
-      if (item2) item2.type = 'void'
+    const prevPrev = at(listContent, -2)
+    if (prevPrev?.is('property', 'constructor')) {
+      listContent.pop()
+      listContent.push(item)
       return
     }
 
@@ -24,16 +27,19 @@ export const prependThis = (ctx: Context) => {
         item.scope.at(-1) === 'class' ||
         (item.scope.at(-1) === 'parameter' && item.scope.at(-2) === 'class')
       )
-    )
+    ) {
+      listContent.push(item)
       return
+    }
 
+    listContent.push(item)
     const scope2 = item.scope.toArray()
     // Use ℓthis as parameter name since 'this' is reserved in AHK v1
     listContent.push(
       new Item({ type: 'identifier', value: THIS, scope: scope2 }),
     )
 
-    const it = content.at(i + 1)
+    const it = arr.at(i + 1)
     if (it?.is('edge', 'parameter-end')) return
     listContent.push(new Item({ type: 'sign', value: ',', scope: scope2 }))
   })
