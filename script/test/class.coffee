@@ -68,6 +68,23 @@ class Greeter
   say: (message) ->
     @format(message)
 
+# Class with property arrow function accessing this
+class KeyBindingShell
+  constructor: ->
+    @mapBound = {}
+    @mapCallback = {}
+    @mapPrevented = {}
+
+  prepare: (key) ->
+    if @mapCallback[key] then return
+    @mapBound[key] = => @fire key
+    @mapCallback[key] = []
+    @mapPrevented[key] = false
+    return
+
+  fire: (key) ->
+    console.log "Firing: " . key
+
 # Instantiation
 person = new Person("Alice", 30)
 calc = new Calculator(10)

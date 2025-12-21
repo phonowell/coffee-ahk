@@ -42,6 +42,8 @@ mark → class → implicit-return → **anonymous** → count → parameter →
 | models/Content.ts:52 | reload() 过滤 void | `filter(it => !it.is('void'))` |
 | processors/function/anonymous/pick-item.ts:27 | 提取嵌套函数 | 标记原位置为 void |
 | processors/function/class/prepend-this.ts:20 | 类方法添加 ℓthis | constructor 特殊处理 |
+| processors/function/ctx-transform/params.ts:11-15 | 收集参数+类方法标记 | `classMethods: Set<string>` |
+| processors/function/ctx-transform/bind.ts:12-15 | Bind() 添加 this 参数 | 检测 classMethods 传递 `this` |
 | formatters/property.ts:42 | this.prop 处理 | 检查 lastType 插入 `.` |
 | renderer/index.ts:102 | mapMethod 映射 | type → 渲染函数 |
 
@@ -64,6 +66,11 @@ mark → class → implicit-return → **anonymous** → count → parameter →
 ### 作用域/闭包错误
 
 **定位**：检查 processors/function/ctx-transform/ 的 collectParams/transformVars/addBind，验证 λ 对象传递链
+
+**Class method arrow functions 特殊处理**：
+- `collectParams()` 检测 `ℓthis` 参数，记录到 `classMethods` Set
+- `addBind()` 为 class method 内部的 `.Bind(λ)` 添加 `this` 参数 → `.Bind(λ, this)`
+- 确保嵌套箭头函数能访问正确的 `this`（通过 `ℓthis` 传递）
 
 ## 调试技巧
 
@@ -91,6 +98,7 @@ node dist/index.js file.coffee
 | this 被过滤 | formatters 缺少处理 | 添加 formatter |
 | void 未过滤 | Content.reload() 依赖 | 调用 reload() |
 | 嵌套函数 scope 错误 | pick-item.ts scope 调整 | 验证 scope.shift() |
+| Class method arrow 缺少 this | addBind() 未检测 classMethods | 更新 params.ts + bind.ts |
 
 ## 工作流程
 
