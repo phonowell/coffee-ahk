@@ -50,8 +50,8 @@
   },
   "scripts": {
     "build": "pnpm task build",
-    "lint": "eslint \"src/**/*.ts\" \"task/**/*.ts\" --fix",
-    "task": "tsx task/index.ts",
+    "lint": "eslint \"src/**/*.ts\" \"tasks/**/*.ts\" --fix",
+    "task": "tsx tasks/index.ts",
     "test": "pnpm task test",
     "watch": "pnpm task watch"
   },

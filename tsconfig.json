@@ -31,5 +31,5 @@
     "types": ["node"],
     "useDefineForClassFields": true
   },
-  "exclude": ["node_modules", "dist", "task"]
+  "exclude": ["node_modules", "dist", "tasks"]
 }

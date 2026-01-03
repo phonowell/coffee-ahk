@@ -7,7 +7,7 @@ const main = async () => {
     './src/**/*.js',
     './src/**/*.ts',
     './src/**/*.tsx',
-    './task/*.ts',
+    './tasks/*.ts',
   ])
   for (const source of listSource) {
     const content = await read<string>(source)

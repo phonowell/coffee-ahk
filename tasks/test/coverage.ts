@@ -13,7 +13,7 @@ const main = async () => {
   const testFiles = await glob('./script/test/*.coffee')
 
   // Also check hardcoded error tests
-  const errorTestsContent = readFileSync('./task/test/errors.ts', 'utf-8')
+  const errorTestsContent = readFileSync('./tasks/test/errors.ts', 'utf-8')
 
   const formatterNames = formatters
     .filter((f) => !f.includes('/index.ts'))

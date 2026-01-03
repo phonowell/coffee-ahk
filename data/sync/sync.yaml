@@ -7,6 +7,6 @@
 - coffeelint.json
 - license.md
 
-# task
-- task/alice.ts
-- task/sync.ts
+# tasks
+- tasks/alice.ts
+- tasks/sync.ts

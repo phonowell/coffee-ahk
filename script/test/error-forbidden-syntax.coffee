@@ -1,6 +1,6 @@
 # ========================================================
 # DOCUMENTATION ONLY - Not executed as tests
-# Actual error tests are in: task/test/errors.ts
+# Actual error tests are in: tasks/test/errors.ts
 # Run with: pnpm test (runs all including error tests)
 # ========================================================
 

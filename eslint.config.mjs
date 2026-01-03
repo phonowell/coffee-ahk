@@ -436,8 +436,8 @@ export default [
     },
   },
   {
-    // task 文件独立配置，不启用 TypeScript 项目检查
-    files: ["task/**/*.ts"],
+    // tasks 文件独立配置，不启用 TypeScript 项目检查
+    files: ["tasks/**/*.ts"],
     languageOptions: {
       ecmaVersion: "latest",
       globals: {
@@ -446,7 +446,7 @@ export default [
       },
       parser: tsParser,
       parserOptions: {
-        // 不为 task 文件启用项目检查，因为它们不在 tsconfig 中
+        // 不为 tasks 文件启用项目检查，因为它们不在 tsconfig 中
       },
       sourceType: "module",
     },
