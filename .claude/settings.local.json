@@ -13,7 +13,8 @@
       "Bash(grep:*)",
       "Skill(review-dialogue-quality)",
       "Skill(optimize-skill)",
-      "Skill(debug-coffee-ahk)"
+      "Skill(debug-coffee-ahk)",
+      "Bash(pnpm outdated:*)"
     ]
   }
 }

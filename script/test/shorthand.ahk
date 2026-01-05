@@ -1,0 +1,13 @@
+global a := 1
+global obj1 := {a: a}
+global x := 10
+global y := 20
+global z := 30
+global obj2 := {x: x, y: y, z: z}
+global name := "test"
+global value := 42
+global obj3 := {name: name, value: value, extra: 99}
+global inner := {a: a}
+global outer := {inner: inner, b: 2}
+global arr := [{a: a}, {x: x, y: y}]
+global config := {data: {x: x, y: y}, meta: {name: name, value: value}}

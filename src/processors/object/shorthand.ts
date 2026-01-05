@@ -3,7 +3,7 @@ import Item from '../../models/Item.js'
 
 import type { Context } from '../../types'
 
-export const deconstruct2 = (ctx: Context) => {
+export const transformObjectShorthand = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
