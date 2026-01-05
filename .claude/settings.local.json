@@ -18,7 +18,8 @@
       "Bash(while read line)",
       "Bash(do :)",
       "Bash(done)",
-      "Skill(review-code-changes)"
+      "Skill(review-code-changes)",
+      "Bash(find:*)"
     ]
   }
 }
