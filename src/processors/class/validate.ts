@@ -1,4 +1,4 @@
-import { TranspileError } from '../../utils/error.js'
+import { ErrorType, TranspileError } from '../../utils/error.js'
 import { listForbidden } from '../../utils/forbidden.js'
 
 import type { Context } from '../../types'
@@ -12,8 +12,9 @@ const main = (setClass: Set<string>, ctx: Context) => {
 
     throw new TranspileError(
       ctx,
-      'forbidden',
-      `class name '${item}' is reserved or forbidden (name is in forbidden list).`,
+      ErrorType.FORBIDDEN,
+      `class name '${item}' is reserved or forbidden`,
+      `Choose a different class name not in the forbidden list`,
     )
   })
 }

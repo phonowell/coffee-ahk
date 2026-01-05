@@ -1,4 +1,4 @@
-import { TranspileError } from '../utils/error.js'
+import { ErrorType, TranspileError } from '../utils/error.js'
 
 import type { Context } from '../types'
 
@@ -9,8 +9,9 @@ const main = (ctx: Context): boolean => {
     if (!['call', 'parameter'].includes(scope.last)) {
       throw new TranspileError(
         ctx,
-        'forbidden',
-        `spread operator '...' is only allowed in function calls or parameter lists. Context: ${scope.last}`,
+        ErrorType.FORBIDDEN,
+        `spread operator '...' only allowed in function calls or parameter lists`,
+        `Move spread operator to function call or parameter context`,
       )
     }
     content.push({ type: 'sign', value: '...' })
@@ -22,8 +23,9 @@ const main = (ctx: Context): boolean => {
     if (prev?.type === 'identifier' && ctx.cache.classNames.has(prev.value)) {
       throw new TranspileError(
         ctx,
-        'class-case',
-        `cannot assign to class name '${prev.value}'. Please use a different identifier for variables.`,
+        ErrorType.CLASS_ERROR,
+        `cannot assign to class name '${prev.value}'`,
+        `Use a different identifier for variables`,
       )
     }
     content.push({ type: 'sign', value: '=' })

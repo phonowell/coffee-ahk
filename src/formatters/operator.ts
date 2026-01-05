@@ -1,5 +1,5 @@
 import { TYPEOF } from '../constants.js'
-import { TranspileError } from '../utils/error.js'
+import { ErrorType, TranspileError } from '../utils/error.js'
 
 import type { ItemTypeMap } from '../models/ItemType'
 import type { Context } from '../types'
@@ -53,8 +53,9 @@ const handleUnaryOperator = (ctx: Context): boolean => {
   if (type === 'unary' && value === 'delete') {
     throw new TranspileError(
       ctx,
-      'forbidden',
-      `'delete' is not supported in AHK.`,
+      ErrorType.FORBIDDEN,
+      `'delete' is not supported in AHK`,
+      `Use object property removal workarounds or refactor data structure`,
     )
   }
 
@@ -108,22 +109,25 @@ const main = (ctx: Context): boolean => {
     if (value === '||=' || value === '?=' || value === '&&=') {
       throw new TranspileError(
         ctx,
-        'forbidden',
-        `compound assignment '${value}' is not supported. Only standard assignments are allowed.`,
+        ErrorType.FORBIDDEN,
+        `compound assignment '${value}' is not supported`,
+        `Use standard assignments like 'x := x || y'`,
       )
     }
     if (value === '//=') {
       throw new TranspileError(
         ctx,
-        'forbidden',
-        `floor division assignment '//=' is not supported (conflicts with AHK comments).`,
+        ErrorType.FORBIDDEN,
+        `floor division assignment '//=' conflicts with AHK comments`,
+        `Use 'x := Floor(x / y)'`,
       )
     }
     if (value === '%%=') {
       throw new TranspileError(
         ctx,
-        'forbidden',
-        `modulo assignment '%%=' is not supported. Use 'x := Mod(x, b)' instead.`,
+        ErrorType.FORBIDDEN,
+        `modulo assignment '%%=' is not supported`,
+        `Use 'x := Mod(x, b)'`,
       )
     }
     content.push({ type: 'math', value: value as ItemTypeMap['math'] })
@@ -134,24 +138,27 @@ const main = (ctx: Context): boolean => {
     if (value === '//') {
       throw new TranspileError(
         ctx,
-        'forbidden',
-        `floor division '//' is not supported (conflicts with AHK comments). Use 'Math.floor(a / b)' instead.`,
+        ErrorType.FORBIDDEN,
+        `floor division '//' conflicts with AHK comments`,
+        `Use 'Floor(a / b)'`,
       )
     }
     // % is modulo in CoffeeScript but conflicts with AHK variable syntax
     if (value === '%') {
       throw new TranspileError(
         ctx,
-        'forbidden',
-        `modulo '%' is not supported (conflicts with AHK variable syntax). Use 'Mod(a, b)' instead.`,
+        ErrorType.FORBIDDEN,
+        `modulo '%' conflicts with AHK variable syntax`,
+        `Use 'Mod(a, b)'`,
       )
     }
     // %% is modulo in CoffeeScript but not supported in AHK
     if (value === '%%') {
       throw new TranspileError(
         ctx,
-        'forbidden',
-        `modulo '%%' is not supported. Use 'Mod(a, b)' instead.`,
+        ErrorType.FORBIDDEN,
+        `modulo '%%' is not supported`,
+        `Use 'Mod(a, b)'`,
       )
     }
     content.push({ type: 'math', value: value as ItemTypeMap['math'] })
@@ -164,8 +171,9 @@ const main = (ctx: Context): boolean => {
     if (value === '>>>' || value === '>>>=') {
       throw new TranspileError(
         ctx,
-        'unsupported',
-        `unsigned right shift '${value}' is not supported in AHK. Use '>>' instead.`,
+        ErrorType.UNSUPPORTED,
+        `unsigned right shift '${value}' is not supported in AHK`,
+        `Use signed right shift '>>' instead`,
       )
     }
     content.push({ type: 'math', value: value as ItemTypeMap['math'] })

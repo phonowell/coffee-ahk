@@ -5,7 +5,7 @@ import { version } from '../package.json'
 import start from './entry/index.js'
 import { processContent, read, write } from './file/index.js'
 import log from './logger/index.js'
-import { createTranspileError } from './utils/error.js'
+import { createTranspileError, ErrorType } from './utils/error.js'
 
 import type { Options, PartialOptions } from './types/options.js'
 
@@ -118,7 +118,13 @@ const transpileAsFile = async (
   const [source2] = (await glob(listSource)).filter((item) =>
     item.endsWith('.coffee'),
   )
-  if (!source2) throw createTranspileError('file', `invalid source '${source}'`)
+  if (!source2) {
+    throw createTranspileError(
+      ErrorType.FILE_ERROR,
+      `invalid source '${source}'`,
+      `Ensure file exists with .coffee extension`,
+    )
+  }
 
   const content = await read(source2, options.salt)
 

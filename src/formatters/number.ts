@@ -1,4 +1,4 @@
-import { TranspileError } from '../utils/error.js'
+import { ErrorType, TranspileError } from '../utils/error.js'
 
 import type { Context } from '../types'
 
@@ -11,8 +11,9 @@ const main = (ctx: Context): boolean => {
     if (value.includes('n')) {
       throw new TranspileError(
         ctx,
-        'forbidden',
-        `'BigInt' literal is not supported in AHK v1. Offending value: '${value}'`,
+        ErrorType.UNSUPPORTED,
+        `BigInt literal '${value}' is not supported in AHK v1`,
+        `Use standard number type or string representation`,
       )
     }
 

@@ -1,7 +1,7 @@
 /** Parameter collection and assignment generation for ctx-transform */
 import { CTX, THIS } from '../../../constants.js'
 import Item from '../../../models/Item.js'
-import { TranspileError } from '../../../utils/error.js'
+import { ErrorType, TranspileError } from '../../../utils/error.js'
 
 import { isUserFunc } from './utils.js'
 
@@ -83,8 +83,14 @@ const detectParamCollisions = (
     }
   }
 
-  if (errors.length > 0)
-    throw new TranspileError(ctx, 'closure-collision', errors.join('\n'))
+  if (errors.length > 0) {
+    throw new TranspileError(
+      ctx,
+      ErrorType.CLOSURE_COLLISION,
+      errors.join('\n'),
+      `Rename conflicting parameters in nested functions`,
+    )
+  }
 }
 
 /** Collect parameters for each extracted function */

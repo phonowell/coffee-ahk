@@ -1,6 +1,6 @@
 import { ARRAY } from '../../constants.js'
 import Item from '../../models/Item.js'
-import { TranspileError } from '../../utils/error.js'
+import { ErrorType, TranspileError } from '../../utils/error.js'
 import {
   getForbiddenReason,
   isVariableForbidden,
@@ -83,8 +83,9 @@ const main = (ctx: Context) => {
         if (it.type === 'identifier' && isVariableForbidden(it.value)) {
           throw new TranspileError(
             ctx,
-            'forbidden',
-            `array destructuring target '${it.value}' cannot be used (${getForbiddenReason(it.value)}).`,
+            ErrorType.FORBIDDEN,
+            `array destructuring target '${it.value}' cannot be used (${getForbiddenReason(it.value)})`,
+            `Choose a different variable name`,
           )
         }
       })

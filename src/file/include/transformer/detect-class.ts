@@ -1,6 +1,6 @@
 /** Class detection and validation logic. */
 
-import { TranspileError } from '../../../utils/error.js'
+import { ErrorType, TranspileError } from '../../../utils/error.js'
 
 import type { Context } from '../../../types/index.js'
 
@@ -25,8 +25,9 @@ export const validateClassExportConflict = (
   if (hasClass && hasExport) {
     throw new TranspileError(
       createFileContext() as Context,
-      'file',
+      ErrorType.FILE_ERROR,
       `module contains both class and export: '${file}'`,
+      `Separate class definitions and exports into different modules`,
     )
   }
 }

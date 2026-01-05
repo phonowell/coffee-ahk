@@ -1,5 +1,5 @@
 import { INDEX_FOR, KEY_FOR } from '../constants.js'
-import { TranspileError } from '../utils/error.js'
+import { ErrorType, TranspileError } from '../utils/error.js'
 
 import type { ItemTypeMap } from '../models/ItemType'
 import type { Context } from '../types'
@@ -20,8 +20,9 @@ const main = (ctx: Context) => {
     if (last?.is('edge', 'array-end')) {
       throw new TranspileError(
         ctx,
-        'unsupported',
-        `for loop destructuring 'for [a, b] in arr' is not supported. Use 'for item in arr' then '[a, b] = item'.`,
+        ErrorType.UNSUPPORTED,
+        `for loop destructuring 'for [a, b] in arr' is not supported`,
+        `Use 'for item in arr' then '[a, b] = item'`,
       )
     }
     if (last) list.push(last.value)

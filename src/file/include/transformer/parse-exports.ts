@@ -3,7 +3,7 @@
  * Extracts export default and export named from CoffeeScript source.
  */
 
-import { TranspileError } from '../../../utils/error.js'
+import { ErrorType, TranspileError } from '../../../utils/error.js'
 
 import type { Context } from '../../../types/index.js'
 
@@ -106,23 +106,26 @@ export const parseExportsFromCoffee = (
     if (/^export\s+(const|let|var|function|class)\s+/.test(trimmed)) {
       throw new TranspileError(
         createExportContext(i + 1) as Context,
-        'export',
-        `unsupported syntax "export const/let/var/function/class"${fileInfo}\n  Line: ${trimmed}\n  Use "export { name }" or "export default" instead`,
+        ErrorType.UNSUPPORTED,
+        `unsupported syntax "export const/let/var/function/class"${fileInfo}\n  Line: ${trimmed}`,
+        `Use "export { name }" or "export default" instead`,
       )
     }
     if (/^export\s+\*/.test(trimmed)) {
       throw new TranspileError(
         createExportContext(i + 1) as Context,
-        'export',
-        `unsupported syntax "export *"${fileInfo}\n  Line: ${trimmed}\n  Use "export { name1, name2 }" instead`,
+        ErrorType.UNSUPPORTED,
+        `unsupported syntax "export *"${fileInfo}\n  Line: ${trimmed}`,
+        `Use "export { name1, name2 }" instead`,
       )
     }
 
     // 其他未识别的 export 语法
     throw new TranspileError(
       createExportContext(i + 1) as Context,
-      'export',
-      `unrecognized export syntax${fileInfo}\n  Line: ${trimmed}\n  Supported: "export default <expr>", "export { a, b }", "export { a: expr() }"`,
+      ErrorType.SYNTAX_ERROR,
+      `unrecognized export syntax${fileInfo}\n  Line: ${trimmed}`,
+      `Use "export default <expr>", "export { a, b }", or "export { a: expr() }"`,
     )
   }
   return { exportDefault, exportNamed, codeLines }

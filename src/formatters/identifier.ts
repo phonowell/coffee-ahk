@@ -1,4 +1,4 @@
-import { TranspileError } from '../utils/error.js'
+import { ErrorType, TranspileError } from '../utils/error.js'
 
 import type { Context } from '../types'
 
@@ -14,8 +14,9 @@ const identifierFormatter = (context: Context): boolean => {
       if (!/^[A-Z]/.test(value)) {
         throw new TranspileError(
           context,
-          'class-case',
-          `class name '${value}' must start with an uppercase letter.`,
+          ErrorType.CLASS_ERROR,
+          `class name '${value}' must start with uppercase letter`,
+          `Rename class to '${value.charAt(0).toUpperCase()}${value.slice(1)}'`,
         )
       }
 
@@ -23,8 +24,9 @@ const identifierFormatter = (context: Context): boolean => {
       if (value.length === 1) {
         throw new TranspileError(
           context,
-          'class-single-letter',
-          `class name '${value}' is a single letter, which is forbidden in AHK v1. Class names must be at least 2 characters.`,
+          ErrorType.CLASS_ERROR,
+          `class name '${value}' is a single letter - forbidden in AHK v1`,
+          `Use a class name with at least 2 characters`,
         )
       }
 

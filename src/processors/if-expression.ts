@@ -8,7 +8,7 @@
  * 3. Extract condition, then-branch, and else-branch
  * 4. Convert to ternary: condition ? then : else
  */
-import { TranspileError } from '../utils/error.js'
+import { ErrorType, TranspileError } from '../utils/error.js'
 /**
  * Note: In processor stage, INDENT/OUTDENT tokens have been converted to edges:
  * - INDENT → new-line + block-start edge
@@ -165,11 +165,9 @@ export default (ctx: Context): void => {
     if (hasNestedIf(thenBranch) || hasNestedIf(elseBranch)) {
       throw new TranspileError(
         ctx,
-        'unsupported',
-        `Nested if-then-else expressions are not supported.\n\n` +
-          `Workaround 1 - Use temporary variables:\n` +
-          `  temp = if inner then a else b\n` +
-          `  result = if outer then temp else c\n\n` +
+        ErrorType.UNSUPPORTED,
+        `Nested if-then-else expressions are not supported`,
+        `Use temporary variables: temp = if inner then a else b; result = if outer then temp else c` +
           `Workaround 2 - Use IIFE with early return:\n` +
           `  result = do ->\n` +
           `    if condition1 then return x\n` +

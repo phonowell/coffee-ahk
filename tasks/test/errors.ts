@@ -49,7 +49,7 @@ const errorTests: ErrorTest[] = [
   {
     name: 'BigInt literal is forbidden',
     code: 'n = 123n',
-    expectedError: /Coffee-AHK\/forbidden.*BigInt/i,
+    expectedError: /Coffee-AHK\/unsupported.*BigInt/i,
   },
   {
     name: 'Spread operator in object literal is forbidden',
@@ -105,14 +105,14 @@ const errorTests: ErrorTest[] = [
   {
     name: 'Single-letter class name is forbidden',
     code: 'class A\n  a: 1',
-    expectedError: /Coffee-AHK\/class-single-letter.*class name.*A.*single letter/i,
+    expectedError: /Coffee-AHK\/class-error.*class name.*A.*single letter/i,
   },
 
   // Constructor parameter validation
   {
     name: '@property in constructor parameters is forbidden',
     code: 'class Animal\n  constructor: (@name) ->',
-    expectedError: /Coffee-AHK\/invalid-syntax.*this\.name.*constructor parameters/i,
+    expectedError: /Coffee-AHK\/syntax-error.*this\.name.*constructor parameters/i,
   },
 ]
 

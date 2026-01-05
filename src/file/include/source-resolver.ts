@@ -2,7 +2,7 @@
 import { getDirname, glob, read } from 'fire-keeper'
 import { trim } from 'radash'
 
-import { createTranspileError } from '../../utils/error.js'
+import { createTranspileError, ErrorType } from '../../utils/error.js'
 
 import { listExt } from './utils.js'
 
@@ -29,8 +29,9 @@ export const getSource = async (
   )
   if (!pkg?.main) {
     throw createTranspileError(
-      'file',
+      ErrorType.FILE_ERROR,
       `package.json missing 'main' field for '${source}'`,
+      `Add 'main' field to package.json`,
     )
   }
 
@@ -38,8 +39,9 @@ export const getSource = async (
   const secondResult = listResult2[0]
   if (!secondResult) {
     throw createTranspileError(
-      'file',
+      ErrorType.FILE_ERROR,
       `resolved package main not found: '${source}'`,
+      `Check package.json main field points to existing file`,
     )
   }
 
@@ -53,14 +55,16 @@ export const pickImport = async (
   // 检测不支持的 import 语法
   if (/import\s+\*\s+as\s+/.test(line)) {
     throw createTranspileError(
-      'import',
-      `unsupported syntax "import * as" in '${source}'\n  Line: ${line}\n  Use named imports instead: import { foo, bar } from './module'`,
+      ErrorType.UNSUPPORTED,
+      `unsupported syntax "import * as" in '${source}'\n  Line: ${line}`,
+      `Use named imports instead: import { foo, bar } from './module'`,
     )
   }
   if (/{\s*\w+\s+as\s+\w+/.test(line)) {
     throw createTranspileError(
-      'import',
-      `unsupported syntax "import { foo as bar }" in '${source}'\n  Line: ${line}\n  Use direct names without aliases: import { foo } from './module'`,
+      ErrorType.UNSUPPORTED,
+      `unsupported syntax "import { foo as bar }" in '${source}'\n  Line: ${line}`,
+      `Use direct names without aliases: import { foo } from './module'`,
     )
   }
 

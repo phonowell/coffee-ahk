@@ -1,5 +1,5 @@
 import Item from '../models/Item.js'
-import { TranspileError } from '../utils/error.js'
+import { ErrorType, TranspileError } from '../utils/error.js'
 
 import type { Context } from '../types'
 
@@ -24,8 +24,9 @@ const main = (ctx: Context) => {
       if (!next) {
         throw new TranspileError(
           ctx,
-          'internal',
-          `for: missing variable name after for/in keyword`,
+          ErrorType.SYNTAX_ERROR,
+          `missing variable name after for/in keyword`,
+          `Add variable name after 'for' keyword`,
         )
       }
       return next.value
@@ -48,8 +49,9 @@ const main = (ctx: Context) => {
     if (!next) {
       throw new TranspileError(
         ctx,
-        'internal',
-        `for: missing block-start after for/in statement`,
+        ErrorType.SYNTAX_ERROR,
+        `missing block-start after for/in statement`,
+        `Ensure for loop has proper block structure`,
       )
     }
 

@@ -1,4 +1,4 @@
-import { TranspileError } from '../../utils/error.js'
+import { ErrorType, TranspileError } from '../../utils/error.js'
 import {
   getForbiddenReason,
   isVariableForbidden,
@@ -16,8 +16,9 @@ const checkSimpleAssignment = (ctx: Context, i: number): void => {
   if (isVariableForbidden(item.value)) {
     throw new TranspileError(
       ctx,
-      'forbidden',
-      `variable '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
+      ErrorType.FORBIDDEN,
+      `variable '${item.value}' cannot be used (${getForbiddenReason(item.value)})`,
+      `Choose a different variable name`,
     )
   }
 }
@@ -41,8 +42,9 @@ const checkDestructuringAssignment = (ctx: Context, i: number): void => {
       if (isVariableForbidden(item.value)) {
         throw new TranspileError(
           ctx,
-          'forbidden',
-          `destructuring target '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
+          ErrorType.FORBIDDEN,
+          `destructuring target '${item.value}' cannot be used (${getForbiddenReason(item.value)})`,
+          `Choose a different variable name`,
         )
       }
       break
@@ -76,8 +78,9 @@ const checkFunctionParameters = (ctx: Context, i: number): void => {
     if (isVariableForbidden(item.value)) {
       throw new TranspileError(
         ctx,
-        'forbidden',
-        `parameter '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
+        ErrorType.FORBIDDEN,
+        `parameter '${item.value}' cannot be used (${getForbiddenReason(item.value)})`,
+        `Choose a different parameter name`,
       )
     }
   }
@@ -94,8 +97,9 @@ const checkCatchVariable = (ctx: Context, i: number): void => {
   if (isVariableForbidden(item.value)) {
     throw new TranspileError(
       ctx,
-      'forbidden',
-      `catch variable '${item.value}' cannot be used (${getForbiddenReason(item.value)}).`,
+      ErrorType.FORBIDDEN,
+      `catch variable '${item.value}' cannot be used (${getForbiddenReason(item.value)})`,
+      `Choose a different variable name`,
     )
   }
 }
@@ -116,8 +120,9 @@ const checkForLoopVariables = (ctx: Context, i: number): void => {
       if (isVariableForbidden(current.value)) {
         throw new TranspileError(
           ctx,
-          'forbidden',
-          `for loop variable '${current.value}' cannot be used (${getForbiddenReason(current.value)}).`,
+          ErrorType.FORBIDDEN,
+          `for loop variable '${current.value}' cannot be used (${getForbiddenReason(current.value)})`,
+          `Choose a different loop variable name`,
         )
       }
     }
@@ -137,8 +142,9 @@ const checkObjectKeys = (ctx: Context, i: number): void => {
   if (item.value.toLowerCase().startsWith('a_')) {
     throw new TranspileError(
       ctx,
-      'forbidden',
-      `object key or class property '${item.value}' cannot be used (A_ prefix is reserved for AHK built-in variables).`,
+      ErrorType.FORBIDDEN,
+      `object key or class property '${item.value}' cannot use A_ prefix - reserved for AHK built-in variables`,
+      `Rename property to avoid A_ prefix`,
     )
   }
 }

@@ -1,4 +1,4 @@
-import { createTranspileError } from '../utils/error.js'
+import { createTranspileError, ErrorType } from '../utils/error.js'
 
 import include from './include.js'
 
@@ -11,8 +11,9 @@ const main = async (source: string, salt: string): Promise<string> => {
   const content = await include(src, salt)
   if (!content) {
     throw createTranspileError(
-      'file',
-      `include failed, source file not found or empty: '${src}'`,
+      ErrorType.FILE_ERROR,
+      `include failed - source file not found or empty: '${src}'`,
+      `Check file path and ensure file has content`,
     )
   }
 

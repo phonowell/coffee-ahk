@@ -14,7 +14,11 @@
       "Skill(review-dialogue-quality)",
       "Skill(optimize-skill)",
       "Skill(debug-coffee-ahk)",
-      "Bash(pnpm outdated:*)"
+      "Bash(pnpm outdated:*)",
+      "Bash(while read line)",
+      "Bash(do :)",
+      "Bash(done)",
+      "Skill(review-code-changes)"
     ]
   }
 }

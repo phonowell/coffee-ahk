@@ -1,4 +1,4 @@
-import { TranspileError } from '../utils/error.js'
+import { ErrorType, TranspileError } from '../utils/error.js'
 
 import type { Context } from '../types'
 
@@ -21,7 +21,7 @@ const main = (ctx: Context) => {
   if (listForbidden.includes(type)) {
     throw new TranspileError(
       ctx,
-      'forbidden',
+      ErrorType.FORBIDDEN,
       `token type '${type}' is not supported in CoffeeScript→AHK transpilation.`,
     )
   }
@@ -29,8 +29,9 @@ const main = (ctx: Context) => {
   if (type === 'post_if') {
     throw new TranspileError(
       ctx,
-      'forbidden',
-      `post-if syntax is not supported. Use standard if/else.`,
+      ErrorType.FORBIDDEN,
+      `post-if syntax is not supported`,
+      `Use standard if/else blocks`,
     )
   }
 
@@ -40,8 +41,9 @@ const main = (ctx: Context) => {
     if (value === 'in') {
       throw new TranspileError(
         ctx,
-        'forbidden',
-        `'in' operator is not supported. Use 'for...in' for iteration.`,
+        ErrorType.FORBIDDEN,
+        `'in' operator is not supported`,
+        `Use 'for...in' for iteration`,
       )
     }
   }
@@ -50,8 +52,9 @@ const main = (ctx: Context) => {
   if (type === 'await') {
     throw new TranspileError(
       ctx,
-      'unsupported',
-      `'await' is not supported. AHK v1 has no async/await support.`,
+      ErrorType.UNSUPPORTED,
+      `'await' is not supported - AHK v1 has no async/await support`,
+      `Refactor to use synchronous code or callbacks`,
     )
   }
 
@@ -59,8 +62,9 @@ const main = (ctx: Context) => {
   if (type === 'yield') {
     throw new TranspileError(
       ctx,
-      'unsupported',
-      `'yield' is not supported. AHK v1 has no generator support.`,
+      ErrorType.UNSUPPORTED,
+      `'yield' is not supported - AHK v1 has no generator support`,
+      `Refactor to use explicit iteration or return arrays`,
     )
   }
 

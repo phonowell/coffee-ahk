@@ -1,7 +1,7 @@
 // Main include processing orchestrator
 import { read } from 'fire-keeper'
 
-import { createTranspileError } from '../utils/error.js'
+import { createTranspileError, ErrorType } from '../utils/error.js'
 
 import {
   clearCache,
@@ -22,8 +22,9 @@ const main = async (source: string, salt: string) => {
   const content = await read<string>(source)
   if (!content) {
     throw createTranspileError(
-      'file',
-      `include failed, source file not found or empty: '${source}'`,
+      ErrorType.FILE_ERROR,
+      `include failed - source file not found or empty: '${source}'`,
+      `Check file path and ensure file has content`,
     )
   }
 

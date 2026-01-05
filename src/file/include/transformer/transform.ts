@@ -2,7 +2,7 @@ import { getExtname, read, run } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
 import { MODULE_PREFIX } from '../../../constants.js'
-import { TranspileError } from '../../../utils/error.js'
+import { ErrorType, TranspileError } from '../../../utils/error.js'
 import { getCache as fetchCache, getCacheSalt as fetchSalt } from '../cache.js'
 import { pickImport as resolveImport } from '../source-resolver.js'
 
@@ -143,8 +143,9 @@ const processFile = async (
   }
   throw new TranspileError(
     createFileTypeContext(),
-    'file',
+    ErrorType.FILE_ERROR,
     `unsupported file type for transformation: '${file}'`,
+    `Use .coffee, .json, or .yaml files`,
   )
 }
 

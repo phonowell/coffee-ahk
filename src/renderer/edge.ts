@@ -1,7 +1,7 @@
 // Edge handling for rendering
 import { trim } from 'radash'
 
-import { TranspileError } from '../utils/error.js'
+import { ErrorType, TranspileError } from '../utils/error.js'
 
 import type Item from '../models/Item.js'
 import type { Context as Context2 } from '../types'
@@ -49,8 +49,9 @@ export const edge2 = (ctx: Context): string => {
     if (!prev) {
       throw new TranspileError(
         ctx,
-        'internal',
-        `edge2: missing function name before call-start (token index: ${i})`,
+        ErrorType.SYNTAX_ERROR,
+        `missing function name before call-start`,
+        `Ensure function call syntax is correct`,
       )
     }
 

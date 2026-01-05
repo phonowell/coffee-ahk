@@ -1,4 +1,4 @@
-import { TranspileError } from '../utils/error.js'
+import { ErrorType, TranspileError } from '../utils/error.js'
 
 import type { Context } from '../types'
 
@@ -32,10 +32,9 @@ const main = (ctx: Context): boolean => {
     ) {
       throw new TranspileError(
         ctx,
-        'invalid-syntax',
-        `Using 'this.${value}' in constructor parameters creates invalid AHK syntax. ` +
-          `AHK function parameters must be simple variable names, not property accesses. ` +
-          `Solution: Use constructor: (name) -> @name = name instead.`,
+        ErrorType.SYNTAX_ERROR,
+        `'this.${value}' in constructor parameters creates invalid AHK syntax`,
+        `Use 'constructor: (name) -> @name = name' instead`,
       )
     }
 

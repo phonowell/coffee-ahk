@@ -1,5 +1,5 @@
 // Cache and utility functions for include processing
-import { createTranspileError } from '../../utils/error.js'
+import { createTranspileError, ErrorType } from '../../utils/error.js'
 
 type ModuleMeta = {
   id: number
@@ -131,8 +131,9 @@ export const sortModules = (): string[] => {
   if (cycle) {
     const cycleStr = cycle.map((p) => `  → ${p}`).join('\n')
     throw createTranspileError(
-      'file',
+      ErrorType.FILE_ERROR,
       `circular dependency detected:\n${cycleStr}`,
+      `Refactor imports to remove circular dependencies`,
     )
   }
 

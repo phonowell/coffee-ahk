@@ -2,7 +2,7 @@ import { getName, write } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
 import { version } from '../../package.json'
-import { createTranspileError } from '../utils/error.js'
+import { createTranspileError, ErrorType } from '../utils/error.js'
 
 import type { PartialOptions } from '..'
 import type Item from '../models/Item'
@@ -103,8 +103,9 @@ export const processContent = (content: string): string => {
     const line = lines[i]
     if (line && line.length > MAX_LINE_LENGTH) {
       throw createTranspileError(
-        'file',
+        ErrorType.VALIDATION_ERROR,
         `line too long at line ${i + 1} (max ${MAX_LINE_LENGTH} chars):\n${line.slice(0, 80)}...`,
+        `Split long lines or refactor code to reduce line length`,
       )
     }
   }
