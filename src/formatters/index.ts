@@ -61,12 +61,38 @@ const formattersMap = {
   while: whileFormatter,
 } as const satisfies Record<string, Formatter>
 
+const formatterOrder = [
+  'new-line',
+  'alias',
+  'array',
+  'boolean',
+  'bracket',
+  'class',
+  'do',
+  'for',
+  'forbidden',
+  'function',
+  'if',
+  'indent',
+  'identifier',
+  'module',
+  'native',
+  'nil',
+  'number',
+  'object',
+  'operator',
+  'property',
+  'sign',
+  'statement',
+  'string',
+  'switch',
+  'try',
+  'while',
+] as const
+
 /** Apply formatters to transform context */
 const processFormatters = (context: Context) => {
-  for (const key of Object.keys(
-    formattersMap,
-  ) as (keyof typeof formattersMap)[]) {
-    if (key === 'comment') continue
+  for (const key of formatterOrder) {
     if (formattersMap[key](context)) break
   }
 
