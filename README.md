@@ -1,5 +1,7 @@
 # coffee-ahk
 
+[English](./README.md) | [中文](./README.zh.md) | [日本語](./README.ja.md)
+
 Translate `coffeescript` to `ahk`.
 
 [Documentation](./docs/documentation.md) | [文档](./docs/cn/documentation.md) | [AI Agent 使用指南](./USAGE.md)

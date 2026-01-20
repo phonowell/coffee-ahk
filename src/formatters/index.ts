@@ -92,9 +92,7 @@ const formatterOrder = [
 
 /** Apply formatters to transform context */
 const processFormatters = (context: Context) => {
-  for (const key of formatterOrder) {
-    if (formattersMap[key](context)) break
-  }
+  for (const key of formatterOrder) if (formattersMap[key](context)) break
 
   formattersMap.comment(context)
 }
