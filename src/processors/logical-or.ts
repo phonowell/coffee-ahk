@@ -6,8 +6,11 @@
  * not the first truthy value like in JavaScript.
  */
 
-import type Item from '../models/Item.js'
+import Item from '../models/Item.js'
+
 import type { Context } from '../types'
+
+const OR_TEMP = 'ℓor'
 
 export default (ctx: Context): void => {
   const { content } = ctx
@@ -98,9 +101,11 @@ export default (ctx: Context): void => {
 
     if (!isNonBooleanLiteral) continue
 
-    // Create ternary operators using clone() for proper scope
+    // Create ternary operators using a temp to avoid double-evaluation
     const first = leftOperand[0]
     if (!first) continue
+
+    const scope = first.scope.toArray()
 
     const questionMark = first.clone()
     questionMark.type = 'sign'
@@ -110,13 +115,23 @@ export default (ctx: Context): void => {
     colon.type = 'sign'
     colon.value = ':'
 
-    // Build ternary: left ? left : right
-    const ternary: Item[] = [
+    const assignmentExpr: Item[] = [
+      new Item({ type: 'edge', value: 'expression-start', scope }),
+      new Item({ type: 'identifier', value: OR_TEMP, scope }),
+      new Item({ type: 'sign', value: '=', scope }),
       ...leftOperand,
+      new Item({ type: 'edge', value: 'expression-end', scope }),
+    ]
+
+    // Build ternary: (ℓor := left) ? ℓor : right
+    const ternary: Item[] = [
+      new Item({ type: 'edge', value: 'expression-start', scope }),
+      ...assignmentExpr,
       questionMark,
-      ...leftOperand.map((item) => item.clone()), // duplicate left operand for the true branch
+      new Item({ type: 'identifier', value: OR_TEMP, scope }),
       colon,
       ...rightOperand,
+      new Item({ type: 'edge', value: 'expression-end', scope }),
     ]
 
     // Remove old items and insert ternary

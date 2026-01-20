@@ -71,14 +71,12 @@ export const arrow = (ctx: Context, type: string) => {
   } else if (type === '=>' && !isClassMethod) {
     // Use ℓthis parameter for => outside class method definitions
     const scp2: ScopeType[] = [...scope.toArray(), 'parameter']
-    content
-      .toArray()
-      .splice(
-        findEdge(ctx) + 1,
-        0,
-        new Item({ type: 'identifier', value: THIS, scope: scp2 }),
-        new Item({ type: 'sign', value: ',', scope: scp2 }),
-      )
+    content.splice(
+      findEdge(ctx) + 1,
+      0,
+      new Item({ type: 'identifier', value: THIS, scope: scp2 }),
+      new Item({ type: 'sign', value: ',', scope: scp2 }),
+    )
   }
 
   scope.push('function')

@@ -1,6 +1,11 @@
 // Object deconstruction functionality
 import { OBJECT } from '../../constants.js'
 import Item from '../../models/Item.js'
+import { ErrorType, TranspileError } from '../../utils/error.js'
+import {
+  getForbiddenReason,
+  isVariableForbidden,
+} from '../../utils/forbidden.js'
 
 import type { Context } from '../../types'
 
@@ -70,6 +75,17 @@ export const deconstruct = (ctx: Context) => {
 
     // pick
     pickPre(i)
+
+    // Validate object destructuring targets
+    listPre.forEach((name) => {
+      if (!isVariableForbidden(name)) return
+      throw new TranspileError(
+        ctx,
+        ErrorType.FORBIDDEN,
+        `object destructuring target '${name}' cannot be used (${getForbiddenReason(name)})`,
+        `Choose a different variable name`,
+      )
+    })
 
     listContent = [
       ...listContent,

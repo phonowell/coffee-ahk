@@ -37,11 +37,9 @@ const collectVariables = (
 // Handle reverse destructuring: d = { points } -> d = {points: points}
 export const reverseDeconstruct = (ctx: Context) => {
   const { content } = ctx
-  const listContent: Item[] = []
+  const ranges: Array<{ start: number; end: number }> = []
 
   content.toArray().forEach((item, i) => {
-    listContent.push(item)
-
     // Look for pattern: identifier = { identifier }
     if (!item.is('sign', '=')) return
 
@@ -65,30 +63,29 @@ export const reverseDeconstruct = (ctx: Context) => {
     if (afterBrace && !afterBrace.is('new-line') && !afterBrace.is('edge'))
       return
 
-    // Insert colon and duplicate identifier for each variable
-    const firstVar = content.at(i + 2)
-    if (!firstVar) return
+    ranges.push({ start: i + 2, end: braceIndex })
+  })
+  const listContent: Item[] = []
 
-    variables.forEach((variable, index) => {
-      if (index > 0) {
-        listContent.push(
-          new Item({
-            type: 'sign',
-            value: ',',
-            scope: firstVar.scope.toArray(),
-          }),
-        )
-      }
+  content.toArray().forEach((item, i) => {
+    listContent.push(item)
 
-      listContent.push(
-        new Item({ type: 'sign', value: ':', scope: firstVar.scope.toArray() }),
-        new Item({
-          type: 'identifier',
-          value: variable,
-          scope: firstVar.scope.toArray(),
-        }),
-      )
-    })
+    if (!ranges.some((range) => i >= range.start && i < range.end)) return
+    if (!item.is('identifier')) return
+
+    const prev = content.at(i - 1)
+    if (!prev) return
+    if (!(prev.is('bracket', '{') || prev.is('sign', ','))) return
+
+    const next = content.at(i + 1)
+    if (!next) return
+    if (!(next.is('bracket', '}') || next.is('sign', ','))) return
+
+    const scope = item.scope.toArray()
+    listContent.push(
+      new Item({ type: 'sign', value: ':', scope }),
+      new Item({ type: 'identifier', value: item.value, scope }),
+    )
   })
 
   content.reload(listContent)

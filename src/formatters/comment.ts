@@ -21,9 +21,8 @@ const main = (ctx: Context): boolean => {
       const commentContent = comment.content
 
       if (commentContent) {
-        trim(commentContent, '\n ')
-          .split('\n')
-          .forEach((comm) => listComment.push(prefix + comm))
+        const trimmed = trim(commentContent, '\n ')
+        trimmed.split('\n').forEach((comm) => listComment.push(prefix + comm))
       }
     })
 

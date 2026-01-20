@@ -15,14 +15,15 @@ ahk_1(λ, ℓthis, x, y) {
   λ.y := y
   return this.base + λ.x + λ.y
 }
-ahk_2(λ, multiplier) {
+ahk_2(λ, ℓthis, multiplier) {
+  this := ℓthis
   λ.multiplier := multiplier
   return this.base + λ.value * λ.multiplier
 }
 ahk_3(λ, ℓthis, value) {
   this := ℓthis
   λ.value := value
-  λ.helper := Func("ahk_2").Bind(λ)
+  λ.helper := Func("ahk_2").Bind(λ, this)
   λ.helper.Call(2)
 }
 ahk_4(λ) {

@@ -11,6 +11,9 @@ import type { Options, PartialOptions } from './types/options.js'
 
 export type { Options, PartialOptions }
 
+type FileMappingEntry = { file: string; line: number; content: string }
+type FileMappingRef = { mapping?: FileMappingEntry[] }
+
 const DEFAULT_OPTIONS: Options = {
   /** Generate AST output */
   ast: false,
@@ -48,13 +51,11 @@ const extractLineNumber = (message: string): number | null => {
 }
 
 /** Show source context around error line with original file info */
-const showSourceContext = (source: string, lineNum: number) => {
-  const mapping = (
-    global as {
-      __fileMapping?: { file: string; line: number; content: string }[]
-    }
-  ).__fileMapping
-
+const showSourceContext = (
+  source: string,
+  lineNum: number,
+  mapping?: FileMappingEntry[],
+) => {
   if (!mapping) {
     // Fallback: no import/include, show merged content
     const lines = source.split('\n')
@@ -86,10 +87,14 @@ const showSourceContext = (source: string, lineNum: number) => {
 }
 
 /** Re-throw error with source context if line number available */
-const rethrowWithContext = (e: unknown, source: string): never => {
+const rethrowWithContext = (
+  e: unknown,
+  source: string,
+  mapping?: FileMappingEntry[],
+): never => {
   const error = e as Error
   const lineNum = extractLineNumber(error.message)
-  if (lineNum) showSourceContext(source, lineNum)
+  if (lineNum) showSourceContext(source, lineNum, mapping)
   throw e
 }
 
@@ -126,7 +131,8 @@ const transpileAsFile = async (
     )
   }
 
-  const content = await read(source2, options.salt)
+  const mappingRef: FileMappingRef = {}
+  const content = await read(source2, options.salt, mappingRef)
 
   try {
     const startTime = Date.now()
@@ -149,7 +155,7 @@ const transpileAsFile = async (
 
     return processed
   } catch (e) {
-    return rethrowWithContext(e, content)
+    return rethrowWithContext(e, content, mappingRef.mapping)
   }
 }
 

@@ -15,7 +15,14 @@ import {
   transformAll,
 } from './include/transformer.js'
 
-const main = async (source: string, salt: string) => {
+export type FileMapping = { file: string; line: number; content: string }
+export type FileMappingRef = { mapping?: FileMapping[] }
+
+const main = async (
+  source: string,
+  salt: string,
+  mappingRef?: FileMappingRef,
+) => {
   clearCache()
   setCacheSalt(salt)
 
@@ -43,8 +50,7 @@ const main = async (source: string, salt: string) => {
     mapping.push({ file: source, line: i + 1, content: line })
   })
 
-  // Store mapping in global for error handler
-  ;(global as Record<string, unknown>).__fileMapping = mapping
+  if (mappingRef) mappingRef.mapping = mapping
 
   return merged
 }
