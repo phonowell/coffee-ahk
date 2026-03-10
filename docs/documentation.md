@@ -638,7 +638,7 @@ import 'js-shim.ahk' # via npm
 import fn from './source/fn'
 
 import data from './data.json'
-import data2 from './data.yaml
+import data2 from './data.yaml'
 ```
 
 ## Native AHK

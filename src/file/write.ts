@@ -9,10 +9,7 @@ import type Item from '../models/Item'
 
 const MAX_LINE_LENGTH = 2000
 
-const generateVersion = () => {
-  const group = version.split('.').map(Number)
-  return [group[0] ?? 0, group[1] ?? 0, (group[2] ?? 0) + 1].join('.')
-}
+const generateVersion = () => version
 
 // 在逗号处拆分超长行（用于对象/数组字面量）
 const splitAtCommas = (line: string): string[] => {

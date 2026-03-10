@@ -1,47 +1,113 @@
 import { echo, glob } from 'fire-keeper'
-import { readFileSync } from 'fs'
 
 /**
- * Simple coverage analyzer - counts which source files are tested
- * based on test file names matching source file names
+ * Reachability report for public formatter/processor entrypoints.
+ * This is intentionally stricter than text-search "coverage" and
+ * avoids claiming percentages that look like real code coverage.
  */
 
-const main = async () => {
-  // Get all formatters and processors
-  const formatters = await glob('./src/formatters/*.ts')
-  const processors = await glob('./src/processors/**/*.ts')
-  const testFiles = await glob('./script/test/*.coffee')
+const PROCESSOR_ALIASES: Record<string, string[]> = {
+  array: ['array', 'collection-index', 'negative-index'],
+  'build-in-loader': ['import-json', 'import-yaml', 'module'],
+  class: ['class', 'class-case-sensitivity'],
+  function: [
+    'anonymous',
+    'bind',
+    'closure',
+    'do',
+    'function',
+    'implicit-param',
+    'implicit-return',
+    'loop-ctx',
+    'mark',
+    'nested-fat-arrow',
+    'params',
+  ],
+  'logical-or': ['logical-or-default'],
+  module: ['import-json', 'import-yaml', 'module'],
+  object: ['complex-reverse-destructure', 'deconstruct', 'object', 'shorthand'],
+  variable: ['validate', 'variable'],
+}
 
-  // Also check hardcoded error tests
-  const errorTestsContent = readFileSync('./tasks/test/errors.ts', 'utf-8')
+const FORMATTER_ALIASES: Record<string, string[]> = {
+  array: ['array', 'collection-index', 'negative-index'],
+  class: ['class', 'class-case-sensitivity'],
+  comment: ['comments'],
+  do: ['do'],
+  for: ['for'],
+  function: [
+    'anonymous',
+    'bind',
+    'closure',
+    'function',
+    'implicit-param',
+    'implicit-return',
+    'nested-fat-arrow',
+    'params',
+  ],
+  if: ['if', 'if-expression'],
+  module: ['import-json', 'import-yaml', 'module'],
+  object: ['complex-reverse-destructure', 'deconstruct', 'object', 'shorthand'],
+}
+
+const ERROR_COVERAGE = new Set([
+  'array',
+  'class',
+  'for',
+  'forbidden',
+  'number',
+  'operator',
+  'variable',
+])
+
+const componentNameFromPath = (file: string, group: string) =>
+  file.match(new RegExp(`/${group}/(.+?)(?:/index)?\\.ts$`))?.[1]
+
+const isCoveredByFixtures = (
+  name: string,
+  fixtures: Set<string>,
+  aliases: Record<string, string[]>,
+) => fixtures.has(name) || (aliases[name] ?? []).some((alias) => fixtures.has(alias))
+
+const main = async () => {
+  const formatters = await glob('./src/formatters/*.ts')
+  const processors = await glob([
+    './src/processors/*.ts',
+    './src/processors/*/index.ts',
+  ])
+  const testFiles = await glob('./script/test/*.coffee')
 
   const formatterNames = formatters
     .filter((f) => !f.includes('/index.ts'))
-    .map((f) => f.match(/\/(\w+)\.ts$/)?.[1])
+    .map((f) => componentNameFromPath(f, 'formatters'))
     .filter((name): name is string => Boolean(name))
 
-  // Exclude utility files that don't need direct testing
-  const utilityFiles = ['utils', 'types', 'cache', 'ignore', 'next']
   const processorNames = processors
-    .filter((f) => !f.includes('/index.ts') && !f.includes('builtins.gen.ts'))
-    .map((f) => f.match(/\/(\w+)\.ts$/)?.[1])
-    .filter((name): name is string => Boolean(name))
-    .filter((name) => !utilityFiles.includes(name))
-
-  const testNames = testFiles
-    .map((f) => f.match(/\/(\w+)\.coffee$/)?.[1])
+    .filter(
+      (f) =>
+        !f.includes('builtins.gen.ts') && !f.endsWith('/src/processors/index.ts'),
+    )
+    .map((f) => componentNameFromPath(f, 'processors'))
     .filter((name): name is string => Boolean(name))
 
-  // Check coverage
+  const fixtureNames = new Set(
+    testFiles
+      .map((f) => f.match(/\/([\w-]+)\.coffee$/)?.[1])
+      .filter((name): name is string => Boolean(name)),
+  )
+
   const testedFormatters: string[] = []
   const untestedFormatters: string[] = []
   const testedProcessors: string[] = []
   const untestedProcessors: string[] = []
 
   for (const formatter of formatterNames) {
-    // Check E2E tests and hardcoded error tests
-    const hasTest = testNames.includes(formatter) || errorTestsContent.includes(formatter)
-    if (hasTest) {
+    const hasFixture = isCoveredByFixtures(
+      formatter,
+      fixtureNames,
+      FORMATTER_ALIASES,
+    )
+    if (hasFixture || ERROR_COVERAGE.has(formatter)) {
       testedFormatters.push(formatter)
     } else {
       untestedFormatters.push(formatter)
@@ -49,12 +115,12 @@ const main = async () => {
   }
 
   for (const processor of processorNames) {
-    // Check E2E tests, test file content, and hardcoded error tests
-    const hasTest = testFiles.some((testFile) => {
-      const content = readFileSync(testFile, 'utf-8')
-      return content.includes(processor) || testFile.includes(processor)
-    }) || errorTestsContent.includes(processor)
-    if (hasTest || testNames.includes(processor)) {
+    const hasFixture = isCoveredByFixtures(
+      processor,
+      fixtureNames,
+      PROCESSOR_ALIASES,
+    )
+    if (hasFixture || ERROR_COVERAGE.has(processor)) {
       testedProcessors.push(processor)
     } else {
       untestedProcessors.push(processor)
@@ -62,47 +128,38 @@ const main = async () => {
   }
 
   echo('\n' + '='.repeat(60))
-  echo('TEST COVERAGE ANALYSIS')
+  echo('TEST REACHABILITY REPORT')
   echo('='.repeat(60))
 
-  echo(`\n📊 Formatters (${formatterNames.length} total)`)
-  echo(`✅ Tested: ${testedFormatters.length}/${formatterNames.length}`)
+  echo(`\n🧭 Formatters (${formatterNames.length} total)`)
+  echo(`✅ Reachable: ${testedFormatters.length}/${formatterNames.length}`)
   if (testedFormatters.length > 0) {
     echo(`   ${testedFormatters.join(', ')}`)
   }
-  echo(`❌ Untested: ${untestedFormatters.length}/${formatterNames.length}`)
+  echo(`❌ Unmapped: ${untestedFormatters.length}/${formatterNames.length}`)
   if (untestedFormatters.length > 0) {
     echo(`   ${untestedFormatters.join(', ')}`)
   }
 
-  echo(`\n📊 Processors (${processorNames.length} total)`)
-  echo(`✅ Covered: ${testedProcessors.length}/${processorNames.length}`)
+  echo(`\n🧭 Processors (${processorNames.length} total)`)
+  echo(`✅ Reachable: ${testedProcessors.length}/${processorNames.length}`)
   if (testedProcessors.length > 0) {
     echo(`   ${testedProcessors.join(', ')}`)
   }
-  echo(`❌ Uncovered: ${untestedProcessors.length}/${processorNames.length}`)
+  echo(`❌ Unmapped: ${untestedProcessors.length}/${processorNames.length}`)
   if (untestedProcessors.length > 0) {
     echo(`   ${untestedProcessors.join(', ')}`)
   }
 
   const totalComponents = formatterNames.length + processorNames.length
   const totalTested = testedFormatters.length + testedProcessors.length
-  const coveragePercent = ((totalTested / totalComponents) * 100).toFixed(1)
+  const summary = `${totalTested}/${totalComponents} mapped`
 
-  echo(`\n📈 Overall Coverage: ${coveragePercent}% (${totalTested}/${totalComponents} components)`)
+  echo(`\n🧭 Overall Reachability: ${summary}`)
   echo('='.repeat(60))
-
-  // Recommendations
-  echo('\n💡 Recommendations:')
-  if (untestedFormatters.length > 0) {
-    echo(`   Create tests for formatters: ${untestedFormatters.slice(0, 3).join(', ')}${untestedFormatters.length > 3 ? '...' : ''}`)
-  }
-  if (untestedProcessors.length > 0) {
-    echo(`   Create tests for processors: ${untestedProcessors.slice(0, 3).join(', ')}${untestedProcessors.length > 3 ? '...' : ''}`)
-  }
   echo('\n')
 
-  return coveragePercent
+  return summary
 }
 
 export default main

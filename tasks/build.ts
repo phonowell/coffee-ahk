@@ -50,7 +50,6 @@ const generateBuiltins = async () => {
 
 export default async () => {
   // Setup
-  await exec('pnpm i')
   await remove(PATHS.dist)
 
   // Generate forbiddens

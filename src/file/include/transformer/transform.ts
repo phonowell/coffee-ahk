@@ -1,16 +1,15 @@
 import { getExtname, read, run } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
-import { MODULE_PREFIX } from '../../../constants.js'
-import { ErrorType, TranspileError } from '../../../utils/error.js'
+import {
+  createTranspileError,
+  ErrorType,
+  TranspileError,
+} from '../../../utils/error.js'
 import { getCache as fetchCache, getCacheSalt as fetchSalt } from '../cache.js'
 import { pickImport as resolveImport } from '../source-resolver.js'
 
-/** Create minimal Context for file type errors */
-const createFileTypeContext = (): Pick<Context, 'token'> => ({
-  token: ['', '', { first_line: 0, last_line: 0 }] as Context['token'],
-})
-
+import { serializeDataModule } from './data-module.js'
 import {
   hasClassDeclaration,
   validateClassExportConflict,
@@ -23,6 +22,11 @@ import type { Context } from '../../../types/index.js'
 
 type Cache = ReturnType<typeof fetchCache>
 type Meta = Cache extends Map<unknown, infer V> ? V : never
+
+/** Create minimal Context for file type errors */
+const createFileTypeContext = (): Pick<Context, 'token'> => ({
+  token: ['', '', { first_line: 0, last_line: 0 }] as Context['token'],
+})
 
 const handleAhk = (
   file: string,
@@ -72,18 +76,36 @@ const handleCoffee = async (
   cache.set(file, { ...meta, content: result, dependencies: deps })
 }
 
-const handleJsonOrYaml = (
+const handleDataModule = (
   file: string,
-  text: string,
+  data: unknown,
   meta: Meta,
   cache: Cache,
   salt: string,
   deps: string[],
 ) => {
-  // JSON is valid CoffeeScript syntax, use directly
-  const jsonStr = JSON.stringify(JSON.parse(text))
-  const result = `${MODULE_PREFIX}_${salt}_${meta.id} = ${jsonStr}`
+  const result = serializeDataModule(data, salt, meta.id)
   cache.set(file, { ...meta, content: result, dependencies: deps })
+}
+
+const parseDataModule = (
+  raw: Buffer | string | object,
+  text: string,
+  file: string,
+  ext: string,
+): unknown => {
+  if (!(raw instanceof Buffer) && typeof raw === 'object') return raw
+
+  try {
+    return JSON.parse(text)
+  } catch {
+    const format = ext === '.yaml' ? 'YAML' : 'JSON'
+    throw createTranspileError(
+      ErrorType.FILE_ERROR,
+      `failed to parse ${format} module '${file}'`,
+      `Ensure the file contains valid ${format} data`,
+    )
+  }
 }
 
 const collectCoffeeDeps = async (
@@ -138,14 +160,15 @@ const processFile = async (
     return
   }
   if (ext === '.json' || ext === '.yaml') {
-    handleJsonOrYaml(file, text, meta, cache, salt, deps)
+    const data = parseDataModule(raw, text, file, ext)
+    handleDataModule(file, data, meta, cache, salt, deps)
     return
   }
   throw new TranspileError(
     createFileTypeContext(),
     ErrorType.FILE_ERROR,
     `unsupported file type for transformation: '${file}'`,
-    `Use .coffee, .json, or .yaml files`,
+    `Use .coffee, .ahk, .json, or .yaml files`,
   )
 }
 

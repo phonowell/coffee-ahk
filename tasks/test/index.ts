@@ -1,96 +1,12 @@
-import { argv, echo, glob, read, write } from 'fire-keeper'
+import { echo, glob, write } from 'fire-keeper'
 
-import c2aViaTs from '../../dist/index.js'
-
-const TIMEOUT_MS = 10000 // 10 seconds per test
-
-const withTimeout = <T>(promise: Promise<T>, ms: number, name: string): Promise<T> =>
-  Promise.race([
-    promise,
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Timeout: ${name} exceeded ${ms}ms`)), ms)
-    ),
-  ])
-
-const compile = async (source: string) =>
-  (
-    (await c2aViaTs(source, {
-      metadata: false,
-      salt: 'ahk',
-      save: false,
-    })) ?? ''
-  )
-    .replace(/\r/g, '')
-    .trim()
-
-type TestFailure = {
-  source: string
-  actual: string
-  expected: string
-}
-
-/** 执行单个测试（用于验证模式） */
-const runTest = async (source: string): Promise<TestFailure | null> => {
-  const fixture = source.replace('.coffee', '.ahk')
-
-  const actual = await withTimeout(compile(source), TIMEOUT_MS, source)
-  const expected = ((await read(fixture)) ?? '')
-    .toString()
-    .replace(/\r/g, '')
-    .trim()
-
-  if (!actual || !expected) {
-    return {
-      source,
-      actual: actual || '(empty)',
-      expected: expected || '(empty fixture)',
-    }
-  }
-
-  if (actual !== expected) {
-    return { source, actual, expected }
-  }
-
-  return null // Passed
-}
-
-/** 执行单个测试（用于覆写模式） */
-const overwriteTest = async (source: string): Promise<boolean> => {
-  const fixture = source.replace('.coffee', '.ahk')
-  const content = await withTimeout(compile(source), TIMEOUT_MS, source)
-
-  if (!content) {
-    echo(`⚠️ Empty output: ${source}`)
-    return false
-  }
-
-  await write(fixture, content)
-  return true
-}
-
-/** 显示失败详情 */
-const showFailures = (failures: TestFailure[]) => {
-  echo('\nFailures:\n')
-  for (const { source, actual, expected } of failures) {
-    echo(`❌ ${source}`)
-
-    const actualLines = actual.split('\n')
-    const expectedLines = expected.split('\n')
-    const maxLines = Math.max(actualLines.length, expectedLines.length)
-
-    echo('--- DIFF (- expected, + actual) ---')
-    for (let i = 0; i < Math.min(maxLines, 20); i++) {
-      const a = actualLines[i] ?? ''
-      const e = expectedLines[i] ?? ''
-      if (a !== e) {
-        if (e) echo(`- L${i + 1}: ${e}`)
-        if (a) echo(`+ L${i + 1}: ${a}`)
-      }
-    }
-    if (maxLines > 20) echo(`... and ${maxLines - 20} more lines`)
-    echo('')
-  }
-}
+import {
+  overwriteFixtureTest,
+  pickTarget,
+  runFixtureTest,
+  showFailures,
+  type TestFailure,
+} from './helpers.js'
 
 const main = async () => {
   const startTime = Date.now()
@@ -111,13 +27,13 @@ const main = async () => {
   // Overwrite mode: 顺序执行所有测试，覆写 fixture
   if (isOverwrite) {
     for (const source of listSource) {
-      const success = await overwriteTest(source)
+      const success = await overwriteFixtureTest(source)
       success ? passed++ : failed++
     }
   } else {
     // Verify mode: 串行执行所有测试
     for (const source of listSource) {
-      const result = await runTest(source)
+      const result = await runFixtureTest(source)
       if (result === null) {
         passed++
       } else {
@@ -153,7 +69,7 @@ const main = async () => {
   // Run unit tests
   let unitTestCount = 0
   let errorTestCount = 0
-  let coveragePercent = '0.0'
+  let reachabilitySummary = 'pending'
 
   echo('\n' + '='.repeat(60))
   echo('2️⃣  UNIT TESTS (Core Models)')
@@ -172,11 +88,11 @@ const main = async () => {
 
   // Run coverage analysis
   echo('\n' + '='.repeat(60))
-  echo('4️⃣  COVERAGE ANALYSIS')
+  echo('4️⃣  REACHABILITY REPORT')
   echo('='.repeat(60))
 
   const testCoverage = await import('./coverage.js')
-  coveragePercent = await testCoverage.default()
+  reachabilitySummary = await testCoverage.default()
 
   // Final summary
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(2)
@@ -186,7 +102,7 @@ const main = async () => {
   echo(`✅ End-to-end: ${passed}/${listSource.length}`)
   echo(`✅ Unit tests: ${unitTestCount}/${unitTestCount}`)
   echo(`✅ Error scenarios: ${errorTestCount}/${errorTestCount}`)
-  echo(`📊 Coverage: ${coveragePercent}%`)
+  echo(`🧭 Reachability: ${reachabilitySummary}`)
   echo(`⏱️  Time: ${elapsed}s`)
   echo('='.repeat(60) + '\n')
 
@@ -196,20 +112,10 @@ const main = async () => {
     `- End-to-end: ${passed}/${listSource.length}`,
     `- Unit tests: ${unitTestCount}`,
     `- Error scenarios: ${errorTestCount}`,
-    `- Coverage: ${coveragePercent}%`,
+    `- Reachability: ${reachabilitySummary}`,
     `- Time: ${elapsed}s`,
   ].join('\n')
   await write('./test-report.md', report)
-}
-
-const pickTarget = async (): Promise<{ target?: string; isOverwrite: boolean }> => {
-  const a = await argv()
-  const args = [a._[1], a.target, a.overwrite].filter(Boolean) as string[]
-
-  const isOverwrite = args.includes('overwrite')
-  const target = args.find((arg) => arg !== 'overwrite')
-
-  return { target, isOverwrite }
 }
 
 export default main
