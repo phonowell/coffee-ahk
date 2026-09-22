@@ -2,7 +2,6 @@ import { getExtname, read, run } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
 import { createTranspileError, ErrorType, TranspileError } from '../../../utils/error.js'
-import { getCache as fetchCache, getCacheSalt as fetchSalt } from '../cache.js'
 import { pickImport as resolveImport } from '../source-resolver.js'
 
 import { serializeDataModule } from './data-module.js'
@@ -11,10 +10,11 @@ import { parseExportsFromCoffee } from './parse-exports.js'
 import { replaceAnchor as replaceMark } from './replace-anchor.js'
 import { wrapInClosureAndAssign } from './wrap-closure.js'
 
+import type { IncludeContext, ModuleMeta } from '../cache.js'
 import type { Context } from '../../../types/index.js'
 
-type Cache = ReturnType<typeof fetchCache>
-type Meta = Cache extends Map<unknown, infer V> ? V : never
+type Cache = IncludeContext['cache']
+type Meta = ModuleMeta
 
 /** Create minimal Context for file type errors */
 const createFileTypeContext = (): Pick<Context, 'token'> => ({
@@ -30,11 +30,10 @@ const handleCoffee = async (
   file: string,
   text: string,
   meta: Meta,
-  cache: Cache,
-  salt: string,
+  ctx: IncludeContext,
   deps: string[],
 ) => {
-  const replaced = await replaceMark(file, text)
+  const replaced = await replaceMark(file, text, ctx)
   const { exportDefault, exportNamed, codeLines } = parseExportsFromCoffee(replaced, file)
 
   const codeBody = codeLines.join('\n')
@@ -45,25 +44,24 @@ const handleCoffee = async (
 
   // Class-only modules: output class code directly
   if (hasClass && !hasExport) {
-    cache.set(file, { ...meta, content: codeBody, dependencies: deps })
+    ctx.cache.set(file, { ...meta, content: codeBody, dependencies: deps })
     return
   }
 
   // Modules with exports: wrap in closure
-  const result = wrapInClosureAndAssign(codeLines, exportDefault, exportNamed, meta, salt)
-  cache.set(file, { ...meta, content: result, dependencies: deps })
+  const result = wrapInClosureAndAssign(codeLines, exportDefault, exportNamed, meta, ctx.salt)
+  ctx.cache.set(file, { ...meta, content: result, dependencies: deps })
 }
 
 const handleDataModule = (
   file: string,
   data: unknown,
   meta: Meta,
-  cache: Cache,
-  salt: string,
+  ctx: IncludeContext,
   deps: string[],
 ) => {
-  const result = serializeDataModule(data, salt, meta.id)
-  cache.set(file, { ...meta, content: result, dependencies: deps })
+  const result = serializeDataModule(data, ctx.salt, meta.id)
+  ctx.cache.set(file, { ...meta, content: result, dependencies: deps })
 }
 
 const parseDataModule = (
@@ -96,13 +94,13 @@ const collectCoffeeDeps = async (file: string, text: string): Promise<string[]> 
   return Array.from(depSet)
 }
 
-const processFile = async (file: string, meta: Meta, cache: Cache, salt: string) => {
+const processFile = async (file: string, meta: Meta, ctx: IncludeContext) => {
   if (meta.content) return
 
   // 读取文件内容，支持 Buffer、string、object
   const raw = await read<Buffer | string | object>(file)
   if (!raw) {
-    cache.delete(file)
+    ctx.cache.delete(file)
     return
   }
 
@@ -121,16 +119,16 @@ const processFile = async (file: string, meta: Meta, cache: Cache, salt: string)
 
   // 处理内容
   if (ext === '.ahk') {
-    handleAhk(file, text, meta, cache, deps)
+    handleAhk(file, text, meta, ctx.cache, deps)
     return
   }
   if (ext === '.coffee') {
-    await handleCoffee(file, text, meta, cache, salt, deps)
+    await handleCoffee(file, text, meta, ctx, deps)
     return
   }
   if (ext === '.json' || ext === '.yaml') {
     const data = parseDataModule(raw, text, file, ext)
-    handleDataModule(file, data, meta, cache, salt, deps)
+    handleDataModule(file, data, meta, ctx, deps)
     return
   }
   throw new TranspileError(
@@ -141,15 +139,12 @@ const processFile = async (file: string, meta: Meta, cache: Cache, salt: string)
   )
 }
 
-export const transformAll = async () => {
-  const cache = fetchCache()
-  const salt = fetchSalt()
-
-  const filesToProcess = [...cache].filter(([, meta]) => !meta.content)
-  for (const [file, meta] of filesToProcess) await processFile(file, meta, cache, salt)
+export const transformAll = async (ctx: IncludeContext) => {
+  const filesToProcess = [...ctx.cache].filter(([, meta]) => !meta.content)
+  for (const [file, meta] of filesToProcess) await processFile(file, meta, ctx)
 
   // 递归处理未完成的项
-  if ([...cache].some(([, meta]) => !meta.content)) await transformAll()
+  if ([...ctx.cache].some(([, meta]) => !meta.content)) await transformAll(ctx)
 }
 
 // Re-export for backward compatibility

@@ -19,7 +19,7 @@ const renderers: Partial<Record<ItemType, Renderer>> = {
   compare: (ctx: RenderContext): string => ` ${ctx.it.value} `,
   edge: renderEdge,
   for: (ctx: RenderContext): string => {
-    const prev = ctx.content.toArray().at(ctx.i - 1)
+    const prev = ctx.list.at(ctx.i - 1)
     return prev && !['new-line', 'edge'].includes(prev.type) ? ' for ' : 'for '
   },
   'for-in': ' in ',
@@ -42,30 +42,35 @@ const renderers: Partial<Record<ItemType, Renderer>> = {
 const renderComments = (
   ctx: RenderContext,
   output: string,
+  indentDepth: number,
 ): { commentPrefix: string; output: string } => {
   let commentPrefix = ''
 
   // Handle standalone comments
   if (ctx.it.comment && ctx.options.comments) {
-    const hasStandaloneComment = ctx.it.comment.some((c) => c.startsWith('STANDALONE:'))
+    const standaloneTexts = ctx.it.comment
+      .filter((c) => c.startsWith('STANDALONE:'))
+      .map((c) =>
+        c
+          .substring(11)
+          .trim()
+          .replace(/^#+\s*/, '')
+          .replace(/;+$/, ''),
+      )
+      .filter(Boolean)
 
-    if (hasStandaloneComment) {
-      const prevItem = ctx.content.toArray().at(ctx.i - 1)
-      const scopeLast = ctx.it.scope.last
-      const indent = ' '.repeat(parseInt(scopeLast || '0', 10) * 2)
+    if (standaloneTexts.length) {
+      const prevItem = ctx.list.at(ctx.i - 1)
+      const indent = ' '.repeat(indentDepth * 2)
+      // A preceding new-line already emitted this line's indent —
+      // only break the line; otherwise start a new indented line first
+      const atLineStart = prevItem?.type === 'new-line'
 
-      // If previous item is not newline, add newline before comment
-      if (prevItem && prevItem.type !== 'new-line') commentPrefix += '\n'
+      if (!atLineStart) commentPrefix += '\n'
 
-      ctx.it.comment.forEach((commentLine) => {
-        if (commentLine.startsWith('STANDALONE:')) {
-          const text = commentLine
-            .substring(11)
-            .trim()
-            .replace(/^#+\s*/, '')
-            .replace(/;+$/, '')
-          if (text) commentPrefix += `${indent}; ${text}\n`
-        }
+      standaloneTexts.forEach((text, idx) => {
+        const needsIndent = !(atLineStart && idx === 0)
+        commentPrefix += `${needsIndent ? indent : ''}; ${text}\n`
       })
 
       commentPrefix += indent
@@ -91,21 +96,28 @@ const renderComments = (
   return { commentPrefix, output }
 }
 
-const main = (ctx: Context): string =>
-  ctx.content
-    .toArray()
+const main = (ctx: Context): string => {
+  // Single snapshot for the whole render pass (was O(n²) via toArray() per item)
+  const list = ctx.content.toArray()
+  // Tracks the depth of the line currently being rendered (new-line value = depth)
+  let indentDepth = 0
+
+  return list
     .map((it, i) => {
-      const context: RenderContext = { ...ctx, i, it }
+      if (it.type === 'new-line') indentDepth = parseInt(it.value, 10) || 0
+
+      const context: RenderContext = { ...ctx, i, it, list }
 
       const method = renderers[it.type]
       let output =
         method === undefined ? it.value : typeof method === 'string' ? method : method(context)
 
-      const { commentPrefix, output: rendered } = renderComments(context, output)
+      const { commentPrefix, output: rendered } = renderComments(context, output, indentDepth)
       output = rendered
 
       return commentPrefix + output
     })
     .join('')
+}
 
 export default main

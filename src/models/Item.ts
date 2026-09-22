@@ -16,7 +16,13 @@ type StrictItemOptions<T extends ItemType> = {
 /** Item constructor options - distributive union ensures type-value correlation */
 export type ItemOptions = { [K in ItemType]: StrictItemOptions<K> }[ItemType]
 
-/** An item of the AST */
+/**
+ * An item of the AST.
+ * Fields are mutable by design — processors rewrite items in place
+ * (e.g. marking `void`, renaming values). The contract: an Item must not
+ * occupy more than one position unless it was produced by clone(); reuse
+ * without cloning makes later in-place edits leak across positions.
+ */
 class Item {
   comment?: string[]
   scope: Scope

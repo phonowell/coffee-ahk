@@ -28,8 +28,8 @@ export type Flag = {
   isTypeofUsed: boolean
 }
 
-/** Context plus the current item index/pointer used during rendering */
-export type RenderContext = Context & { i: number; it: Item }
+/** Context plus the current item index/pointer and the shared item list used during rendering */
+export type RenderContext = Context & { i: number; it: Item; list: Item[] }
 
 type Token = ReturnType<typeof cs.compile>['tokens'][number]
 

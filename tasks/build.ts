@@ -1,5 +1,7 @@
 import { exec, read, remove, write } from 'fire-keeper'
 
+import { BUILTIN_SALT } from '../src/constants.js'
+
 import type { PartialOptions } from '../src/index.js'
 
 const SEGMENTS = ['changeIndex', 'typeof'] as const
@@ -21,7 +23,7 @@ const generateSegment = async (c2a: Transpiler, segment: string) => {
   await c2a(source, {
     ast: false,
     metadata: false,
-    salt: 'salt',
+    salt: BUILTIN_SALT,
     save: true,
   })
   console.log(`Generated ${segment}.ahk`)

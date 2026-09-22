@@ -3,15 +3,14 @@ import { read } from 'fire-keeper'
 
 import { createTranspileError, ErrorType } from '../utils/error.js'
 
-import { clearCache, getLineMapping, setCacheSalt, sortModules } from './include/cache.js'
+import { IncludeContext, type FileMapping } from './include/cache.js'
 import { parseExportsFromCoffee, replaceAnchor, transformAll } from './include/transformer.js'
 
-export type FileMapping = { file: string; line: number; content: string }
+export type { FileMapping }
 export type FileMappingRef = { mapping?: FileMapping[] }
 
 const main = async (source: string, salt: string, mappingRef?: FileMappingRef) => {
-  clearCache()
-  setCacheSalt(salt)
+  const ctx = new IncludeContext(salt)
 
   const content = await read<string>(source)
   if (!content) {
@@ -22,16 +21,16 @@ const main = async (source: string, salt: string, mappingRef?: FileMappingRef) =
     )
   }
 
-  const replaced = await replaceAnchor(source, content)
-  await transformAll()
+  const replaced = await replaceAnchor(source, content, ctx)
+  await transformAll(ctx)
 
   // Strip export statements from main file (entry point doesn't need exports)
   const { codeLines } = parseExportsFromCoffee(replaced)
   const result = codeLines.join('\n')
-  const merged = [...sortModules(), result].join('\n')
+  const merged = [...ctx.sortModules(), result].join('\n')
 
   // Append line mapping as special marker
-  const mapping = getLineMapping()
+  const mapping = ctx.getLineMapping()
   const mainLines = result.split('\n')
   mainLines.forEach((line, i) => {
     mapping.push({ file: source, line: i + 1, content: line })

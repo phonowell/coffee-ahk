@@ -99,8 +99,9 @@ export const processContent = (content: string): string => {
     if (line && line.length > MAX_LINE_LENGTH) {
       throw createTranspileError(
         ErrorType.VALIDATION_ERROR,
-        `line too long at line ${i + 1} (max ${MAX_LINE_LENGTH} chars):\n${line.slice(0, 80)}...`,
+        `line too long (max ${MAX_LINE_LENGTH} chars):\n${line.slice(0, 80)}...`,
         `Split long lines or refactor code to reduce line length`,
+        i + 1,
       )
     }
   }

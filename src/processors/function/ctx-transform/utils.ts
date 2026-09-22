@@ -1,6 +1,6 @@
 /** Utility functions for ctx-transform */
 import forbidden from '../../../../data/forbidden.json' with { type: 'json' }
-import { CTX } from '../../../constants.js'
+import { BUILTIN_SALT, CTX } from '../../../constants.js'
 
 import type Item from '../../../models/Item.js'
 import type { Context } from '../../../types/index.js'
@@ -89,6 +89,6 @@ export const shouldUseCtx = (
 /** Check if function name is extracted user function (salt_N pattern) */
 export const isUserFunc = (name: string | undefined, salt: string): boolean => {
   if (!name?.startsWith(`${salt}_`)) return false
-  if (salt === 'salt') return false // skip builtin compilation
+  if (salt === BUILTIN_SALT) return false // builtin segments skip ctx-transform
   return /^\d+$/.test(name.slice(salt.length + 1))
 }

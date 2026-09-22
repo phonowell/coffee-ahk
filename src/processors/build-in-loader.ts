@@ -1,5 +1,5 @@
 // Built-in function loader
-import { CI, TYPEOF } from '../constants.js'
+import { BUILTIN_SALT, CI, TYPEOF } from '../constants.js'
 import Item from '../models/Item.js'
 
 import { changeIndex_ahk, typeof_ahk } from './builtins.gen.js'
@@ -35,7 +35,7 @@ const insert = (ctx: Context, flag: keyof Context['flag'], functionName: string)
         if (typeof item.value === 'string') {
           const { value: originalValue } = item
           let value = originalValue
-          const salt = ctx.options.salt ?? 'salt'
+          const salt = ctx.options.salt ?? BUILTIN_SALT
 
           if (value.includes(`${CI}_SALT_PLACEHOLDER`)) {
             value = value.replace(new RegExp(`${CI}_SALT_PLACEHOLDER`, 'g'), `${CI}_${salt}`)

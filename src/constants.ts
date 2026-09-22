@@ -21,3 +21,10 @@ export const OBJECT = 'ℓobject' // object deconstruct temp
 export const INDEX_FOR = 'ℓi' // for loop index
 export const KEY_FOR = 'ℓk' // for loop key
 export const MODULE_PREFIX = 'ℓm' // module variable prefix
+
+/**
+ * Salt used when compiling built-in segments (tasks/build.ts).
+ * isUserFunc() treats this as "builtin compilation mode" and skips
+ * ctx-transform so generated helpers keep raw AHK semantics.
+ */
+export const BUILTIN_SALT = 'salt'

@@ -46,12 +46,19 @@ const main = async (cont: string, option: Context['options']): Promise<Result> =
     warnings: [],
   }
 
+  const unconsumed = new Set<string>()
   for (const token of ast.tokens) {
     ctx.token = token
     ctx.type = token[0].toLowerCase()
     ctx.value = token[1].toString()
 
-    processFormatters(ctx)
+    if (!processFormatters(ctx)) unconsumed.add(token[0])
+  }
+
+  if (unconsumed.size) {
+    ctx.warnings.push(
+      `tokens produced no output (missing formatter?): ${[...unconsumed].toSorted().join(', ')}`,
+    )
   }
 
   await processAst(ctx)

@@ -20,8 +20,8 @@
 
 ## 目录结构
 
-- `src/types/`: Item 不可变用 `clone()` · `Content.push(...items)` 多参 · `Scope` 缩进栈
-- `src/file/include/`: import/export→拓扑排序→组装 · 支持 default/named export · 禁 `import * as`/`import {x as y}`/`export const`
+- `src/types/`: Item 字段就地可变为设计 · 跨位置复用前必须 `clone()` · `Content.push(...items)` 多参 · `Scope` 缩进栈
+- `src/file/include/`: import/export→拓扑排序→组装 · `IncludeContext` 每次编译独立实例(并发安全) · 支持 default/named export · 禁 `import * as`/`import {x as y}`/`export const`
 - `data/forbidden.yaml` + `src/processors/variable/`: AHK 内置与 `A_` 前缀禁用
 
 ## 工作流
@@ -48,6 +48,7 @@
 - 禁用符: `%` 运算符→`Mod(a,b)` (`src/formatters/operator.ts:151`)
 - AHK 输出: 类名全角·索引1-based·UTF-8 BOM·控制结构`{}`·单字母类名禁用 (`src/processors/class/`, `script/segment/changeIndex.coffee`, `src/renderer/basic.ts` renderIdentifier)
 - 内部变量: `λ`闭包·`ℓci`索引·`ℓtype`typeof·`ℓthis`this (`src/constants.ts`)
+- salt: 默认按源路径/内容 hash 确定性生成(`s`+base36); `BUILTIN_SALT='salt'` 仅 builtin 段编译用(跳过 ctx-transform)
 
 ## 闭包
 
@@ -58,14 +59,16 @@
 
 ## 错误处理
 
-- `TranspileError(ctx,type,msg)` 有 Context; `createTranspileError(type,msg)` 无 Context (`src/utils/error.ts`)
+- `TranspileError(ctx,type,msg)` 有 Context·带 `line`/`column` 字段; `createTranspileError(type,msg,solution,line?)` 无 Context (`src/utils/error.ts`)
 - Formatters/Processors 当前 token 错误→`TranspileError`
 - 文件不存在·循环依赖·闭包冲突汇总→`createTranspileError`
-- 行号映射: include 合并建 `{file,line,content}[]` 经 `mappingRef` 参数传出 (`src/index.ts:13`, `src/file/include/cache.ts`); 报错 `src/index.ts:51` 用映射; 展示 `📍 {文件}:{行号}` + 上下2行
+- 行号解析: `e.line` → `e.location.first_line`(CoffeeScript 原生错) → message 文本兜底 (`src/index.ts` getErrorLine)
+- 行号映射: include 合并建 `{file,line,content}[]` 经 `mappingRef` 参数传出 (`src/index.ts`, `src/file/include/cache.ts`); 展示 `📍 {文件}:{行号}` + 上下2行
 
 ## 陷阱
 
-- Formatter 必须返回 `true`; `!line` 跳空行, `=== undefined` 判结束
+- Formatter 必须返回 `true` (未消费 token 编译时 warning 列出); `!line` 跳空行, `=== undefined` 判结束
+- Renderer 用 `RenderContext.list` 共享快照, 禁 item 级 `toArray()` (O(n²))
 - `toArray()` 返回值改动需 `.reload()`/`.push()`
 - 隐式 return ≤3行需显式 `return` (`src/processors/function/implicit-return.ts:51`)
 - for 解构/嵌套解构需分步; 对象数字键禁止(仅字符串)

@@ -15,6 +15,7 @@ const main = (ctx: Context): boolean => {
       )
     }
     content.push({ type: 'sign', value: '...' })
+    return true
   }
 
   if (type === '=') {

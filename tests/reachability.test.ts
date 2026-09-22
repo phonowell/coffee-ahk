@@ -55,6 +55,9 @@ const ERROR_COVERAGE = new Set([
   'variable',
 ])
 
+// Infrastructure components exercised by every fixture implicitly
+const ALWAYS_ON = new Set(['new-line'])
+
 const componentNameFromPath = (file: string, group: string) =>
   file.match(new RegExp(`/${group}/(.+?)(?:/index)?\\.ts$`))?.[1]
 
@@ -85,12 +88,11 @@ test('formatter/processor reachability report', async () => {
       .filter((name): name is string => Boolean(name)),
   )
 
-  const untestedFormatters = formatterNames.filter(
-    (n) => !isCoveredByFixtures(n, fixtureNames, FORMATTER_ALIASES) && !ERROR_COVERAGE.has(n),
-  )
-  const untestedProcessors = processorNames.filter(
-    (n) => !isCoveredByFixtures(n, fixtureNames, PROCESSOR_ALIASES) && !ERROR_COVERAGE.has(n),
-  )
+  const isUnmapped = (n: string, aliases: Record<string, string[]>) =>
+    !isCoveredByFixtures(n, fixtureNames, aliases) && !ERROR_COVERAGE.has(n) && !ALWAYS_ON.has(n)
+
+  const untestedFormatters = formatterNames.filter((n) => isUnmapped(n, FORMATTER_ALIASES))
+  const untestedProcessors = processorNames.filter((n) => isUnmapped(n, PROCESSOR_ALIASES))
 
   const total = formatterNames.length + processorNames.length
   const tested = total - untestedFormatters.length - untestedProcessors.length
@@ -105,5 +107,8 @@ test('formatter/processor reachability report', async () => {
         : ''),
   )
 
-  expect(tested).toBeGreaterThan(0)
+  // Hard gate: every formatter/processor must map to a fixture, an error test,
+  // or the ALWAYS_ON infrastructure set
+  expect(untestedFormatters).toEqual([])
+  expect(untestedProcessors).toEqual([])
 })

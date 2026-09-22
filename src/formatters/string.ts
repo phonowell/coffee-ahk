@@ -23,6 +23,10 @@ const main = (ctx: Context): boolean => {
     return true
   }
 
+  // Interpolated-string boundary markers: consume so the token isn't
+  // reported as unhandled; inner parts produce the actual output
+  if (type === 'string_start' || type === 'string_end') return true
+
   return false
 }
 

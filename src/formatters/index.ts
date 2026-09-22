@@ -60,11 +60,22 @@ const formatters = [
   whileFormatter,
 ] satisfies Formatter[]
 
-/** Apply formatters to transform context */
-const processFormatters = (context: Context) => {
-  for (const fmt of formatters) if (fmt(context)) break
+/**
+ * Apply formatters to transform context.
+ * Returns true if a formatter consumed the token; false means the token
+ * produced no output — reported by the caller so tokens never drop silently.
+ */
+const processFormatters = (context: Context): boolean => {
+  let consumed = false
+  for (const fmt of formatters) {
+    if (fmt(context)) {
+      consumed = true
+      break
+    }
+  }
 
   commentFormatter(context)
+  return consumed
 }
 
 export default processFormatters

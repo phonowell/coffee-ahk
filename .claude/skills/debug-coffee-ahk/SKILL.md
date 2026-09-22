@@ -45,7 +45,8 @@ mark → class → implicit-return → **anonymous** → count → parameter →
 | processors/function/ctx-transform/params.ts:11-15 | 收集参数+类方法标记 | `classMethods: Set<string>` |
 | processors/function/ctx-transform/bind.ts:17 | Bind() 添加 this 参数 | 检测 classMethods 传递 `this` |
 | formatters/property.ts:25 | this.prop 处理 | 检查 lastType 插入 `.` |
-| renderer/index.ts:17 | renderers 映射 | `Partial<Record<ItemType, Renderer>>` type → 渲染函数 |
+| renderer/index.ts | renderers 映射 + 单次 `toArray()` 快照 | `RenderContext.list` 共享数组（勿再调 toArray） |
+| file/include/cache.ts | `IncludeContext` 每次编译独立实例 | `topoSort()` 是排序唯一来源；`sortModules()`/`getLineMapping()` 共用它保证顺序一致 |
 
 ## Bug 定位方法论
 
@@ -62,6 +63,7 @@ mark → class → implicit-return → **anonymous** → count → parameter →
 1. 查看 CoffeeScript tokens：`{coffeeAst:true}`
 2. 检查 formatters/index.ts 是否有对应 formatter
 3. 常见：`THIS`/`SUPER`/新语法未处理
+4. 编译 warning `tokens produced no output` 会列出未被任何 formatter 消费的 token 类型 —— 结构性占位 token（如 `STRING_START`/`STRING_END`）需显式 `return true` 消费
 
 ### 作用域/闭包错误
 
@@ -95,11 +97,13 @@ node dist/index.js file.coffee
 
 | 问题 | 原因 | 解决 |
 |------|------|------|
-| Formatter 未消费 token | 忘记 return true | 添加 return |
+| Formatter 未消费 token | 忘记 return true（现编译时 warning 列出） | 添加 return |
 | this 被过滤 | formatters 缺少处理 | 添加 formatter |
 | void 未过滤 | Content.reload() 依赖 | 调用 reload() |
 | 嵌套函数 scope 错误 | pick-item.ts scope 调整 | 验证 scope.shift() |
 | Class method arrow 缺少 this | addBind() 未检测 classMethods | 更新 params.ts + bind.ts |
+| Item 跨位置复用串改 | Item 字段就地可变是设计 | 复用前必须 `clone()` |
+| salt 魔法值 | builtin 段用 `BUILTIN_SALT='salt'` 编译跳过 ctx-transform | 见 constants.ts，勿在业务 salt 用该值 |
 
 ## 工作流程
 

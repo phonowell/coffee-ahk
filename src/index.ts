@@ -5,12 +5,10 @@ import { processContent, read, write } from './file/index.js'
 import log from './logger/index.js'
 import { createTranspileError, ErrorType } from './utils/error.js'
 
+import type { FileMapping, FileMappingRef } from './file/include.js'
 import type { Options, PartialOptions } from './types/options.js'
 
 export type { Options, PartialOptions }
-
-type FileMappingEntry = { file: string; line: number; content: string }
-type FileMappingRef = { mapping?: FileMappingEntry[] }
 
 const DEFAULT_OPTIONS: Options = {
   /** Generate AST output */
@@ -31,8 +29,21 @@ const DEFAULT_OPTIONS: Options = {
   verbose: false,
 }
 
-/** Generate random salt for transpilation */
-const generateSalt = (): string => Math.random().toString(32).split('.')[1]?.padStart(11, '0') ?? ''
+/**
+ * Derive a deterministic salt from input via FNV-1a hash.
+ * Same source always produces the same internal identifiers ({salt}_1, ℓm_{salt}_{id}),
+ * so builds are reproducible; different sources get different salts,
+ * preserving collision avoidance across separately compiled outputs.
+ */
+const hashSalt = (input: string): string => {
+  let h = 0x811c9dc5
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i)
+    h = Math.imul(h, 0x01000193)
+  }
+  // 's' prefix guarantees a valid identifier start
+  return `s${(h >>> 0).toString(36)}`
+}
 
 /** Output warnings to console */
 const printWarnings = (warnings: string[]) => {
@@ -41,14 +52,25 @@ const printWarnings = (warnings: string[]) => {
   warnings.forEach((w) => console.log(`  - ${w}`))
 }
 
-/** Extract line number from error message */
-const extractLineNumber = (message: string): number | null => {
-  const match = message.match(/line (\d+)/i)
+/**
+ * Resolve the 1-based line number for an error.
+ * Prefers structured fields (TranspileError.line, CoffeeScript error.location)
+ * and falls back to parsing "line N" from the message text.
+ */
+const getErrorLine = (e: unknown): number | null => {
+  const err = e as {
+    line?: number
+    location?: { first_line?: number }
+    message?: string
+  }
+  if (typeof err?.line === 'number') return err.line
+  if (typeof err?.location?.first_line === 'number') return err.location.first_line + 1
+  const match = /line (\d+)/i.exec(err?.message ?? '')
   return match?.[1] ? parseInt(match[1], 10) : null
 }
 
 /** Show source context around error line with original file info */
-const showSourceContext = (source: string, lineNum: number, mapping?: FileMappingEntry[]) => {
+const showSourceContext = (source: string, lineNum: number, mapping?: FileMapping[]) => {
   if (!mapping) {
     // Fallback: no import/include, show merged content
     const lines = source.split('\n')
@@ -80,11 +102,26 @@ const showSourceContext = (source: string, lineNum: number, mapping?: FileMappin
 }
 
 /** Re-throw error with source context if line number available */
-const rethrowWithContext = (e: unknown, source: string, mapping?: FileMappingEntry[]): never => {
-  const error = e as Error
-  const lineNum = extractLineNumber(error.message)
+const rethrowWithContext = (e: unknown, source: string, mapping?: FileMapping[]): never => {
+  const lineNum = getErrorLine(e)
   if (lineNum) showSourceContext(source, lineNum, mapping)
   throw e
+}
+
+/** Shared pipeline: transpile -> verbose report -> warnings -> line-length processing */
+const compileContent = async (content: string, options: Options) => {
+  const startTime = Date.now()
+  const result = await start(content, options)
+
+  if (options.verbose) {
+    if (options.coffeeAst) console.log(result.raw)
+    log(result.ast)
+    console.log(`⏱️ Compiled in ${Date.now() - startTime}ms`)
+  }
+
+  printWarnings(result.warnings)
+
+  return { ...result, content: processContent(result.content) }
 }
 
 /** Main transpilation function with top-level error handling */
@@ -93,9 +130,6 @@ const transpile = (source: string, options: PartialOptions = {}) => {
     ...DEFAULT_OPTIONS,
     ...options,
   }
-
-  // salt
-  if (!mergedOptions.salt) mergedOptions.salt = generateSalt()
 
   if (mergedOptions.string) return transpileAsText(source, mergedOptions)
   return transpileAsFile(source, mergedOptions)
@@ -115,49 +149,28 @@ const transpileAsFile = async (source: string, options: Options): Promise<string
     )
   }
 
+  // Deterministic salt: identical output for the same entry file
+  if (!options.salt) options.salt = hashSalt(source2)
+
   const mappingRef: FileMappingRef = {}
   const content = await read(source2, options.salt, mappingRef)
 
   try {
-    const startTime = Date.now()
-    const result = await start(content, options)
-    const elapsed = Date.now() - startTime
-
-    if (options.verbose) {
-      if (options.coffeeAst) console.log(result.raw)
-      log(result.ast)
-      console.log(`⏱️ Compiled in ${elapsed}ms`)
-    }
-
-    printWarnings(result.warnings)
-
-    // 处理超长行（逗号换行）并验证行长限制
-    const processed = processContent(result.content)
-
-    if (options.save) await write(source2, { ...result, content: processed }, options)
-
-    return processed
+    const result = await compileContent(content, options)
+    if (options.save) await write(source2, result, options)
+    return result.content
   } catch (e) {
     return rethrowWithContext(e, content, mappingRef.mapping)
   }
 }
 
 const transpileAsText = async (content: string, options: Options): Promise<string> => {
+  // Deterministic salt: identical output for the same source text
+  if (!options.salt) options.salt = hashSalt(content)
+
   try {
-    const startTime = Date.now()
-    const result = await start(content, options)
-    const elapsed = Date.now() - startTime
-
-    if (options.verbose) {
-      if (options.coffeeAst) console.log(result.raw)
-      log(result.ast)
-      console.log(`⏱️ Compiled in ${elapsed}ms`)
-    }
-
-    printWarnings(result.warnings)
-
-    // 处理超长行（逗号换行）并验证行长限制
-    return processContent(result.content)
+    const result = await compileContent(content, options)
+    return result.content
   } catch (e) {
     return rethrowWithContext(e, content)
   }

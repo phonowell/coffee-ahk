@@ -1,11 +1,11 @@
 import { MODULE_PREFIX } from '../../../constants.js'
-import { getCache, getCacheSalt, getNextModuleId } from '../cache.js'
 import { pickImport } from '../source-resolver.js'
 
-export const replaceAnchor = async (source: string, content: string) => {
+import type { IncludeContext } from '../cache.js'
+
+export const replaceAnchor = async (source: string, content: string, ctx: IncludeContext) => {
   const listResult: string[] = []
-  const cache = getCache()
-  const cacheSalt = getCacheSalt()
+  const { cache, salt } = ctx
 
   for (const line of content.split('\n')) {
     if (!line.startsWith('import ')) {
@@ -24,7 +24,7 @@ export const replaceAnchor = async (source: string, content: string) => {
       cache.set(path, {
         content: '',
         dependencies: [],
-        id: getNextModuleId(),
+        id: ctx.nextId(),
         originalContent: '',
         source: path,
       })
@@ -35,13 +35,13 @@ export const replaceAnchor = async (source: string, content: string) => {
 
     // 生成 default 导入赋值
     if (defaultImport) {
-      listResult.push(`${defaultImport} = ${MODULE_PREFIX}_${cacheSalt}_${meta.id}.default`)
+      listResult.push(`${defaultImport} = ${MODULE_PREFIX}_${salt}_${meta.id}.default`)
     }
 
     // 生成 named 导入赋值
     for (const named of namedImports) {
       const key = (named.split(':')[0] ?? '').trim()
-      listResult.push(`${named} = ${MODULE_PREFIX}_${cacheSalt}_${meta.id}.${key}`)
+      listResult.push(`${named} = ${MODULE_PREFIX}_${salt}_${meta.id}.${key}`)
     }
   }
 
