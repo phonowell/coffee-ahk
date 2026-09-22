@@ -1,5 +1,9 @@
 allowBuilds:
   esbuild: true
+overrides:
+  # GHSA-c2c7-rcm5-vvqj / GHSA-3v7f-55p6-f55p — patch only the vulnerable 2.x
+  # path via micromatch; leave fdir's picomatch@4.x untouched
+  micromatch>picomatch: 2.3.2
 minimumReleaseAgeExclude:
   - '@oxfmt/binding-android-arm-eabi@0.70.0'
   - '@oxfmt/binding-android-arm64@0.70.0'
