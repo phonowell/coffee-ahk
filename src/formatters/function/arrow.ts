@@ -8,11 +8,12 @@ import type { Context } from '../../types/index.js'
 const findEdge = (ctx: Context, i: number = ctx.content.length - 1): number => {
   const { content } = ctx
 
-  const it = content.at(i)
-  if (!it) return 0
-
-  if (it.is('edge', 'parameter-start')) return i
-  return findEdge(ctx, i - 1)
+  for (let j = i; j >= 0; j--) {
+    const it = content.at(j)
+    if (!it) break
+    if (it.is('edge', 'parameter-start')) return j
+  }
+  return 0
 }
 
 export const arrow = (ctx: Context, type: string) => {

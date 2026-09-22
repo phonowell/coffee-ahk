@@ -20,35 +20,6 @@ const checkSimpleAssignment = (ctx: Context, i: number): void => {
   }
 }
 
-const checkDestructuringAssignment = (ctx: Context, i: number): void => {
-  const { content } = ctx
-  const item = content.at(i)
-  const prev = content.at(i - 1)
-
-  if (!item?.is('identifier')) return
-
-  // 检查是否在数组解构中: [identifier, ...] = ...
-  if (!(prev?.is('sign', ',') || prev?.is('bracket', '['))) return
-
-  // 简单检查：向前查找是否有 ] = 模式
-  for (let j = i + 1; j < Math.min(i + 10, content.length); j++) {
-    const current = content.at(j)
-    const nextItem = content.at(j + 1)
-
-    if (current?.is('bracket', ']') && nextItem?.is('sign', '=')) {
-      if (isVariableForbidden(item.value)) {
-        throw new TranspileError(
-          ctx,
-          ErrorType.FORBIDDEN,
-          `destructuring target '${item.value}' cannot be used (${getForbiddenReason(item.value)})`,
-          `Choose a different variable name`,
-        )
-      }
-      break
-    }
-  }
-}
-
 const checkFunctionParameters = (ctx: Context, i: number): void => {
   const { content } = ctx
   const item = content.at(i)
@@ -151,7 +122,6 @@ const main = (ctx: Context) => {
 
   content.toArray().forEach((_, i) => {
     checkSimpleAssignment(ctx, i)
-    checkDestructuringAssignment(ctx, i)
     checkFunctionParameters(ctx, i)
     checkCatchVariable(ctx, i)
     checkForLoopVariables(ctx, i)

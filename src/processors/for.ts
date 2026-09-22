@@ -7,20 +7,21 @@ const main = (ctx: Context) => {
   const { content } = ctx
 
   const findIndex = (i: number): number => {
-    const it = content.at(i)
-    if (!it) return 0
-
-    if (it.is('edge', 'block-start') && it.scope.at(-1) === 'for') return i
-
-    return findIndex(i + 1)
+    for (let j = i; j < content.length; j++) {
+      const it = content.at(j)
+      if (!it) break
+      if (it.is('edge', 'block-start') && it.scope.at(-1) === 'for') return j
+    }
+    return -1
   }
 
   const findName = (i: number): string => {
-    const it = content.at(i)
-    if (!it) return ''
+    for (let j = i; j >= 0; j--) {
+      const it = content.at(j)
+      if (!it) break
+      if (!it.is('for', 'for')) continue
 
-    if (it.is('for', 'for')) {
-      const next = content.at(i + 1)
+      const next = content.at(j + 1)
       if (!next) {
         throw new TranspileError(
           ctx,
@@ -31,8 +32,7 @@ const main = (ctx: Context) => {
       }
       return next.value
     }
-
-    return findName(i - 1)
+    return ''
   }
 
   // each
@@ -44,6 +44,14 @@ const main = (ctx: Context) => {
     if (name.startsWith('__') && name.endsWith('__')) return
 
     const index = findIndex(i)
+    if (index < 0) {
+      throw new TranspileError(
+        ctx,
+        ErrorType.SYNTAX_ERROR,
+        `missing block-start after for/in statement`,
+        `Ensure for loop has proper block structure`,
+      )
+    }
 
     const next = content.at(index + 1)
     if (!next) {

@@ -2,11 +2,7 @@
 import type { Context } from '../../types/index.js'
 
 export const handleCallStart = (ctx: Context) => {
-  const { scope } = ctx
-  const { next } = scope
-  scope.next = ''
-  scope.push('call')
-  scope.next = next
+  ctx.scope.push('call')
   ctx.content.push({ type: 'edge', value: 'call-start' })
   return true
 }
