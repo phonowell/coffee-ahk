@@ -1,6 +1,6 @@
 import { pad } from '../utils/arrayHelpers.js'
 
-import type Item from '../models/Item'
+import type Item from '../models/Item.js'
 
 const log = (message: string | number) => {
   const msg = typeof message !== 'string' ? message.toString() : message

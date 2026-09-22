@@ -3,7 +3,7 @@ import { formatSuper } from './class/format-super.js'
 import { prependThis } from './class/prepend-this.js'
 import { renameConstructor } from './class/rename-constructor.js'
 
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 const main = (ctx: Context) => {
   prependThis(ctx)

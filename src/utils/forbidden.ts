@@ -1,4 +1,4 @@
-import data from '../../data/forbidden.json'
+import data from '../../data/forbidden.json' with { type: 'json' }
 
 /** Forbidden names list (lowercase) */
 export const listForbidden = data

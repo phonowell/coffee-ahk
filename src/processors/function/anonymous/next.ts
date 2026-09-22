@@ -3,7 +3,7 @@ import { ErrorType, TranspileError } from '../../../utils/error.js'
 
 import { pickItem } from './pick-item.js'
 
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 export const next = (ctx: Context, count = 1) => {
   const { content } = ctx
@@ -26,12 +26,10 @@ export const next = (ctx: Context, count = 1) => {
   }
   it.value = `${ctx.options.salt}_${count}`
 
-  pickItem(ctx, count, i, [...it.scope.toArray(), 'function']).forEach(
-    (item) => {
-      if (item.type === 'void') return
-      content.push(item)
-    },
-  )
+  pickItem(ctx, count, i, [...it.scope.toArray(), 'function']).forEach((item) => {
+    if (item.type === 'void') return
+    content.push(item)
+  })
 
   next(ctx, count + 1)
 }

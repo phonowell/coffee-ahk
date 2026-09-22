@@ -3,7 +3,7 @@ import { at } from 'fire-keeper'
 import { ErrorType, TranspileError } from '../../../utils/error.js'
 
 import type Item from '../../../models/Item.js'
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 export const pickPre = (
   ctx: Context,

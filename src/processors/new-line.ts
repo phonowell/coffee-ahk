@@ -1,16 +1,12 @@
-import type Content from '../models/Content'
-import type Item from '../models/Item'
-import type { Context } from '../types'
+import type Content from '../models/Content.js'
+import type Item from '../models/Item.js'
+import type { Context } from '../types/index.js'
 
 /**
  * Determines if a token should be removed based on the previous token
  * @returns {boolean} - True if the token should be removed, false otherwise
  * */
-const shouldRemoveToken = (
-  content: Content,
-  item: Item,
-  i: number,
-): boolean => {
+const shouldRemoveToken = (content: Content, item: Item, i: number): boolean => {
   // Only process new-line tokens
   if (!item.is('new-line')) return false
 
@@ -28,9 +24,7 @@ const shouldRemoveToken = (
 const main = (ctx: Context) => {
   const { content } = ctx
   // Filter out new-line tokens that should be removed and reload content
-  content.reload(
-    content.toArray().filter((item, i) => !shouldRemoveToken(content, item, i)),
-  )
+  content.reload(content.toArray().filter((item, i) => !shouldRemoveToken(content, item, i)))
 }
 
 export default main

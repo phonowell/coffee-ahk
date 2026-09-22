@@ -71,14 +71,7 @@ export type ItemTypeMap = {
   property: string // property name
   prototype: '::'
   sign: ',' | '...' | ':' | '='
-  statement:
-    | 'break'
-    | 'continue'
-    | 'extends'
-    | 'new'
-    | 'return'
-    | 'throw'
-    | 'export'
+  statement: 'break' | 'continue' | 'extends' | 'new' | 'return' | 'throw' | 'export'
   string: string // string literal (with quotes)
   super: 'super'
   this: 'this'

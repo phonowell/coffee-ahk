@@ -1,20 +1,14 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "alwaysStrict": true,
-    "baseUrl": ".",
     "declaration": true,
-    "declarationMap": false,
     "emitDeclarationOnly": true,
     "exactOptionalPropertyTypes": true,
-    "experimentalDecorators": true,
+    "isolatedModules": true,
     "lib": ["esnext"],
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
     "noImplicitReturns": true,
-    "noImplicitThis": true,
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -22,14 +16,13 @@
     "removeComments": true,
     "resolveJsonModule": true,
     "rootDir": "./src",
-    "sourceMap": false,
+    "skipLibCheck": true,
     "strict": true,
-    "strictBindCallApply": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": true,
     "target": "esnext",
     "types": ["node"],
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "verbatimModuleSyntax": true
   },
-  "exclude": ["node_modules", "dist", "tasks"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

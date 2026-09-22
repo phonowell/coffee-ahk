@@ -1,10 +1,7 @@
 import { ErrorType, TranspileError } from '../../utils/error.js'
-import {
-  getForbiddenReason,
-  isVariableForbidden,
-} from '../../utils/forbidden.js'
+import { getForbiddenReason, isVariableForbidden } from '../../utils/forbidden.js'
 
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 const checkSimpleAssignment = (ctx: Context, i: number): void => {
   const { content } = ctx

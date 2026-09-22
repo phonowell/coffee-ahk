@@ -3,26 +3,13 @@ import { read } from 'fire-keeper'
 
 import { createTranspileError, ErrorType } from '../utils/error.js'
 
-import {
-  clearCache,
-  getLineMapping,
-  setCacheSalt,
-  sortModules,
-} from './include/cache.js'
-import {
-  parseExportsFromCoffee,
-  replaceAnchor,
-  transformAll,
-} from './include/transformer.js'
+import { clearCache, getLineMapping, setCacheSalt, sortModules } from './include/cache.js'
+import { parseExportsFromCoffee, replaceAnchor, transformAll } from './include/transformer.js'
 
 export type FileMapping = { file: string; line: number; content: string }
 export type FileMappingRef = { mapping?: FileMapping[] }
 
-const main = async (
-  source: string,
-  salt: string,
-  mappingRef?: FileMappingRef,
-) => {
+const main = async (source: string, salt: string, mappingRef?: FileMappingRef) => {
   clearCache()
   setCacheSalt(salt)
 

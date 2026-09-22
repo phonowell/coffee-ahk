@@ -10,7 +10,7 @@ import { collectParams } from './params.js'
 import { transformFunctions } from './transform-functions.js'
 import { transformVars } from './transform-vars.js'
 
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 /** Main processor */
 const main = (ctx: Context) => {

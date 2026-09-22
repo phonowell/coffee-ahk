@@ -6,7 +6,7 @@ import { ignore } from './implicit-return/ignore.js'
 import { pickItems } from './implicit-return/pick-items.js'
 
 import type { Flag } from './implicit-return/types.js'
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 const main = (ctx: Context) => {
   const { content } = ctx
@@ -31,9 +31,7 @@ const main = (ctx: Context) => {
           }),
         )
       }
-      listContent.push(
-        new Item({ type: 'statement', value: 'return', scope: flag.scope }),
-      )
+      listContent.push(new Item({ type: 'statement', value: 'return', scope: flag.scope }))
       return
     }
 
@@ -50,8 +48,8 @@ const main = (ctx: Context) => {
     const item1 = list.at(1)
     const isObjectWithoutBrackets = item1?.is('bracket', '{') ?? false
     if (
-      list.filter((it) => it.is('new-line') && it.scope.isEqual(scpStart))
-        .length > (isObjectWithoutBrackets ? 1 : 2)
+      list.filter((it) => it.is('new-line') && it.scope.isEqual(scpStart)).length >
+      (isObjectWithoutBrackets ? 1 : 2)
     )
       return
     const item2 = list.at(2)

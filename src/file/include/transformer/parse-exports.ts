@@ -9,11 +9,7 @@ import type { Context } from '../../../types/index.js'
 
 /** Create minimal Context for export parsing errors */
 const createExportContext = (lineNumber: number): Pick<Context, 'token'> => ({
-  token: [
-    '',
-    '',
-    { first_line: lineNumber - 1, last_line: lineNumber - 1 },
-  ] as Context['token'],
+  token: ['', '', { first_line: lineNumber - 1, last_line: lineNumber - 1 }] as Context['token'],
 })
 
 export type ParsedExports = {
@@ -26,10 +22,7 @@ export type ParsedExports = {
  * Parse and extract export statements from CoffeeScript source.
  * Returns exportDefault, exportNamed arrays and remaining codeLines.
  */
-export const parseExportsFromCoffee = (
-  replaced: string,
-  filePath?: string,
-): ParsedExports => {
+export const parseExportsFromCoffee = (replaced: string, filePath?: string): ParsedExports => {
   const exportDefault: string[] = []
   const exportNamed: string[] = []
   const codeLines: string[] = []

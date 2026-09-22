@@ -1,14 +1,11 @@
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 const handleClosingBracket = (content: Context['content']): void => {
   const last = content.at(-1)
   if (last?.is('bracket', '}-')) last.value = '}'
 }
 
-const handleCommaInScope = (
-  content: Context['content'],
-  scope: Context['scope'],
-): boolean => {
+const handleCommaInScope = (content: Context['content'], scope: Context['scope']): boolean => {
   if (['array', 'call', 'object', 'parameter'].includes(scope.last)) {
     if (!content.at(-1)?.is('sign', ',')) {
       if (content.at(-1)?.is('new-line')) content.pop()

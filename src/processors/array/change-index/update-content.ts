@@ -1,6 +1,6 @@
 import type { Range } from './types.js'
 import type Item from '../../../models/Item.js'
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 export const updateContent = (ctx: Context, range: Range, list: Item[]) => {
   const { content } = ctx

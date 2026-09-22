@@ -1,6 +1,6 @@
 import { trim } from 'radash'
 
-import type { CommentData, Context, TokenLocationData } from '../types'
+import type { CommentData, Context, TokenLocationData } from '../types/index.js'
 
 const main = (ctx: Context): boolean => {
   const { content, token } = ctx

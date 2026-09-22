@@ -1,4 +1,4 @@
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 const main = (ctx: Context) => {
   const { content, scope, type, value } = ctx
@@ -6,8 +6,7 @@ const main = (ctx: Context) => {
   if (type === 'if') {
     scope.next = 'if'
     content.push({ type: 'if', value: 'if' })
-    if (value === 'unless')
-      content.push({ type: 'logical-operator', value: '!' })
+    if (value === 'unless') content.push({ type: 'logical-operator', value: '!' })
     content.push({ type: 'edge', value: 'expression-start' })
     return true
   }

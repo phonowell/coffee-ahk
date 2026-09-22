@@ -5,11 +5,7 @@ type PropertyPath = string | number
 type PartialObject<T> = Partial<T>
 
 /** Pad string to center align within specified length */
-export const pad = (
-  str: string,
-  length: number,
-  padString: string = ' ',
-): string => {
+export const pad = (str: string, length: number, padString: string = ' '): string => {
   if (str.length >= length) return str
   const totalPadding = length - str.length
   const leftPadding = Math.floor(totalPadding / 2)
@@ -28,14 +24,12 @@ export const findIndex = <T>(
     if (typeof predicate === 'function') return predicate
 
     if (typeof predicate === 'string' || typeof predicate === 'number') {
-      return (item: T) =>
-        Boolean((item as Record<PropertyPath, unknown>)[predicate])
+      return (item: T) => Boolean((item as Record<PropertyPath, unknown>)[predicate])
     }
 
     if (typeof predicate === 'object') {
       return (item: T) => {
-        for (const key in predicate)
-          if (item[key] !== predicate[key]) return false
+        for (const key in predicate) if (item[key] !== predicate[key]) return false
 
         return true
       }
@@ -66,14 +60,12 @@ export const findLastIndex = <T>(
     if (typeof predicate === 'function') return predicate
 
     if (typeof predicate === 'string' || typeof predicate === 'number') {
-      return (item: T) =>
-        Boolean((item as Record<PropertyPath, unknown>)[predicate])
+      return (item: T) => Boolean((item as Record<PropertyPath, unknown>)[predicate])
     }
 
     if (typeof predicate === 'object') {
       return (item: T) => {
-        for (const key in predicate)
-          if (item[key] !== predicate[key]) return false
+        for (const key in predicate) if (item[key] !== predicate[key]) return false
 
         return true
       }

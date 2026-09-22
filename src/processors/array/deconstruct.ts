@@ -1,23 +1,15 @@
 import { ARRAY } from '../../constants.js'
 import Item from '../../models/Item.js'
 import { ErrorType, TranspileError } from '../../utils/error.js'
-import {
-  getForbiddenReason,
-  isVariableForbidden,
-} from '../../utils/forbidden.js'
+import { getForbiddenReason, isVariableForbidden } from '../../utils/forbidden.js'
 
 import { pickIndent } from './deconstruct/pick-indent.js'
 import { pickPre } from './deconstruct/pick-pre.js'
 
-import type Scope from '../../models/Scope'
-import type { Context } from '../../types'
+import type Scope from '../../models/Scope.js'
+import type { Context } from '../../types/index.js'
 
-const buildAssignment = (
-  preItems: Item[],
-  index: number,
-  indent: string,
-  scope: Scope,
-): Item[] => {
+const buildAssignment = (preItems: Item[], index: number, indent: string, scope: Scope): Item[] => {
   const clonedPreItems = preItems.map((it) => {
     const cloned = it.clone()
     cloned.scope.reload(scope)
@@ -49,10 +41,7 @@ const main = (ctx: Context) => {
 
       listPre.forEach((_, j) => {
         const preItems = listPre[listPre.length - j - 1] ?? []
-        listContent = [
-          ...listContent,
-          ...buildAssignment(preItems, j, indent, item.scope),
-        ]
+        listContent = [...listContent, ...buildAssignment(preItems, j, indent, item.scope)]
       })
 
       listPre.length = 0

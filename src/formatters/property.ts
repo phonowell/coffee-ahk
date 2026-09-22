@@ -1,6 +1,6 @@
 import { ErrorType, TranspileError } from '../utils/error.js'
 
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 const main = (ctx: Context): boolean => {
   const { content, type, value, scope } = ctx
@@ -25,11 +25,7 @@ const main = (ctx: Context): boolean => {
     const lastType = content.at(-1)?.type
 
     // Invalid: `this.prop` in constructor params → AHK can't handle it
-    if (
-      lastType === 'this' &&
-      scope.includes('class') &&
-      scope.includes('parameter')
-    ) {
+    if (lastType === 'this' && scope.includes('class') && scope.includes('parameter')) {
       throw new TranspileError(
         ctx,
         ErrorType.SYNTAX_ERROR,

@@ -1,7 +1,5 @@
 import { glob } from 'fire-keeper'
 
-import { version } from '../package.json'
-
 import start from './entry/index.js'
 import { processContent, read, write } from './file/index.js'
 import log from './logger/index.js'
@@ -34,8 +32,7 @@ const DEFAULT_OPTIONS: Options = {
 }
 
 /** Generate random salt for transpilation */
-const generateSalt = (): string =>
-  Math.random().toString(32).split('.')[1]?.padStart(11, '0') ?? ''
+const generateSalt = (): string => Math.random().toString(32).split('.')[1]?.padStart(11, '0') ?? ''
 
 /** Output warnings to console */
 const printWarnings = (warnings: string[]) => {
@@ -51,18 +48,14 @@ const extractLineNumber = (message: string): number | null => {
 }
 
 /** Show source context around error line with original file info */
-const showSourceContext = (
-  source: string,
-  lineNum: number,
-  mapping?: FileMappingEntry[],
-) => {
+const showSourceContext = (source: string, lineNum: number, mapping?: FileMappingEntry[]) => {
   if (!mapping) {
     // Fallback: no import/include, show merged content
     const lines = source.split('\n')
-    const start = Math.max(0, lineNum - 3)
+    const startLine = Math.max(0, lineNum - 3)
     const end = Math.min(lines.length, lineNum + 2)
     console.log('\n📍 Source context:')
-    for (let i = start; i < end; i++) {
+    for (let i = startLine; i < end; i++) {
       const marker = i === lineNum - 1 ? '→' : ' '
       console.log(`  ${marker} ${i + 1} | ${lines[i]}`)
     }
@@ -74,11 +67,11 @@ const showSourceContext = (
 
   const { file, line } = errorEntry
   const fileEntries = mapping.filter((e) => e.file === file)
-  const start = Math.max(0, line - 3)
+  const startLine = Math.max(0, line - 3)
   const end = Math.min(fileEntries.length, line + 2)
 
   console.log(`\n📍 ${file}:${line}`)
-  for (let i = start; i < end; i++) {
+  for (let i = startLine; i < end; i++) {
     const entry = fileEntries[i]
     if (!entry) continue
     const marker = i === line - 1 ? '→' : ' '
@@ -87,11 +80,7 @@ const showSourceContext = (
 }
 
 /** Re-throw error with source context if line number available */
-const rethrowWithContext = (
-  e: unknown,
-  source: string,
-  mapping?: FileMappingEntry[],
-): never => {
+const rethrowWithContext = (e: unknown, source: string, mapping?: FileMappingEntry[]): never => {
   const error = e as Error
   const lineNum = extractLineNumber(error.message)
   if (lineNum) showSourceContext(source, lineNum, mapping)
@@ -112,17 +101,12 @@ const transpile = (source: string, options: PartialOptions = {}) => {
   return transpileAsFile(source, mergedOptions)
 }
 
-const transpileAsFile = async (
-  source: string,
-  options: Options,
-): Promise<string> => {
+const transpileAsFile = async (source: string, options: Options): Promise<string> => {
   const listSource = source.endsWith('.coffee')
     ? [source]
     : [source, `${source}.coffee`, `${source}/index.coffee`]
 
-  const [source2] = (await glob(listSource)).filter((item) =>
-    item.endsWith('.coffee'),
-  )
+  const [source2] = (await glob(listSource)).filter((item) => item.endsWith('.coffee'))
   if (!source2) {
     throw createTranspileError(
       ErrorType.FILE_ERROR,
@@ -150,8 +134,7 @@ const transpileAsFile = async (
     // 处理超长行（逗号换行）并验证行长限制
     const processed = processContent(result.content)
 
-    if (options.save)
-      await write(source2, { ...result, content: processed }, options)
+    if (options.save) await write(source2, { ...result, content: processed }, options)
 
     return processed
   } catch (e) {
@@ -159,10 +142,7 @@ const transpileAsFile = async (
   }
 }
 
-const transpileAsText = async (
-  content: string,
-  options: Options,
-): Promise<string> => {
+const transpileAsText = async (content: string, options: Options): Promise<string> => {
   try {
     const startTime = Date.now()
     const result = await start(content, options)
@@ -183,5 +163,5 @@ const transpileAsText = async (
   }
 }
 
+export { version } from './version.js'
 export default transpile
-export { version }

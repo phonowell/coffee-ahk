@@ -1,5 +1,5 @@
 // Function call handling
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 export const handleCallStart = (ctx: Context) => {
   const { scope } = ctx

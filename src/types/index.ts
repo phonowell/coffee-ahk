@@ -1,7 +1,8 @@
 import type { PartialOptions } from './options.js'
 import type Content from '../models/Content.js'
+import type Item from '../models/Item.js'
 import type Scope from '../models/Scope.js'
-import type cs from 'coffeescript'
+import type * as cs from 'coffeescript'
 
 export type Cache = {
   global: Set<string>
@@ -26,6 +27,9 @@ export type Flag = {
   isChangeIndexUsed: boolean
   isTypeofUsed: boolean
 }
+
+/** Context plus the current item index/pointer used during rendering */
+export type RenderContext = Context & { i: number; it: Item }
 
 type Token = ReturnType<typeof cs.compile>['tokens'][number]
 

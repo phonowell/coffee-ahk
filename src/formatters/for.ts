@@ -1,8 +1,8 @@
 import { INDEX_FOR, KEY_FOR } from '../constants.js'
 import { ErrorType, TranspileError } from '../utils/error.js'
 
-import type { ItemTypeMap } from '../models/ItemType'
-import type { Context } from '../types'
+import type { ItemTypeMap } from '../models/ItemType.js'
+import type { Context } from '../types/index.js'
 
 const main = (ctx: Context) => {
   const { content, scope, type, value } = ctx

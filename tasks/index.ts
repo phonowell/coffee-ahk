@@ -1,14 +1,4 @@
-import {
-  argv,
-  echo,
-  getBasename,
-  getDirname,
-  glob,
-  os,
-  prompt,
-  root,
-  run,
-} from 'fire-keeper'
+import { argv, echo, getBasename, getDirname, glob, os, prompt, root, run } from 'fire-keeper'
 import { trim } from 'radash'
 
 type AsyncFn = <T>() => Promise<T>
@@ -38,8 +28,7 @@ const executeTask = async (taskName: string) => {
 
   const parsed = os() === 'windows' ? `file:///${firstMatched}` : firstMatched
 
-  const fn = ((await import(parsed)) as { default: AsyncFn | undefined })
-    .default
+  const fn = ((await import(parsed)) as { default: AsyncFn | undefined }).default
   if (!fn) {
     echo(`No valid task function found: '${formatted}'`)
     return
@@ -87,9 +76,7 @@ const promptTask = async (tasks: string[]): Promise<string> => {
  */
 const main = async () => {
   const taskArg = (await argv())._[0]
-  const task = taskArg
-    ? taskArg.toString()
-    : await promptTask(await loadTasks())
+  const task = taskArg ? taskArg.toString() : await promptTask(await loadTasks())
 
   if (!task) return
   await executeTask(task)

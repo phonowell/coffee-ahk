@@ -1,4 +1,4 @@
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 const main = (ctx: Context) => {
   const { content, scope, type } = ctx
@@ -15,10 +15,7 @@ const main = (ctx: Context) => {
 
   if (type === 'while') {
     scope.next = 'while'
-    content.push(
-      { type: 'while', value: 'while' },
-      { type: 'edge', value: 'expression-start' },
-    )
+    content.push({ type: 'while', value: 'while' }, { type: 'edge', value: 'expression-start' })
     return true
   }
 

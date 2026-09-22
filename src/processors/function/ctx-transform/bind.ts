@@ -9,7 +9,7 @@ import Item from '../../../models/Item.js'
 
 import type { ParamsInfo } from './params.js'
 import type { ScopeType } from '../../../models/ScopeType.js'
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 /** Add .Bind() after Func() calls - .Bind(λ) inside functions, .Bind({}) at top level */
 export const addBind = (ctx: Context, paramsInfo: ParamsInfo) => {
@@ -34,8 +34,7 @@ export const addBind = (ctx: Context, paramsInfo: ParamsInfo) => {
 
     // Already has .Bind?
     const next = content.at(i + 1)
-    if (next?.is('.', '.') && content.at(i + 2)?.is('identifier', 'Bind'))
-      continue
+    if (next?.is('.', '.') && content.at(i + 2)?.is('identifier', 'Bind')) continue
 
     const scope = item.scope.toArray()
     const inFunction = item.scope.includes('function')
@@ -59,12 +58,8 @@ export const addBind = (ctx: Context, paramsInfo: ParamsInfo) => {
       }
     } else {
       // Top level: bind to empty object {}
-      out.push(
-        new Item({ type: 'edge', value: 'object-start', scope: callScope }),
-      )
-      out.push(
-        new Item({ type: 'edge', value: 'object-end', scope: callScope }),
-      )
+      out.push(new Item({ type: 'edge', value: 'object-start', scope: callScope }))
+      out.push(new Item({ type: 'edge', value: 'object-end', scope: callScope }))
     }
 
     out.push(new Item({ type: 'edge', value: 'call-end', scope: callScope }))

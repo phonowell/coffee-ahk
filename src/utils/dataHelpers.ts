@@ -6,10 +6,7 @@ type SortIteratee<T> = Iteratee<T> | PropertyPath
 type ComparableValue = string | number | boolean
 
 /** Handle null and undefined values in comparison */
-const handleNullUndefined = (
-  aValue: unknown,
-  bValue: unknown,
-): number | null => {
+const handleNullUndefined = (aValue: unknown, bValue: unknown): number | null => {
   const aIsNull = aValue === null || aValue === undefined
   const bIsNull = bValue === null || bValue === undefined
 
@@ -22,11 +19,7 @@ const handleNullUndefined = (
 /** Compare two values of any type */
 const compareValues = (aValue: unknown, bValue: unknown): number => {
   if (typeof aValue === typeof bValue) {
-    if (
-      typeof aValue === 'string' ||
-      typeof aValue === 'number' ||
-      typeof aValue === 'boolean'
-    ) {
+    if (typeof aValue === 'string' || typeof aValue === 'number' || typeof aValue === 'boolean') {
       if ((aValue as ComparableValue) < (bValue as ComparableValue)) return -1
       if ((aValue as ComparableValue) > (bValue as ComparableValue)) return 1
       return 0
@@ -50,9 +43,7 @@ export const sortBy = <T>(array: T[], ...iteratees: SortIteratee<T>[]): T[] => {
 
     if (typeof iteratee === 'string' || typeof iteratee === 'number') {
       return (item: T) =>
-        (item as Record<PropertyPath, unknown>)[iteratee] as ReturnType<
-          Iteratee<T>
-        >
+        (item as Record<PropertyPath, unknown>)[iteratee] as ReturnType<Iteratee<T>>
     }
 
     return () => undefined
@@ -60,7 +51,7 @@ export const sortBy = <T>(array: T[], ...iteratees: SortIteratee<T>[]): T[] => {
 
   const compiledIteratees = iteratees.map(getIteratee)
 
-  return [...array].sort((a, b) => {
+  return array.toSorted((a, b) => {
     for (const iteratee of compiledIteratees) {
       const aValue = iteratee(a)
       const bValue = iteratee(b)

@@ -8,16 +8,11 @@ import { closureCoffee as wrapClosure } from '../utils.js'
 type Meta = { content: string; dependencies: string[]; id: number }
 
 /** Generate return statement for module exports. */
-export const generateReturnStatement = (
-  exportDefault: string[],
-  exportNamed: string[],
-): string =>
+export const generateReturnStatement = (exportDefault: string[], exportNamed: string[]): string =>
   run(() => {
     // default 和命名导出共存
     if (exportDefault.length && exportNamed.length) {
-      const namedObj = exportNamed
-        .map((s) => (s.includes(':') ? s : `${s}: ${s}`))
-        .join(', ')
+      const namedObj = exportNamed.map((s) => (s.includes(':') ? s : `${s}: ${s}`)).join(', ')
       return `return { default: ${exportDefault[0]}, ${namedObj} }`
     }
 
@@ -25,9 +20,7 @@ export const generateReturnStatement = (
     if (exportDefault.length) return `return { default: ${exportDefault[0]} }`
 
     if (exportNamed.length) {
-      const namedObj = exportNamed
-        .map((s) => (s.includes(':') ? s : `${s}: ${s}`))
-        .join(', ')
+      const namedObj = exportNamed.map((s) => (s.includes(':') ? s : `${s}: ${s}`)).join(', ')
       return `return { ${namedObj} }`
     }
 
@@ -49,10 +42,9 @@ export const wrapInClosureAndAssign = (
   const closureBody = wrapClosure(codeLines.join('\n'))
   const hasExports = exportDefault.length > 0 || exportNamed.length > 0
 
-  return [
-    hasExports ? `${MODULE_PREFIX}_${salt}_${meta.id} = do ->` : 'do ->',
-    closureBody,
-  ].join('\n')
+  return [hasExports ? `${MODULE_PREFIX}_${salt}_${meta.id} = do ->` : 'do ->', closureBody].join(
+    '\n',
+  )
 }
 
 /**

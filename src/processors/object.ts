@@ -3,7 +3,7 @@ import { deconstruct } from './object/deconstruct.js'
 import { reverseDeconstruct } from './object/reverse-destructure.js'
 import { transformObjectShorthand } from './object/shorthand.js'
 
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 const main = (ctx: Context) => {
   // deconstruction

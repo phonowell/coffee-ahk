@@ -7,9 +7,9 @@ type PackageJson = {
 
 const DEPS_TO_INSTALL: string[] = []
 
-const DEV_DEPS_TO_INSTALL: string[] = ['eslint-plugin-unused-imports', 'radash']
+const DEV_DEPS_TO_INSTALL: string[] = []
 
-const DEPS_TO_REMOVE: string[] = ['classnames', 'moment']
+const DEPS_TO_REMOVE: string[] = []
 
 const getDeps = async () => {
   const pkg = await read<PackageJson>('./package.json')
@@ -44,9 +44,7 @@ const manageDeps = async () => {
     await exec(`pnpm add -D ${list}`)
   }
 
-  const depsToRemove = DEPS_TO_REMOVE.filter((name) =>
-    deps.some(([depName]) => depName === name),
-  )
+  const depsToRemove = DEPS_TO_REMOVE.filter((name) => deps.some(([depName]) => depName === name))
 
   if (depsToRemove.length) {
     const list = depsToRemove.join(' ')
@@ -57,12 +55,8 @@ const manageDeps = async () => {
 const updateDeps = async () => {
   const deps = await getDeps()
 
-  const lockedDeps = deps.filter(
-    ([, version]) => !Number.isNaN(Number(version[0])),
-  )
-  const unlockedDeps = deps.filter(([, version]) =>
-    Number.isNaN(Number(version[0])),
-  )
+  const lockedDeps = deps.filter(([, version]) => !Number.isNaN(Number(version[0])))
+  const unlockedDeps = deps.filter(([, version]) => Number.isNaN(Number(version[0])))
 
   const depsToUpdate = unlockedDeps
     .filter(([name]) => {
@@ -77,10 +71,9 @@ const updateDeps = async () => {
   }
 
   echo(
-    [
-      'These dependencies have been locked:',
-      ...lockedDeps.map((it) => `'${it.join('@')}'`),
-    ].join('\n'),
+    ['These dependencies have been locked:', ...lockedDeps.map((it) => `'${it.join('@')}'`)].join(
+      '\n',
+    ),
   )
 }
 

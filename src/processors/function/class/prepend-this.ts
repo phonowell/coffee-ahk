@@ -3,7 +3,7 @@ import { at } from 'fire-keeper'
 import { THIS } from '../../../constants.js'
 import Item from '../../../models/Item.js'
 
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 export const prependThis = (ctx: Context) => {
   const { content } = ctx
@@ -35,9 +35,7 @@ export const prependThis = (ctx: Context) => {
     listContent.push(item)
     const scope2 = item.scope.toArray()
     // Use ℓthis as parameter name since 'this' is reserved in AHK v1
-    listContent.push(
-      new Item({ type: 'identifier', value: THIS, scope: scope2 }),
-    )
+    listContent.push(new Item({ type: 'identifier', value: THIS, scope: scope2 }))
 
     const it = arr.at(i + 1)
     if (it?.is('edge', 'parameter-end')) return

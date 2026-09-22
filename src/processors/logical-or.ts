@@ -8,7 +8,7 @@
 
 import Item from '../models/Item.js'
 
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 const OR_TEMP = 'ℓor'
 
@@ -32,12 +32,7 @@ export default (ctx: Context): void => {
       }
 
       // Stop at statement boundaries
-      if (
-        prev.type === 'new-line' ||
-        prev.type === 'if' ||
-        prev.type === 'edge'
-      )
-        break
+      if (prev.type === 'new-line' || prev.type === 'if' || prev.type === 'edge') break
     }
 
     if (!hasAssignment) continue
@@ -85,16 +80,10 @@ export default (ctx: Context): void => {
 
     // Check for literals: number, string, nil
     // Also handle negative numbers: negative + number
-    let isNonBooleanLiteral = ['number', 'string', 'nil'].includes(
-      rightFirst.type,
-    )
+    let isNonBooleanLiteral = ['number', 'string', 'nil'].includes(rightFirst.type)
 
     // Handle negative numbers: -1, -42, etc.
-    if (
-      !isNonBooleanLiteral &&
-      rightFirst.type === 'negative' &&
-      rightOperand.length >= 2
-    ) {
+    if (!isNonBooleanLiteral && rightFirst.type === 'negative' && rightOperand.length >= 2) {
       const rightSecond = rightOperand[1]
       if (rightSecond?.type === 'number') isNonBooleanLiteral = true
     }

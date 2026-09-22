@@ -1,19 +1,12 @@
 import { getExtname, read, run } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
-import {
-  createTranspileError,
-  ErrorType,
-  TranspileError,
-} from '../../../utils/error.js'
+import { createTranspileError, ErrorType, TranspileError } from '../../../utils/error.js'
 import { getCache as fetchCache, getCacheSalt as fetchSalt } from '../cache.js'
 import { pickImport as resolveImport } from '../source-resolver.js'
 
 import { serializeDataModule } from './data-module.js'
-import {
-  hasClassDeclaration,
-  validateClassExportConflict,
-} from './detect-class.js'
+import { hasClassDeclaration, validateClassExportConflict } from './detect-class.js'
 import { parseExportsFromCoffee } from './parse-exports.js'
 import { replaceAnchor as replaceMark } from './replace-anchor.js'
 import { wrapInClosureAndAssign } from './wrap-closure.js'
@@ -28,13 +21,7 @@ const createFileTypeContext = (): Pick<Context, 'token'> => ({
   token: ['', '', { first_line: 0, last_line: 0 }] as Context['token'],
 })
 
-const handleAhk = (
-  file: string,
-  text: string,
-  meta: Meta,
-  cache: Cache,
-  deps: string[],
-) => {
+const handleAhk = (file: string, text: string, meta: Meta, cache: Cache, deps: string[]) => {
   const result = ['```', text, '```'].join('\n')
   cache.set(file, { ...meta, content: result, dependencies: deps })
 }
@@ -48,10 +35,7 @@ const handleCoffee = async (
   deps: string[],
 ) => {
   const replaced = await replaceMark(file, text)
-  const { exportDefault, exportNamed, codeLines } = parseExportsFromCoffee(
-    replaced,
-    file,
-  )
+  const { exportDefault, exportNamed, codeLines } = parseExportsFromCoffee(replaced, file)
 
   const codeBody = codeLines.join('\n')
   const hasClass = hasClassDeclaration(codeBody)
@@ -66,13 +50,7 @@ const handleCoffee = async (
   }
 
   // Modules with exports: wrap in closure
-  const result = wrapInClosureAndAssign(
-    codeLines,
-    exportDefault,
-    exportNamed,
-    meta,
-    salt,
-  )
+  const result = wrapInClosureAndAssign(codeLines, exportDefault, exportNamed, meta, salt)
   cache.set(file, { ...meta, content: result, dependencies: deps })
 }
 
@@ -108,10 +86,7 @@ const parseDataModule = (
   }
 }
 
-const collectCoffeeDeps = async (
-  file: string,
-  text: string,
-): Promise<string[]> => {
+const collectCoffeeDeps = async (file: string, text: string): Promise<string[]> => {
   const depSet = new Set<string>()
   for (const line of text.split('\n')) {
     if (!line.startsWith('import ')) continue
@@ -121,12 +96,7 @@ const collectCoffeeDeps = async (
   return Array.from(depSet)
 }
 
-const processFile = async (
-  file: string,
-  meta: Meta,
-  cache: Cache,
-  salt: string,
-) => {
+const processFile = async (file: string, meta: Meta, cache: Cache, salt: string) => {
   if (meta.content) return
 
   // 读取文件内容，支持 Buffer、string、object
@@ -137,8 +107,7 @@ const processFile = async (
   }
 
   const text = run(() => {
-    if (raw instanceof Buffer)
-      return iconv.decode(raw, 'utf8', { stripBOM: true })
+    if (raw instanceof Buffer) return iconv.decode(raw, 'utf8', { stripBOM: true })
     if (typeof raw === 'string') return raw
     return JSON.stringify(raw)
   })
@@ -177,8 +146,7 @@ export const transformAll = async () => {
   const salt = fetchSalt()
 
   const filesToProcess = [...cache].filter(([, meta]) => !meta.content)
-  for (const [file, meta] of filesToProcess)
-    await processFile(file, meta, cache, salt)
+  for (const [file, meta] of filesToProcess) await processFile(file, meta, cache, salt)
 
   // 递归处理未完成的项
   if ([...cache].some(([, meta]) => !meta.content)) await transformAll()

@@ -10,13 +10,10 @@ import { genParamAssign, genThisAlias } from './params.js'
 import { isUserFunc } from './utils.js'
 
 import type { ParamsInfo } from './params.js'
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 /** Transform function definitions - add λ param and init */
-export const transformFunctions = (
-  ctx: Context,
-  paramsInfo: ParamsInfo,
-): Set<number> => {
+export const transformFunctions = (ctx: Context, paramsInfo: ParamsInfo): Set<number> => {
   const { params } = paramsInfo
   const { content } = ctx
   const salt = ctx.options.salt ?? ''
@@ -42,12 +39,11 @@ export const transformFunctions = (
         didInit = false
 
         const p = params.get(funcName) ?? []
-        const _scope = item.scope.toArray()
+        const itemScope = item.scope.toArray()
         out.push(item)
         // λ is always pre-bound via .Bind({}) or .Bind(λ), no default needed
-        out.push(new Item({ type: 'identifier', value: CTX, scope: _scope }))
-        if (p.length > 0)
-          out.push(new Item({ type: 'sign', value: ',', scope: _scope }))
+        out.push(new Item({ type: 'identifier', value: CTX, scope: itemScope }))
+        if (p.length > 0) out.push(new Item({ type: 'sign', value: ',', scope: itemScope }))
 
         continue
       }
@@ -87,11 +83,7 @@ export const transformFunctions = (
     }
 
     // End of function body
-    if (
-      item.is('edge', 'block-end') &&
-      inFunc &&
-      !item.scope.includes('function')
-    ) {
+    if (item.is('edge', 'block-end') && inFunc && !item.scope.includes('function')) {
       inFunc = false
       funcScope = null
       funcName = ''

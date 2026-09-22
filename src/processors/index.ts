@@ -13,7 +13,7 @@ import typeofProcessor from './typeof.js'
 import variableProcessor from './variable/index.js'
 import validate from './variable/validate.js'
 
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 /** Process AST transformations */
 const processAst = (context: Context) => {

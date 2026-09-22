@@ -9,7 +9,7 @@ import Item from '../../../models/Item.js'
 import { processNativeBlock } from './native.js'
 import { isUserFunc, shouldUseCtx } from './utils.js'
 
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 /**
  * Collect all variable information in a single pass.
@@ -38,19 +38,14 @@ const collectAllVars = (
     const prev = content.at(i - 1)
 
     // Collect catch variables
-    if (item.type === 'identifier' && prev?.is('try', 'catch'))
-      catchVars.add(item.value)
+    if (item.type === 'identifier' && prev?.is('try', 'catch')) catchVars.add(item.value)
 
     // Track current function
     if (item.type === 'function' && isUserFunc(item.value, salt)) {
       currentFunc = item.value
       continue
     }
-    if (
-      item.is('edge', 'block-end') &&
-      currentFunc &&
-      !item.scope.includes('function')
-    ) {
+    if (item.is('edge', 'block-end') && currentFunc && !item.scope.includes('function')) {
       currentFunc = ''
       continue
     }
@@ -111,14 +106,9 @@ export const transformVars = (ctx: Context, skip: Set<number>) => {
     const next = content.at(i + 1)
 
     // Track current extracted function
-    if (item.type === 'function' && isUserFunc(item.value, salt))
-      currentFunc = item.value
+    if (item.type === 'function' && isUserFunc(item.value, salt)) currentFunc = item.value
 
-    if (
-      item.is('edge', 'block-end') &&
-      currentFunc &&
-      !item.scope.includes('function')
-    )
+    if (item.is('edge', 'block-end') && currentFunc && !item.scope.includes('function'))
       currentFunc = ''
 
     // Track for declaration region (between 'for' and 'in'/'of')

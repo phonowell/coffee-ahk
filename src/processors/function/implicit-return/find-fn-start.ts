@@ -1,5 +1,5 @@
 import type Scope from '../../../models/Scope.js'
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 export const findFnStart = (ctx: Context, i: number): [number, Scope] => {
   const { content } = ctx

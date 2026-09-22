@@ -1,4 +1,4 @@
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 const handleIndentEarlyReturns = (ctx: Context): boolean => {
   const { content, scope } = ctx
@@ -26,20 +26,17 @@ const handleNextScopes = (ctx: Context): void => {
   const { content, scope } = ctx
 
   if (['catch', 'class', 'else'].includes(scope.next)) {
-    const _next = scope.next
+    const next = scope.next
     scope.next = ''
-    scope.push(_next)
+    scope.push(next)
     content.push({ type: 'edge', value: 'block-start' })
   }
 
   if (['if', 'while'].includes(scope.next)) {
-    const _next = scope.next
+    const next = scope.next
     scope.next = ''
-    scope.push(_next)
-    content.push(
-      { type: 'edge', value: 'expression-end' },
-      { type: 'edge', value: 'block-start' },
-    )
+    scope.push(next)
+    content.push({ type: 'edge', value: 'expression-end' }, { type: 'edge', value: 'block-start' })
   }
 }
 

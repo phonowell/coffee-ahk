@@ -1,10 +1,9 @@
 import { ErrorType, TranspileError } from '../../utils/error.js'
 import { listForbidden } from '../../utils/forbidden.js'
 
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
-const isClassNameForbidden = (name: string): boolean =>
-  listForbidden.includes(name.toLowerCase())
+const isClassNameForbidden = (name: string): boolean => listForbidden.includes(name.toLowerCase())
 
 const main = (setClass: Set<string>, ctx: Context) => {
   setClass.forEach((item) => {

@@ -2,7 +2,7 @@
 import Item from '../models/Item.js'
 import Scope from '../models/Scope.js'
 
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 const main = (ctx: Context) => {
   const { content } = ctx
@@ -13,9 +13,7 @@ const main = (ctx: Context) => {
   content.toArray().forEach((item, i) => {
     if (item.is('edge', 'typeof-start')) {
       typeofScope = new Scope([...item.scope.toArray(), 'call'])
-      listContent.push(
-        new Item({ type: 'edge', value: 'call-start', scope: typeofScope }),
-      )
+      listContent.push(new Item({ type: 'edge', value: 'call-start', scope: typeofScope }))
       return
     }
 
@@ -53,9 +51,7 @@ const main = (ctx: Context) => {
       const isEndOfExpr = isTerminator || (isBracketClose && !isContinuation)
 
       if (isEndOfExpr) {
-        listContent.push(
-          new Item({ type: 'edge', value: 'call-end', scope: typeofScope }),
-        )
+        listContent.push(new Item({ type: 'edge', value: 'call-end', scope: typeofScope }))
         typeofScope = null
       }
       return

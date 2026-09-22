@@ -1,6 +1,6 @@
 import Item, { type ItemOptions } from './Item.js'
 
-import type Scope from './Scope'
+import type Scope from './Scope.js'
 
 type ItemArg = ItemOptions | Item
 
@@ -61,7 +61,7 @@ class Content {
 
   /** Adds one or more items to the beginning of the content. */
   unshift(...args: ItemArg[]): this {
-    for (const arg of args.reverse()) {
+    for (const arg of args.toReversed()) {
       const newItem = arg instanceof Item ? arg : new Item(arg)
       if (!newItem.scope.length) newItem.scope.reload(this.scope)
       this.#list.unshift(newItem)

@@ -44,10 +44,7 @@ class Item {
   }
 
   /** Checks if the item is of a certain type and value. */
-  is<T extends ItemType>(
-    expectedType: T,
-    expectedValue?: ItemTypeMap[T],
-  ): boolean {
+  is<T extends ItemType>(expectedType: T, expectedValue?: ItemTypeMap[T]): boolean {
     if (expectedType !== this.type) return false
     if (typeof expectedValue === 'undefined') return true
     return expectedValue === this.value

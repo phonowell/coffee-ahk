@@ -3,7 +3,7 @@ import { arrow } from './function/arrow.js'
 import { handleCallEnd, handleCallStart } from './function/calls.js'
 import { handleParamEnd, handleParamStart } from './function/parameters.js'
 
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 const main = (ctx: Context) => {
   const { type } = ctx

@@ -2,11 +2,7 @@ import { createTranspileError, ErrorType } from '../utils/error.js'
 
 import include, { type FileMappingRef } from './include.js'
 
-const main = async (
-  source: string,
-  salt: string,
-  mappingRef?: FileMappingRef,
-): Promise<string> => {
+const main = async (source: string, salt: string, mappingRef?: FileMappingRef): Promise<string> => {
   let src = source
 
   const extname = '.coffee'

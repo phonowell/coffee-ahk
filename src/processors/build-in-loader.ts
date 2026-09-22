@@ -4,7 +4,7 @@ import Item from '../models/Item.js'
 
 import { changeIndex_ahk, typeof_ahk } from './builtins.gen.js'
 
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 /** 获取内置函数内容（静态集成版） */
 const getBuiltin = (functionName: string): Item[] => {
@@ -24,11 +24,7 @@ const getBuiltin = (functionName: string): Item[] => {
   return []
 }
 
-const insert = (
-  ctx: Context,
-  flag: keyof Context['flag'],
-  functionName: string,
-) => {
+const insert = (ctx: Context, flag: keyof Context['flag'], functionName: string) => {
   const { content } = ctx
 
   if (ctx.flag[flag]) {
@@ -42,10 +38,7 @@ const insert = (
           const salt = ctx.options.salt ?? 'salt'
 
           if (value.includes(`${CI}_SALT_PLACEHOLDER`)) {
-            value = value.replace(
-              new RegExp(`${CI}_SALT_PLACEHOLDER`, 'g'),
-              `${CI}_${salt}`,
-            )
+            value = value.replace(new RegExp(`${CI}_SALT_PLACEHOLDER`, 'g'), `${CI}_${salt}`)
           }
 
           if (value.includes(`${TYPEOF}_SALT_PLACEHOLDER`)) {

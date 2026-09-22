@@ -10,8 +10,7 @@ const createFileContext = (): Pick<Context, 'token'> => ({
 })
 
 /** Check if code contains class declarations. */
-export const hasClassDeclaration = (code: string): boolean =>
-  /^\s*class\s+\w+/m.test(code)
+export const hasClassDeclaration = (code: string): boolean => /^\s*class\s+\w+/m.test(code)
 
 /**
  * Validate that class and export don't coexist in the same module.

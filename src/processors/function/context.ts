@@ -12,7 +12,7 @@ import {
 import { pickItem } from './context/utils.js'
 
 import type Item from '../../models/Item.js'
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 const main = (ctx: Context) => {
   const { content } = ctx

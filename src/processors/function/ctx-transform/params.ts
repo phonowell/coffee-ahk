@@ -6,7 +6,7 @@ import { ErrorType, TranspileError } from '../../../utils/error.js'
 import { isUserFunc } from './utils.js'
 
 import type { ScopeType } from '../../../models/ScopeType.js'
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 /** Result of collectParams - includes params and class method markers */
 export type ParamsInfo = {
@@ -37,11 +37,7 @@ const detectParamCollisions = (
 
     // Detect Func("childName") pattern - this creates closure reference
     // Pattern: identifier=Func, call-start, string=funcName, call-end
-    if (
-      currentFunc &&
-      item.scope.includes('function') &&
-      item.is('identifier', 'Func')
-    ) {
+    if (currentFunc && item.scope.includes('function') && item.is('identifier', 'Func')) {
       const next1 = content.at(i + 1)
       const next2 = content.at(i + 2)
 
@@ -53,11 +49,7 @@ const detectParamCollisions = (
     }
 
     // Exit function scope
-    if (
-      item.is('edge', 'block-end') &&
-      currentFunc &&
-      !item.scope.includes('function')
-    )
+    if (item.is('edge', 'block-end') && currentFunc && !item.scope.includes('function'))
       currentFunc = ''
   }
 
@@ -67,9 +59,7 @@ const detectParamCollisions = (
     let ancestor = funcParent.get(func)
     while (ancestor) {
       const ancestorParams = params.get(ancestor) ?? []
-      const collisions = funcParams.filter(
-        (p) => ancestorParams.includes(p) && !p.startsWith('ℓ'),
-      )
+      const collisions = funcParams.filter((p) => ancestorParams.includes(p) && !p.startsWith('ℓ'))
 
       if (collisions.length > 0) {
         errors.push(

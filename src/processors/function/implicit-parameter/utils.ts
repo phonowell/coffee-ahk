@@ -1,6 +1,6 @@
 // Utility functions for implicit parameters
 import type Item from '../../../models/Item.js'
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 export const findFunctionStart = (ctx: Context, i: number): number => {
   const { content } = ctx
@@ -16,8 +16,7 @@ export const removeTrailingComma = (ctx: Context) => {
 
   const listContent: Item[] = []
   content.toArray().forEach((item, i) => {
-    if (item.is('sign', ',') && content.at(i + 1)?.is('edge', 'parameter-end'))
-      return
+    if (item.is('sign', ',') && content.at(i + 1)?.is('edge', 'parameter-end')) return
 
     listContent.push(item)
   })

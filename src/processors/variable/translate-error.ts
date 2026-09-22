@@ -1,5 +1,5 @@
-import type Item from '../../models/Item'
-import type { Context } from '../../types'
+import type Item from '../../models/Item.js'
+import type { Context } from '../../types/index.js'
 
 const main = (ctx: Context) => {
   const { content } = ctx

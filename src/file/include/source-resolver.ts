@@ -6,16 +6,11 @@ import { createTranspileError, ErrorType } from '../../utils/error.js'
 
 import { listExt } from './utils.js'
 
-export const getSource = async (
-  source: string,
-  path: string,
-): Promise<string> => {
+export const getSource = async (source: string, path: string): Promise<string> => {
   const isFile = path.startsWith('.')
   const isInListExt = listExt.some((ext) => path.endsWith(ext))
 
-  const group = isInListExt
-    ? [path]
-    : [`${path}.coffee`, `${path}/index.coffee`]
+  const group = isInListExt ? [path] : [`${path}.coffee`, `${path}/index.coffee`]
 
   group.forEach((it, i) => {
     group[i] = isFile ? `${source}/${it}` : `./node_modules/${it}`
@@ -24,9 +19,7 @@ export const getSource = async (
   const firstResult = listResult[0]
   if (firstResult) return firstResult
 
-  const pkg = await read<{ main: string }>(
-    `./node_modules/${path}/package.json`,
-  )
+  const pkg = await read<{ main: string }>(`./node_modules/${path}/package.json`)
   if (!pkg?.main) {
     throw createTranspileError(
       ErrorType.FILE_ERROR,
@@ -74,8 +67,7 @@ export const pickImport = async (
   let path = ''
 
   if (line.includes(' from ')) {
-    const importClause =
-      line.replace('import ', '').split(' from ')[0]?.trim() ?? ''
+    const importClause = line.replace('import ', '').split(' from ')[0]?.trim() ?? ''
     path = line.split(' from ')[1]?.trim() ?? ''
     // import m, { a, b } from ...
     if (/^[\w$]+\s*,\s*{.+}$/.test(importClause)) {

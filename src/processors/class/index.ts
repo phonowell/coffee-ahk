@@ -1,7 +1,7 @@
 import count from './count.js'
 import validate from './validate.js'
 
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 const main = (ctx: Context) => {
   // list all classes

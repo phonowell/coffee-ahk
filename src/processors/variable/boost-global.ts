@@ -1,6 +1,6 @@
 import Item from '../../models/Item.js'
 
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 const main = (ctx: Context) => {
   const { content } = ctx
@@ -27,10 +27,7 @@ const main = (ctx: Context) => {
     if (cache.has(prev.value)) return
     cache.add(prev.value)
 
-    if (
-      content.at(i + 1)?.is('identifier', prev.value) &&
-      content.at(i + 2)?.is('new-line')
-    ) {
+    if (content.at(i + 1)?.is('identifier', prev.value) && content.at(i + 2)?.is('new-line')) {
       listContent.splice(listContent.length - 2, 2)
       flagIgnore = 2
       return

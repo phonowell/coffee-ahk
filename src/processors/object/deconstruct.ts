@@ -2,12 +2,9 @@
 import { OBJECT } from '../../constants.js'
 import Item from '../../models/Item.js'
 import { ErrorType, TranspileError } from '../../utils/error.js'
-import {
-  getForbiddenReason,
-  isVariableForbidden,
-} from '../../utils/forbidden.js'
+import { getForbiddenReason, isVariableForbidden } from '../../utils/forbidden.js'
 
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 export const deconstruct = (ctx: Context) => {
   const { content } = ctx
@@ -37,7 +34,7 @@ export const deconstruct = (ctx: Context) => {
     // output
     if (listPre.length && item.type === 'new-line') {
       const indent = pickIndent(i - 1)
-      const _scope = item.scope
+      const itemScope = item.scope
 
       for (let j = 0; j < listPre.length; j++) {
         const preItem = listPre[listPre.length - j - 1] ?? ''
@@ -47,14 +44,14 @@ export const deconstruct = (ctx: Context) => {
           new Item({
             type: 'new-line',
             value: indent.toString(),
-            scope: _scope,
+            scope: itemScope,
           }),
-          new Item({ type: 'identifier', value: preItem, scope: _scope }),
-          new Item({ type: 'sign', value: '=', scope: _scope }),
-          new Item({ type: 'identifier', value: token, scope: _scope }),
-          new Item({ type: 'edge', value: 'index-start', scope: _scope }),
-          new Item({ type: 'string', value: `"${preItem}"`, scope: _scope }),
-          new Item({ type: 'edge', value: 'index-end', scope: _scope }),
+          new Item({ type: 'identifier', value: preItem, scope: itemScope }),
+          new Item({ type: 'sign', value: '=', scope: itemScope }),
+          new Item({ type: 'identifier', value: token, scope: itemScope }),
+          new Item({ type: 'edge', value: 'index-start', scope: itemScope }),
+          new Item({ type: 'string', value: `"${preItem}"`, scope: itemScope }),
+          new Item({ type: 'edge', value: 'index-end', scope: itemScope }),
         ]
       }
 

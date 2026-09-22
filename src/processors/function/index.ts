@@ -7,7 +7,7 @@ import injectImplicitReturns from './implicit-return.js'
 import markFunctions from './mark.js'
 import transformParameters from './parameter.js'
 
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 /** Process function-related transformations */
 const functionProcessor = (context: Context) => {

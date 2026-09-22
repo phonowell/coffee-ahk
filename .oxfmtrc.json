@@ -1,0 +1,17 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "ignorePatterns": [
+    "*.md",
+    "data/**",
+    "dist/**",
+    "script/**",
+    "src/processors/builtins.gen.ts",
+    "tmp/**",
+    ".claude/**",
+    ".cursor/**",
+    ".agents/**",
+    "plans/**"
+  ]
+}

@@ -2,8 +2,8 @@
 import { THIS } from '../../constants.js'
 import Item from '../../models/Item.js'
 
-import type { ScopeType } from '../../models/ScopeType'
-import type { Context } from '../../types'
+import type { ScopeType } from '../../models/ScopeType.js'
+import type { Context } from '../../types/index.js'
 
 const findEdge = (ctx: Context, i: number = ctx.content.length - 1): number => {
   const { content } = ctx
@@ -21,9 +21,7 @@ export const arrow = (ctx: Context, type: string) => {
   // Warn about => outside class context
   if (type === '=>' && !scope.includes('class')) {
     const line = token[2].first_line + 1
-    warnings.push(
-      `line ${line}: '=>' outside class has no meaningful 'this' binding in AHK`,
-    )
+    warnings.push(`line ${line}: '=>' outside class has no meaningful 'this' binding in AHK`)
   }
 
   // Mark do => with fat arrow marker so do processor knows to pass this
@@ -44,8 +42,7 @@ export const arrow = (ctx: Context, type: string) => {
   // Check if this is a class method definition (scope ends with 'class' or 'parameter'+'class')
   // Class methods are handled by prepend-this.ts processor
   const isClassMethod =
-    scope.at(-1) === 'class' ||
-    (scope.at(-1) === 'parameter' && scope.at(-2) === 'class')
+    scope.at(-1) === 'class' || (scope.at(-1) === 'parameter' && scope.at(-2) === 'class')
 
   // fn = -> xxx
   if (!content.at(-1)?.is('edge', 'parameter-end')) {

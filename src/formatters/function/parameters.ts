@@ -1,5 +1,5 @@
 // Parameter handling
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 export const handleParamStart = (ctx: Context) => {
   const { content, scope } = ctx

@@ -1,17 +1,11 @@
-// Edge handling for rendering
 import { trim } from 'radash'
 
 import { ErrorType, TranspileError } from '../utils/error.js'
 
-import type Item from '../models/Item.js'
-import type { Context as Context2 } from '../types'
+import type { ItemTypeMap } from '../models/ItemType.js'
+import type { RenderContext } from '../types/index.js'
 
-type Context = Context2 & {
-  i: number
-  it: Item
-}
-
-const mapEdge: Record<string, string> = {
+const mapEdge: Partial<Record<ItemTypeMap['edge'], string>> = {
   'array-end': ']',
   'array-start': '[',
   'block-end': '}',
@@ -28,9 +22,9 @@ const mapEdge: Record<string, string> = {
   'object-start': '{',
   'parameter-end': ')',
   'parameter-start': '(',
-} as const
+}
 
-export const edge2 = (ctx: Context): string => {
+export const renderEdge = (ctx: RenderContext): string => {
   const { content, i, it } = ctx
   const { value } = it
 
@@ -61,10 +55,8 @@ export const edge2 = (ctx: Context): string => {
     // otherwise it is a built-in function
     // use [name]() to call it
     const firstChar = name[0]
-    return firstChar && name.startsWith(firstChar.toLowerCase())
-      ? '.Call('
-      : '('
+    return firstChar && name.startsWith(firstChar.toLowerCase()) ? '.Call(' : '('
   }
 
-  return mapEdge[value] ?? value
+  return mapEdge[value as ItemTypeMap['edge']] ?? value
 }

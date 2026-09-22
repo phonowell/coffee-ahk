@@ -1,4 +1,4 @@
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 export enum ErrorType {
   FORBIDDEN = 'forbidden',
@@ -26,8 +26,7 @@ export class TranspileError extends Error {
     const locationData = ctx.token[2]
     const line = locationData.first_line + 1
     const column =
-      'first_column' in locationData &&
-      typeof locationData.first_column === 'number'
+      'first_column' in locationData && typeof locationData.first_column === 'number'
         ? locationData.first_column + 1
         : 1
 

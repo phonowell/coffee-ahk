@@ -35,17 +35,13 @@ export const replaceAnchor = async (source: string, content: string) => {
 
     // 生成 default 导入赋值
     if (defaultImport) {
-      listResult.push(
-        `${defaultImport} = ${MODULE_PREFIX}_${cacheSalt}_${meta.id}.default`,
-      )
+      listResult.push(`${defaultImport} = ${MODULE_PREFIX}_${cacheSalt}_${meta.id}.default`)
     }
 
     // 生成 named 导入赋值
     for (const named of namedImports) {
       const key = (named.split(':')[0] ?? '').trim()
-      listResult.push(
-        `${named} = ${MODULE_PREFIX}_${cacheSalt}_${meta.id}.${key}`,
-      )
+      listResult.push(`${named} = ${MODULE_PREFIX}_${cacheSalt}_${meta.id}.${key}`)
     }
   }
 

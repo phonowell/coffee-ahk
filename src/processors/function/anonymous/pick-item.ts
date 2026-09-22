@@ -1,8 +1,8 @@
 import Item from '../../../models/Item.js'
 import { findIndex } from '../../../utils/arrayHelpers.js'
 
-import type Scope from '../../../models/Scope'
-import type { Context } from '../../../types'
+import type Scope from '../../../models/Scope.js'
+import type { Context } from '../../../types/index.js'
 
 export const pickItem = (
   ctx: Context,

@@ -1,6 +1,6 @@
 // Context and parameter handling for implicit parameters
-import type Item from '../../../models/Item'
-import type { Context } from '../../../types'
+import type Item from '../../../models/Item.js'
+import type { Context } from '../../../types/index.js'
 
 const cacheContext = new Map<string, boolean>()
 const cacheParameter = new Set<string>()
@@ -22,10 +22,7 @@ export const pickContext = (ctx: Context, i: number, item: Item) => {
 
   if (
     it.is('edge', 'block-end') &&
-    it.scope.isEqual([
-      ...item.scope.slice(0, item.scope.length - 1),
-      'function',
-    ])
+    it.scope.isEqual([...item.scope.slice(0, item.scope.length - 1), 'function'])
   )
     return
 

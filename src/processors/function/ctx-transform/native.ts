@@ -9,7 +9,7 @@ import Item from '../../../models/Item.js'
 
 import { shouldVarUseCtxInNative } from './utils.js'
 
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 /**
  * Collect and transform Native string in a single pass (optimized).
@@ -42,14 +42,10 @@ export const collectAndTransformNative = (
     if (charBefore === '.') return match
     if (charBefore === 'ℓ') return match
     // Skip if inside %λ_xxx% (already transformed)
-    if (charBefore === '_' && offset >= 2 && result[offset - 2] === CTX)
-      return match
+    if (charBefore === '_' && offset >= 2 && result[offset - 2] === CTX) return match
 
     // Skip if inside %xxx% that was already transformed to %λ_xxx%
-    if (
-      charBefore === '%' ||
-      (charBefore === '_' && offset >= 3 && result[offset - 3] === '%')
-    )
+    if (charBefore === '%' || (charBefore === '_' && offset >= 3 && result[offset - 3] === '%'))
       return match
 
     const afterPos = offset + match.length
@@ -128,9 +124,7 @@ export const processNativeBlock = (
     out.push(new Item({ type: 'identifier', value: CTX, scope }))
     out.push(new Item({ type: '.', value: '.', scope }))
     out.push(new Item({ type: 'identifier', value: v, scope }))
-    out.push(
-      new Item({ type: 'new-line', value: scope.length.toString(), scope }),
-    )
+    out.push(new Item({ type: 'new-line', value: scope.length.toString(), scope }))
   }
 
   // Push transformed native items
@@ -152,9 +146,7 @@ export const processNativeBlock = (
   if (lastItem?.type === 'new-line') out.pop()
 
   for (const v of allVars) {
-    out.push(
-      new Item({ type: 'new-line', value: scope.length.toString(), scope }),
-    )
+    out.push(new Item({ type: 'new-line', value: scope.length.toString(), scope }))
     out.push(new Item({ type: 'identifier', value: CTX, scope }))
     out.push(new Item({ type: '.', value: '.', scope }))
     out.push(new Item({ type: 'identifier', value: v, scope }))
@@ -162,7 +154,5 @@ export const processNativeBlock = (
     out.push(new Item({ type: 'identifier', value: `${CTX}_${v}`, scope }))
   }
   // Add final newline after write-back
-  out.push(
-    new Item({ type: 'new-line', value: scope.length.toString(), scope }),
-  )
+  out.push(new Item({ type: 'new-line', value: scope.length.toString(), scope }))
 }

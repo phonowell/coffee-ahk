@@ -3,7 +3,7 @@ import Item from '../../../models/Item.js'
 import Scope from '../../../models/Scope.js'
 
 import type { Range } from './types.js'
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 /**
  * Check if the index is a single non-negative integer literal.

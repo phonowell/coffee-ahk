@@ -1,13 +1,10 @@
 // Reverse destructuring functionality
 import Item from '../../models/Item.js'
 
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 // Helper function to collect variables from object shorthand syntax
-const collectVariables = (
-  content: Context['content'],
-  startIndex: number,
-): string[] | null => {
+const collectVariables = (content: Context['content'], startIndex: number): string[] | null => {
   const variables: string[] = []
   let checkIndex = startIndex
   let currentItem = content.at(checkIndex)
@@ -60,8 +57,7 @@ export const reverseDeconstruct = (ctx: Context) => {
 
     // Check if this is a simple variable reference
     const afterBrace = content.at(braceIndex + 1)
-    if (afterBrace && !afterBrace.is('new-line') && !afterBrace.is('edge'))
-      return
+    if (afterBrace && !afterBrace.is('new-line') && !afterBrace.is('edge')) return
 
     ranges.push({ start: i + 2, end: braceIndex })
   })

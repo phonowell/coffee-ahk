@@ -1,13 +1,6 @@
-// Control flow rendering (if, switch, try)
-import type Item from '../models/Item.js'
-import type { Context as Context2 } from '../types'
+import type { RenderContext } from '../types/index.js'
 
-type Context = Context2 & {
-  i: number
-  it: Item
-}
-
-export const if2 = (ctx: Context): string => {
+export const renderIf = (ctx: RenderContext): string => {
   const { content, i, it } = ctx
   const { value } = it
 
@@ -25,7 +18,7 @@ export const if2 = (ctx: Context): string => {
   return ''
 }
 
-export const try2 = (ctx: Context): string => {
+export const renderTry = (ctx: RenderContext): string => {
   const { content, i, it } = ctx
   const { value } = it
 

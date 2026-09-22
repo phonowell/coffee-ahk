@@ -1,4 +1,4 @@
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 export const pickIndent = (ctx: Context, i: number): number => {
   const { content } = ctx

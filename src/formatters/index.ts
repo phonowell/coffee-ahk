@@ -26,75 +26,45 @@ import switchFormatter from './switch.js'
 import tryFormatter from './try.js'
 import whileFormatter from './while.js'
 
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 type Formatter = (ctx: Context) => boolean
 
-const formattersMap = {
-  'new-line': newLineFormatter,
-  alias: aliasFormatter,
-  array: arrayFormatter,
-  boolean: booleanFormatter,
-  bracket: bracketFormatter,
-  class: classFormatter,
-  comment: commentFormatter,
-  do: doFormatter,
-  for: forFormatter,
-  forbidden: forbiddenFormatter,
-  function: functionFormatter,
-  if: ifFormatter,
-  indent: indentFormatter,
-  // NOTE: previously misspelled as 'indentifier'; corrected to 'identifier'
-  identifier: identifierFormatter,
-  module: moduleFormatter,
-  native: nativeFormatter,
-  nil: nilFormatter,
-  number: numberFormatter,
-  object: objectFormatter,
-  operator: operatorFormatter,
-  property: propertyFormatter,
-  sign: signFormatter,
-  statement: statementFormatter,
-  string: stringFormatter,
-  switch: switchFormatter,
-  try: tryFormatter,
-  while: whileFormatter,
-} as const satisfies Record<string, Formatter>
-
-const formatterOrder = [
-  'new-line',
-  'alias',
-  'array',
-  'boolean',
-  'bracket',
-  'class',
-  'do',
-  'for',
-  'forbidden',
-  'function',
-  'if',
-  'indent',
-  'identifier',
-  'module',
-  'native',
-  'nil',
-  'number',
-  'object',
-  'operator',
-  'property',
-  'sign',
-  'statement',
-  'string',
-  'switch',
-  'try',
-  'while',
-] as const
+// Order matters: first formatter returning true consumes the token
+const formatters = [
+  newLineFormatter,
+  aliasFormatter,
+  arrayFormatter,
+  booleanFormatter,
+  bracketFormatter,
+  classFormatter,
+  doFormatter,
+  forFormatter,
+  forbiddenFormatter,
+  functionFormatter,
+  ifFormatter,
+  indentFormatter,
+  identifierFormatter,
+  moduleFormatter,
+  nativeFormatter,
+  nilFormatter,
+  numberFormatter,
+  objectFormatter,
+  operatorFormatter,
+  propertyFormatter,
+  signFormatter,
+  statementFormatter,
+  stringFormatter,
+  switchFormatter,
+  tryFormatter,
+  whileFormatter,
+] satisfies Formatter[]
 
 /** Apply formatters to transform context */
 const processFormatters = (context: Context) => {
-  for (const key of formatterOrder) if (formattersMap[key](context)) break
+  for (const fmt of formatters) if (fmt(context)) break
 
-  formattersMap.comment(context)
+  commentFormatter(context)
 }
 
 export default processFormatters

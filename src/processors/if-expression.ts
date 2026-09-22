@@ -16,7 +16,10 @@ import { ErrorType, TranspileError } from '../utils/error.js'
  */
 
 import type Item from '../models/Item.js'
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
+
+const hasNestedIf = (branch: Item[]): boolean =>
+  branch.some((it) => it.type === 'if' && it.value === 'if')
 
 export default (ctx: Context): void => {
   const { content } = ctx
@@ -159,9 +162,6 @@ export default (ctx: Context): void => {
     const elseBranch = content.slice(elseStart, elseEnd)
 
     // Check for nested if expressions (not supported)
-    const hasNestedIf = (branch: Item[]): boolean =>
-      branch.some((item) => item.type === 'if' && item.value === 'if')
-
     if (hasNestedIf(thenBranch) || hasNestedIf(elseBranch)) {
       throw new TranspileError(
         ctx,
@@ -177,18 +177,10 @@ export default (ctx: Context): void => {
     }
 
     // Filter out new-line items from branches
-    const cleanThenBranch = thenBranch.filter(
-      (item) => item.type !== 'new-line',
-    )
-    const cleanElseBranch = elseBranch.filter(
-      (item) => item.type !== 'new-line',
-    )
+    const cleanThenBranch = thenBranch.filter((it) => it.type !== 'new-line')
+    const cleanElseBranch = elseBranch.filter((it) => it.type !== 'new-line')
 
-    if (
-      condition.length === 0 ||
-      cleanThenBranch.length === 0 ||
-      cleanElseBranch.length === 0
-    )
+    if (condition.length === 0 || cleanThenBranch.length === 0 || cleanElseBranch.length === 0)
       continue
 
     // Create ternary operators

@@ -1,7 +1,7 @@
 import changeIndex from './change-index.js'
 import deconstruct from './deconstruct.js'
 
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 const main = (ctx: Context) => {
   // list[0] -> list[1]

@@ -1,7 +1,7 @@
 import Item from '../../models/Item.js'
 
-import type { ScopeType } from '../../models/ScopeType'
-import type { Context } from '../../types'
+import type { ScopeType } from '../../models/ScopeType.js'
+import type { Context } from '../../types/index.js'
 
 const main = (ctx: Context) => {
   const { content } = ctx
@@ -11,12 +11,7 @@ const main = (ctx: Context) => {
 
   const listContent: Item[] = []
   content.toArray().forEach((item) => {
-    if (
-      flag &&
-      (item.is('new-line') ||
-        item.is('bracket', '}') ||
-        item.is('bracket', ')'))
-    ) {
+    if (flag && (item.is('new-line') || item.is('bracket', '}') || item.is('bracket', ')'))) {
       flag = false
       const scope2: ScopeType[] = [...item.scope.toArray(), 'call']
       listContent.push(
@@ -26,15 +21,10 @@ const main = (ctx: Context) => {
       )
       // Pass this if fat arrow (=>) function
       if (isFatArrow) {
-        listContent.push(
-          new Item({ type: 'this', value: 'this', scope: scope2 }),
-        )
+        listContent.push(new Item({ type: 'this', value: 'this', scope: scope2 }))
       }
 
-      listContent.push(
-        new Item({ type: 'edge', value: 'call-end', scope: scope2 }),
-        item,
-      )
+      listContent.push(new Item({ type: 'edge', value: 'call-end', scope: scope2 }), item)
       isFatArrow = false
       return
     }
@@ -52,9 +42,7 @@ const main = (ctx: Context) => {
     isFatArrow = isDoFat
 
     // add `()` for type-checking
-    listContent.push(
-      new Item({ type: 'bracket', value: '(', scope: item.scope }),
-    )
+    listContent.push(new Item({ type: 'bracket', value: '(', scope: item.scope }))
   })
 
   content.reload(listContent)

@@ -3,7 +3,7 @@ import forbidden from '../../../../data/forbidden.json' with { type: 'json' }
 import { CTX } from '../../../constants.js'
 
 import type Item from '../../../models/Item.js'
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 /**
  * AHK keywords set (lowercase) for Native string variable detection.
@@ -17,11 +17,7 @@ export const AHK_KEYWORDS = new Set(
 )
 
 /** Check if a variable name should use ctx based on simple rules */
-export const shouldVarUseCtx = (
-  ctx: Context,
-  varName: string,
-  inFunction: boolean,
-): boolean => {
+export const shouldVarUseCtx = (ctx: Context, varName: string, inFunction: boolean): boolean => {
   if (!inFunction) return false
   if (ctx.cache.global.has(varName)) return false
   if (varName.startsWith('__') && varName.endsWith('__')) return false

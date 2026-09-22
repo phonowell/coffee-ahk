@@ -39,10 +39,7 @@ const generateBuiltins = async () => {
   const lines = [
     '// This file is auto-generated during build. Do not edit manually.',
     '',
-    ...segments.flatMap(({ name, content }) => [
-      `export const ${name}_ahk = \`${content}\``,
-      '',
-    ]),
+    ...segments.flatMap(({ name, content }) => [`export const ${name}_ahk = \`${content}\``, '']),
   ]
 
   await write(PATHS.builtins, lines.join('\n'))
@@ -69,5 +66,5 @@ export default async () => {
   await exec('tsc --emitDeclarationOnly')
 
   // Cleanup
-  await remove(['./dist/**/*', '!./dist/index.js', '!./dist/index.d.ts'])
+  await remove(['./dist/**/*.js', '!./dist/index.js'])
 }

@@ -6,7 +6,7 @@ import Scope from '../models/Scope.js'
 import processAst from '../processors/index.js'
 import render from '../renderer/index.js'
 
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 type Result = {
   ast: ReturnType<Context['content']['toArray']>
@@ -15,10 +15,10 @@ type Result = {
   warnings: string[]
 }
 
-const main = async (
-  cont: string,
-  option: Context['options'],
-): Promise<Result> => {
+// Placeholder for Context before the formatter loop assigns real tokens
+const EMPTY_TOKEN: Context['token'] = ['TERMINATOR', '', { first_line: 0, last_line: 0 }]
+
+const main = async (cont: string, option: Context['options']): Promise<Result> => {
   const ast = compile(cont, {
     ast: true,
   })
@@ -39,7 +39,7 @@ const main = async (
     },
     indent: 0,
     options: option,
-    token: undefined as unknown as Context['token'],
+    token: EMPTY_TOKEN,
     scope,
     type: '',
     value: '',

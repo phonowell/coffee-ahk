@@ -37,10 +37,7 @@ class Scope {
       if (this.#list.length !== target.length) return false
       return this.#list.every((item, i) => item === target.at(i))
     }
-    return (
-      this.#list.length === target.length &&
-      this.#list.every((item, i) => item === target[i])
-    )
+    return this.#list.length === target.length && this.#list.every((item, i) => item === target[i])
   }
 
   includes(value: ScopeType): boolean {

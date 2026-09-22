@@ -1,4 +1,4 @@
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 const main = (ctx: Context): boolean => {
   const { content, token, type, value } = ctx
@@ -38,10 +38,7 @@ const transAlias = (input: string, wrapper: string): string => {
 
   result = `"${result.replace(/"/g, '""')}"`
 
-  result =
-    wrapper.length === 3
-      ? result.replace(/\s*\n\s*/g, '')
-      : result.replace(/\s*\n\s*/g, ' ')
+  result = wrapper.length === 3 ? result.replace(/\s*\n\s*/g, '') : result.replace(/\s*\n\s*/g, ' ')
 
   return result
 }

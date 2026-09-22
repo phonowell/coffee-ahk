@@ -1,7 +1,7 @@
 // Object shorthand property processing
 import Item from '../../models/Item.js'
 
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 export const transformObjectShorthand = (ctx: Context) => {
   const { content } = ctx

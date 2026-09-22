@@ -84,8 +84,7 @@ export const getLineMapping = () => {
   // Sort modules
   const dependents = new Map<string, string[]>()
   for (const source of deps.keys()) dependents.set(source, [])
-  for (const [source, depList] of deps)
-    for (const dep of depList) dependents.get(dep)?.push(source)
+  for (const [source, depList] of deps) for (const dep of depList) dependents.get(dep)?.push(source)
 
   const inDegree = new Map<string, number>()
   for (const [source, depList] of deps) inDegree.set(source, depList.length)
@@ -140,8 +139,7 @@ export const sortModules = (): string[] => {
   // Build reverse graph: source -> modules that depend on it
   const dependents = new Map<string, string[]>()
   for (const source of deps.keys()) dependents.set(source, [])
-  for (const [source, depList] of deps)
-    for (const dep of depList) dependents.get(dep)?.push(source)
+  for (const [source, depList] of deps) for (const dep of depList) dependents.get(dep)?.push(source)
 
   // Kahn's algorithm: in-degree = number of dependencies (not dependents)
   const inDegree = new Map<string, number>()

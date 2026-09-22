@@ -2,7 +2,7 @@
 import Item from '../../../models/Item.js'
 import { sortBy } from '../../../utils/dataHelpers.js'
 
-import type { Context } from '../../../types'
+import type { Context } from '../../../types/index.js'
 
 const listCache: [number, Item[]][] = []
 const listContent: Item[] = []
@@ -25,10 +25,7 @@ export const resetCache = () => {
 }
 
 export const insertCache = () => {
-  for (const [index, listItem] of sortBy(
-    listCache,
-    (item) => item[0],
-  ).reverse())
+  for (const [index, listItem] of sortBy(listCache, (item) => item[0]).toReversed())
     listContent.splice(index, 0, ...listItem)
 }
 
@@ -51,10 +48,7 @@ export const cache = (ctx: Context, item: Item, i: number) => {
       // Replace scope up to and including 'parameter' with new call scope
       const scopeList = it.scope.toArray()
       const paramIndex = scopeList.indexOf('parameter')
-      const newScope =
-        paramIndex >= 0
-          ? [...scp[1], ...scopeList.slice(paramIndex + 1)]
-          : scp[1]
+      const newScope = paramIndex >= 0 ? [...scp[1], ...scopeList.slice(paramIndex + 1)] : scp[1]
       it.scope.reload(newScope)
       listItem.push(it)
     }

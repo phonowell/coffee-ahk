@@ -10,16 +10,13 @@ import { updateContent } from './change-index/update-content.js'
 
 import type { Range } from './change-index/types.js'
 import type Item from '../../models/Item.js'
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 /**
  * Collect the full array expression before index-start.
  * Supports chained expressions like: obj.items, nested[0], arr[i][j]
  */
-const collectArrayExpression = (
-  content: Context['content'],
-  startIndex: number,
-): Item[] => {
+const collectArrayExpression = (content: Context['content'], startIndex: number): Item[] => {
   const items: Item[] = []
   let j = startIndex
 
@@ -27,11 +24,7 @@ const collectArrayExpression = (
     const prev = content.at(j)
     if (!prev) break
 
-    if (
-      prev.type === 'identifier' ||
-      prev.type === 'property' ||
-      prev.type === '.'
-    ) {
+    if (prev.type === 'identifier' || prev.type === 'property' || prev.type === '.') {
       items.unshift(prev)
       j--
     } else if (prev.is('edge', 'index-end')) {
@@ -61,8 +54,7 @@ const collectArrayExpression = (
  * Check if the index expression is a string key (object property access).
  * String keys don't need 0→1 conversion.
  */
-const isStringIndex = (listUnwrap: Item[]): boolean =>
-  listUnwrap.some((it) => it.type === 'string')
+const isStringIndex = (listUnwrap: Item[]): boolean => listUnwrap.some((it) => it.type === 'string')
 
 /** Find all index-start positions in content. */
 const findAllIndexStarts = (content: Context['content']): number[] => {
@@ -120,12 +112,7 @@ const main = (ctx: Context) => {
     if (simpleIndex !== null) {
       const indexItem = listUnwrap.at(0)
       if (indexItem) {
-        processSimpleIndex(
-          [i + 1, iEnd - 1],
-          simpleIndex,
-          indexItem.scope,
-          update,
-        )
+        processSimpleIndex([i + 1, iEnd - 1], simpleIndex, indexItem.scope, update)
         processedItems.add(item)
       }
       continue
@@ -136,13 +123,7 @@ const main = (ctx: Context) => {
     if (arrayItems.length === 0) continue
 
     // Runtime processing via __ci__ helper
-    processIndexWithHelper(
-      ctx,
-      [i + 1, iEnd - 1],
-      listUnwrap,
-      arrayItems,
-      update,
-    )
+    processIndexWithHelper(ctx, [i + 1, iEnd - 1], listUnwrap, arrayItems, update)
 
     // Recalculate positions after content modification
     // Note: __ci__ calls are detected by next.is('identifier', token) check

@@ -1,4 +1,4 @@
-import type { Context } from '../types'
+import type { Context } from '../types/index.js'
 
 const main = (ctx: Context): boolean => {
   const { content, scope, token, type } = ctx

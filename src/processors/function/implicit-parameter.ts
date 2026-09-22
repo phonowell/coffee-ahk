@@ -8,12 +8,9 @@ import {
   pickContext,
   pickParameter,
 } from './implicit-parameter/context.js'
-import {
-  findFunctionStart,
-  removeTrailingComma,
-} from './implicit-parameter/utils.js'
+import { findFunctionStart, removeTrailingComma } from './implicit-parameter/utils.js'
 
-import type { Context } from '../../types'
+import type { Context } from '../../types/index.js'
 
 const main = (ctx: Context) => {
   const { content } = ctx
