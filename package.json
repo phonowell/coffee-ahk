@@ -63,5 +63,6 @@
   "engines": {
     "node": ">=20"
   },
+  "packageManager": "pnpm@11.8.0",
   "url": "https://github.com/phonowell/coffee-ahk"
 }

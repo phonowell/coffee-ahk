@@ -10,7 +10,7 @@ const ensureCleanWorkingTree = async (): Promise<void> => {
   }
 }
 
-/** 获取新版本号并创建 Git tag */
+/** 升级版本号并创建 Git tag（npm version 自动 commit + tag v0.0.x） */
 const bumpVersion = async (): Promise<string> => {
   const [, version] = await exec('npm version patch')
   if (!version?.trim()) {
@@ -19,25 +19,23 @@ const bumpVersion = async (): Promise<string> => {
   return version.trim()
 }
 
-/** 推送代码和 tag 到远程仓库 */
-const pushToRemote = async (version: string): Promise<void> => {
-  await exec(`git push origin ${version}`)
-  await exec(`git push origin ${MAIN_BRANCH}`)
+/** 推送代码和 tag 到远程仓库，触发 release workflow */
+const pushToRemote = async (): Promise<void> => {
+  await exec(`git push origin ${MAIN_BRANCH} --tags`)
 }
 
 export default async () => {
   // 确保工作区干净
   await ensureCleanWorkingTree()
 
-  // 执行构建
+  // 执行构建（预检，失败则不推 tag）
   await exec('pnpm build')
 
-  // 升级版本号
+  // 升级版本号并打 tag
   const version = await bumpVersion()
 
-  // 推送到远程仓库
-  await pushToRemote(version)
+  // 推送到远程仓库，由 .github/workflows/release.yml 完成 npm publish + GitHub Release
+  await pushToRemote()
 
-  // 发布到 npm
-  await exec('npm publish')
+  console.log(`已推送 ${version}，等待 GitHub Actions 完成发布`)
 }

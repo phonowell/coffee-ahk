@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Latest npm (trusted publishing support)
+        run: npm install -g npm@latest
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Publish to npm
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if npm view "coffee-ahk@${version}" version >/dev/null 2>&1; then
+            echo "coffee-ahk@${version} already published, skipping"
+          else
+            npm publish --access public --provenance
+          fi
+
+      - name: Resolve tag name
+        id: tag
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            echo "name=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=v$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.name }}
+          generate_release_notes: true

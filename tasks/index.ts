@@ -83,4 +83,9 @@ const main = async () => {
 }
 
 // 执行主函数
-main().then(() => process.exit(0))
+main()
+  .then(() => process.exit(0))
+  .catch((e: unknown) => {
+    console.error(e)
+    process.exit(1)
+  })
