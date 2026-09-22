@@ -104,6 +104,11 @@ node dist/index.js file.coffee
 | Class method arrow 缺少 this | addBind() 未检测 classMethods | 更新 params.ts + bind.ts |
 | Item 跨位置复用串改 | Item 字段就地可变是设计 | 复用前必须 `clone()` |
 | salt 魔法值 | builtin 段用 `BUILTIN_SALT='salt'` 编译跳过 ctx-transform | 见 constants.ts，勿在业务 salt 用该值 |
+| `for k of obj` 单变量语义 | CoffeeScript `of` 遍历 key，需生成 `k, ℓval of`（占位符在 value 位） | for.ts 对 forof 用 `list.push(VAL_FOR)`，勿用 unshift |
+| instanceof 比较恒 false | `__Class` 存全角类名，比较字符串必须同样全角 | 用 `utils/full-width.ts` 的 `toFullWidth()`，勿手写 ASCII 名 |
+| 内置函数名泄漏 | gen 文件内函数名是字面 `salt_1` | build-in-loader 统一替换 `{salt}_ci`/`{salt}_typeof`，新增内置需同样处理 |
+| 字符串转义损坏 | 顺序 `replace` 会吃掉 `\\n` 等已转义序列 | string.ts 逐字符处理；单引号字面量仅 `\\`/`\'` 是转义 |
+| catch 变量闭包 | `catch e` 绑定的是裸局部变量，嵌套函数引用 `λ.e` | transform-vars 在 catch block-start 处桥接 `λ.e := e` |
 
 ## 工作流程
 
