@@ -1,5 +1,5 @@
 import Item from '../models/Item.js'
-import { ErrorType, TranspileError } from '../utils/error.js'
+import { createTranspileError, ErrorType } from '../utils/error.js'
 
 import type { Context } from '../types/index.js'
 
@@ -23,8 +23,7 @@ const main = (ctx: Context) => {
 
       const next = content.at(j + 1)
       if (!next) {
-        throw new TranspileError(
-          ctx,
+        throw createTranspileError(
           ErrorType.SYNTAX_ERROR,
           `missing variable name after for/in keyword`,
           `Add variable name after 'for' keyword`,
@@ -48,8 +47,7 @@ const main = (ctx: Context) => {
 
     const index = findIndex(i)
     if (index < 0) {
-      throw new TranspileError(
-        ctx,
+      throw createTranspileError(
         ErrorType.SYNTAX_ERROR,
         `missing block-start after for/in statement`,
         `Ensure for loop has proper block structure`,
@@ -58,8 +56,7 @@ const main = (ctx: Context) => {
 
     const next = content.at(index + 1)
     if (!next) {
-      throw new TranspileError(
-        ctx,
+      throw createTranspileError(
         ErrorType.SYNTAX_ERROR,
         `missing block-start after for/in statement`,
         `Ensure for loop has proper block structure`,

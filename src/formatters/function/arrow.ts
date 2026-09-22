@@ -69,12 +69,12 @@ export const arrow = (ctx: Context, type: string) => {
   } else if (type === '=>' && !isClassMethod) {
     // Use ℓthis parameter for => outside class method definitions
     const scp2: ScopeType[] = [...scope.toArray(), 'parameter']
-    content.splice(
-      findEdge(ctx) + 1,
-      0,
-      new Item({ type: 'identifier', value: THIS, scope: scp2 }),
-      new Item({ type: 'sign', value: ',', scope: scp2 }),
-    )
+    const insertAt = findEdge(ctx) + 1
+    const items = [new Item({ type: 'identifier', value: THIS, scope: scp2 })]
+    // Empty parameter list `() =>`: no trailing comma before parameter-end
+    if (!content.at(insertAt)?.is('edge', 'parameter-end'))
+      items.push(new Item({ type: 'sign', value: ',', scope: scp2 }))
+    content.splice(insertAt, 0, ...items)
   }
 
   scope.push('function')

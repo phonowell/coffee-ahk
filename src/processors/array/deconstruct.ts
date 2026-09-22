@@ -1,6 +1,6 @@
 import { ARRAY } from '../../constants.js'
 import Item from '../../models/Item.js'
-import { ErrorType, TranspileError } from '../../utils/error.js'
+import { createTranspileError, ErrorType } from '../../utils/error.js'
 import { getForbiddenReason, isVariableForbidden } from '../../utils/forbidden.js'
 
 import { pickIndent } from './deconstruct/pick-indent.js'
@@ -70,8 +70,7 @@ const main = (ctx: Context) => {
     listPre.forEach((preItems) => {
       preItems.forEach((it) => {
         if (it.type === 'identifier' && isVariableForbidden(it.value)) {
-          throw new TranspileError(
-            ctx,
+          throw createTranspileError(
             ErrorType.FORBIDDEN,
             `array destructuring target '${it.value}' cannot be used (${getForbiddenReason(it.value)})`,
             `Choose a different variable name`,

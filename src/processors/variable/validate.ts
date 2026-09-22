@@ -1,4 +1,4 @@
-import { ErrorType, TranspileError } from '../../utils/error.js'
+import { createTranspileError, ErrorType } from '../../utils/error.js'
 import { getForbiddenReason, isVariableForbidden } from '../../utils/forbidden.js'
 
 import type { Context } from '../../types/index.js'
@@ -11,8 +11,7 @@ const checkSimpleAssignment = (ctx: Context, i: number): void => {
   if (!item?.is('identifier') || !next?.is('sign', '=')) return
 
   if (isVariableForbidden(item.value)) {
-    throw new TranspileError(
-      ctx,
+    throw createTranspileError(
       ErrorType.FORBIDDEN,
       `variable '${item.value}' cannot be used (${getForbiddenReason(item.value)})`,
       `Choose a different variable name`,
@@ -33,19 +32,19 @@ const checkFunctionParameters = (ctx: Context, i: number): void => {
   const isAfterCommaInParameters =
     prev?.is('sign', ',') &&
     (() => {
-      // 向前查找最近的 edge 标记
-      for (let j = i - 2; j >= Math.max(0, i - 10); j--) {
+      // 向前查找最近的 edge 标记 —— 无窗口上限，参数列表可任意长
+      for (let j = i - 2; j >= 0; j--) {
         const edge = content.at(j)
         if (edge?.is('edge', 'parameter-start')) return true
         if (edge?.is('edge', 'parameter-end')) return false
+        if (edge?.type === 'new-line') return false
       }
       return false
     })()
 
   if (isAfterParameterStart || isAfterCommaInParameters) {
     if (isVariableForbidden(item.value)) {
-      throw new TranspileError(
-        ctx,
+      throw createTranspileError(
         ErrorType.FORBIDDEN,
         `parameter '${item.value}' cannot be used (${getForbiddenReason(item.value)})`,
         `Choose a different parameter name`,
@@ -63,8 +62,7 @@ const checkCatchVariable = (ctx: Context, i: number): void => {
   if (!prev?.is('try', 'catch')) return
 
   if (isVariableForbidden(item.value)) {
-    throw new TranspileError(
-      ctx,
+    throw createTranspileError(
       ErrorType.FORBIDDEN,
       `catch variable '${item.value}' cannot be used (${getForbiddenReason(item.value)})`,
       `Choose a different variable name`,
@@ -86,8 +84,7 @@ const checkForLoopVariables = (ctx: Context, i: number): void => {
 
     if (current.type === 'identifier') {
       if (isVariableForbidden(current.value)) {
-        throw new TranspileError(
-          ctx,
+        throw createTranspileError(
           ErrorType.FORBIDDEN,
           `for loop variable '${current.value}' cannot be used (${getForbiddenReason(current.value)})`,
           `Choose a different loop variable name`,
@@ -95,6 +92,24 @@ const checkForLoopVariables = (ctx: Context, i: number): void => {
       }
     }
   }
+}
+
+const checkReservedReads = (ctx: Context, i: number): void => {
+  const { content } = ctx
+  const item = content.at(i)
+
+  // `arguments`/`eval` arrive as plain identifiers — AHK v1 has neither an
+  // arguments object nor eval; bare reads would compile to an empty λ.member
+  if (!item?.is('identifier')) return
+  if (item.value !== 'arguments' && item.value !== 'eval') return
+
+  throw createTranspileError(
+    ErrorType.UNSUPPORTED,
+    `'${item.value}' is not supported — AHK v1 has no '${item.value}' equivalent`,
+    item.value === 'arguments'
+      ? `Use a variadic parameter instead: fn = (args...) -> args`
+      : `Precompute the value — AHK cannot evaluate code at runtime`,
+  )
 }
 
 const checkObjectKeys = (ctx: Context, i: number): void => {
@@ -108,8 +123,7 @@ const checkObjectKeys = (ctx: Context, i: number): void => {
   // Note: This also handles object destructuring keys like {A_Index: idx}
   // because formatters convert them to 'property' type
   if (item.value.toLowerCase().startsWith('a_')) {
-    throw new TranspileError(
-      ctx,
+    throw createTranspileError(
       ErrorType.FORBIDDEN,
       `object key or class property '${item.value}' cannot use A_ prefix - reserved for AHK built-in variables`,
       `Rename property to avoid A_ prefix`,
@@ -125,6 +139,7 @@ const main = (ctx: Context) => {
     checkFunctionParameters(ctx, i)
     checkCatchVariable(ctx, i)
     checkForLoopVariables(ctx, i)
+    checkReservedReads(ctx, i)
     checkObjectKeys(ctx, i)
   })
 }

@@ -6,9 +6,11 @@ import forProcessor from './for.js'
 import functionProcessor from './function/index.js'
 import ifExpressionProcessor from './if-expression.js'
 import instanceofProcessor from './instanceof.js'
+import logicalAndProcessor from './logical-and.js'
 import logicalOrProcessor from './logical-or.js'
 import newLineProcessor from './new-line.js'
 import objectProcessor from './object.js'
+import spreadProcessor from './spread.js'
 import typeofProcessor from './typeof.js'
 import variableProcessor from './variable/index.js'
 import validate from './variable/validate.js'
@@ -26,7 +28,9 @@ const processAst = (context: Context) => {
   arrayProcessor(context)
   objectProcessor(context)
   logicalOrProcessor(context) // convert || to ternary for default values
+  logicalAndProcessor(context) // convert && literal-chains to ternary for value patterns
   ifExpressionProcessor(context) // convert if-then-else to ternary
+  spreadProcessor(context) // f(...args) → f.Call(args*)
   chainedCompareProcessor(context) // expand 1<y<10 → 1<y && y<10
   typeofProcessor(context) // before variable to handle typeof identifiers
   instanceofProcessor(context) // convert class name to string

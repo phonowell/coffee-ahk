@@ -11,7 +11,10 @@ import type { ParamsInfo } from './params.js'
 import type { ScopeType } from '../../../models/ScopeType.js'
 import type { Context } from '../../../types/index.js'
 
-/** Add .Bind() after Func() calls - .Bind(λ) inside functions, .Bind({}) at top level */
+/**
+ * Add .Bind() after Func() calls - .Bind(λ) inside functions and .Bind({}) at
+ * top level (top-level for/catch vars are super-globals, no snapshot needed).
+ */
 export const addBind = (ctx: Context, paramsInfo: ParamsInfo) => {
   const { content } = ctx
   const { classMethods } = paramsInfo
@@ -57,7 +60,6 @@ export const addBind = (ctx: Context, paramsInfo: ParamsInfo) => {
         out.push(new Item({ type: 'this', value: 'this', scope: callScope }))
       }
     } else {
-      // Top level: bind to empty object {}
       out.push(new Item({ type: 'edge', value: 'object-start', scope: callScope }))
       out.push(new Item({ type: 'edge', value: 'object-end', scope: callScope }))
     }

@@ -1,5 +1,5 @@
 import { findLastIndex } from '../../../utils/arrayHelpers.js'
-import { ErrorType, TranspileError } from '../../../utils/error.js'
+import { createTranspileError, ErrorType } from '../../../utils/error.js'
 
 import { pickItem } from './pick-item.js'
 
@@ -17,8 +17,7 @@ export const next = (ctx: Context, count = 1) => {
 
   const it = content.at(i)
   if (!it) {
-    throw new TranspileError(
-      ctx,
+    throw createTranspileError(
       ErrorType.SYNTAX_ERROR,
       `missing anonymous function at expected index`,
       `Check function extraction logic`,

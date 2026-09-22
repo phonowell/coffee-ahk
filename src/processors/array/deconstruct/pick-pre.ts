@@ -1,6 +1,6 @@
 import { at } from 'fire-keeper'
 
-import { ErrorType, TranspileError } from '../../../utils/error.js'
+import { createTranspileError, ErrorType } from '../../../utils/error.js'
 
 import type Item from '../../../models/Item.js'
 import type { Context } from '../../../types/index.js'
@@ -22,8 +22,7 @@ export const pickPre = (
 
   // Detect nested array destructuring [a, [b, c]] = ...
   if (it.is('edge', 'array-end')) {
-    throw new TranspileError(
-      ctx,
+    throw createTranspileError(
       ErrorType.UNSUPPORTED,
       `nested array destructuring '[a, [b, c]] = x' is not supported`,
       `Flatten destructuring manually: use '[a, item] = x' then '[b, c] = item'`,

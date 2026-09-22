@@ -1,7 +1,29 @@
+import { ErrorType, TranspileError } from '../utils/error.js'
+
 import type { Context } from '../types/index.js'
 
 const main = (ctx: Context) => {
   const { content, scope, type } = ctx
+
+  // `try`/`catch`/`finally` are statements — a mid-line occurrence like
+  // `x = try f() catch e` would emit `x := try {` — invalid AHK
+  if (['try', 'catch', 'finally'].includes(type)) {
+    const prev = content.at(-1)
+    // `catch`/`finally` legitimately follow the try-block's `block-end`
+    const ok =
+      !prev ||
+      prev.type === 'new-line' ||
+      prev.is('edge', 'block-start') === true ||
+      (type !== 'try' && prev.is('edge', 'block-end') === true)
+    if (!ok) {
+      throw new TranspileError(
+        ctx,
+        ErrorType.UNSUPPORTED,
+        `'${type}' in expression position is not supported`,
+        `Use a statement-level '${type}' block, or wrap in 'do ->' with 'return'`,
+      )
+    }
+  }
 
   if (type === 'catch') {
     scope.next = 'catch'

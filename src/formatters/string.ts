@@ -99,6 +99,12 @@ const transAlias = (input: string, wrapper: string): string => {
       continue
     }
 
+    // `\<newline>` is a line continuation — both chars disappear entirely
+    if (next === '\n') {
+      i += 2
+      continue
+    }
+
     const mapped = ESCAPE_MAP[next ?? '']
     if (mapped !== undefined) {
       out.push(mapped)
@@ -139,7 +145,21 @@ const transAlias = (input: string, wrapper: string): string => {
   }
 
   const result = `"${out.join('')}"`
-  return wrapper.length === 3 ? result.replace(/\s*\n\s*/g, '') : result.replace(/\s*\n\s*/g, ' ')
+  // Heredoc ('''/""") preserves newlines in CoffeeScript — emit `n escapes.
+  // The boundary newline right after the opener / before the closer is dropped,
+  // and every line loses the common leading indent (smallest across non-empty).
+  if (wrapper.length === 3) {
+    const body = result.replace(/^"\n/, '"').replace(/\n"$/, '"').slice(1, -1)
+    const lines = body.split('\n')
+    const indents = lines.filter((l) => l.trim()).map((l) => /^[ \t]*/.exec(l)?.at(0)?.length ?? 0)
+    const min = indents.length ? Math.min(...indents) : 0
+    const dedented = lines
+      .map((l) => l.slice(Math.min(min, /^[ \t]*/.exec(l)?.at(0)?.length ?? 0)))
+      .join('`n')
+    return `"${dedented}"`
+  }
+  // Multiline single/double-quoted strings collapse newlines to a space
+  return result.replace(/\s*\n\s*/g, ' ')
 }
 
 export default main

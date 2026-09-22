@@ -1,6 +1,6 @@
 // Instanceof processor: converts identifier after instanceof-class marker to string
 import Item from '../models/Item.js'
-import { ErrorType, TranspileError } from '../utils/error.js'
+import { createTranspileError, ErrorType } from '../utils/error.js'
 import { toFullWidth } from '../utils/full-width.js'
 
 import type { Context } from '../types/index.js'
@@ -21,8 +21,7 @@ const main = (ctx: Context) => {
       // silently emitting `x.__Class == (Foo)` compares string to object
       const nx = content.at(i + 1)
       if (nx && nx.type !== 'identifier' && nx.type !== 'this') {
-        throw new TranspileError(
-          ctx,
+        throw createTranspileError(
           ErrorType.UNSUPPORTED,
           `'instanceof' requires a class name, got '${nx.value}'`,
           `Use a plain class name like 'obj instanceof Foo'`,
@@ -51,8 +50,7 @@ const main = (ctx: Context) => {
       skipUntil = j
 
       if (!name) {
-        throw new TranspileError(
-          ctx,
+        throw createTranspileError(
           ErrorType.UNSUPPORTED,
           `'instanceof' requires a class name, got '${item.value}'`,
           `Use a plain class name like 'obj instanceof Foo'`,
@@ -61,8 +59,7 @@ const main = (ctx: Context) => {
 
       const next = content.at(skipUntil)
       if (next?.is('edge', 'call-start') || next?.is('edge', 'index-start')) {
-        throw new TranspileError(
-          ctx,
+        throw createTranspileError(
           ErrorType.UNSUPPORTED,
           `'instanceof' does not support call/index expressions on the right side`,
           `Assign the expression to a class name variable first`,

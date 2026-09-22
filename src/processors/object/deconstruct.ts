@@ -1,7 +1,7 @@
 // Object deconstruction functionality
 import { OBJECT } from '../../constants.js'
 import Item from '../../models/Item.js'
-import { ErrorType, TranspileError } from '../../utils/error.js'
+import { createTranspileError, ErrorType } from '../../utils/error.js'
 import { getForbiddenReason, isVariableForbidden } from '../../utils/forbidden.js'
 
 import type { Context } from '../../types/index.js'
@@ -38,8 +38,7 @@ export const deconstruct = (ctx: Context) => {
       }
 
       if (it.is('bracket', '{') || it.is('edge', 'array-start')) {
-        throw new TranspileError(
-          ctx,
+        throw createTranspileError(
           ErrorType.UNSUPPORTED,
           `nested destructuring in object pattern is not supported`,
           `Destructure nested objects in a separate statement`,
@@ -56,8 +55,7 @@ export const deconstruct = (ctx: Context) => {
             j += 3
             continue
           }
-          throw new TranspileError(
-            ctx,
+          throw createTranspileError(
             ErrorType.UNSUPPORTED,
             `unsupported destructuring target after '${key}:'`,
             `Use a plain variable name: '{ ${key}: name }'`,
@@ -68,8 +66,7 @@ export const deconstruct = (ctx: Context) => {
         continue
       }
 
-      throw new TranspileError(
-        ctx,
+      throw createTranspileError(
         ErrorType.UNSUPPORTED,
         `unsupported '${it.value}' in object destructuring`,
         `Use '{ key }' or '{ key: variable }' patterns`,
@@ -147,8 +144,7 @@ export const deconstruct = (ctx: Context) => {
     // Validate object destructuring targets
     pending.forEach(({ name }) => {
       if (!isVariableForbidden(name)) return
-      throw new TranspileError(
-        ctx,
+      throw createTranspileError(
         ErrorType.FORBIDDEN,
         `object destructuring target '${name}' cannot be used (${getForbiddenReason(name)})`,
         `Choose a different variable name`,

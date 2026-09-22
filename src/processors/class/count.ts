@@ -1,4 +1,4 @@
-import { ErrorType, TranspileError } from '../../utils/error.js'
+import { createTranspileError, ErrorType } from '../../utils/error.js'
 
 import type { Context } from '../../types/index.js'
 
@@ -11,8 +11,7 @@ const main = (ctx: Context) => {
 
     const it = content.at(i + 1)
     if (!it) {
-      throw new TranspileError(
-        ctx,
+      throw createTranspileError(
         ErrorType.SYNTAX_ERROR,
         `missing identifier after class keyword`,
         `Add class name after 'class' keyword`,

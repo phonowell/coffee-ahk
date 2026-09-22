@@ -5,7 +5,24 @@ const handleIndentEarlyReturns = (ctx: Context): boolean => {
 
   if (content.at(-1)?.is('sign', '=')) return true
 
-  if (['array', 'call', 'object', 'parameter'].includes(scope.last)) return true
+  if (['array', 'call', 'object', 'parameter'].includes(scope.last)) {
+    // Coffee emits INDENT (not TERMINATOR) for newlines inside {} / [] / () —
+    // the line break between entries still needs a comma: `{a: 1\n b: 2}`.
+    // Skip when the break follows an opener, a comma, or `:` (a value that
+    // continues on the next line is not a separator).
+    const last = content.at(-1)
+    if (
+      last &&
+      !last.is('sign', ',') &&
+      !(last.type === 'sign' && last.value === ':') &&
+      !(last.type === 'bracket' && (last.value === '{' || last.value === '[')) &&
+      !(last.type === 'edge' && last.value.endsWith('-start'))
+    ) {
+      if (last.is('new-line')) content.pop()
+      content.push({ type: 'sign', value: ',' })
+    }
+    return true
+  }
 
   return false
 }

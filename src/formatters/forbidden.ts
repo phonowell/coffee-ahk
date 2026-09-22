@@ -68,6 +68,28 @@ const main = (ctx: Context) => {
     )
   }
 
+  // `///...///` block regex — AHK v1 has no regex literal; an unconsumed
+  // REGEX token would silently glue the following statement onto the line
+  if (type === 'regex') {
+    throw new TranspileError(
+      ctx,
+      ErrorType.UNSUPPORTED,
+      `regex literal is not supported`,
+      `Use a pattern string with RegExMatch()/RegExReplace()`,
+    )
+  }
+
+  // Infinity has no formatter — without one the token is dropped and the
+  // assignment glues onto the next line (`inf := nan := ""`)
+  if (type === 'infinity') {
+    throw new TranspileError(
+      ctx,
+      ErrorType.UNSUPPORTED,
+      `Infinity literal is not supported`,
+      `Use a large number literal or a sentinel value`,
+    )
+  }
+
   return false
 }
 

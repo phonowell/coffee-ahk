@@ -1,20 +1,21 @@
 /**
- * Convert logical OR (||) operator to ternary expression for default values.
- * Transforms: a := b || 2 → a := b ? b : 2
- * Chained: a := x || y || 2 → a := (ℓor := x) ? ℓor : ((ℓor := y) ? ℓor : 2)
+ * Convert logical AND (&&) chains ending in a non-boolean literal to ternary
+ * expressions for value-producing patterns.
+ * Transforms: a := b && "yes" → a := (ℓand := b) ? "yes" : ℓand
+ * Chained: a := x && y && "d" → a := (ℓand := x) ? ((ℓand := y) ? "d" : ℓand) : ℓand
  *
- * This is necessary because in AHK v1, || returns boolean (0 or 1),
- * not the first truthy value like in JavaScript.
+ * This is necessary because in AHK v1, && returns boolean (0 or 1),
+ * not the last evaluated operand like in JavaScript.
  */
 
 import Item from '../models/Item.js'
 
 import type { Context } from '../types/index.js'
 
-const OR_TEMP = 'ℓor'
+const AND_TEMP = 'ℓand'
 
-/** Split items on top-level `||` operators (operators nested in edges/brackets are kept inside their part). */
-const splitOnOr = (items: Item[]): Item[][] => {
+/** Split items on top-level `&&` operators (nested edges/brackets stay inside their part). */
+const splitOnAnd = (items: Item[]): Item[][] => {
   const parts: Item[][] = [[]]
   let depth = 0
   for (const it of items) {
@@ -22,22 +23,6 @@ const splitOnOr = (items: Item[]): Item[][] => {
     else if (it.type === 'edge' && it.value.endsWith('-end')) depth--
     else if (it.type === 'bracket' && (it.value === '(' || it.value === '{')) depth++
     else if (it.type === 'bracket' && (it.value === ')' || it.value === '}')) depth--
-    else if (depth === 0 && it.type === 'logical-operator' && it.value === '||') {
-      parts.push([])
-      continue
-    }
-    parts.at(-1)?.push(it)
-  }
-  return parts
-}
-
-/** Split a `||` operand on top-level `&&` — `b && "c"` is tighter and stays one part. */
-const splitOnAnd = (items: Item[]): Item[][] => {
-  const parts: Item[][] = [[]]
-  let depth = 0
-  for (const it of items) {
-    if (isOpener(it)) depth++
-    else if (isCloser(it)) depth--
     else if (depth === 0 && it.type === 'logical-operator' && it.value === '&&') {
       parts.push([])
       continue
@@ -70,7 +55,7 @@ const isLeftBoundary = (it: Item): boolean =>
   (it.type === 'sign' && ['=', ':=', ',', '?', ':'].includes(it.value)) ||
   (it.type === 'statement' && (it.value === 'return' || it.value === 'throw'))
 
-/** Hard statement boundary — the `||` is not in a value position. */
+/** Hard statement boundary — the `&&` is not in a value position. */
 const isStatementBoundary = (it: Item): boolean =>
   it.type === 'new-line' ||
   it.type === 'if' ||
@@ -80,16 +65,28 @@ const isStatementBoundary = (it: Item): boolean =>
   it.type === 'class' ||
   (it.type === 'statement' && it.value !== 'return' && it.value !== 'throw')
 
+/** A top-level `||` inside an operand has looser precedence — regrouping
+ * `a || b && "d"` into `(a || b) && "d"` would invert the semantics. */
+const containsOr = (part: Item[]): boolean => {
+  let depth = 0
+  return part.some((it) => {
+    if (isOpener(it)) depth++
+    else if (isCloser(it)) depth--
+    else if (depth === 0 && it.type === 'logical-operator' && it.value === '||') return true
+    return false
+  })
+}
+
 export default (ctx: Context): void => {
   const { content } = ctx
 
   for (let i = 0; i < content.length; i++) {
     const item = content.at(i)
-    if (item?.type !== 'logical-operator' || item.value !== '||') continue
+    if (item?.type !== 'logical-operator' || item.value !== '&&') continue
 
     // Locate the chain start: scan backward with depth tracking so operand
-    // groups like `(a && b) || "c"` stay whole. `&&` binds tighter so it is
-    // transparent here — `a || b && c` keeps `b && c` as the right operand.
+    // groups like `(a || b) && "c"` stay whole. `||` bounds an && chain on
+    // the left — `a || b && "c"` is `a || (b && "c")`, not `(a || b) && "c"`.
     let depth = 0
     let leftStart = -1
     for (let j = i - 1; j >= 0; j--) {
@@ -105,15 +102,19 @@ export default (ctx: Context): void => {
         continue
       }
       if (isStatementBoundary(prev)) break
-      if (isLeftBoundary(prev) || isOpener(prev)) {
+      if (
+        (prev.type === 'logical-operator' && prev.value === '||') ||
+        isLeftBoundary(prev) ||
+        isOpener(prev)
+      ) {
         leftStart = j + 1
         break
       }
-      // identifiers, literals, `||`, `&&`, math — chain content
+      // identifiers, literals, `&&`, math — chain content
     }
     if (leftStart === -1) continue
 
-    // Find the end of the chain (everything up to the next boundary)
+    // Find the end of the chain — `||` also bounds it on the right
     depth = 0
     let rightEnd = content.length
     for (let j = i + 1; j < content.length; j++) {
@@ -132,50 +133,34 @@ export default (ctx: Context): void => {
         isCloser(next) ||
         isStatementBoundary(next) ||
         next.is('sign', ',') ||
-        (next.type === 'sign' && (next.value === '?' || next.value === ':'))
+        (next.type === 'sign' && (next.value === '?' || next.value === ':')) ||
+        (next.type === 'logical-operator' && next.value === '||')
       ) {
         rightEnd = j
         break
       }
     }
 
-    // Split the whole chain into || -separated parts so multi-operand chains
-    // (`a || b || 2`) don't collapse `a || b` into a boolean
-    const parts = splitOnOr(content.slice(leftStart, rightEnd)).filter((p) => p.length > 0)
+    // Split the whole chain into &&-separated parts so multi-operand chains
+    // (`a && b && "d"`) evaluate left-to-right preserving operand values
+    const parts = splitOnAnd(content.slice(leftStart, rightEnd)).filter((p) => p.length > 0)
     if (parts.length < 2) continue
 
     // Only convert if the last operand is a non-boolean literal (number, string, nil)
-    // — this distinguishes `a = b || 2` from `a = b || c` — or a `&&` chain
-    // ending in a literal (`a || b && "c"` = `a || (b && "c")`), where the
-    // operand's value intent makes the whole || value-producing too. The &&
-    // part is left raw here and converted by logicalAnd afterwards.
-    const lastPart = parts.at(-1) ?? []
-    if (!isNonBooleanLiteral(lastPart)) {
-      // `a || b && "c"` / `a || (b && "c")` — the right operand is an && chain
-      // ending in a literal, so the whole || is value-producing too. Unwrap a
-      // single balanced paren group first; the && part is converted later by
-      // logicalAnd.
-      let inner = lastPart
-      const first = inner.at(0)
-      const last = inner.at(-1)
-      if (first?.is('bracket', '(') && last?.is('bracket', ')')) {
-        let lvl = 0
-        const balanced = inner.every((it, idx) => {
-          if (it.is('bracket', '(')) lvl++
-          else if (it.is('bracket', ')')) lvl--
-          return idx === inner.length - 1 ? lvl === 0 : lvl > 0
-        })
-        if (balanced) inner = inner.slice(1, -1)
-      }
-      const andParts = splitOnAnd(inner).filter((p) => p.length > 0)
-      if (andParts.length < 2 || !isNonBooleanLiteral(andParts.at(-1) ?? [])) continue
-    }
+    // This distinguishes value patterns (a = b && "yes") from boolean logic (a = b && c)
+    if (!isNonBooleanLiteral(parts.at(-1) ?? [])) continue
+
+    // A top-level `||` inside an operand has looser precedence — regrouping
+    // `a || b && "d"` into `(a || b) && "d"` would invert the semantics
+    if (parts.slice(0, -1).some(containsOr)) continue
 
     const first = parts.at(0)?.at(0)
     if (!first) continue
 
-    // Right-fold into nested ternaries, each level binding its operand to ℓor
-    // so every operand is evaluated once and its value preserved
+    // Right-fold into nested ternaries, each level binding its operand to ℓand
+    // so every operand is evaluated once and its value preserved.
+    // Group parens are emitted as 'bracket' (not 'edge') so renderSign's `:`
+    // lookback — which stops at edges — can still find the matching `?`.
     let ternary: Item[] = parts.at(-1) ?? []
     for (let k = parts.length - 2; k >= 0; k--) {
       const part = parts.at(k)
@@ -191,17 +176,17 @@ export default (ctx: Context): void => {
       colon.value = ':'
 
       ternary = [
-        new Item({ type: 'edge', value: 'expression-start', scope: partScope }),
-        new Item({ type: 'edge', value: 'expression-start', scope: partScope }),
-        new Item({ type: 'identifier', value: OR_TEMP, scope: partScope }),
+        new Item({ type: 'bracket', value: '(', scope: partScope }),
+        new Item({ type: 'bracket', value: '(', scope: partScope }),
+        new Item({ type: 'identifier', value: AND_TEMP, scope: partScope }),
         new Item({ type: 'sign', value: '=', scope: partScope }),
         ...part,
-        new Item({ type: 'edge', value: 'expression-end', scope: partScope }),
+        new Item({ type: 'bracket', value: ')', scope: partScope }),
         questionMark,
-        new Item({ type: 'identifier', value: OR_TEMP, scope: partScope }),
-        colon,
         ...ternary,
-        new Item({ type: 'edge', value: 'expression-end', scope: partScope }),
+        colon,
+        new Item({ type: 'identifier', value: AND_TEMP, scope: partScope }),
+        new Item({ type: 'bracket', value: ')', scope: partScope }),
       ]
     }
 
