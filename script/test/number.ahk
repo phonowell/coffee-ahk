@@ -11,3 +11,6 @@ global j := 999999999
 global k := 0x1e5
 global l := 0.001
 global m := 150
+global n := 5
+global o := 15
+global p := 0x1F

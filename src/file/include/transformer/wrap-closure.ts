@@ -40,9 +40,9 @@ export const wrapInClosureAndAssign = (
   if (returnLine) codeLines.push(returnLine)
 
   const closureBody = wrapClosure(codeLines.join('\n'))
-  const hasExports = exportDefault.length > 0 || exportNamed.length > 0
 
-  return [hasExports ? `${MODULE_PREFIX}_${salt}_${meta.id} = do ->` : 'do ->', closureBody].join(
-    '\n',
-  )
+  // Always bind the module variable — even a side-effect-only or empty module
+  // may be default/named-imported elsewhere (`import m from './empty'` must not
+  // reference an undeclared ℓm_* variable)
+  return `${MODULE_PREFIX}_${salt}_${meta.id} = do ->\n${closureBody}`
 }

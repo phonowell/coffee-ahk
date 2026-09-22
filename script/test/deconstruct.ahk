@@ -26,7 +26,6 @@ ahk_1(λ) {
   λ.pairs := [[1, 2], [3, 4]]
   for ℓi, pair in λ.pairs {
     λ.pair := pair
-    ℓi := ℓi - 1
     ℓarray := λ.pair
     λ.v1 := ℓarray[1]
     λ.v2 := ℓarray[2]

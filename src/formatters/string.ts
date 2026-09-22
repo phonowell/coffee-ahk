@@ -110,6 +110,11 @@ const transAlias = (input: string, wrapper: string): string => {
       i += 2
       continue
     }
+    if (next === '0') {
+      emit('\x00')
+      i += 2
+      continue
+    }
     if (next === 'x' || next === 'u') {
       const hexMatch =
         next === 'x'
@@ -120,9 +125,12 @@ const transAlias = (input: string, wrapper: string): string => {
       if (hexMatch) {
         const isBrace = next === 'u' && raw.at(i + 2) === '{'
         const code = parseInt(hexMatch[0], 16)
-        emit(String.fromCodePoint(code))
-        i += 2 + hexMatch[0].length + (isBrace ? 2 : 0)
-        continue
+        // fromCodePoint throws RangeError beyond U+10FFFF — fall back to literal
+        if (code <= 0x10ffff) {
+          emit(String.fromCodePoint(code))
+          i += 2 + hexMatch[0].length + (isBrace ? 2 : 0)
+          continue
+        }
       }
     }
     // Unknown escape: JS drops the backslash

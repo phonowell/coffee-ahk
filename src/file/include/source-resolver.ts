@@ -69,6 +69,13 @@ export const pickImport = async (
       `Use direct names without aliases: import { foo } from './module'`,
     )
   }
+  if (/{[^}]*\w+\s*:\s*\w+/.test(line)) {
+    throw createTranspileError(
+      ErrorType.UNSUPPORTED,
+      `unsupported syntax "import { a: b }" in '${source}'\n  Line: ${line}`,
+      `Use direct names without aliases: import { a } from './module'`,
+    )
+  }
 
   // 支持 import m, { a, b } from ... 以及原有语法
   let defaultImport = ''

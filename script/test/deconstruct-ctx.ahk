@@ -50,7 +50,6 @@ ahk_6(λ) {
   λ.data := [[1, 2], [3, 4], [5, 6]]
   for ℓi, item in λ.data {
     λ.item := item
-    ℓi := ℓi - 1
     ℓarray := λ.item
     λ.a := ℓarray[1]
     λ.b := ℓarray[2]

@@ -87,3 +87,9 @@ fn6 = ->
 
 # Nested typeof
 n1 = typeof typeof x
+
+# typeof with call/array/object/function operands
+t1 = typeof f(1, 2)
+t2 = typeof [x, y]
+t3 = typeof {k: 1}
+t4 = typeof -> 1

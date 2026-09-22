@@ -27,7 +27,6 @@ ahk_4(λ) {
 ahk_5(λ) {
   for ℓi, i in [1, 2, 3] {
     λ.i := i
-    ℓi := ℓi - 1
     λ.fn := Func("ahk_4").Bind(λ)
     λ.fn.Call()
   }

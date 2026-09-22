@@ -42,6 +42,9 @@ const main = (ctx: Context) => {
 
     const name = findName(i)
     if (name.startsWith('__') && name.endsWith('__')) return
+    // Internal placeholders (ℓi for single-var `for v in arr`) are invisible to
+    // the user — decrementing them is dead code
+    if (name.startsWith('ℓ')) return
 
     const index = findIndex(i)
     if (index < 0) {

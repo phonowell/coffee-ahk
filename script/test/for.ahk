@@ -1,5 +1,4 @@
 for ℓi, value in list {
-  ℓi := ℓi - 1
   value++
 }
 for index, value in list {
@@ -20,9 +19,7 @@ for i, a in [1, 2, 3] {
   }
 }
 for ℓi, a in [1, 2, 3] {
-  ℓi := ℓi - 1
   for ℓi, b in [3, 2, 1] {
-    ℓi := ℓi - 1
     alert.Call(a + b)
   }
 }
@@ -38,7 +35,6 @@ ahk_1(λ) {
   λ.sum := 0
   for ℓi, x in [1, 2, 3, 4, 5] {
     λ.x := x
-    ℓi := ℓi - 1
     if (λ.x == 3) {
       continue
     }
@@ -50,7 +46,6 @@ ahk_2(λ) {
   λ.last := 0
   for ℓi, x in [1, 2, 3, 4, 5] {
     λ.x := x
-    ℓi := ℓi - 1
     λ.last := λ.x
     if (λ.x == 3) {
       break
@@ -79,10 +74,8 @@ ahk_6(λ) {
   λ.result := 0
   for ℓi, i in [1, 2] {
     λ.i := i
-    ℓi := ℓi - 1
     for ℓi, j in [3, 4] {
       λ.j := j
-      ℓi := ℓi - 1
       λ.adder := Func("ahk_5").Bind(λ)
       λ.adder.Call()
     }
@@ -100,7 +93,6 @@ ahk_9(λ) {
   λ.fns := []
   for ℓi, i in [1, 2, 3] {
     λ.i := i
-    ℓi := ℓi - 1
     (Func("ahk_8").Bind(λ)).Call()
   }
   return λ.fns
@@ -112,7 +104,6 @@ ahk_11(λ) {
   λ.fns := []
   for ℓi, i in [1, 2, 3] {
     λ.i := i
-    ℓi := ℓi - 1
     λ.fns.push.Call(Func("ahk_10").Bind(λ))
   }
   return λ.fns
@@ -121,7 +112,6 @@ ahk_12(λ) {
   λ.sum := 0
   for ℓi, x in [1, 2, 3] {
     λ.x := x
-    ℓi := ℓi - 1
     λ.sum += λ.x
   }
   return λ.sum

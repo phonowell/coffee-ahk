@@ -50,10 +50,8 @@ ahk_6(λ) {
   λ.results := []
   for ℓi, i in [1, 2, 3] {
     λ.i := i
-    ℓi := ℓi - 1
     for ℓi, j in [4, 5] {
       λ.j := j
-      ℓi := ℓi - 1
       λ.results.push.Call(Func("ahk_5").Bind(λ))
     }
   }

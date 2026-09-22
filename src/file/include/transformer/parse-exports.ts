@@ -120,8 +120,8 @@ export const parseExportsFromCoffee = (replaced: string, filePath?: string): Par
       continue
     }
 
-    // export {a, b} or export {a: foo()}
-    const exportNamedMatch = /^export\s*{(.+)}/.exec(trimmed)
+    // export {a, b} or export {a: foo()}; `export {}` is a legal no-op
+    const exportNamedMatch = /^export\s*{(.*)}/.exec(trimmed)
     if (exportNamedMatch?.[1]) {
       splitTopLevel(exportNamedMatch[1]).forEach((seg) => {
         if (!seg) return

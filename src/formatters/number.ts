@@ -19,6 +19,10 @@ const main = (ctx: Context): boolean => {
 
     if (value.includes('_')) value2 = value2.replace(/_/g, '')
 
+    // Binary/octal literals are invalid in AHK v1 — expand to decimal
+    // (hex 0x is valid AHK and passes through untouched)
+    if (/^0[bBoO]/.test(value2)) value2 = String(Number(value2))
+
     // Scientific notation: expand to plain decimal (AHK v1 literal-safe).
     // Guarded by regex so hex like 0x1e5 is not mistaken for an exponent.
     if (/^\d*\.?\d+[eE][+-]?\d+$/.test(value2)) {

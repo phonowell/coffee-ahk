@@ -13,7 +13,6 @@ try {
   console.log.Call(err)
 }
 for ℓi, item in [1, 2, 3] {
-  ℓi := ℓi - 1
   console.log.Call(item)
 }
 for value, key in obj {

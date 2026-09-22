@@ -29,3 +29,8 @@ j = 999999999
 k = 0x1e5
 l = 1e-3
 m = 1.5e2
+
+# Binary/octal literals (regression: raw 0b/0o is invalid in AHK v1)
+n = 0b101
+o = 0o17
+p = 0x1F

@@ -1,4 +1,4 @@
-(Func("ahk_7").Bind({})).Call()
+global ℓm_ahk_1 := (Func("ahk_7").Bind({})).Call()
 global ℓm_ahk_2 := (Func("ahk_5").Bind({})).Call()
 global ℓm_ahk_3 := (Func("ahk_3").Bind({})).Call()
 global plus := ℓm_ahk_2.default

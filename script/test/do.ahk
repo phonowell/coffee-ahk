@@ -49,7 +49,6 @@ ahk_8(λ) {
   λ.sum := 0
   for ℓi, i in [1, 2, 3] {
     λ.i := i
-    ℓi := ℓi - 1
     (Func("ahk_7").Bind(λ)).Call()
   }
   return λ.sum
@@ -98,7 +97,6 @@ ahk_19(λ) {
   λ.fns := []
   for ℓi, i in [1, 2, 3] {
     λ.i := i
-    ℓi := ℓi - 1
     (Func("ahk_18").Bind(λ)).Call()
   }
   return λ.fns
@@ -116,7 +114,6 @@ ahk_22(λ) {
 }
 ahk_23(λ) {
   for ℓi, a in [1, 2] {
-    ℓi := ℓi - 1
     a++
   }
 }

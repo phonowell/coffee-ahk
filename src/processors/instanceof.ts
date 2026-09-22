@@ -16,7 +16,20 @@ const main = (ctx: Context) => {
     if (i < skipUntil) return
 
     // Skip marker
-    if (item.is('edge', 'instanceof-class')) return
+    if (item.is('edge', 'instanceof-class')) {
+      // Non-name RHS ((expr), call, index) can't be a static class name —
+      // silently emitting `x.__Class == (Foo)` compares string to object
+      const nx = content.at(i + 1)
+      if (nx && nx.type !== 'identifier' && nx.type !== 'this') {
+        throw new TranspileError(
+          ctx,
+          ErrorType.UNSUPPORTED,
+          `'instanceof' requires a class name, got '${nx.value}'`,
+          `Use a plain class name like 'obj instanceof Foo'`,
+        )
+      }
+      return
+    }
 
     // Convert identifier after marker to string literal
     const prev = content.at(i - 1)
