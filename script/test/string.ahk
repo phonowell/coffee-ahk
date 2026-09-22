@@ -12,6 +12,11 @@ global fn3 := Func("ahk_8").Bind({})
 global fn4 := Func("ahk_6").Bind({})
 global fn5 := Func("ahk_4").Bind({})
 global fn6 := Func("ahk_2").Bind({})
+a := "a\nb"
+a := "C:\new"
+a := "say ""hi"""
+a := "it's"
+a := "tab`there"
 ahk_1(λ) {
   return "" . (λ.x) . " " . (λ.y) . ""
 }

@@ -60,3 +60,6 @@ fn7 = ->
     [v1, v2] = pair
     sum += v1 + v2
   return sum
+
+# Renamed destructure (key differs from variable)
+{first: fName, last: lName} = user

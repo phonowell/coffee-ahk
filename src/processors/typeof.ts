@@ -8,16 +8,18 @@ const main = (ctx: Context) => {
   const { content } = ctx
 
   const listContent: Item[] = []
-  let typeofScope: Scope | null = null
+  // Stack of open typeof calls — supports nested `typeof typeof x`
+  const scopeStack: Scope[] = []
 
   content.toArray().forEach((item, i) => {
     if (item.is('edge', 'typeof-start')) {
-      typeofScope = new Scope([...item.scope.toArray(), 'call'])
-      listContent.push(new Item({ type: 'edge', value: 'call-start', scope: typeofScope }))
+      const scope = new Scope([...item.scope.toArray(), 'call'])
+      scopeStack.push(scope)
+      listContent.push(new Item({ type: 'edge', value: 'call-start', scope }))
       return
     }
 
-    if (typeofScope) {
+    if (scopeStack.length) {
       listContent.push(item)
       // End after expression terminators (not bracket closers which are part of expression)
       const next = content.at(i + 1)
@@ -51,8 +53,12 @@ const main = (ctx: Context) => {
       const isEndOfExpr = isTerminator || (isBracketClose && !isContinuation)
 
       if (isEndOfExpr) {
-        listContent.push(new Item({ type: 'edge', value: 'call-end', scope: typeofScope }))
-        typeofScope = null
+        // Close every pending typeof: when the innermost operand ends, an outer
+        // `typeof (typeof x)` operand — the inner call itself — ends too
+        while (scopeStack.length) {
+          const scope = scopeStack.pop()
+          if (scope) listContent.push(new Item({ type: 'edge', value: 'call-end', scope }))
+        }
       }
       return
     }

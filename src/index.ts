@@ -140,7 +140,16 @@ const transpileAsFile = async (source: string, options: Options): Promise<string
     ? [source]
     : [source, `${source}.coffee`, `${source}/index.coffee`]
 
-  const [source2] = (await glob(listSource)).filter((item) => item.endsWith('.coffee'))
+  // Precedence is explicit: the first candidate in listSource order wins
+  // (`foo.coffee` beats `foo/index.coffee`), independent of glob ordering.
+  // glob returns absolute paths, so compare by normalized suffix.
+  const matches = (await glob(listSource)).filter((item) => item.endsWith('.coffee'))
+  const source2 = listSource
+    .map((candidate) => {
+      const normalized = candidate.replace(/^\.?\//, '')
+      return matches.find((m) => m === candidate || m.endsWith(`/${normalized}`))
+    })
+    .find((m) => m !== undefined)
   if (!source2) {
     throw createTranspileError(
       ErrorType.FILE_ERROR,

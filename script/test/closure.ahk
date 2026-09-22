@@ -109,6 +109,7 @@ ahk_18(λ) {
     λ.inner := Func("ahk_17").Bind(λ)
     λ.inner.Call()
   } catch e {
+    λ.e := e
     λ.value := -1
   }
   return λ.value

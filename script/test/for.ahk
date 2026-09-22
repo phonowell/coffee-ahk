@@ -6,7 +6,7 @@ for index, value in list {
   index := index - 1
   value++
 }
-for ℓk, value in map {
+for value, ℓval in map {
   value++
 }
 for key, value in map {

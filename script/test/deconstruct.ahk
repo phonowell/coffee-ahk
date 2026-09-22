@@ -18,6 +18,9 @@ global fn4 := Func("ahk_7").Bind({})
 global fn5 := Func("ahk_5").Bind({})
 global fn6 := Func("ahk_3").Bind({})
 global fn7 := Func("ahk_1").Bind({})
+ℓobject := user
+global fName := ℓobject["first"]
+global lName := ℓobject["last"]
 ahk_1(λ) {
   λ.sum := 0
   λ.pairs := [[1, 2], [3, 4]]

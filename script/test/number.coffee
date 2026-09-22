@@ -24,3 +24,8 @@ j = 999999999
 # - 0b1010 (binary) → 10
 # These are NOT tested here as conversion happens before transpiler
 # BigInt (123n) is FORBIDDEN - see error-forbidden-syntax.coffee
+
+# Exponent edge cases (regression: 0x1e5 hex, 1e-3 negative, 1.5e2 decimal mantissa)
+k = 0x1e5
+l = 1e-3
+m = 1.5e2

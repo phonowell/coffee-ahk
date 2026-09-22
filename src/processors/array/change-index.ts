@@ -10,11 +10,49 @@ import { updateContent } from './change-index/update-content.js'
 
 import type { Range } from './change-index/types.js'
 import type Item from '../../models/Item.js'
+import type { ItemTypeMap } from '../../models/ItemType.js'
 import type { Context } from '../../types/index.js'
+
+/** Closing edge → opening edge pairs for backward expression collection. */
+const EDGE_PAIRS: [ItemTypeMap['edge'], ItemTypeMap['edge']][] = [
+  ['index-end', 'index-start'],
+  ['call-end', 'call-start'],
+  ['array-end', 'array-start'],
+]
+
+/** Closing bracket → opening bracket pairs. */
+const BRACKET_PAIRS: [ItemTypeMap['bracket'], ItemTypeMap['bracket']][] = [
+  [')', '('],
+  ['}', '{'],
+]
+
+/** Backtrack over a matched pair (e.g. call-end → call-start) and collect the range. */
+const backtrackPair = (
+  content: Context['content'],
+  j: number,
+  isClose: (it: Item | undefined) => boolean,
+  isOpen: (it: Item | undefined) => boolean,
+): { next: number; range: Item[] } => {
+  let depth = 1
+  let k = j - 1
+  while (k >= 0 && depth > 0) {
+    const it = content.at(k)
+    if (isClose(it)) depth++
+    else if (isOpen(it)) depth--
+    k--
+  }
+  const range: Item[] = []
+  for (let m = k + 1; m <= j; m++) {
+    const it = content.at(m)
+    if (it) range.push(it)
+  }
+  return { next: k, range }
+}
 
 /**
  * Collect the full array expression before index-start.
- * Supports chained expressions like: obj.items, nested[0], arr[i][j]
+ * Supports chained expressions like: obj.items, nested[0], arr[i][j],
+ * call results like f()[i], this.items[i], (a+b)[i]
  */
 const collectArrayExpression = (content: Context['content'], startIndex: number): Item[] => {
   const items: Item[] = []
@@ -24,27 +62,45 @@ const collectArrayExpression = (content: Context['content'], startIndex: number)
     const prev = content.at(j)
     if (!prev) break
 
-    if (prev.type === 'identifier' || prev.type === 'property' || prev.type === '.') {
+    if (
+      prev.type === 'identifier' ||
+      prev.type === 'property' ||
+      prev.type === 'this' ||
+      prev.type === '.' ||
+      prev.is('statement', 'new')
+    ) {
       items.unshift(prev)
       j--
-    } else if (prev.is('edge', 'index-end')) {
-      // Backtrack to find matching index-start for chained index: arr[x][y]
-      let depth = 1
-      let k = j - 1
-      while (k >= 0 && depth > 0) {
-        const it = content.at(k)
-        if (it?.is('edge', 'index-end')) depth++
-        else if (it?.is('edge', 'index-start')) depth--
-        k--
-      }
-      // Collect items from index-end back to index-start (inclusive)
-      // Use reverse order to maintain correct sequence when using unshift
-      for (let m = j; m >= k + 1; m--) {
-        const it = content.at(m)
-        if (it) items.unshift(it)
-      }
-      j = k
-    } else break
+      continue
+    }
+
+    const edgePair = EDGE_PAIRS.find(([end]) => prev.is('edge', end))
+    if (edgePair) {
+      const { next, range } = backtrackPair(
+        content,
+        j,
+        (it) => it?.is('edge', edgePair[0]) === true,
+        (it) => it?.is('edge', edgePair[1]) === true,
+      )
+      for (const it of range.toReversed()) items.unshift(it)
+      j = next
+      continue
+    }
+
+    const bracketPair = BRACKET_PAIRS.find(([close]) => prev.is('bracket', close))
+    if (bracketPair) {
+      const { next, range } = backtrackPair(
+        content,
+        j,
+        (it) => it?.is('bracket', bracketPair[0]) === true,
+        (it) => it?.is('bracket', bracketPair[1]) === true,
+      )
+      for (const it of range.toReversed()) items.unshift(it)
+      j = next
+      continue
+    }
+
+    break
   }
 
   return items

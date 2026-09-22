@@ -46,22 +46,3 @@ export const wrapInClosureAndAssign = (
     '\n',
   )
 }
-
-/**
- * Generate closure-wrapped module code.
- * Returns the final module code string ready to be cached.
- */
-export const generateModuleCode = (
-  codeLines: string[],
-  exportDefault: string[],
-  exportNamed: string[],
-  meta: Meta,
-  salt: string,
-): string =>
-  wrapInClosureAndAssign(
-    [...codeLines], // Clone to avoid mutation
-    exportDefault,
-    exportNamed,
-    meta,
-    salt,
-  )

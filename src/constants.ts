@@ -18,8 +18,8 @@ export const V = 'ℓv' // value parameter in typeof
 export const THIS = 'ℓthis' // this parameter replacement
 export const ARRAY = 'ℓarray' // array deconstruct temp
 export const OBJECT = 'ℓobject' // object deconstruct temp
-export const INDEX_FOR = 'ℓi' // for loop index
-export const KEY_FOR = 'ℓk' // for loop key
+export const INDEX_FOR = 'ℓi' // for loop index placeholder
+export const VAL_FOR = 'ℓval' // for loop value placeholder
 export const MODULE_PREFIX = 'ℓm' // module variable prefix
 
 /**

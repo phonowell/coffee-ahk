@@ -19,6 +19,44 @@ export type ParsedExports = {
 }
 
 /**
+ * Split on top-level commas only — nested (), [], {} and string literals
+ * must not break `export {a: f(1, 2)}` into fragments.
+ */
+const splitTopLevel = (input: string): string[] => {
+  const parts: string[] = []
+  let depth = 0
+  let quote = ''
+  let current = ''
+
+  for (let i = 0; i < input.length; i++) {
+    const ch = input.at(i) ?? ''
+    if (quote) {
+      current += ch
+      if (ch === '\\') {
+        current += input.at(i + 1) ?? ''
+        i++
+      } else if (ch === quote) quote = ''
+      continue
+    }
+    if (ch === '"' || ch === "'") {
+      quote = ch
+      current += ch
+      continue
+    }
+    if ('([{'.includes(ch)) depth++
+    else if (')]}'.includes(ch)) depth--
+    else if (ch === ',' && depth === 0) {
+      parts.push(current.trim())
+      current = ''
+      continue
+    }
+    current += ch
+  }
+  if (current.trim()) parts.push(current.trim())
+  return parts
+}
+
+/**
  * Parse and extract export statements from CoffeeScript source.
  * Returns exportDefault, exportNamed arrays and remaining codeLines.
  */
@@ -85,8 +123,7 @@ export const parseExportsFromCoffee = (replaced: string, filePath?: string): Par
     // export {a, b} or export {a: foo()}
     const exportNamedMatch = /^export\s*{(.+)}/.exec(trimmed)
     if (exportNamedMatch?.[1]) {
-      exportNamedMatch[1].split(',').forEach((pair) => {
-        const seg = pair.trim()
+      splitTopLevel(exportNamedMatch[1]).forEach((seg) => {
         if (!seg) return
         exportNamed.push(seg)
       })

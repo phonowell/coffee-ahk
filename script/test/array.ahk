@@ -1,5 +1,5 @@
-global ℓci_ahk := Func("salt_1").Bind({})
-salt_1(λ, ℓarr, ℓidx) {
+global ℓci_ahk := Func("ahk_ci").Bind({})
+ahk_ci(λ, ℓarr, ℓidx) {
   if ℓidx is Number
   {
     if (ℓidx < 0) {

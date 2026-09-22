@@ -112,3 +112,15 @@ fn7 = ->
   reader = ->
     return data[idx]
   return reader()
+
+# === Call result indexing ===
+v1 = getItems()[0]
+v2 = getItems()[-1]
+v3 = getItems()[i]
+v4 = obj.method()[k]
+v5 = (a + b)[i]
+
+# this-property index with variable
+fn9 = ->
+  i = 0
+  return @items[i]

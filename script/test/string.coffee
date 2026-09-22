@@ -74,3 +74,9 @@ fn6 = ->
     return "#{x}
 #{y}"
   return builder()
+# Escape handling (regression: \\n must stay literal backslash+n in single quotes)
+a = 'a\nb'
+a = "C:\\new"
+a = "say \"hi\""
+a = 'it\'s'
+a = "tab\there"

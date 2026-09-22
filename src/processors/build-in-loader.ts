@@ -39,6 +39,8 @@ const insert = (ctx: Context, flag: keyof Context['flag'], functionName: string)
 
           if (value.includes(`${CI}_SALT_PLACEHOLDER`)) {
             value = value.replace(new RegExp(`${CI}_SALT_PLACEHOLDER`, 'g'), `${CI}_${salt}`)
+            // Replace generated function name salt_1 -> {salt}_ci
+            value = value.replace(/salt_1/g, `${salt}_ci`)
           }
 
           if (value.includes(`${TYPEOF}_SALT_PLACEHOLDER`)) {

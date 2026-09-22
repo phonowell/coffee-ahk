@@ -1,6 +1,7 @@
 import { getExtname, read, run } from 'fire-keeper'
 import iconv from 'iconv-lite'
 
+import { MODULE_PREFIX } from '../../../constants.js'
 import { createTranspileError, ErrorType, TranspileError } from '../../../utils/error.js'
 import { pickImport as resolveImport } from '../source-resolver.js'
 
@@ -100,7 +101,13 @@ const processFile = async (file: string, meta: Meta, ctx: IncludeContext) => {
   // 读取文件内容，支持 Buffer、string、object
   const raw = await read<Buffer | string | object>(file)
   if (!raw) {
-    ctx.cache.delete(file)
+    // Empty/missing module: keep a defined empty module object so importers
+    // don't reference an undeclared ℓm_* variable
+    ctx.cache.set(file, {
+      ...meta,
+      content: `${MODULE_PREFIX}_${ctx.salt}_${meta.id} = {}`,
+      dependencies: [],
+    })
     return
   }
 

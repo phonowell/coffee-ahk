@@ -1,4 +1,4 @@
-import { INDEX_FOR, KEY_FOR } from '../constants.js'
+import { INDEX_FOR, VAL_FOR } from '../constants.js'
 import { ErrorType, TranspileError } from '../utils/error.js'
 
 import type { ItemTypeMap } from '../models/ItemType.js'
@@ -37,7 +37,12 @@ const main = (ctx: Context) => {
 
     if (type === 'forin') list.reverse()
 
-    if (list.length === 1) list.unshift(type === 'forin' ? INDEX_FOR : KEY_FOR)
+    // Single variable: 'for v in arr' iterates values (index placeholder first),
+    // 'for k of obj' iterates keys (value placeholder second) — AHK key comes first
+    if (list.length === 1) {
+      if (type === 'forin') list.unshift(INDEX_FOR)
+      else list.push(VAL_FOR)
+    }
 
     content.push(
       { type: 'identifier', value: list[0] ?? '' },

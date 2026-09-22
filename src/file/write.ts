@@ -30,8 +30,15 @@ const splitAtCommas = (line: string): string[] => {
   while (i < line.length) {
     const char = line[i]
 
+    // AHK v1 has only double-quoted strings; `;` starts a comment —
+    // everything after it is not code and must not be split
+    if (!inString && char === ';') {
+      current += line.slice(i)
+      break
+    }
+
     // 处理字符串边界
-    if (!inString && (char === '"' || char === "'")) {
+    if (!inString && char === '"') {
       inString = true
       stringChar = char
       current += char
@@ -91,22 +98,24 @@ const splitAtCommas = (line: string): string[] => {
 
 // 处理超长行并验证行长限制，返回处理后的内容
 export const processContent = (content: string): string => {
-  const lines = content.split('\n').flatMap((line) => splitAtCommas(line))
+  // Keep original line numbers so errors point at the source line
+  const lines = content
+    .split('\n')
+    .flatMap((line, idx) => splitAtCommas(line).map((text) => ({ text, srcLine: idx + 1 })))
 
   // 验证行长限制
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
-    if (line && line.length > MAX_LINE_LENGTH) {
+  for (const { text, srcLine } of lines) {
+    if (text.length > MAX_LINE_LENGTH) {
       throw createTranspileError(
         ErrorType.VALIDATION_ERROR,
-        `line too long (max ${MAX_LINE_LENGTH} chars):\n${line.slice(0, 80)}...`,
+        `line too long (max ${MAX_LINE_LENGTH} chars):\n${text.slice(0, 80)}...`,
         `Split long lines or refactor code to reduce line length`,
-        i + 1,
+        srcLine,
       )
     }
   }
 
-  return lines.join('\n')
+  return lines.map((l) => l.text).join('\n')
 }
 
 const main = async (

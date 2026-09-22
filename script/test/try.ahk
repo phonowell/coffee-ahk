@@ -32,6 +32,7 @@ ahk_4(λ) {
     λ.adder := Func("ahk_3").Bind(λ)
     λ.adder.Call()
   } catch e {
+    λ.e := e
     λ.adder := Func("ahk_2").Bind(λ)
     λ.adder.Call()
   } finally {
@@ -51,9 +52,11 @@ ahk_6(λ) {
       λ.setter := Func("ahk_5").Bind(λ)
       λ.setter.Call()
     } catch inner {
+      λ.inner := inner
       λ.level := -2
     }
   } catch outer {
+    λ.outer := outer
     λ.level := -1
   }
   return λ.level
@@ -79,6 +82,7 @@ ahk_10(λ) {
   try {
     throw "error"
   } catch e {
+    λ.e := e
     λ.handler := Func("ahk_9").Bind(λ)
     λ.handler.Call()
   }
@@ -93,6 +97,7 @@ ahk_12(λ) {
     λ.setter := Func("ahk_11").Bind(λ)
     λ.setter.Call()
   } catch e {
+    λ.e := e
     λ.value := -1
   }
   return λ.value
@@ -102,6 +107,7 @@ ahk_13(λ) {
   try {
     λ.result := "try block"
   } catch e {
+    λ.e := e
     λ.result := "catch block"
   }
   return λ.result
@@ -110,6 +116,7 @@ ahk_14(λ) {
   try {
     λ.alert.Call(1)
   } catch e {
+    λ.e := e
     throw e
   }
 }

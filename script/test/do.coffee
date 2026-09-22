@@ -76,3 +76,5 @@ fn8 = ->
   result = do ->
     m + n
   return result
+# do inside call arguments
+r1 = f(x, do -> y)

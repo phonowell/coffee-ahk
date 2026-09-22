@@ -7,7 +7,7 @@ import { CTX } from '../../../constants.js'
 import Item from '../../../models/Item.js'
 
 import { processNativeBlock } from './native.js'
-import { isUserFunc, shouldUseCtx } from './utils.js'
+import { shouldUseCtx } from './utils.js'
 
 import type { Context } from '../../../types/index.js'
 
@@ -20,34 +20,35 @@ const collectAllVars = (
 ): {
   catchVars: Set<string>
   forVars: Set<string>
-  forBlockStarts: Map<number, string[]>
+  blockStartBridges: Map<number, string[]>
 } => {
   const { content } = ctx
-  const salt = ctx.options.salt ?? ''
   const catchVars = new Set<string>()
   const forVars = new Set<string>()
-  const forBlockStarts = new Map<number, string[]>()
+  // Block-start positions → vars that need `λ.v := v` bridging
+  // (for-loop vars and catch vars captured by nested functions)
+  const blockStartBridges = new Map<number, string[]>()
   const len = content.length
-
-  // Track current function to skip class methods
-  let currentFunc = ''
 
   for (let i = 0; i < len; i++) {
     const item = content.at(i)
     if (!item) continue
     const prev = content.at(i - 1)
 
-    // Collect catch variables
-    if (item.type === 'identifier' && prev?.is('try', 'catch')) catchVars.add(item.value)
-
-    // Track current function
-    if (item.type === 'function' && isUserFunc(item.value, salt)) {
-      currentFunc = item.value
-      continue
-    }
-    if (item.is('edge', 'block-end') && currentFunc && !item.scope.includes('function')) {
-      currentFunc = ''
-      continue
+    // Collect catch variables and bridge them for nested closures
+    if (item.type === 'identifier' && prev?.is('try', 'catch')) {
+      catchVars.add(item.value)
+      // Find the catch block-start; bridge when the catch lives in a function
+      for (let j = i + 1; j < len; j++) {
+        const it = content.at(j)
+        if (!it || it.type === 'new-line') break
+        if (it.is('edge', 'block-start')) {
+          if (it.scope.includes('function')) {
+            blockStartBridges.set(j, [...(blockStartBridges.get(j) ?? []), item.value])
+          }
+          break
+        }
+      }
     }
 
     // Collect for loop variables
@@ -76,28 +77,25 @@ const collectAllVars = (
       const it = content.at(j)
       if (!it) break
       if (it.is('edge', 'block-start') && it.scope.at(-1) === 'for') {
-        forBlockStarts.set(j, loopVars)
+        blockStartBridges.set(j, [...(blockStartBridges.get(j) ?? []), ...loopVars])
         break
       }
     }
   }
 
-  return { catchVars, forVars, forBlockStarts }
+  return { catchVars, forVars, blockStartBridges }
 }
 
 /** Transform variable access: identifier -> λ.identifier */
 export const transformVars = (ctx: Context, skip: Set<number>) => {
   const { content } = ctx
-  const salt = ctx.options.salt ?? ''
   const out: Item[] = []
 
   // Collect all variable info in a single pass (optimized from 2 passes)
-  const { catchVars, forVars, forBlockStarts } = collectAllVars(ctx)
+  const { catchVars, forVars, blockStartBridges } = collectAllVars(ctx)
 
   // Track for scope depth to skip for-declaration variables
   let inForDecl = false
-  // Track current extracted function to skip class methods
-  let currentFunc = ''
 
   for (let i = 0; i < content.length; i++) {
     const item = content.at(i)
@@ -105,20 +103,14 @@ export const transformVars = (ctx: Context, skip: Set<number>) => {
     const prev = content.at(i - 1)
     const next = content.at(i + 1)
 
-    // Track current extracted function
-    if (item.type === 'function' && isUserFunc(item.value, salt)) currentFunc = item.value
-
-    if (item.is('edge', 'block-end') && currentFunc && !item.scope.includes('function'))
-      currentFunc = ''
-
     // Track for declaration region (between 'for' and 'in'/'of')
     if (item.is('for', 'for')) inForDecl = true
     if (item.type === 'for-in') inForDecl = false // handles both 'in' and 'of'
 
-    // Insert λ.xxx := xxx after for block-start
-    if (forBlockStarts.has(i)) {
+    // Insert λ.xxx := xxx after for/catch block-start
+    if (blockStartBridges.has(i)) {
       out.push(item)
-      const loopVars = forBlockStarts.get(i) ?? []
+      const loopVars = blockStartBridges.get(i) ?? []
       const nextItem = content.at(i + 1)
       const indent = nextItem?.type === 'new-line' ? nextItem.value : '1'
       const scope = item.scope.toArray()

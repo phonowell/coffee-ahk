@@ -7,10 +7,3 @@ export const closureCoffee = (content: string) =>
     .split(/\n/u)
     .map((line) => `  ${line}`)
     .join('\n')
-
-export const contentIncludes = (content: string, target: string) => {
-  const listContent = content.split('\n')
-  for (const line of listContent) if (line.startsWith(target)) return true
-
-  return false
-}

@@ -19,6 +19,15 @@ export const getSource = async (source: string, path: string): Promise<string> =
   const firstResult = listResult[0]
   if (firstResult) return firstResult
 
+  // Relative imports never fall back to node_modules resolution
+  if (isFile) {
+    throw createTranspileError(
+      ErrorType.FILE_ERROR,
+      `cannot resolve module '${path}' imported from '${source}'`,
+      `Check the file exists (tried: ${group.join(', ')})`,
+    )
+  }
+
   const pkg = await read<{ main: string }>(`./node_modules/${path}/package.json`)
   if (!pkg?.main) {
     throw createTranspileError(

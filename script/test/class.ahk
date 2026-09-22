@@ -1,5 +1,5 @@
-global ℓci_ahk := Func("salt_1").Bind({})
-salt_1(λ, ℓarr, ℓidx) {
+global ℓci_ahk := Func("ahk_ci").Bind({})
+ahk_ci(λ, ℓarr, ℓidx) {
   if ℓidx is Number
   {
     if (ℓidx < 0) {
@@ -82,12 +82,12 @@ ahk_2(λ, ℓthis) {
 ahk_3(λ, ℓthis, key) {
   this := ℓthis
   λ.key := key
-  if (this.mapCallback[ℓci_ahk.Call(.mapCallback, λ.key)]) {
+  if (this.mapCallback[ℓci_ahk.Call(this.mapCallback, λ.key)]) {
     return
   }
-  this.mapBound[ℓci_ahk.Call(.mapBound, λ.key)] := Func("ahk_2").Bind(λ, this)
-  this.mapCallback[ℓci_ahk.Call(.mapCallback, λ.key)] := []
-  this.mapPrevented[ℓci_ahk.Call(.mapPrevented, λ.key)] := false
+  this.mapBound[ℓci_ahk.Call(this.mapBound, λ.key)] := Func("ahk_2").Bind(λ, this)
+  this.mapCallback[ℓci_ahk.Call(this.mapCallback, λ.key)] := []
+  this.mapPrevented[ℓci_ahk.Call(this.mapPrevented, λ.key)] := false
   return
 }
 ahk_4(λ, ℓthis, message) {

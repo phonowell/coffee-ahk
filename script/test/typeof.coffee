@@ -84,3 +84,6 @@ fn6 = ->
   checker = ->
     return typeof obj.val
   return checker()
+
+# Nested typeof
+n1 = typeof typeof x

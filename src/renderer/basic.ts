@@ -1,3 +1,5 @@
+import { toFullWidth } from '../utils/full-width.js'
+
 import type { RenderContext } from '../types/index.js'
 
 export const commaLike = (ctx: RenderContext) => {
@@ -61,8 +63,6 @@ export const renderStatement = (ctx: RenderContext): string => {
 export const renderIdentifier = (ctx: RenderContext): string => {
   const { value } = ctx.it
   // 仅对 class 名称的大写字母做全角替换
-  if (ctx.cache.classNames.has(value)) {
-    return value.replace(/[A-Z]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) + 0xfee0))
-  }
+  if (ctx.cache.classNames.has(value)) return toFullWidth(value)
   return value
 }

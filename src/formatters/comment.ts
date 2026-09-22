@@ -1,9 +1,23 @@
 import { trim } from 'radash'
 
+import type Content from '../models/Content.js'
 import type { CommentData, Context, TokenLocationData } from '../types/index.js'
+
+// Comments before the first emitted item have nothing to attach to yet;
+// buffer them per Content and prepend to the first item once it exists
+const pendingComments = new WeakMap<Content, string[]>()
 
 const main = (ctx: Context): boolean => {
   const { content, token } = ctx
+
+  const pending = pendingComments.get(content)
+  if (pending?.length) {
+    const first = content.at(0)
+    if (first) {
+      pendingComments.delete(content)
+      first.comment = [...pending, ...(first.comment ?? [])]
+    }
+  }
 
   if (token.comments) {
     const listComment: string[] = []
@@ -27,7 +41,10 @@ const main = (ctx: Context): boolean => {
     })
 
     const last = content.at(-1)
-    if (last) last.comment = listComment
+    if (last) last.comment = [...(last.comment ?? []), ...listComment]
+    else if (listComment.length) {
+      pendingComments.set(content, [...(pendingComments.get(content) ?? []), ...listComment])
+    }
     return true
   }
 
