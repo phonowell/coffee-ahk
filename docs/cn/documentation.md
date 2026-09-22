@@ -1,20 +1,20 @@
 # 文档
 
-你可以把`Coffee-AHK`看作是`CoffeeScript`的一种方言，它可以编译为 AutoHotkey v1 脚本。它兼容现有的`AHK`代码，并增加了类、模块、函数式编程、赋值解构、丰富语法糖、部分 npm 包管理等现代特性。配合插件还可支持 TypeScript 静态类型系统。注意：AutoHotkey 不区分大小写。
+你可以把`Coffee-AHK`看作是`CoffeeScript`的一种方言，它可以编译为 AutoHotkey v1 脚本。它兼容现有的`AHK`代码，并增加了类、模块、函数式编程、赋值解构、丰富语法糖等现代特性。注意：AutoHotkey 不区分大小写。
 
-最新版本：**0.0.61**
+安装、选项与完整的特性/限制矩阵见 [README.md](../../README.md)；简明编写指南见 [USAGE.md](../../USAGE.md)。
 
 ## 概览
 
-上方为`Coffee-AHK`代码，下方为翻译后的`AHK`代码。
+上方为`Coffee-AHK`代码，下方为翻译后的`AHK`代码。生成函数名以 `salt` 为前缀（默认为源码的确定性 hash，如 `s1f8zyy3`）；闭包通过上下文对象 `λ` 持有捕获变量。
 
 ```coffeescript
 # assignment:
-number = 42
+count = 42
 opposite = true
 
 # conditions:
-if opposite then number = -42
+if opposite then count = -42
 
 # functions:
 square = (x) -> x * x
@@ -34,23 +34,27 @@ race = (winner, runners...) ->
 ```
 
 ```ahk
-global number := 42
+global count := 42
 global opposite := true
 if (opposite) {
-  number := -42
+  count := -42
 }
-global square := Func("ahk_3")
+global square := Func("s1f8zyy3_3").Bind({})
 global list := [1, 2, 3, 4, 5]
-global math := {root: Math.sqrt, square: square, cube: Func("ahk_2")}
-global race := Func("ahk_1").Bind(print)
-ahk_1(print, winner, runners*) {
-  print.Call(winner, runners)
+global math := {root: Math.sqrt, square: square, cube: Func("s1f8zyy3_2").Bind({})}
+global race := Func("s1f8zyy3_1").Bind({})
+s1f8zyy3_1(λ, winner, runners*) {
+  λ.winner := winner
+  λ.runners := runners
+  return λ.print.Call(λ.winner, λ.runners)
 }
-ahk_2(x) {
-  return x * square.Call(x)
+s1f8zyy3_2(λ, x) {
+  λ.x := x
+  return λ.x * square.Call(λ.x)
 }
-ahk_3(x) {
-  return x * x
+s1f8zyy3_3(λ, x) {
+  λ.x := x
+  return λ.x * λ.x
 }
 ```
 
@@ -69,11 +73,11 @@ pnpm install coffee-ahk
 
 `console.log sys.inspect object` → `console.log(sys.inspect(object));`
 
+所有以大写字母开头的函数都被视作内置函数，不会被 `Func(...).Call(...)` 包裹。
+
 ## 函数
 
 函数由括号中的参数、箭头和函数体三部分构成。一个最简单的空函数长这样：`->`。
-
-注意，所有以大写字母开头的函数都被视作内置函数。
 
 ```coffeescript
 square = (x) -> x * x
@@ -81,13 +85,15 @@ cube = (x) -> square(x) * x
 ```
 
 ```ahk
-global square := Func("ahk_2")
-global cube := Func("ahk_1")
-ahk_1(x) {
-  return square.Call(x) * x
+global square := Func("s1x2rg3o_2").Bind({})
+global cube := Func("s1x2rg3o_1").Bind({})
+s1x2rg3o_1(λ, x) {
+  λ.x := x
+  return square.Call(λ.x) * λ.x
 }
-ahk_2(x) {
-  return x * x
+s1x2rg3o_2(λ, x) {
+  λ.x := x
+  return λ.x * λ.x
 }
 ```
 
@@ -99,11 +105,15 @@ fill = (container, liquid = 'coffee') ->
 ```
 
 ```ahk
-global fill := Func("ahk_1")
-ahk_1(container, liquid := "coffee") {
-  return "Filling the " . (container) . " with " . (liquid) . "..."
+global fill := Func("sb9pzs1_1").Bind({})
+sb9pzs1_1(λ, container, liquid := "coffee") {
+  λ.container := container
+  λ.liquid := liquid
+  return "Filling the " . (λ.container) . " with " . (λ.liquid) . "..."
 }
 ```
+
+隐式 return：仅当函数体是单条语句/表达式时自动返回；多语句函数体必须显式书写 `return`。例外：`if`/`else if`/`else` 链作为函数体最后一条语句时，返回被执行分支的最后一个表达式——多语句函数体同样生效，分支末尾的嵌套 `if` 会递归处理。`for`/`while`/`try`/native 函数体不生成隐式 return。
 
 ## 字符串
 
@@ -137,6 +147,8 @@ mobyDick = 'Call me Ishmael. Some years ago --
 global mobyDick := "Call me Ishmael. Some years ago -- never mind how long precisely -- having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world..."
 ```
 
+块字符串（`'''` / `"""`）保留换行为 `` `n ``：
+
 ```coffeescript
 html = '''
 <strong>
@@ -146,7 +158,7 @@ html = '''
 ```
 
 ```ahk
-global html := "<strong>cup of coffee-ahk</strong>"
+global html := "<strong>`n  cup of coffee-ahk`n</strong>"
 ```
 
 双引号包括的块状字符串也可以进行插值。
@@ -224,7 +236,7 @@ else date = jill
 
 ```ahk
 if (singing) {
-  mood := greatlyImproved
+  global mood := greatlyImproved
 }
 if (happy && knowsIt) {
   clapsHands.Call()
@@ -233,9 +245,39 @@ if (happy && knowsIt) {
   showIt.Call()
 }
 if (friday) {
-  date := sue
+  global date := sue
 } else {
   date := jill
+}
+```
+
+`if`/`else` 也可用作表达式：在 `=` 右侧、`return`/`throw` 之后以及括号内会编译为三元运算。缺省 `else` 时结果为 `""`，`else if` 链编译为右结合三元。不支持出现在调用参数、数组、索引括号与对象字面量中（编译错误）——先赋给变量。嵌套 if 表达式同样不支持。
+
+`if`/`else` 链作为函数体最后一条语句时也可充当返回值：各分支末尾会自动注入 `return`，分支末尾的嵌套 `if` 会递归处理。
+
+```coffeescript
+status = if count > 0 then "ok" else "empty"
+maybe = if count > 0 then "ok"
+
+sign = (x) ->
+  if x > 0 then "positive"
+  else if x < 0 then "negative"
+  else "zero"
+```
+
+```ahk
+global status := count > 0 ? "ok" : "empty"
+global maybe := count > 0 ? "ok" : ""
+global sign := Func("s1x8k2m_1").Bind({})
+s1x8k2m_1(λ, x) {
+  λ.x := x
+  if (λ.x > 0) {
+    return "positive"
+  } else if (λ.x < 0) {
+    return "negative"
+  } else {
+    return "zero"
+  }
 }
 ```
 
@@ -255,13 +297,6 @@ contenders = [
   'Michael Phelps'
   'Liu Xiang'
   'Yao Ming'
-  'Allyson Felix'
-  'Shawn Johnson'
-  'Roman Sebrle'
-  'Guo Jingjing'
-  'Tyson Gay'
-  'Asafa Powell'
-  'Usain Bolt'
 ]
 
 awardMedals contenders...
@@ -277,16 +312,21 @@ The Field: #{rest.join ', '}
 global gold := "unknown"
 global silver := "unknown"
 global rest := "unknown"
-global awardMedals := Func("ahk_1")
-global contenders := ["Michael Phelps", "Liu Xiang", "Yao Ming", "Allyson Felix", "Shawn Johnson", "Roman Sebrle", "Guo Jingjing", "Tyson Gay", "Asafa Powell", "Usain Bolt"]
+global awardMedals := Func("s4v00up_1").Bind({})
+global contenders := ["Michael Phelps", "Liu Xiang", "Yao Ming"]
 awardMedals.Call(contenders*)
 alert.Call(" Gold: " . (gold) . " Silver: " . (silver) . " The Field: " . (rest.join.Call(", ")) . " ")
-ahk_1(first, second, others*) {
-  gold := first
-  silver := second
-  rest := others
+s4v00up_1(λ, first, second, others*) {
+  λ.first := first
+  λ.second := second
+  λ.others := others
+  gold := λ.first
+  silver := λ.second
+  rest := λ.others
 }
 ```
+
+展开调用同为后缀形式——`f(...args)` 编译为 `f.Call(args*)`。仅可展开普通标识符：`f(...a.b)` 报编译错误——先赋给变量。AHK v1 没有 `arguments` 对象与 `eval`，两者均报编译错误（改用剩余参数）。
 
 ## 循环
 
@@ -298,9 +338,9 @@ for food in ['toast', 'cheese', 'wine']
 
 # Fine five course dining.
 courses = ['greens', 'caviar', 'truffles', 'roast', 'cake']
-menu = (i, dish) -> "Menu Item #{i}: #{dish}"
+menuText = (i, dish) -> "Menu Item #{i}: #{dish}"
 for dish, i in courses
-  menu i + 1, dish
+  menuText i + 1, dish
 
 # Health conscious meal.
 foods = ['broccoli', 'spinach', 'chocolate']
@@ -309,29 +349,36 @@ for food in foods
 ```
 
 ```ahk
-global eat := Func("ahk_2")
-for __index_for__, food in ["toast", "cheese", "wine"] {
+global eat := Func("s1ut5k8k_2").Bind({})
+for ℓi, food in ["toast", "cheese", "wine"] {
+  global food
   eat.Call(food)
 }
 global courses := ["greens", "caviar", "truffles", "roast", "cake"]
-global menu := Func("ahk_1")
+global menuText := Func("s1ut5k8k_1").Bind({})
 for i, dish in courses {
-  i := i - 1
-  menu.Call(i + 1, dish)
+  global dish
+  global i := i - 1
+  menuText.Call(i + 1, dish)
 }
 global foods := ["broccoli", "spinach", "chocolate"]
-for __index_for__, food in foods {
+for ℓi, food in foods {
   if (food != "chocolate") {
     eat.Call(food)
   }
 }
-ahk_1(i, dish) {
+s1ut5k8k_1(λ, i, dish) {
+  λ.i := i
+  λ.dish := dish
   return "Menu Item " . (i) . ": " . (dish) . ""
 }
-ahk_2(food) {
+s1ut5k8k_2(λ, food) {
+  λ.food := food
   return "" . (food) . " eaten."
 }
 ```
+
+注意：`for item, i in array` 中的 `i` 是 0-based（生成的 `i := i - 1` 会把 AHK 的 1-based 循环索引转回来）。不带索引变量的循环使用内部占位符 `ℓi`。
 
 当循环对象时，使用`of`来替代`in`。
 
@@ -347,6 +394,8 @@ for child, age of yearsOld
 global yearsOld := {max: 10, ida: 9, tim: 11}
 global ages := []
 for child, age in yearsOld {
+  global child
+  global age
   ages.Push("" . (child) . " is " . (age) . "")
 }
 ```
@@ -388,11 +437,11 @@ while (num) {
 
 ## 操作符与别名
 
-在`Coffee-AHK`中`is`相当于`==`，`isnt`相当于`！=`。
+在`Coffee-AHK`中`is`相当于`==`，`isnt`相当于`!=`。
 
-`not`相当于`！`的别名。
+`not`相当于`!`的别名。
 
-`and`相当于`&&`，`or`相当于`||`。
+`and`相当于`&&`，`or`相当于`||`。AHK 中这两个运算符返回布尔值 `0`/`1` 而非操作数——因此在 `=` 右侧、链尾为非布尔字面量的 `||`/`&&` 链会改写为保值三元（`x = a || "d"` 等价于 `x := a ? a : "d"`）；其余位置（条件、调用参数、`return`）保留布尔语义。
 
 在`while`、`if`/`else`和`switch`/`when`语句中，`then`可以代替换行或分号，用于分隔表达式中的条件。
 
@@ -402,7 +451,9 @@ while (num) {
 
 你可以使用`@property`作为`this.property`的缩写。
 
-为了简化数学表达式，你也可以使用`**`和`//`。
+为了简化数学表达式，你也可以使用`**`做幂运算。
+
+整除（`//`、`//=`）与取模（`%`、`%%`）**不支持**——它们与 AHK 注释/变量语法冲突，会直接报编译错误。请改用 `Floor(a / b)` 或 `Mod(a, b)`。
 
 总而言之：
 
@@ -417,7 +468,6 @@ while (num) {
 | `false`, `no`, `off` | `false`  |
 |     `@`, `this`      |  `this`  |
 |       `a ** b`       | `a ** b` |
-|       `a // b`       | `a // b` |
 
 ```coffeescript
 if ignition is on then launch()
@@ -436,7 +486,7 @@ if (ignition == true) {
   launch.Call()
 }
 if (band != SpinalTap) {
-  volume := 10
+  global volume := 10
 }
 if !(answer == false) {
   letTheWildRumpusBegin.Call()
@@ -461,9 +511,10 @@ $ 'body'
 ```
 
 ```ahk
-$.Call("body").click.Call(Func("ahk_1").Bind($)).css.Call("background", "white")
-ahk_1($, e) {
-  $.Call(".box").fadeIn.Call("fast").addClass.Call("show")
+$.Call("body").click.Call(Func("s10lsi7s_1").Bind({})).css.Call("background", "white")
+s10lsi7s_1(λ, e) {
+  λ.e := e
+  return λ.$.Call(".box").fadeIn.Call("fast").addClass.Call("show")
 }
 ```
 
@@ -481,35 +532,39 @@ theSwitch = 0
 ```ahk
 global theBait := 1000
 global theSwitch := 0
-global __array__ := [theSwitch, theBait]
-theBait := __array__[1]
-theSwitch := __array__[2]
+global ℓarray := [theSwitch, theBait]
+theBait := ℓarray[1]
+theSwitch := ℓarray[2]
 ```
 
 或是实现非常实用的多返回函数：
 
 ```coffeescript
 weatherReport = (location) ->
-  # Make an Ajax request to fetch the weather...
   return [location, 72, 'Mostly Sunny']
 
 [city, temp, forecast] = weatherReport 'Berkeley, CA'
 ```
 
 ```ahk
-global weatherReport := Func("ahk_1")
-global __array__ := weatherReport.Call("Berkeley, CA")
-global city := __array__[1]
-global temp := __array__[2]
-global forecast := __array__[3]
-ahk_1(location) {
-  return [location, 72, "Mostly Sunny"]
+global weatherReport := Func("s1lu25uy_1").Bind({})
+global ℓarray := weatherReport.Call("Berkeley, CA")
+global city := ℓarray[1]
+global temp := ℓarray[2]
+global forecast := ℓarray[3]
+s1lu25uy_1(λ, location) {
+  λ.location := location
+  return [λ.location, 72, "Mostly Sunny"]
 }
 ```
+
+嵌套解构（`[a, [b, c]] = x`）与 `for` 循环解构不支持——请拆分为独立语句。
 
 ## 类
 
 由于`AHK`不区分大小写，请不要使用`item = new Item()`这种写法。而应该这么写：`item2 = new Item()`。
+
+类名必须以大写字母开头且至少 2 个字符。生成代码中类标识符内的大写字母会被替换为全角 Unicode 以模拟大小写（`Animal` → `Ａnimal`）。
 
 ```coffeescript
 class Animal
@@ -536,32 +591,36 @@ tom.move()
 ```
 
 ```ahk
-class Animal {
+class Ａnimal {
   __New(name) {
     this.name := name
   }
-  move := Func("ahk_3").Bind(alert).Bind(this)
+  move := Func("s1cfr26x_3").Bind({}, this)
 }
-class Snake extends Animal {
-  move := Func("ahk_2").Bind(alert).Bind(this)
+class Ｓnake extends Ａnimal {
+  move := Func("s1cfr26x_2").Bind({}, this)
 }
-class Horse extends Animal {
-  move := Func("ahk_1").Bind(alert).Bind(this)
+class Ｈorse extends Ａnimal {
+  move := Func("s1cfr26x_1").Bind({}, this)
 }
-global sam := new Snake("Sammy the Python")
-global tom := new Horse("Tommy the Palomino")
+global sam := new Ｓnake("Sammy the Python")
+global tom := new Ｈorse("Tommy the Palomino")
 sam.move.Call()
 tom.move.Call()
-ahk_1(alert, this) {
-  alert.Call("Galloping...")
+s1cfr26x_1(λ, ℓthis) {
+  this := ℓthis
+  λ.alert.Call("Galloping...")
   base.move.Call(45)
 }
-ahk_2(alert, this) {
-  alert.Call("Slithering...")
+s1cfr26x_2(λ, ℓthis) {
+  this := ℓthis
+  λ.alert.Call("Slithering...")
   base.move.Call(5)
 }
-ahk_3(alert, this, meters) {
-  alert.Call(this.name + " moved " . (meters) . "m.")
+s1cfr26x_3(λ, ℓthis, meters) {
+  this := ℓthis
+  λ.meters := meters
+  return λ.alert.Call(this.name + " moved " . (λ.meters) . "m.")
 }
 ```
 
@@ -612,8 +671,8 @@ switch day {
 try
   allHellBreaksLoose()
   catsAndDogsLivingTogether()
-catch error
-  print error
+catch err
+  print err
 finally
   cleanUp()
 ```
@@ -622,24 +681,33 @@ finally
 try {
   allHellBreaksLoose.Call()
   catsAndDogsLivingTogether.Call()
-} catch error {
-  print.Call(error)
+} catch err {
+  global err
+  print.Call(err)
 } finally {
   cleanUp.Call()
 }
 ```
 
+## 禁用字
+
+AHK 内置名（如 `number`、`menu`、`error`）与 `A_` 前缀不能用作变量、参数、`catch`/`for` 变量、解构目标或类名——编译器会报 `forbidden` 错误。完整清单见 `data/forbidden.yaml`。
+
 ## 模块
 
 ```coffeescript
 import './local-file.coffee'
-import 'js-shim.ahk' # via npm
+import 'js-shim.ahk' # 经 ./node_modules 解析
 
 import fn from './source/fn'
 
 import data from './data.json'
 import data2 from './data.yaml'
 ```
+
+支持形式：副作用（`import './m'`）、默认（`import m from './m'`）、具名（`import { a, b } from './m'`）与混合。支持 `export default` 与 `export { a, b }`（`export {}` 是合法空操作；重复 `export default` 报编译错误）。不支持 `import * as`、`import { x as y }` 与 `export const`。`import`/`export` 仅文件编译可用——字符串输入中的 `export` 会报错。heredoc 与 `###` 块注释中看似 import/export 的行会被忽略。
+
+类不能被导出——模块会被包裹以隔离作用域，而 AHK 类必须位于顶层。请在单独文件中定义类，再用副作用导入引入。
 
 ## 原生代码
 
@@ -652,9 +720,13 @@ hi = ->
 ```
 
 ```ahk
-global hi := Func("ahk_1")
-ahk_1() {
-  msg := "Hello AHK"
-  MsgBox, % msg
+global hi := Func("s13ownkq_1").Bind({})
+s13ownkq_1(λ) {
+  λ.msg := "Hello AHK"
+  λ_msg := λ.msg
+  MsgBox, % λ_msg
+  λ.msg := λ_msg
 }
 ```
+
+函数内的原生块通过临时变量桥接闭包变量（如上 `λ_msg`）：块前拷出、块后写回，使 `MsgBox`/`Sort` 等老式 AHK 命令可以操作这些变量。

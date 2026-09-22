@@ -1,20 +1,20 @@
 # Documentation
 
-You can think of `Coffee-AHK` as a dialect of `CoffeeScript` that compiles to AutoHotkey v1 scripts. It is compatible with existing `AHK` code and adds modern features such as classes, modules, functional programming, destructuring assignment, various syntactic sugar, and partial npm package management. With plugin support, it can also leverage TypeScript's static type system. Note: AutoHotkey is case-insensitive.
+You can think of `Coffee-AHK` as a dialect of `CoffeeScript` that compiles to AutoHotkey v1 scripts. It is compatible with existing `AHK` code and adds modern features such as classes, modules, functional programming, destructuring assignment, and various syntactic sugar. Note: AutoHotkey is case-insensitive.
 
-Latest version: **0.0.61**
+See [README.md](../README.md) for installation, options, and the full feature/limitation matrix. See [USAGE.md](../USAGE.md) for a condensed writer's guide.
 
 ## Overview
 
-`Coffee-AHK` at the top, compiled `AHK` output at the bottom.
+`Coffee-AHK` at the top, compiled `AHK` output at the bottom. Generated function names are prefixed with `salt` (a deterministic hash of the source by default, e.g. `s1f8zyy3`); closures receive a context object `λ` holding captured variables.
 
 ```coffeescript
 # assignment:
-number = 42
+count = 42
 opposite = true
 
 # conditions:
-if opposite then number = -42
+if opposite then count = -42
 
 # functions:
 square = (x) -> x * x
@@ -34,23 +34,27 @@ race = (winner, runners...) ->
 ```
 
 ```ahk
-global number := 42
+global count := 42
 global opposite := true
 if (opposite) {
-  number := -42
+  count := -42
 }
-global square := Func("ahk_3")
+global square := Func("s1f8zyy3_3").Bind({})
 global list := [1, 2, 3, 4, 5]
-global math := {root: Math.sqrt, square: square, cube: Func("ahk_2")}
-global race := Func("ahk_1").Bind(print)
-ahk_1(print, winner, runners*) {
-  print.Call(winner, runners)
+global math := {root: Math.sqrt, square: square, cube: Func("s1f8zyy3_2").Bind({})}
+global race := Func("s1f8zyy3_1").Bind({})
+s1f8zyy3_1(λ, winner, runners*) {
+  λ.winner := winner
+  λ.runners := runners
+  return λ.print.Call(λ.winner, λ.runners)
 }
-ahk_2(x) {
-  return x * square.Call(x)
+s1f8zyy3_2(λ, x) {
+  λ.x := x
+  return λ.x * square.Call(λ.x)
 }
-ahk_3(x) {
-  return x * x
+s1f8zyy3_3(λ, x) {
+  λ.x := x
+  return λ.x * λ.x
 }
 ```
 
@@ -69,11 +73,11 @@ You don't need to use parentheses to call a function when passing arguments. The
 
 `console.log sys.inspect object` → `console.log(sys.inspect(object));`
 
+All functions starting with an uppercase letter are treated as built-in functions and are not wrapped in `Func(...).Call(...)`.
+
 ## Functions
 
 Functions are defined by an optional list of parameters in parentheses, an arrow, and the function body. The empty function looks like this: `->`.
-
-Note that all functions starting with an uppercase letter are treated as built-in functions.
 
 ```coffeescript
 square = (x) -> x * x
@@ -81,13 +85,15 @@ cube = (x) -> square(x) * x
 ```
 
 ```ahk
-global square := Func("ahk_2")
-global cube := Func("ahk_1")
-ahk_1(x) {
-  return square.Call(x) * x
+global square := Func("s1x2rg3o_2").Bind({})
+global cube := Func("s1x2rg3o_1").Bind({})
+s1x2rg3o_1(λ, x) {
+  λ.x := x
+  return square.Call(λ.x) * λ.x
 }
-ahk_2(x) {
-  return x * x
+s1x2rg3o_2(λ, x) {
+  λ.x := x
+  return λ.x * λ.x
 }
 ```
 
@@ -99,11 +105,15 @@ fill = (container, liquid = 'coffee') ->
 ```
 
 ```ahk
-global fill := Func("ahk_1")
-ahk_1(container, liquid := "coffee") {
-  return "Filling the " . (container) . " with " . (liquid) . "..."
+global fill := Func("sb9pzs1_1").Bind({})
+sb9pzs1_1(λ, container, liquid := "coffee") {
+  λ.container := container
+  λ.liquid := liquid
+  return "Filling the " . (λ.container) . " with " . (λ.liquid) . "..."
 }
 ```
+
+Implicit return: a function whose body is a single statement/expression returns it automatically. Bodies with multiple statements require an explicit `return`. Exception: an `if`/`else if`/`else` chain as the last statement of a function body returns the taken branch's last expression — this also applies in multi-statement bodies, and a nested tail `if` recurses into its own branches. `for`/`while`/`try`/native bodies are never implicitly returned.
 
 ## Strings
 
@@ -137,6 +147,8 @@ mobyDick = 'Call me Ishmael. Some years ago --
 global mobyDick := "Call me Ishmael. Some years ago -- never mind how long precisely -- having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world..."
 ```
 
+Block strings (`'''` / `"""`) keep their newlines as `` `n ``:
+
 ```coffeescript
 html = '''
 <strong>
@@ -146,7 +158,7 @@ html = '''
 ```
 
 ```ahk
-global html := "<strong>cup of coffee-ahk</strong>"
+global html := "<strong>`n  cup of coffee-ahk`n</strong>"
 ```
 
 Double-quoted block strings, like other double-quoted strings, allow interpolation.
@@ -224,7 +236,7 @@ else date = jill
 
 ```ahk
 if (singing) {
-  mood := greatlyImproved
+  global mood := greatlyImproved
 }
 if (happy && knowsIt) {
   clapsHands.Call()
@@ -233,9 +245,39 @@ if (happy && knowsIt) {
   showIt.Call()
 }
 if (friday) {
-  date := sue
+  global date := sue
 } else {
   date := jill
+}
+```
+
+`if`/`else` is also an expression: on the right side of `=`, after `return`/`throw`, and inside parentheses it compiles to a ternary. A missing `else` yields `""`, and `else if` chains become right-associative ternaries. Inside call arguments, arrays, index brackets, and object literals it is not supported (compiler error) — assign to a variable first. Nested if-expressions are not supported either.
+
+An `if`/`else` chain that is the last statement of a function body also serves as the return value: `return` is injected before each branch's last statement, recursing into nested tail `if`s.
+
+```coffeescript
+status = if count > 0 then "ok" else "empty"
+maybe = if count > 0 then "ok"
+
+sign = (x) ->
+  if x > 0 then "positive"
+  else if x < 0 then "negative"
+  else "zero"
+```
+
+```ahk
+global status := count > 0 ? "ok" : "empty"
+global maybe := count > 0 ? "ok" : ""
+global sign := Func("s1x8k2m_1").Bind({})
+s1x8k2m_1(λ, x) {
+  λ.x := x
+  if (λ.x > 0) {
+    return "positive"
+  } else if (λ.x < 0) {
+    return "negative"
+  } else {
+    return "zero"
+  }
 }
 ```
 
@@ -255,13 +297,6 @@ contenders = [
   'Michael Phelps'
   'Liu Xiang'
   'Yao Ming'
-  'Allyson Felix'
-  'Shawn Johnson'
-  'Roman Sebrle'
-  'Guo Jingjing'
-  'Tyson Gay'
-  'Asafa Powell'
-  'Usain Bolt'
 ]
 
 awardMedals contenders...
@@ -277,16 +312,21 @@ The Field: #{rest.join ', '}
 global gold := "unknown"
 global silver := "unknown"
 global rest := "unknown"
-global awardMedals := Func("ahk_1")
-global contenders := ["Michael Phelps", "Liu Xiang", "Yao Ming", "Allyson Felix", "Shawn Johnson", "Roman Sebrle", "Guo Jingjing", "Tyson Gay", "Asafa Powell", "Usain Bolt"]
+global awardMedals := Func("s4v00up_1").Bind({})
+global contenders := ["Michael Phelps", "Liu Xiang", "Yao Ming"]
 awardMedals.Call(contenders*)
 alert.Call(" Gold: " . (gold) . " Silver: " . (silver) . " The Field: " . (rest.join.Call(", ")) . " ")
-ahk_1(first, second, others*) {
-  gold := first
-  silver := second
-  rest := others
+s4v00up_1(λ, first, second, others*) {
+  λ.first := first
+  λ.second := second
+  λ.others := others
+  gold := λ.first
+  silver := λ.second
+  rest := λ.others
 }
 ```
+
+Spread calls use the same postfix form — `f(...args)` compiles to `f.Call(args*)`. Only plain identifiers can be spread: `f(...a.b)` is a compile error — assign to a variable first. There is no `arguments` object and no `eval` in AHK v1; both are compile errors (use a rest parameter instead).
 
 ## Loops
 
@@ -298,9 +338,9 @@ for food in ['toast', 'cheese', 'wine']
 
 # Fine five course dining.
 courses = ['greens', 'caviar', 'truffles', 'roast', 'cake']
-menu = (i, dish) -> "Menu Item #{i}: #{dish}"
+menuText = (i, dish) -> "Menu Item #{i}: #{dish}"
 for dish, i in courses
-  menu i + 1, dish
+  menuText i + 1, dish
 
 # Health conscious meal.
 foods = ['broccoli', 'spinach', 'chocolate']
@@ -309,29 +349,36 @@ for food in foods
 ```
 
 ```ahk
-global eat := Func("ahk_2")
-for __index_for__, food in ["toast", "cheese", "wine"] {
+global eat := Func("s1ut5k8k_2").Bind({})
+for ℓi, food in ["toast", "cheese", "wine"] {
+  global food
   eat.Call(food)
 }
 global courses := ["greens", "caviar", "truffles", "roast", "cake"]
-global menu := Func("ahk_1")
+global menuText := Func("s1ut5k8k_1").Bind({})
 for i, dish in courses {
-  i := i - 1
-  menu.Call(i + 1, dish)
+  global dish
+  global i := i - 1
+  menuText.Call(i + 1, dish)
 }
 global foods := ["broccoli", "spinach", "chocolate"]
-for __index_for__, food in foods {
+for ℓi, food in foods {
   if (food != "chocolate") {
     eat.Call(food)
   }
 }
-ahk_1(i, dish) {
+s1ut5k8k_1(λ, i, dish) {
+  λ.i := i
+  λ.dish := dish
   return "Menu Item " . (i) . ": " . (dish) . ""
 }
-ahk_2(food) {
+s1ut5k8k_2(λ, food) {
+  λ.food := food
   return "" . (food) . " eaten."
 }
 ```
+
+Note: `for item, i in array` gives a 0-based `i` (the generated `i := i - 1` converts AHK's 1-based loop index). Loops without an index variable use the internal `ℓi` placeholder.
 
 Use `of` to signal comprehension over the properties of an object instead of the values in an array.
 
@@ -347,6 +394,8 @@ for child, age of yearsOld
 global yearsOld := {max: 10, ida: 9, tim: 11}
 global ages := []
 for child, age in yearsOld {
+  global child
+  global age
   ages.Push("" . (child) . " is " . (age) . "")
 }
 ```
@@ -392,7 +441,7 @@ For readability, the `until` keyword is equivalent to `while not`, and the `loop
 
 You can use `not` as an alias for `!`.
 
-For logic, `and` compiles to `&&`, and `or` compiles to `||`.
+For logic, `and` compiles to `&&`, and `or` compiles to `||`. In AHK these operators return boolean `0`/`1`, not an operand value — so on the right side of `=`, a `||`/`&&` chain ending in a non-boolean literal is rewritten to a value-preserving ternary (`x = a || "d"` behaves like `x := a ? a : "d"`). Elsewhere (conditions, call arguments, `return`) they keep boolean semantics.
 
 Instead of a newline or semicolon, `then` can be used to separate conditions from expressions in `while`, `if`/`else`, and `switch`/`when` statements.
 
@@ -402,7 +451,9 @@ As in `YAML`, `on` and `yes` are the same as boolean `true`, while `off` and `no
 
 As a shortcut for `this.property` you can use `@property`.
 
-To simplify mathematical expressions, `**` can be used for exponentiation, and `//` does the division of floors.
+To simplify mathematical expressions, `**` can be used for exponentiation.
+
+Floor division (`//`, `//=`) and modulo (`%`, `%%`) are **not supported** — they conflict with AHK comment/variable syntax and raise a compile error. Use `Floor(a / b)` or `Mod(a, b)` instead.
 
 All together now:
 
@@ -417,7 +468,6 @@ All together now:
 | `false`, `no`, `off` | `false`  |
 |     `@`, `this`      |  `this`  |
 |       `a ** b`       | `a ** b` |
-|       `a // b`       | `a // b` |
 
 ```coffeescript
 if ignition is on then launch()
@@ -436,7 +486,7 @@ if (ignition == true) {
   launch.Call()
 }
 if (band != SpinalTap) {
-  volume := 10
+  global volume := 10
 }
 if !(answer == false) {
   letTheWildRumpusBegin.Call()
@@ -461,9 +511,10 @@ $ 'body'
 ```
 
 ```ahk
-$.Call("body").click.Call(Func("ahk_1").Bind($)).css.Call("background", "white")
-ahk_1($, e) {
-  $.Call(".box").fadeIn.Call("fast").addClass.Call("show")
+$.Call("body").click.Call(Func("s10lsi7s_1").Bind({})).css.Call("background", "white")
+s10lsi7s_1(λ, e) {
+  λ.e := e
+  return λ.$.Call(".box").fadeIn.Call("fast").addClass.Call("show")
 }
 ```
 
@@ -481,35 +532,39 @@ theSwitch = 0
 ```ahk
 global theBait := 1000
 global theSwitch := 0
-global __array__ := [theSwitch, theBait]
-theBait := __array__[1]
-theSwitch := __array__[2]
+global ℓarray := [theSwitch, theBait]
+theBait := ℓarray[1]
+theSwitch := ℓarray[2]
 ```
 
 But it's also useful for dealing with functions that return multiple values.
 
 ```coffeescript
 weatherReport = (location) ->
-  # Make an Ajax request to fetch the weather...
   return [location, 72, 'Mostly Sunny']
 
 [city, temp, forecast] = weatherReport 'Berkeley, CA'
 ```
 
 ```ahk
-global weatherReport := Func("ahk_1")
-global __array__ := weatherReport.Call("Berkeley, CA")
-global city := __array__[1]
-global temp := __array__[2]
-global forecast := __array__[3]
-ahk_1(location) {
-  return [location, 72, "Mostly Sunny"]
+global weatherReport := Func("s1lu25uy_1").Bind({})
+global ℓarray := weatherReport.Call("Berkeley, CA")
+global city := ℓarray[1]
+global temp := ℓarray[2]
+global forecast := ℓarray[3]
+s1lu25uy_1(λ, location) {
+  λ.location := location
+  return [λ.location, 72, "Mostly Sunny"]
 }
 ```
+
+Nested destructuring (`[a, [b, c]] = x`) and destructuring in `for` loops are not supported — destructure in a separate statement instead.
 
 ## Class
 
 Since `AHK` is not case-sensitive, please do not use this way: `item = new Item()`. Instead, it should be written like this: `item2 = new Item()`.
+
+Class names must start with an uppercase letter and be at least 2 characters long. In the generated code, uppercase letters inside class identifiers are replaced by full-width Unicode to simulate case-sensitivity (`Animal` → `Ａnimal`).
 
 ```coffeescript
 class Animal
@@ -536,32 +591,36 @@ tom.move()
 ```
 
 ```ahk
-class Animal {
+class Ａnimal {
   __New(name) {
     this.name := name
   }
-  move := Func("ahk_3").Bind(alert).Bind(this)
+  move := Func("s1cfr26x_3").Bind({}, this)
 }
-class Snake extends Animal {
-  move := Func("ahk_2").Bind(alert).Bind(this)
+class Ｓnake extends Ａnimal {
+  move := Func("s1cfr26x_2").Bind({}, this)
 }
-class Horse extends Animal {
-  move := Func("ahk_1").Bind(alert).Bind(this)
+class Ｈorse extends Ａnimal {
+  move := Func("s1cfr26x_1").Bind({}, this)
 }
-global sam := new Snake("Sammy the Python")
-global tom := new Horse("Tommy the Palomino")
+global sam := new Ｓnake("Sammy the Python")
+global tom := new Ｈorse("Tommy the Palomino")
 sam.move.Call()
 tom.move.Call()
-ahk_1(alert, this) {
-  alert.Call("Galloping...")
+s1cfr26x_1(λ, ℓthis) {
+  this := ℓthis
+  λ.alert.Call("Galloping...")
   base.move.Call(45)
 }
-ahk_2(alert, this) {
-  alert.Call("Slithering...")
+s1cfr26x_2(λ, ℓthis) {
+  this := ℓthis
+  λ.alert.Call("Slithering...")
   base.move.Call(5)
 }
-ahk_3(alert, this, meters) {
-  alert.Call(this.name + " moved " . (meters) . "m.")
+s1cfr26x_3(λ, ℓthis, meters) {
+  this := ℓthis
+  λ.meters := meters
+  return λ.alert.Call(this.name + " moved " . (λ.meters) . "m.")
 }
 ```
 
@@ -612,8 +671,8 @@ switch day {
 try
   allHellBreaksLoose()
   catsAndDogsLivingTogether()
-catch error
-  print error
+catch err
+  print err
 finally
   cleanUp()
 ```
@@ -622,24 +681,33 @@ finally
 try {
   allHellBreaksLoose.Call()
   catsAndDogsLivingTogether.Call()
-} catch error {
-  print.Call(error)
+} catch err {
+  global err
+  print.Call(err)
 } finally {
   cleanUp.Call()
 }
 ```
 
+## Reserved Words
+
+AHK built-in names (e.g. `number`, `menu`, `error`) and anything starting with `A_` cannot be used as variables, parameters, `catch`/`for` variables, destructuring targets, or class names — the compiler raises a `forbidden` error. See `data/forbidden.yaml` for the list.
+
 ## Modules
 
 ```coffeescript
 import './local-file.coffee'
-import 'js-shim.ahk' # via npm
+import 'js-shim.ahk' # resolved via ./node_modules
 
 import fn from './source/fn'
 
 import data from './data.json'
 import data2 from './data.yaml'
 ```
+
+Supported forms: side-effect (`import './m'`), default (`import m from './m'`), named (`import { a, b } from './m'`), and mixed. `export default` and `export { a, b }` are supported (`export {}` is a legal no-op; a second `export default` is a compile error). `import * as`, `import { x as y }`, and `export const` are not. `import`/`export` only work in file-based compilation — `export` in string input raises an error. Lines that merely look like imports inside heredocs or `###` block comments are ignored.
+
+Classes cannot be exported — modules are wrapped for scope isolation and AHK classes must live at the top level. Define classes in a separate file and pull them in with a side-effect import.
 
 ## Native AHK
 
@@ -652,9 +720,13 @@ hi = ->
 ```
 
 ```ahk
-global hi := Func("ahk_1")
-ahk_1() {
-  msg := "Hello AHK"
-  MsgBox, % msg
+global hi := Func("s13ownkq_1").Bind({})
+s13ownkq_1(λ) {
+  λ.msg := "Hello AHK"
+  λ_msg := λ.msg
+  MsgBox, % λ_msg
+  λ.msg := λ_msg
 }
 ```
+
+Inside functions, native blocks bridge closure variables through temporary variables (`λ_msg` above): the value is copied out before the block and written back after, so legacy AHK commands like `MsgBox`/`Sort` can operate on them.

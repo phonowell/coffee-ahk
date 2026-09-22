@@ -4,7 +4,7 @@
 
 ```bash
 pnpm build
-node -e "require('./dist/index.js').default('/path/to/file.coffee', { salt: 'ahk' }).then(console.log)"
+node -e "import('./dist/index.js').then(m => m.default('/path/to/file.coffee', { salt: 'ahk' }).then(console.log))"
 ```
 
 ## 约束
@@ -13,6 +13,7 @@ node -e "require('./dist/index.js').default('/path/to/file.coffee', { salt: 'ahk
 
 **禁止语法**（编译报错）：
 - `?.` / `?` 可选链·`[1..10]` 范围·`return x if y` 后置if·`x in [1,2]` 关系in·`>>>`/`await`/`yield`
+- 后置 `for`/`while`/`until`/`loop`·循环推导式 `x = (v*2 for v in list)`·`for` 修饰符 `when`/`by`/`own`·`try`/`switch` 表达式位·regex 字面量 `///`·`debugger`·`arguments`/`eval`·`f(...a.b)` 成员展开·字符串输入中的 `export`
 - `%` / `%%` 取模运算符→用 `Mod(a, b)` (AHK变量语法冲突)
 
 ## 语法
@@ -25,15 +26,17 @@ fn = (a = 1) -> a                   # 默认参数
 fn = (first, rest...) -> rest[0]    # 剩余参数
 do -> x = 1                         # IIFE
 
-# 隐式return：≤3行（2个换行）
-fn = -> x = 1; x + 1                # ✅
-fn = -> x = 1; y = 2; return x + y  # ❌ 超限需显式return
+# 隐式return：仅单语句函数体生效
+fn = -> x + 1                       # ✅
+fn = -> x = 1; y = 2; return x + y  # ✅ 多语句须显式return
+fn = -> if a then b else c          # ✅ 例外：函数尾部if链逐分支注入return
 ```
 
 ### 控制流
 
 ```coffee
 if x > 1 then doSth()               # 单行if
+x = if a then b else c              # if表达式→三元：`=`右侧/`return`后/括号内可用；调用参数·数组·对象值内禁用
 unless done then continue()
 for item in [1, 2, 3]               # for...in
 for item, i in array                # 带索引
@@ -91,6 +94,7 @@ str = """multiline #{x}"""      # 多行插值
 # 操作符
 1 < x < 10                      # 链式比较
 obj instanceof ClassName        # instanceof
+conf = port || "localhost"      # ||/&& 仅 `=` 右侧+链尾字面量→三元保值；其他位置返回 0/1
 
 # 索引
 arr[0]      # → arr[1] (自动+1)
@@ -102,21 +106,33 @@ obj["0"]    # 字符串键不转换
 
 ### 隐式return
 
-函数体≤3行（2个换行）·对象字面量无括号≤2行（1个换行）
+仅当函数体是**单条语句/表达式**时生效；多语句函数体一律需显式 `return`。
+例外：`if`/`else if`/`else` 链作为函数体**最后一条语句**时，各分支末尾自动注入 `return`（多语句体同样生效，分支末尾的嵌套 `if` 递归处理）。
 
 ```coffee
-# ✅ 正常
-fn = -> x = 1; x + 1
-fn = -> a: 1; b: 2
+# ✅ 单语句
+fn = -> x + 1
+fn = -> a: 1
+fn = -> {a: 1, b: 2}
+fn = -> if a then b else c          # ✅ 尾部if链
 
-# ❌ 超限
-fn = -> x = 1; y = 2; x + y  # 不会return
-fn = -> a: 1; b: 2; c: 3
+# ❌ 多语句无隐式return（结果丢弃）
+fn = -> x = 1; y = 2; x + y
+fn = ->
+  x = 1
+  x + 1
+
+# ❌ 无括号多行对象 → 产出损坏，须用带括号显式return
+fn = ->
+  a: 1
+  b: 2
 
 # ✅ 显式return
 fn = -> x = 1; y = 2; return x + y
 fn = -> return {a: 1, b: 2, c: 3}
 ```
+
+`for`/`while`/`try`/native 函数体不生成隐式 return。
 
 ### 解构/Class
 
@@ -160,7 +176,7 @@ outer = (argsOuter...) ->
 
 **调试**：
 ```bash
-node -e "require('./dist/index.js').default('/tmp/test.coffee', { salt: 'test' }).then(console.log)"
+node -e "import('./dist/index.js').then(m => m.default('/tmp/test.coffee', { salt: 'test' }).then(console.log))"
 ```
 
 ## 示例
@@ -173,7 +189,7 @@ export { add }
 # counter.coffee（class不export）
 class Counter
   constructor: (initial = 0) -> @value = initial
-  increment: -> @value++; this
+  increment: -> @value++; return this
 
 # main.coffee
 import './counter'

@@ -17,7 +17,7 @@ Translate `coffeescript` to `ahk`.
   - `export default` (single expression, multiline block, or object literal)
   - `export { named, exports }` (named exports with optional key-value pairs)
   - Recursive import resolution and namespace isolation
-- Partial npm package management support (install and import local/third-party modules)
+- Partial `node_modules` support: bare imports resolve `./node_modules/<pkg>` via its `package.json` `main` field
 - Functional programming support; functions are first-class citizens
 - Arrow functions (`->`, `=>`) and `this` binding
 - Function parameter binding, default values, and rest parameters
@@ -28,7 +28,6 @@ Translate `coffeescript` to `ahk`.
 - Anonymous and higher-order functions
 - Native AHK code embedding with backticks
 - Strict variable and reserved word checking
-- Optional TypeScript static type system support via plugins
 
 ## Usage
 
@@ -48,14 +47,16 @@ await c2a("./script/toolkit/index.coffee", {
 
 ## Options
 
-| Option     | Type    | Default | Description                                    |
-| ---------- | ------- | ------- | ---------------------------------------------- |
-| `salt`     | string  | random  | Identifier prefix for generated functions      |
-| `save`     | boolean | true    | Write output to `.ahk` file                    |
-| `string`   | boolean | false   | Return compiled string instead of writing file |
-| `comments` | boolean | false   | Preserve comments in output                    |
-| `metadata` | boolean | true    | Include timestamp comment in output            |
-| `verbose`  | boolean | false   | Enable debug logging                           |
+| Option     | Type    | Default  | Description                                                              |
+| ---------- | ------- | -------- | ------------------------------------------------------------------------ |
+| `salt`     | string  | auto     | Identifier prefix for generated functions; defaults to a deterministic hash (`s`+base36) of the source path/content |
+| `save`     | boolean | true     | Write output to `.ahk` file                                              |
+| `string`   | boolean | false    | Treat input as source text and return the compiled string                |
+| `comments` | boolean | false    | Preserve comments in output                                              |
+| `metadata` | boolean | true     | Include timestamp comment in output                                      |
+| `ast`      | boolean | false    | Also write `<name>.ast.json` (requires `save`)                           |
+| `coffeeAst`| boolean | false    | Print the CoffeeScript AST (requires `verbose`)                          |
+| `verbose`  | boolean | false    | Enable debug logging                                                     |
 
 ## Limitations
 
@@ -65,11 +66,12 @@ await c2a("./script/toolkit/index.coffee", {
   - All class identifiers are rendered with uppercase letters replaced by full-width Unicode for AHK v1 case simulation (e.g., `Animal` → `Ａnimal`).
 - No support for getter/setter
 - **Single-letter class names are forbidden**: AHK v1 has issues with single-letter class names. All class names must be at least 2 characters long.
-- **Implicit return is limited**:
-  - Maximum 2 newlines (3 lines of code) for regular functions
-  - Maximum 1 newline (2 lines) for object literals without braces
-  - Functions with `for`/`if`/`while`/`try` as last statement require explicit `return`
-  - Exceeding these limits requires explicit `return` statement
+- **Implicit return only fires for single-statement bodies**:
+  - A function whose body is one statement/expression returns it automatically
+  - Multi-statement bodies require an explicit `return`
+  - Exception: an `if`/`else if`/`else` chain as the last statement of a function body returns the taken branch's last expression — this also applies in multi-statement bodies and recurses into nested tail `if`s
+  - `for`/`while`/`try`/native bodies are never implicitly returned
+  - Multi-line braceless object literals produce broken output — use `return { ... }` with braces
 - No true boolean type in AHK; `true`, `false`, `on`, and `off` are syntactic sugar
 - Character and number distinction is blurred in AHK; `'0'` is falsy
 - `NaN`, `null`, and `undefined` are converted to the empty string `''`
@@ -78,11 +80,18 @@ await c2a("./script/toolkit/index.coffee", {
 - `async`/`await` and generators (`yield`) are not supported (compiler error)
 - For-loop destructuring (`for [a, b] in arr`) is not supported (compiler error). Workaround: `for item in arr` then `[a, b] = item`
 - Nested array destructuring (`[a, [b, c]] = x`) is not supported (compiler error). Workaround: flatten manually
+- If-then-else expressions work on the right side of `=`, after `return`/`throw`, and inside parentheses; a missing `else` yields `""`, and `else if` chains compile to right-associative ternaries. Inside call arguments, arrays, index brackets, and object literals they are not supported (compiler error) — assign to a variable first
 - Nested if-then-else expressions (`if a then (if b then c else d) else e`) are not supported (compiler error). Workaround: use temporary variables or separate statements
+- Postfix forms (`return x if y`, `x++ while c`, `x++ for x in xs`), loop comprehensions, and `for` modifiers (`when`/`by`/`own`) are not supported (compiler error)
+- `export` requires file-based compilation — `export` in string input raises a compile error; `export {}` is a legal no-op
+- `||`/`&&` are rewritten to value-preserving ternaries only on the right side of `=` when the chain ends in a non-boolean literal (`x = a || "d"` behaves like `x := a ? a : "d"`); elsewhere they keep AHK boolean semantics (0/1)
+- Spread calls `f(...args)` compile to `args*`; spreading a member/index expression (`f(...a.b)`) is not supported (compiler error) — assign to a variable first
+- `arguments` and `eval` are not supported (compiler error) — use rest parameters (`args...`) or precompute values
+- `try`/`switch` in expression position, regex literals (`///...///`), and `debugger` are not supported (compiler error)
 - Floor division (`//`) and modulo (`%`, `%%`) operators conflict with AHK syntax (compiler error). Use `Mod(a, b)` instead
 - Avoid using `=>` outside classes; pure functions in AHK lack `this`
 - `.coffee` files must be UTF-8; `.ahk` files must be UTF-8 with BOM
-- Import/export and npm package management are incomplete
+- Import/export and `node_modules` resolution are incomplete
 - **Class + Export conflict**: AHK v1 classes must be defined at top-level (not inside functions/closures). Since exported modules are wrapped in `do ->` for scope isolation, classes cannot be exported directly. Workaround: define classes in separate files without `export`, then use side-effect imports (`import './myclass'`) to include them at top-level.
 - **Array/Object index limitation**: In AHK v1, `[]` is syntactic sugar for `{}` (`[a,b]` equals `{1:a, 2:b}`), and there is no native way to distinguish arrays from objects. The index converter (`ℓci`) assumes arrays use numeric indices and objects use string keys. If you use numeric keys on objects (e.g., `obj[0]`), it will be incorrectly converted to `obj[1]`. Note: In AHK v1, `obj[0]` and `obj["0"]` access **different keys** (numeric vs string). Variables are an exception: `i := "0"; obj[i]` accesses the numeric key (pure numeric strings are auto-converted). Workaround: use `obj["0"]` for string keys, or use Native embedding for direct AHK access.
 - **Native variable references**: Inside functions, Native code automatically uses temporary variables (`λ_var`) to bridge closure variables. Before a Native block: `λ_var := λ.var`, after: `λ.var := λ_var`. This allows AHK commands like `Sort`, `StringUpper` to work with simple variables.

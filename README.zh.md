@@ -17,7 +17,7 @@
   - `export default`（单表达式、多行块或对象字面量）
   - `export { named, exports }`（具名导出，可选键值对）
   - 递归 import 解析与命名空间隔离
-- 部分 npm 包管理支持（安装并导入本地/第三方模块）
+- 部分 `node_modules` 支持：裸导入经 `package.json` 的 `main` 字段解析 `./node_modules/<pkg>`
 - 支持函数式编程；函数为一等公民
 - 箭头函数（`->`, `=>`）与 `this` 绑定
 - 函数参数绑定、默认值与剩余参数
@@ -28,7 +28,6 @@
 - 匿名与高阶函数
 - 反引号嵌入原生 AHK 代码
 - 严格变量与保留字检查
-- 通过插件提供可选的 TypeScript 静态类型系统支持
 
 ## 使用
 
@@ -48,14 +47,16 @@ await c2a("./script/toolkit/index.coffee", {
 
 ## 选项
 
-| 选项       | 类型    | 默认值 | 描述                                   |
-| ---------- | ------- | ------ | -------------------------------------- |
-| `salt`     | string  | random | 生成函数的标识前缀                     |
-| `save`     | boolean | true   | 写入 `.ahk` 文件                       |
-| `string`   | boolean | false  | 返回编译后的字符串而非写文件           |
-| `comments` | boolean | false  | 保留输出中的注释                       |
-| `metadata` | boolean | true   | 在输出中包含时间戳注释                 |
-| `verbose`  | boolean | false  | 启用调试日志                           |
+| 选项       | 类型    | 默认值 | 描述                                                         |
+| ---------- | ------- | ------ | ------------------------------------------------------------ |
+| `salt`     | string  | auto   | 生成函数的标识前缀；默认为源路径/内容的确定性 hash（`s`+base36）|
+| `save`     | boolean | true   | 写入 `.ahk` 文件                                              |
+| `string`   | boolean | false  | 将入参视为源码文本并返回编译后的字符串                         |
+| `comments` | boolean | false  | 保留输出中的注释                                              |
+| `metadata` | boolean | true   | 在输出中包含时间戳注释                                        |
+| `ast`      | boolean | false  | 额外写出 `<name>.ast.json`（需 `save`）                       |
+| `coffeeAst`| boolean | false  | 打印 CoffeeScript AST（需 `verbose`）                         |
+| `verbose`  | boolean | false  | 启用调试日志                                                  |
 
 ## 限制
 
@@ -65,11 +66,12 @@ await c2a("./script/toolkit/index.coffee", {
   - 为在 AHK v1 中模拟大小写，类标识符中的大写字母会被替换为全角 Unicode（如 `Animal` → `Ａnimal`）。
 - 不支持 getter/setter
 - **单字母类名被禁止**：AHK v1 对单字母类名存在问题。类名至少 2 个字符。
-- **隐式 return 有限制**：
-  - 普通函数最多 2 个换行（3 行代码）
-  - 无大括号的对象字面量最多 1 个换行（2 行）
-  - 以 `for`/`if`/`while`/`try` 结尾的函数必须显式 `return`
-  - 超出以上限制需显式 `return`
+- **隐式 return 仅对单语句函数体生效**：
+  - 函数体为单条语句/表达式时自动返回
+  - 多语句函数体必须显式 `return`
+  - 例外：`if`/`else if`/`else` 链作为函数体最后一条语句时，返回被执行分支的最后一个表达式——多语句函数体同样生效，分支末尾的嵌套 `if` 会递归处理
+  - `for`/`while`/`try`/native 函数体不生成隐式 return
+  - 无括号的多行对象字面量会产出损坏代码——须用 `return { ... }` 并带括号
 - AHK 无真正布尔类型；`true`、`false`、`on`、`off` 仅为语法糖
 - AHK 中字符与数字界限模糊；`'0'` 为假值
 - `NaN`、`null`、`undefined` 会被转换为空字符串 `''`
@@ -78,11 +80,18 @@ await c2a("./script/toolkit/index.coffee", {
 - 不支持 `async`/`await` 与生成器（`yield`）（编译错误）
 - 不支持 for 循环解构（`for [a, b] in arr`）（编译错误）。变通：`for item in arr` 再 `[a, b] = item`
 - 不支持嵌套数组解构（`[a, [b, c]] = x`）（编译错误）。变通：手动展平
+- if-then-else 表达式可用于 `=` 右侧、`return`/`throw` 之后以及括号内；缺省 `else` 时结果为 `""`，`else if` 链编译为右结合三元。不支持出现在调用参数、数组、索引括号与对象字面量中（编译错误）——先赋给变量
 - 不支持嵌套 if-then-else 表达式（`if a then (if b then c else d) else e`）（编译错误）。变通：使用临时变量或拆分语句
+- 不支持后置形式（`return x if y`、`x++ while c`、`x++ for x in xs`）、循环推导式与 `for` 修饰符（`when`/`by`/`own`）（编译错误）
+- `export` 仅支持文件编译——字符串输入中的 `export` 报编译错误；`export {}` 是合法空操作
+- `||`/`&&` 仅在 `=` 右侧且链尾为非布尔字面量时改写为保值三元（`x = a || "d"` 等价于 `x := a ? a : "d"`）；其余位置保留 AHK 布尔语义（0/1）
+- 展开调用 `f(...args)` 编译为 `args*`；不支持展开成员/索引表达式（`f(...a.b)`）（编译错误）——先赋给变量
+- 不支持 `arguments` 与 `eval`（编译错误）——改用剩余参数（`args...`）或预先计算
+- 不支持表达式位置的 `try`/`switch`、regex 字面量（`///...///`）与 `debugger`（编译错误）
 - 整除（`//`）与取模（`%`、`%%`）与 AHK 语法冲突（编译错误）。请用 `Mod(a, b)`
 - 避免在类外使用 `=>`；AHK 纯函数没有 `this`
 - `.coffee` 文件必须为 UTF-8；`.ahk` 文件必须为带 BOM 的 UTF-8
-- import/export 与 npm 包管理不完整
+- import/export 与 `node_modules` 解析不完整
 - **类 + 导出冲突**：AHK v1 类必须在顶层定义（不能在函数/闭包内）。导出模块会被 `do ->` 包裹以隔离作用域，因此类不能直接导出。变通：在单独文件中定义类且不 `export`，再用副作用导入（`import './myclass'`）把类引入顶层。
 - **数组/对象索引限制**：AHK v1 中 `[]` 是 `{}` 的语法糖（`[a,b]` 等于 `{1:a, 2:b}`），且无法原生区分数组与对象。索引转换器（`ℓci`）假定数组用数字索引、对象用字符串键。如果对象使用数字键（如 `obj[0]`），会被错误转换为 `obj[1]`。注意：在 AHK v1 中，`obj[0]` 与 `obj["0"]` 访问的是**不同键**（数字 vs 字符串）。变量是例外：`i := "0"; obj[i]` 访问数字键（纯数字字符串会自动转换）。变通：字符串键用 `obj["0"]`，或使用 Native 嵌入直接访问 AHK。
 - **Native 变量引用**：函数内的 Native 代码会自动使用临时变量（`λ_var`）桥接闭包变量。Native 块前：`λ_var := λ.var`，块后：`λ.var := λ_var`。这使 AHK 命令如 `Sort`、`StringUpper` 可以处理简单变量。
