@@ -22,14 +22,14 @@ allowed-tools: Read, Grep, Glob
 
 ## 编译流程（3 阶段）
 
-**entry/index.ts:18-67**：
+**entry/index.ts:20-67**：
 1. **Formatters** (formatters/index.ts) - CoffeeScript tokens → Item[]
 2. **Processors** (processors/index.ts) - AST 结构重写（顺序敏感）
 3. **Renderer** (renderer/index.ts) - Item[] → AHK 代码
 
 ## Processor 执行顺序
 
-**processors/index.ts:19-37**：
+**processors/index.ts:19-40**：
 newLine → validate → for/array/object/logicalOr/ifExpression/chainedCompare → typeof/instanceof/variable → builtInLoader/class/**function**
 
 **function 内部顺序** (function/index.ts:13-34)：
@@ -41,11 +41,11 @@ mark → class → implicit-return → **anonymous** → count → parameter →
 |------|------|----------|
 | models/Content.ts:52 | reload() 过滤 void | `filter(it => !it.is('void'))` |
 | processors/function/anonymous/pick-item.ts:27 | 提取嵌套函数 | 标记原位置为 void |
-| processors/function/class/prepend-this.ts:20 | 类方法添加 ℓthis | constructor 特殊处理 |
+| processors/function/class/prepend-this.ts:37 | 类方法添加 ℓthis | constructor 特殊处理 |
 | processors/function/ctx-transform/params.ts:11-15 | 收集参数+类方法标记 | `classMethods: Set<string>` |
-| processors/function/ctx-transform/bind.ts:12-15 | Bind() 添加 this 参数 | 检测 classMethods 传递 `this` |
-| formatters/property.ts:42 | this.prop 处理 | 检查 lastType 插入 `.` |
-| renderer/index.ts:102 | mapMethod 映射 | type → 渲染函数 |
+| processors/function/ctx-transform/bind.ts:17 | Bind() 添加 this 参数 | 检测 classMethods 传递 `this` |
+| formatters/property.ts:25 | this.prop 处理 | 检查 lastType 插入 `.` |
+| renderer/index.ts:17 | renderers 映射 | `Partial<Record<ItemType, Renderer>>` type → 渲染函数 |
 
 ## Bug 定位方法论
 
@@ -53,7 +53,7 @@ mark → class → implicit-return → **anonymous** → count → parameter →
 
 **定位**：
 1. 查看 AST：`{verbose:true, ast:true}` 确认 Processor 后 Item[]
-2. 检查 renderer/index.ts mapMethod 是否有对应 type
+2. 检查 renderer/index.ts `renderers` 是否有对应 type（未命中渲染 `it.value` 原样输出）
 3. 检查 renderer/basic.ts, edge.ts, control-flow.ts
 
 ### Token 缺失（AST 中缺 token）
@@ -86,8 +86,9 @@ node dist/index.js file.coffee
 ```
 
 **测试文件规则**：
+- 测试框架：vitest，测试代码在 `tests/`（e2e fixture / models / errors / reachability），直接 import `src/` 不依赖 dist
 - ⚠️ **禁止**手动编译或修改 `script/test/*.ahk`
-- **必须**使用 `pnpm test overwrite` 自动生成
+- **必须**使用 `pnpm test overwrite` 自动生成（内部置 `UPDATE_FIXTURES=1`）
 - 新增测试：创建 `.coffee` → 运行 `pnpm test overwrite -- <name>`
 
 ## 常见陷阱
