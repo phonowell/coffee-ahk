@@ -1,14 +1,16 @@
 import { MODULE_PREFIX } from '../../../constants.js'
 import { pickImport } from '../source-resolver.js'
+import { codeLineMask } from '../utils.js'
 
 import type { IncludeContext } from '../cache.js'
 
 export const replaceAnchor = async (source: string, content: string, ctx: IncludeContext) => {
   const listResult: string[] = []
   const { cache, salt } = ctx
+  const mask = codeLineMask(content)
 
-  for (const line of content.split('\n')) {
-    if (!line.startsWith('import ')) {
+  for (const [i, line] of content.split('\n').entries()) {
+    if (!mask[i] || !line.startsWith('import ')) {
       listResult.push(line)
       continue
     }

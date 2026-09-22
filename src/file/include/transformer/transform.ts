@@ -5,6 +5,8 @@ import { MODULE_PREFIX } from '../../../constants.js'
 import { createTranspileError, ErrorType, TranspileError } from '../../../utils/error.js'
 import { pickImport as resolveImport } from '../source-resolver.js'
 
+import { codeLineMask } from '../utils.js'
+
 import { serializeDataModule } from './data-module.js'
 import { hasClassDeclaration, validateClassExportConflict } from './detect-class.js'
 import { parseExportsFromCoffee } from './parse-exports.js'
@@ -87,8 +89,9 @@ const parseDataModule = (
 
 const collectCoffeeDeps = async (file: string, text: string): Promise<string[]> => {
   const depSet = new Set<string>()
-  for (const line of text.split('\n')) {
-    if (!line.startsWith('import ')) continue
+  const mask = codeLineMask(text)
+  for (const [i, line] of text.split('\n').entries()) {
+    if (!mask[i] || !line.startsWith('import ')) continue
     const { path: depPath } = await resolveImport(file, line)
     depSet.add(depPath)
   }
@@ -152,6 +155,60 @@ export const transformAll = async (ctx: IncludeContext) => {
 
   // 递归处理未完成的项
   if ([...ctx.cache].some(([, meta]) => !meta.content)) await transformAll(ctx)
+}
+
+/** Collect `class X` names declared by a class-only module (raw coffee body) */
+const declaredClassNames = (content: string): Set<string> => {
+  const names = new Set<string>()
+  for (const m of content.matchAll(/^\s*class\s+([A-Za-z_]\w*)/gm)) {
+    const name = m.at(1)
+    if (name) names.add(name)
+  }
+  return names
+}
+
+/**
+ * Remove `x = ℓm_salt_id.name` assignments referencing modules that produced
+ * no ℓm binding (class-only modules emit raw code; raw .ahk modules embed
+ * directly). Their names are already in scope, so the import line is a no-op.
+ * A dropped `.default` binding or an unmatched name would dangle silently —
+ * reject those instead.
+ */
+export const dropDanglingModuleRefs = (ctx: IncludeContext, text: string): string => {
+  const dangling = new Map<string, Meta>()
+  for (const [, meta] of ctx.cache) {
+    const token = `${MODULE_PREFIX}_${ctx.salt}_${meta.id}`
+    if (!meta.content.includes(`${token} =`)) dangling.set(token, meta)
+  }
+  if (!dangling.size) return text
+
+  return text
+    .split('\n')
+    .filter((line) => {
+      const match = /^\s*\w+\s*=\s*(ℓm_\w+)\.(\w+)\s*$/.exec(line)
+      const meta = match?.[1] ? dangling.get(match[1]) : undefined
+      const member = match?.[2]
+      if (!meta || !member) return true
+
+      if (member === 'default') {
+        throw createTranspileError(
+          ErrorType.UNSUPPORTED,
+          `module '${meta.source}' has no default export`,
+          `Import a declared name instead: import { Name } from '${meta.source}'`,
+        )
+      }
+
+      // .ahk embeds raw globals — names can't be verified, keep the no-op drop
+      if (meta.source.endsWith('.coffee') && !declaredClassNames(meta.content).has(member)) {
+        throw createTranspileError(
+          ErrorType.UNSUPPORTED,
+          `module '${meta.source}' has no export named '${member}'`,
+          `Check the class names declared in '${meta.source}'`,
+        )
+      }
+      return false
+    })
+    .join('\n')
 }
 
 // Re-export for backward compatibility

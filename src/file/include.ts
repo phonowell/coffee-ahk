@@ -4,7 +4,12 @@ import { read } from 'fire-keeper'
 import { createTranspileError, ErrorType } from '../utils/error.js'
 
 import { IncludeContext, type FileMapping } from './include/cache.js'
-import { parseExportsFromCoffee, replaceAnchor, transformAll } from './include/transformer.js'
+import {
+  dropDanglingModuleRefs,
+  parseExportsFromCoffee,
+  replaceAnchor,
+  transformAll,
+} from './include/transformer.js'
 
 export type { FileMapping }
 export type FileMappingRef = { mapping?: FileMapping[] }
@@ -24,8 +29,14 @@ const main = async (source: string, salt: string, mappingRef?: FileMappingRef) =
   const replaced = await replaceAnchor(source, content, ctx)
   await transformAll(ctx)
 
+  // Drop import assignments referencing modules that emit no ℓm binding
+  // (class-only / raw .ahk modules expose their names directly)
+  for (const [, meta] of ctx.cache)
+    if (meta.content) meta.content = dropDanglingModuleRefs(ctx, meta.content)
+  const cleaned = dropDanglingModuleRefs(ctx, replaced)
+
   // Strip export statements from main file (entry point doesn't need exports)
-  const { codeLines } = parseExportsFromCoffee(replaced)
+  const { codeLines } = parseExportsFromCoffee(cleaned)
   const result = codeLines.join('\n')
   const merged = [...ctx.sortModules(), result].join('\n')
 

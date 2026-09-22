@@ -4,6 +4,7 @@
  */
 
 import { ErrorType, TranspileError } from '../../../utils/error.js'
+import { codeLineMask } from '../utils.js'
 
 import type { Context } from '../../../types/index.js'
 
@@ -66,6 +67,7 @@ export const parseExportsFromCoffee = (replaced: string, filePath?: string): Par
   const codeLines: string[] = []
 
   const lines = replaced.split('\n')
+  const mask = codeLineMask(replaced)
   let i = 0
   while (i < lines.length) {
     const line = lines[i]
@@ -74,8 +76,8 @@ export const parseExportsFromCoffee = (replaced: string, filePath?: string): Par
       continue
     }
     const trimmed = line.trim()
-    // 只处理 export 开头的行
-    if (!trimmed.startsWith('export ')) {
+    // 只处理 export 开头的行；heredoc/块注释内的行不算代码
+    if (!mask[i] || !trimmed.startsWith('export ')) {
       // Skip type annotation comments (###* ... ###) immediately before export
       // They will be handled with the export they annotate
       if (trimmed.match(/^###\*.*###$/)) {
@@ -98,6 +100,14 @@ export const parseExportsFromCoffee = (replaced: string, filePath?: string): Par
     // export default foo 或 export default ->
     const exportDefaultMatch = /^export\s+default\s+(.+)/.exec(trimmed)
     if (exportDefaultMatch?.[1]) {
+      if (exportDefault.length) {
+        throw new TranspileError(
+          createExportContext(i + 1) as Context,
+          ErrorType.SYNTAX_ERROR,
+          `duplicate 'export default'${filePath ? ` in '${filePath}'` : ''}\n  Line: ${trimmed}`,
+          `A module can only have one default export`,
+        )
+      }
       // 判断是否为多行缩进块
       const exportLineIndent = RegExp(/^(\s*)/).exec(line)?.[1] ?? ''
       const exportBody = [exportDefaultMatch[1]]
@@ -122,11 +132,14 @@ export const parseExportsFromCoffee = (replaced: string, filePath?: string): Par
 
     // export {a, b} or export {a: foo()}; `export {}` is a legal no-op
     const exportNamedMatch = /^export\s*{(.*)}/.exec(trimmed)
-    if (exportNamedMatch?.[1]) {
-      splitTopLevel(exportNamedMatch[1]).forEach((seg) => {
-        if (!seg) return
-        exportNamed.push(seg)
-      })
+    if (exportNamedMatch) {
+      const body = exportNamedMatch[1]?.trim()
+      if (body) {
+        splitTopLevel(body).forEach((seg) => {
+          if (!seg) return
+          exportNamed.push(seg)
+        })
+      }
       i++
       continue
     }
