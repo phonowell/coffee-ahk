@@ -1,20 +1,24 @@
 for ℓi, value in list {
+  global value
   value++
 }
 for index, value in list {
-  index := index - 1
+  global index := index - 1
   value++
 }
 for value, ℓval in map {
   value++
 }
 for key, value in map {
+  global key
   value++
 }
 for i, a in [1, 2, 3] {
-  i := i - 1
+  global a
+  global i := i - 1
   for j, b in [3, 2, 1] {
-    j := j - 1
+    global b
+    global j := j - 1
     alert.Call(i + j)
   }
 }
@@ -54,28 +58,24 @@ ahk_2(λ) {
   return λ.last
 }
 ahk_3(λ) {
-  return "" . (λ.key) . "=" . (λ.value) . ""
+  return "" . (key) . "=" . (value) . ""
 }
 ahk_4(λ, data) {
   λ.data := data
   λ.output := []
   for key, value in λ.data {
-    λ.key := key
-    λ.value := value
     λ.formatter := Func("ahk_3").Bind(λ)
     λ.output.push.Call(λ.formatter.Call())
   }
   return λ.output
 }
 ahk_5(λ) {
-  return λ.result += λ.i * λ.j
+  return λ.result += i * j
 }
 ahk_6(λ) {
   λ.result := 0
   for ℓi, i in [1, 2] {
-    λ.i := i
     for ℓi, j in [3, 4] {
-      λ.j := j
       λ.adder := Func("ahk_5").Bind(λ)
       λ.adder.Call()
     }
@@ -83,7 +83,7 @@ ahk_6(λ) {
   return λ.result
 }
 ahk_7(λ) {
-  return λ.i
+  return i
 }
 ahk_8(λ, i) {
   λ.i := i
@@ -92,18 +92,16 @@ ahk_8(λ, i) {
 ahk_9(λ) {
   λ.fns := []
   for ℓi, i in [1, 2, 3] {
-    λ.i := i
-    (Func("ahk_8").Bind(λ)).Call()
+    (Func("ahk_8").Bind(λ)).Call(i)
   }
   return λ.fns
 }
 ahk_10(λ) {
-  return λ.i
+  return i
 }
 ahk_11(λ) {
   λ.fns := []
   for ℓi, i in [1, 2, 3] {
-    λ.i := i
     λ.fns.push.Call(Func("ahk_10").Bind(λ))
   }
   return λ.fns
@@ -120,9 +118,7 @@ ahk_13(λ, obj) {
   λ.obj := obj
   λ.result := ""
   for key, value in λ.obj {
-    λ.key := key
-    λ.value := value
-    λ.result := "" . (λ.result) . ", " . (λ.key) . ""
+    λ.result := "" . (λ.result) . ", " . (key) . ""
   }
   return λ.result
 }

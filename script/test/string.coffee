@@ -80,3 +80,13 @@ a = "C:\\new"
 a = "say \"hi\""
 a = 'it\'s'
 a = "tab\there"
+
+# Heredoc strips the common leading indent (CoffeeScript dedent)
+ded = """
+  first
+  second
+"""
+
+# Backslash-newline is a line continuation — joins without a newline
+cont = "ab\
+cd"

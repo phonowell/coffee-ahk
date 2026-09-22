@@ -18,6 +18,6 @@ fn.Call((a + b), (c + d))
 global d := ((a))
 global e := (((1 + 2)))
 if ((a > b) && (c > d)) {
-  x := 1
+  global x := 1
 }
 arr[ℓci_ahk.Call(arr, (i + 1))]

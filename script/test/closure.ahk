@@ -138,7 +138,7 @@ ahk_23(λ) {
   λ.fns := []
   for ℓi, i in [1, 2, 3] {
     λ.i := i
-    (Func("ahk_22").Bind(λ)).Call()
+    (Func("ahk_22").Bind(λ)).Call(λ.i)
   }
   return λ.fns
 }

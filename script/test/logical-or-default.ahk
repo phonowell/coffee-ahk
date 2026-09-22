@@ -1,3 +1,5 @@
+global ℓor
+
 global a := ((ℓor := b) ? ℓor : 0)
 global x := ((ℓor := y) ? ℓor : "default")
 global z := ((ℓor := w) ? ℓor : -1)

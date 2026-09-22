@@ -97,7 +97,7 @@ ahk_19(λ) {
   λ.fns := []
   for ℓi, i in [1, 2, 3] {
     λ.i := i
-    (Func("ahk_18").Bind(λ)).Call()
+    (Func("ahk_18").Bind(λ)).Call(λ.i)
   }
   return λ.fns
 }
@@ -126,9 +126,9 @@ ahk_24(λ) {
 }
 ahk_25(λ) {
   if (a > 1) {
-    a := 1
+    return a := 1
   } else {
-    a := 0
+    return a := 0
   }
 }
 ahk_26(λ) {

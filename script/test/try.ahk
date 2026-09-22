@@ -6,6 +6,7 @@ try {
 try {
   a--
 } catch e {
+  global e
   a += 2
 } finally {
   a += 3

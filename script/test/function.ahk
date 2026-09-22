@@ -37,7 +37,7 @@ ahk_7(λ, b := 2) {
 }
 ahk_8(λ) {
   λ.a := 1
-  return (Func("ahk_7").Bind(λ)).Call()
+  return (Func("ahk_7").Bind(λ)).Call(2)
 }
 ahk_9(λ, a, b, c) {
   λ.a := a

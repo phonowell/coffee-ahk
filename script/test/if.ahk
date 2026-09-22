@@ -136,8 +136,8 @@ ahk_13(λ) {
 }
 ahk_14(λ) {
   if !(1) {
-    λ.a++
+    return λ.a++
   } else {
-    λ.a--
+    return λ.a--
   }
 }

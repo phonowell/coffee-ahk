@@ -8,15 +8,18 @@ global ℓarray := [1, 2]
 global validA := ℓarray[1]
 global validB := ℓarray[2]
 try {
-  x := 1
+  global x := 1
 } catch err {
+  global err
   console.log.Call(err)
 }
 for ℓi, item in [1, 2, 3] {
+  global item
   console.log.Call(item)
 }
 for value, key in obj {
-  value := value - 1
+  global key
+  global value := value - 1
   console.log.Call(key, value)
 }
 global config := {name: "test", value: 123, Index: "allowed"}

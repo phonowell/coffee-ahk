@@ -1,3 +1,6 @@
+global y
+global z
+
 global foo := 1
 global bar := 2
 global baz := foo + bar
